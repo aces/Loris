@@ -181,7 +181,7 @@ class Reset extends \NDB_Page implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
-        if ($request->getMethod() === 'POST' || $request->getMethod() === 'GET') {
+        if ($request->getMethod() === 'POST') {
             return '';
         }
     }
