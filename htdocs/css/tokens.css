@@ -63,11 +63,12 @@
     --category-highlight: #fefcff;
 
     /* States: hover is the pointer, selected is a settled choice, active is a
-       state being passed through */
-    --state-hover: var(--primary-highlight);
-    --state-selected: var(--primary-fill);
+       state being passed through. Stronger than the -fill tints so a row or
+       option in that state shows against white. */
+    --state-hover: #f0f6fe;
+    --state-selected: #e0edfd;
     --state-selected-solid: var(--primary);
-    --state-active: var(--secondary-fill);
+    --state-active: #fcf3d1;
     --state-active-solid: var(--secondary-border);
 
     /* Grey, one scale from text down to surfaces */

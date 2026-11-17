@@ -35,12 +35,10 @@ Every colour has the same five shades, named by suffix:
 | none | The base colour | Navigation, icons, filled buttons | Varies, see below |
 | `-strong` | Darkest | Pressed states, text in that colour, a filled button with white text when the base is too light | At least 4.5:1 against white and against the colour's `-fill` |
 | `-border` | Mid | Borders, outlines and chart marks | At least 3:1 against white and against the colour's `-fill` |
-| `-fill` | Light tint | Backgrounds such as a selected row or a tag | `--text` on it is at least 4.5:1 |
+| `-fill` | Light tint | Backgrounds such as a tag or a notice | `--text` on it is at least 4.5:1 |
 | `-highlight` | Very light tint | Hover | `--text` on it is at least 4.5:1 |
 
-Since every colour has the same shades, any of them can be used where colours only
-need to tell things apart, such as the series of a chart. Chart marks should use the
-`-border` shade or darker.
+Chart marks should use the `-border` shade or darker.
 
 ## Colours
 
@@ -67,8 +65,8 @@ Used for actions, navigation and panel headings.
 | ![](images/palette/primary.svg) | `--primary` | `#064785` | Navigation, panel headings, filled buttons |
 | ![](images/palette/primary-strong.svg) | `--primary-strong` | `#01376b` | Pressed buttons, text in blue |
 | ![](images/palette/primary-border.svg) | `--primary-border` | `#528cd0` | Borders, the focus ring, chart marks |
-| ![](images/palette/primary-fill.svg) | `--primary-fill` | `#f7faff` | Selected row |
-| ![](images/palette/primary-highlight.svg) | `--primary-highlight` | `#fbfdff` | Hovered row |
+| ![](images/palette/primary-fill.svg) | `--primary-fill` | `#f7faff` | Tags and notices |
+| ![](images/palette/primary-highlight.svg) | `--primary-highlight` | `#fbfdff` | Hover on a tag or notice |
 
 ### Light blue (info)
 
@@ -91,7 +89,7 @@ Used for an in-progress state, such as the rows a drag is currently selecting, a
 | ![](images/palette/secondary.svg) | `--secondary`, `--warning` | `#e89a0c` | Warnings |
 | ![](images/palette/secondary-strong.svg) | `--secondary-strong`, `--warning-strong` | `#a85500` | Text in orange, filled buttons |
 | ![](images/palette/secondary-border.svg) | `--secondary-border`, `--warning-border`, `--state-active-solid` | `#c97401` | The edge of an active row, chart marks |
-| ![](images/palette/secondary-fill.svg) | `--secondary-fill`, `--warning-fill` | `#fffae9` | Active background |
+| ![](images/palette/secondary-fill.svg) | `--secondary-fill`, `--warning-fill` | `#fffae9` | Warnings and notices |
 | ![](images/palette/secondary-highlight.svg) | `--secondary-highlight`, `--warning-highlight` | `#fffdf5` | Hover |
 
 ### Green (success)
@@ -148,6 +146,9 @@ The greys are one scale, from text down to surfaces.
 | Hover | `--state-hover` | The pointer is over the element |
 | Selected | `--state-selected`, `--state-selected-solid` | The element has been chosen, e.g. a checked option in a dropdown |
 | Active | `--state-active`, `--state-active-solid` | The element is in a temporary state that changes when the action finishes, e.g. rows a drag is passing over |
+
+The state tokens are their own tints, stronger than the `-fill` shades, so a hovered,
+selected or active row shows against white.
 
 Buttons do not have a selected state. On hover, a button's border and label change
 colour and its background stays the same.
