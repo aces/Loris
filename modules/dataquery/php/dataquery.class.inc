@@ -62,4 +62,22 @@ class Dataquery extends \NDB_Page
             ]
         );
     }
+
+    /**
+     * Include additional CSS files
+     *
+     * @return array of css to be inserted
+     */
+    function getCSSDependencies(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/dataquery/css/dataquery.css",
+            ]
+        );
+    }
 }
