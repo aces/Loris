@@ -45,9 +45,10 @@ need to tell things apart, such as the series of a chart. Chart marks should use
 ## Colours
 
 The navy and the orange come from the "Loris color palette v.0.1" in the header of
-`htdocs/bootstrap/css/custom-css.css`. The other colours, and the darker shades of
-every colour but navy, follow Tailwind CSS's scales (sky, amber, emerald, red and
-violet). Navy's darker shades are derived from its base in OKLCH. Each `-fill` and
+`htdocs/bootstrap/css/custom-css.css`, and the red and the purple from the biobank
+module's buttons. The green, the light blue's darker shades and the orange's darker
+shades follow Tailwind CSS's emerald, sky and amber scales. The darker shades of the
+navy, the red and the purple are derived from their bases in OKLCH. Each `-fill` and
 `-highlight` is a faint tint of its colour, kept light so text on it stays easy to
 read.
 
@@ -105,11 +106,11 @@ Used for an in-progress state, such as the rows a drag is currently selecting, a
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/danger.svg) | `--danger` | `#dc2626` | Errors, danger buttons |
-| ![](images/palette/danger-strong.svg) | `--danger-strong` | `#b91c1c` | Pressed danger button, text in red |
-| ![](images/palette/danger-border.svg) | `--danger-border` | `#ef4444` | Borders, chart marks |
-| ![](images/palette/danger-fill.svg) | `--danger-fill` | `#ffeeec` | Error background |
-| ![](images/palette/danger-highlight.svg) | `--danger-highlight` | `#fff7f6` | Hover |
+| ![](images/palette/danger.svg) | `--danger` | `#bc1616` | Errors, danger buttons |
+| ![](images/palette/danger-strong.svg) | `--danger-strong` | `#8f1e19` | Pressed danger button, text in red |
+| ![](images/palette/danger-border.svg) | `--danger-border` | `#cb473c` | Borders, chart marks |
+| ![](images/palette/danger-fill.svg) | `--danger-fill` | `#feeeec` | Error background |
+| ![](images/palette/danger-highlight.svg) | `--danger-highlight` | `#fff7f5` | Hover |
 
 ### Purple (category)
 
@@ -117,11 +118,11 @@ Purple has no fixed meaning, so it is used to tell categories apart where the ot
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/category.svg) | `--category` | `#7c3aed` | Categories, filled buttons |
-| ![](images/palette/category-strong.svg) | `--category-strong` | `#6d28d9` | Pressed, text in purple |
-| ![](images/palette/category-border.svg) | `--category-border` | `#8b5cf6` | Borders, chart marks |
-| ![](images/palette/category-fill.svg) | `--category-fill` | `#f2f0fe` | Category background |
-| ![](images/palette/category-highlight.svg) | `--category-highlight` | `#f9f8ff` | Hover |
+| ![](images/palette/category.svg) | `--category` | `#96398c` | Categories, filled buttons |
+| ![](images/palette/category-strong.svg) | `--category-strong` | `#7a2472` | Pressed, text in purple |
+| ![](images/palette/category-border.svg) | `--category-border` | `#af50a4` | Borders, chart marks |
+| ![](images/palette/category-fill.svg) | `--category-fill` | `#faeef8` | Category background |
+| ![](images/palette/category-highlight.svg) | `--category-highlight` | `#fdf7fb` | Hover |
 
 ### Grey
 

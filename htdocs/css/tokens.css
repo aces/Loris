@@ -48,19 +48,19 @@
     --success-fill: #e8f7ef;
     --success-highlight: #f4fbf7;
 
-    --danger: #dc2626;
-    --danger-strong: #b91c1c;
-    --danger-border: #ef4444;
-    --danger-fill: #ffeeec;
-    --danger-highlight: #fff7f6;
+    --danger: #bc1616;
+    --danger-strong: #8f1e19;
+    --danger-border: #cb473c;
+    --danger-fill: #feeeec;
+    --danger-highlight: #fff7f5;
 
     /* Telling categories apart, where the other colours already carry a
        meaning */
-    --category: #7c3aed;
-    --category-strong: #6d28d9;
-    --category-border: #8b5cf6;
-    --category-fill: #f2f0fe;
-    --category-highlight: #f9f8ff;
+    --category: #96398c;
+    --category-strong: #7a2472;
+    --category-border: #af50a4;
+    --category-fill: #faeef8;
+    --category-highlight: #fdf7fb;
 
     /* States: hover is the pointer, selected is a settled choice, active is a
        state being passed through */
