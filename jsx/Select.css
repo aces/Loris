@@ -88,13 +88,11 @@
     white-space: nowrap;
 }
 
+/* The panel floats over the page, placed against its control by
+   useFloatingPanel, so a scrolling container never clips it. */
 .loris-select-panel {
-    position: absolute;
+    position: fixed;
     z-index: 1000;
-    top: 100%;
-    left: 0;
-    margin-top: var(--space-xs);
-    min-width: 100%;
     width: var(--loris-select-panel-width, 320px);
     max-width: 90vw;
     background: var(--surface);
@@ -434,10 +432,4 @@
 .loris-select-button-value .loris-select-names,
 .loris-select-button-value .loris-select-count {
     color: inherit;
-}
-
-.loris-select.as-button .loris-select-panel {
-    right: 0;
-    left: auto;
-    min-width: 220px;
 }
