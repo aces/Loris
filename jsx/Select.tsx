@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
+import useFloatingPanel from './useFloatingPanel';
 import './Select.css';
 
 type OptionGroup = {
@@ -98,6 +99,13 @@ function Select(props: {
   const autoScroll = useRef<number|null>(null);
   const wrapper = useRef<HTMLDivElement>(null);
   const search = useRef<HTMLInputElement>(null);
+  const panelBox = useRef<HTMLDivElement>(null);
+  const place = useFloatingPanel(
+    wrapper,
+    panelBox,
+    open,
+    props.appearance === 'button' ? 'end' : 'start'
+  );
 
   useEffect(() => {
     if (!open) {
@@ -486,7 +494,7 @@ function Select(props: {
 
   let panel = null;
   if (open) {
-    panel = <div className="loris-select-panel">
+    panel = <div ref={panelBox} className="loris-select-panel" style={place}>
       <div className="loris-select-controls">
         <input ref={search}
           className="loris-select-search"

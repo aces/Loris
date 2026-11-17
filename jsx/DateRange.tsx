@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
+import useFloatingPanel from './useFloatingPanel';
 import './Select.css';
 import './DateRange.css';
 
@@ -75,6 +76,8 @@ function DateRange(props: {
   const [year, setYear] = useState(initial.getUTCFullYear());
   const [hover, setHover] = useState('');
   const root = useRef<HTMLDivElement>(null);
+  const panelBox = useRef<HTMLDivElement>(null);
+  const place = useFloatingPanel(root, panelBox, open);
 
   const maxYear = props.maxYear || new Date().getFullYear();
   const minYear = props.minYear || maxYear - 120;
@@ -230,7 +233,8 @@ function DateRange(props: {
           ×
         </button> :
         null}
-      {open ? <div className="loris-select-panel loris-daterange-panel">
+      {open ? <div ref={panelBox} style={place}
+        className="loris-select-panel loris-daterange-panel">
         <div className="loris-daterange-head">
           <button type="button" className="loris-daterange-step"
             aria-label={props.previousLabel || 'Previous month'}
