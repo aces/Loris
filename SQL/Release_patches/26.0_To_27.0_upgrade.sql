@@ -593,3 +593,9 @@ CREATE TABLE `openid_connect_csrf` (
     CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE INDEX FeedbackSession
+ON feedback_bvl_thread (SessionID);
+
+CREATE INDEX FeedbackComment
+ON feedback_bvl_thread (CommentID);
