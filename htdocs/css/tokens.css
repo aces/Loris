@@ -35,7 +35,11 @@
     --secondary-fill: #fcf3e2;
     --secondary-highlight: #fefaf2;
 
+    --warning-strong: var(--secondary-strong);
     --warning: var(--secondary);
+    --warning-border: var(--secondary-border);
+    --warning-fill: var(--secondary-fill);
+    --warning-highlight: var(--secondary-highlight);
 
     --success-strong: #036737;
     --success: #0f9d58;
@@ -94,7 +98,7 @@
 
     /* The focus glow on its own, for a field whose border something else
        draws */
-    --field-glow-focus: 0 0 8px rgba(36, 110, 182, .5);
+    --field-glow-focus: 0 0 8px color-mix(in srgb, var(--primary-border) 50%, transparent);
     --field-shadow-focus: var(--field-shadow), var(--field-glow-focus);
     --field-padding: 6px 12px;
 

@@ -80,11 +80,11 @@ Used for an in-progress state, such as the rows a drag is currently selecting, a
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/secondary-strong.svg) | `--secondary-strong` | `#7b5002` | Text in orange, filled buttons |
+| ![](images/palette/secondary-strong.svg) | `--secondary-strong`, `--warning-strong` | `#7b5002` | Text in orange, filled buttons |
 | ![](images/palette/secondary.svg) | `--secondary`, `--warning` | `#e89a0c` | Warnings |
-| ![](images/palette/secondary-border.svg) | `--secondary-border`, `--state-active-solid` | `#c07e04` | The edge of an active row, chart marks |
-| ![](images/palette/secondary-fill.svg) | `--secondary-fill` | `#fcf3e2` | Active background |
-| ![](images/palette/secondary-highlight.svg) | `--secondary-highlight` | `#fefaf2` | Hover |
+| ![](images/palette/secondary-border.svg) | `--secondary-border`, `--warning-border`, `--state-active-solid` | `#c07e04` | The edge of an active row, chart marks |
+| ![](images/palette/secondary-fill.svg) | `--secondary-fill`, `--warning-fill` | `#fcf3e2` | Active background |
+| ![](images/palette/secondary-highlight.svg) | `--secondary-highlight`, `--warning-highlight` | `#fefaf2` | Hover |
 
 ### Green (success)
 
@@ -148,7 +148,9 @@ colour and its background stays the same.
 
 Every pairing in this document meets [WCAG 2.2](https://www.w3.org/TR/WCAG22/) level AA:
 4.5:1 for text and 3:1 for borders, icons and chart marks. New tokens should meet it
-too.
+too. Disabled text (`--text-disabled`) is the one exception, as WCAG allows for
+inactive controls. A disabled control should say why it is disabled on hover, using
+`aria-disabled` rather than `disabled`, which blocks hover in some browsers.
 
 - Colour should never be the only way a state is shown. A selected or active row
   should also have a bar on its left edge, a checkbox should show a tick, and a
