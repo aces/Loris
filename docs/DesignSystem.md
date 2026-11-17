@@ -32,23 +32,29 @@ Every colour has the same five shades, named by suffix:
 
 | Suffix | Shade | Used for | Contrast |
 |---|---|---|---|
-| `-strong` | Darkest | Pressed states, text in that colour, a filled button with white text when the base is too light | At least 4.5:1 against white and against the colour's `-fill` |
 | none | The base colour | Navigation, icons, filled buttons | Varies, see below |
+| `-strong` | Darkest | Pressed states, text in that colour, a filled button with white text when the base is too light | At least 4.5:1 against white and against the colour's `-fill` |
 | `-border` | Mid | Borders, outlines and chart marks | At least 3:1 against white and against the colour's `-fill` |
-| `-fill` | Light tint | Backgrounds such as a selected row or a tag | `--text` on it is at least 4.5:1 |
+| `-fill` | Light tint | Backgrounds such as a tag or a notice | `--text` on it is at least 4.5:1 |
 | `-highlight` | Very light tint | Hover | `--text` on it is at least 4.5:1 |
 
-Since every colour has the same shades, any of them can be used where colours only
-need to tell things apart, such as the series of a chart. Chart marks should use the
-`-border` shade or darker.
+Chart marks should use the `-border` shade or darker.
 
 ## Colours
 
-The header of `htdocs/bootstrap/css/custom-css.css` lists a "Loris color palette
-v.0.1" with two blues and an orange, but only as a comment, so no code can reference
-it. The colours below start from those values and add the shades needed by the
-interface. A colour that is not in these tables should be added here and to
-`tokens.css` before it is used.
+The navy and the orange come from the "Loris color palette v.0.1" in the header of
+`htdocs/bootstrap/css/custom-css.css`. Every colour's other four shades come from
+its base by one rule, worked out in OKLCH at the base's hue: `-strong` is the
+lightest shade that reaches 5:1 against white and against its `-fill`, `-border` is
+the lightest that reaches 3.3:1, and `-fill` and `-highlight` are faint tints at one
+lightness for every colour, kept light so text on them stays easy to read. Orange's
+darker shades lean towards red and its tints towards yellow, since orange turns
+muddy at its own hue, and light blue's shades lean towards cyan so they stay clear
+of navy's.
+
+A colour that is not in these tables should be added here and to `tokens.css`
+before it is used, with every pairing checked against the rules under
+Accessibility.
 
 ### Blue (primary)
 
@@ -56,11 +62,11 @@ Used for actions, navigation and panel headings.
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/primary-strong.svg) | `--primary-strong` | `#042d54` | Pressed buttons, text in blue |
 | ![](images/palette/primary.svg) | `--primary` | `#064785` | Navigation, panel headings, filled buttons |
-| ![](images/palette/primary-border.svg) | `--primary-border` | `#246eb6` | Borders, the focus ring, chart marks |
-| ![](images/palette/primary-fill.svg) | `--primary-fill` | `#e4ebf2` | Selected row |
-| ![](images/palette/primary-highlight.svg) | `--primary-highlight` | `#f3f6f9` | Hovered row |
+| ![](images/palette/primary-strong.svg) | `--primary-strong` | `#01376b` | Pressed buttons, text in blue |
+| ![](images/palette/primary-border.svg) | `--primary-border` | `#528cd0` | Borders, the focus ring, chart marks |
+| ![](images/palette/primary-fill.svg) | `--primary-fill` | `#f7faff` | Tags and notices |
+| ![](images/palette/primary-highlight.svg) | `--primary-highlight` | `#fbfdff` | Hover on a tag or notice |
 
 ### Light blue (info)
 
@@ -68,11 +74,11 @@ Used for help text, notices and a toggle that is on.
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/info-strong.svg) | `--info-strong` | `#345d7b` | Text in light blue, filled buttons |
 | ![](images/palette/info.svg) | `--info` | `#a6d3f5` | A toggle that is on |
-| ![](images/palette/info-border.svg) | `--info-border` | `#5f89a9` | Borders, the outline of a toggle that is on, chart marks |
-| ![](images/palette/info-fill.svg) | `--info-fill` | `#d4eafa` | Background for help text and notices |
-| ![](images/palette/info-highlight.svg) | `--info-highlight` | `#ecf6fd` | Hover |
+| ![](images/palette/info-strong.svg) | `--info-strong` | `#047693` | Text in light blue, filled buttons |
+| ![](images/palette/info-border.svg) | `--info-border` | `#0496ba` | Borders, the outline of a toggle that is on, chart marks |
+| ![](images/palette/info-fill.svg) | `--info-fill` | `#f4fcff` | Background for help text and notices |
+| ![](images/palette/info-highlight.svg) | `--info-highlight` | `#fafdff` | Hover |
 
 ### Orange (secondary)
 
@@ -80,31 +86,31 @@ Used for an in-progress state, such as the rows a drag is currently selecting, a
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/secondary-strong.svg) | `--secondary-strong` | `#7b5002` | Text in orange, filled buttons |
 | ![](images/palette/secondary.svg) | `--secondary`, `--warning` | `#e89a0c` | Warnings |
-| ![](images/palette/secondary-border.svg) | `--secondary-border`, `--state-active-solid` | `#c07e04` | The edge of an active row, chart marks |
-| ![](images/palette/secondary-fill.svg) | `--secondary-fill` | `#fcf3e2` | Active background |
-| ![](images/palette/secondary-highlight.svg) | `--secondary-highlight` | `#fefaf2` | Hover |
+| ![](images/palette/secondary-strong.svg) | `--secondary-strong`, `--warning-strong` | `#a85500` | Text in orange, filled buttons |
+| ![](images/palette/secondary-border.svg) | `--secondary-border`, `--warning-border`, `--state-active-solid` | `#c97401` | The edge of an active row, chart marks |
+| ![](images/palette/secondary-fill.svg) | `--secondary-fill`, `--warning-fill` | `#fffae9` | Warnings and notices |
+| ![](images/palette/secondary-highlight.svg) | `--secondary-highlight`, `--warning-highlight` | `#fffdf5` | Hover |
 
 ### Green (success)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/success-strong.svg) | `--success-strong` | `#036737` | Text in green, filled buttons |
-| ![](images/palette/success.svg) | `--success` | `#0f9d58` | Success icons |
-| ![](images/palette/success-border.svg) | `--success-border` | `#0f9d58` | Borders, chart marks |
-| ![](images/palette/success-fill.svg) | `--success-fill` | `#e5f4ed` | Success background |
-| ![](images/palette/success-highlight.svg) | `--success-highlight` | `#f3faf7` | Hover |
+| ![](images/palette/success.svg) | `--success` | `#059669` | Success icons |
+| ![](images/palette/success-strong.svg) | `--success-strong` | `#037b55` | Text in green, filled buttons |
+| ![](images/palette/success-border.svg) | `--success-border` | `#1a9d70` | Borders, chart marks |
+| ![](images/palette/success-fill.svg) | `--success-fill` | `#eefff6` | Success background |
+| ![](images/palette/success-highlight.svg) | `--success-highlight` | `#f8fffb` | Hover |
 
 ### Red (danger)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/danger-strong.svg) | `--danger-strong` | `#963221` | Pressed danger button, text in red |
-| ![](images/palette/danger.svg) | `--danger` | `#c0402a` | Errors, danger buttons |
-| ![](images/palette/danger-border.svg) | `--danger-border` | `#e25f48` | Borders, chart marks |
-| ![](images/palette/danger-fill.svg) | `--danger-fill` | `#f8eae8` | Error background |
-| ![](images/palette/danger-highlight.svg) | `--danger-highlight` | `#fcf6f4` | Hover |
+| ![](images/palette/danger.svg) | `--danger` | `#cc1e1e` | Errors, danger buttons |
+| ![](images/palette/danger-strong.svg) | `--danger-strong` | `#a92420` | Pressed danger button, text in red |
+| ![](images/palette/danger-border.svg) | `--danger-border` | `#ec5449` | Borders, chart marks |
+| ![](images/palette/danger-fill.svg) | `--danger-fill` | `#fff8f7` | Error background |
+| ![](images/palette/danger-highlight.svg) | `--danger-highlight` | `#fffcfc` | Hover |
 
 ### Purple (category)
 
@@ -112,11 +118,11 @@ Purple has no fixed meaning, so it is used to tell categories apart where the ot
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/category-strong.svg) | `--category-strong` | `#4a016b` | Pressed, text in purple |
-| ![](images/palette/category.svg) | `--category` | `#690096` | Categories, filled buttons |
-| ![](images/palette/category-border.svg) | `--category-border` | `#b562e9` | Borders, chart marks |
-| ![](images/palette/category-fill.svg) | `--category-fill` | `#f2e9f6` | Category background |
-| ![](images/palette/category-highlight.svg) | `--category-highlight` | `#f9f5fb` | Hover |
+| ![](images/palette/category.svg) | `--category` | `#9137bb` | Categories, filled buttons |
+| ![](images/palette/category-strong.svg) | `--category-strong` | `#79329b` | Pressed, text in purple |
+| ![](images/palette/category-border.svg) | `--category-border` | `#b665e0` | Borders, chart marks |
+| ![](images/palette/category-fill.svg) | `--category-fill` | `#fcf8ff` | Category background |
+| ![](images/palette/category-highlight.svg) | `--category-highlight` | `#fefcff` | Hover |
 
 ### Grey
 
@@ -141,6 +147,9 @@ The greys are one scale, from text down to surfaces.
 | Selected | `--state-selected`, `--state-selected-solid` | The element has been chosen, e.g. a checked option in a dropdown |
 | Active | `--state-active`, `--state-active-solid` | The element is in a temporary state that changes when the action finishes, e.g. rows a drag is passing over |
 
+The state tokens are their own tints, stronger than the `-fill` shades, so a hovered,
+selected or active row shows against white.
+
 Buttons do not have a selected state. On hover, a button's border and label change
 colour and its background stays the same.
 
@@ -148,7 +157,9 @@ colour and its background stays the same.
 
 Every pairing in this document meets [WCAG 2.2](https://www.w3.org/TR/WCAG22/) level AA:
 4.5:1 for text and 3:1 for borders, icons and chart marks. New tokens should meet it
-too.
+too. Disabled text (`--text-disabled`) is the one exception, as WCAG allows for
+inactive controls. A disabled control should say why it is disabled on hover, using
+`aria-disabled` rather than `disabled`, which blocks hover in some browsers.
 
 - Colour should never be the only way a state is shown. A selected or active row
   should also have a bar on its left edge, a checkbox should show a tick, and a

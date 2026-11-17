@@ -9,60 +9,66 @@
 :root {
     /* ---- Colour -------------------------------------------------- */
 
-    /* Every colour has the same five shades: -strong for pressed states and
-       for text in that colour, the base, -border for edges and chart marks,
-       -fill for backgrounds and -highlight for hover. -strong and -border
-       meet WCAG AA against white and against the colour's own -fill. */
+    /* Every colour has the same five shades: the base, -strong for pressed
+       states and for text in that colour, -border for edges and chart marks,
+       -fill for backgrounds and -highlight for hover. -fill and -highlight
+       are faint so text on them stays readable. -strong and -border meet WCAG
+       AA against white and against the colour's own -fill. */
 
     /* Actions, navigation and panel headings */
-    --primary-strong: #042d54;
     --primary: #064785;
-    --primary-border: #246eb6;
-    --primary-fill: #e4ebf2;
-    --primary-highlight: #f3f6f9;
+    --primary-strong: #01376b;
+    --primary-border: #528cd0;
+    --primary-fill: #f7faff;
+    --primary-highlight: #fbfdff;
 
     /* Help, notices, and rules that govern what the next action does */
-    --info-strong: #345d7b;
     --info: #a6d3f5;
-    --info-border: #5f89a9;
-    --info-fill: #d4eafa;
-    --info-highlight: #ecf6fd;
+    --info-strong: #047693;
+    --info-border: #0496ba;
+    --info-fill: #f4fcff;
+    --info-highlight: #fafdff;
 
     /* A state being passed through, such as the rows a drag is selecting */
-    --secondary-strong: #7b5002;
     --secondary: #e89a0c;
-    --secondary-border: #c07e04;
-    --secondary-fill: #fcf3e2;
-    --secondary-highlight: #fefaf2;
+    --secondary-strong: #a85500;
+    --secondary-border: #c97401;
+    --secondary-fill: #fffae9;
+    --secondary-highlight: #fffdf5;
 
     --warning: var(--secondary);
+    --warning-strong: var(--secondary-strong);
+    --warning-border: var(--secondary-border);
+    --warning-fill: var(--secondary-fill);
+    --warning-highlight: var(--secondary-highlight);
 
-    --success-strong: #036737;
-    --success: #0f9d58;
-    --success-border: #0f9d58;
-    --success-fill: #e5f4ed;
-    --success-highlight: #f3faf7;
+    --success: #059669;
+    --success-strong: #037b55;
+    --success-border: #1a9d70;
+    --success-fill: #eefff6;
+    --success-highlight: #f8fffb;
 
-    --danger-strong: #963221;
-    --danger: #c0402a;
-    --danger-border: #e25f48;
-    --danger-fill: #f8eae8;
-    --danger-highlight: #fcf6f4;
+    --danger: #cc1e1e;
+    --danger-strong: #a92420;
+    --danger-border: #ec5449;
+    --danger-fill: #fff8f7;
+    --danger-highlight: #fffcfc;
 
     /* Telling categories apart, where the other colours already carry a
        meaning */
-    --category-strong: #4a016b;
-    --category: #690096;
-    --category-border: #b562e9;
-    --category-fill: #f2e9f6;
-    --category-highlight: #f9f5fb;
+    --category: #9137bb;
+    --category-strong: #79329b;
+    --category-border: #b665e0;
+    --category-fill: #fcf8ff;
+    --category-highlight: #fefcff;
 
     /* States: hover is the pointer, selected is a settled choice, active is a
-       state being passed through */
-    --state-hover: var(--primary-highlight);
-    --state-selected: var(--primary-fill);
+       state being passed through. Stronger than the -fill tints so a row or
+       option in that state shows against white. */
+    --state-hover: #f0f6fe;
+    --state-selected: #e0edfd;
     --state-selected-solid: var(--primary);
-    --state-active: var(--secondary-fill);
+    --state-active: #fcf3d1;
     --state-active-solid: var(--secondary-border);
 
     /* Grey, one scale from text down to surfaces */
@@ -94,7 +100,7 @@
 
     /* The focus glow on its own, for a field whose border something else
        draws */
-    --field-glow-focus: 0 0 8px rgba(36, 110, 182, .5);
+    --field-glow-focus: 0 0 8px color-mix(in srgb, var(--primary-border) 50%, transparent);
     --field-shadow-focus: var(--field-shadow), var(--field-glow-focus);
     --field-padding: 6px 12px;
 
