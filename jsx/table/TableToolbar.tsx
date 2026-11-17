@@ -71,7 +71,7 @@ function TableToolbar<R>(props: {
     <div className="rt-actions">
       {props.actions.map((action) => (
         <span key={action.name} className={`action-${action.name}`}>
-          <Button onClick={() => action.renderForm
+          <Button display="secondary" onClick={() => action.renderForm
             ? props.onAction(action.name)
             : action.onClick?.()}>
             {action.renderForm && <Icon name="add" />} {action.label}

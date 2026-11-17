@@ -391,6 +391,13 @@
     text-align: right;
 }
 
+/* Identifiers and dates are set in the monospace, so their characters line up
+   down a column. */
+.rt-mono {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+}
+
 .rt-table .rt-check-cell {
     width: 40px;
     padding: 0 0 0 var(--space-xl);
@@ -688,6 +695,23 @@
     flex-direction: column;
     height: calc(100vh - var(--rt-top, 0px));
     margin: 0;
+}
+
+/* A full-page table is the page: the page's padding, breadcrumbs and footer
+   give way to it. */
+
+#page:has(.rt-fill) {
+    min-height: 0;
+    padding: 0;
+}
+
+#page:has(.rt-fill) .page-content {
+    padding: 0;
+}
+
+#page:has(.rt-fill) #breadcrumbs,
+body:has(.rt-fill) #footer {
+    display: none;
 }
 
 /* Edge to edge: the filters open from the window's left side and the record

@@ -161,6 +161,7 @@ class CandidateListIndex extends Component {
         name: 'pscid',
         label: t('PSCID', {ns: 'loris'}),
         sticky: true,
+        mono: true,
         value: (c) => c.pscid,
         format: (pscid, c) => <a href={profileURL(c.dccid)}>{pscid}</a>,
         filter: {type: 'text'},
@@ -168,6 +169,7 @@ class CandidateListIndex extends Component {
       {
         name: 'dccid',
         label: t('DCCID', {ns: 'loris'}),
+        mono: true,
         value: (c) => c.dccid,
         filter: {type: 'text'},
       },

@@ -34,6 +34,7 @@ export type Column<R, V = unknown> = {
   groupable?: boolean,
   sticky?: boolean,
   group?: string,
+  mono?: boolean,
 };
 
 /**
@@ -642,6 +643,8 @@ function RecordTable<R>(props: Props<R>) {
                     <td
                       key={column.name}
                       className={(column.type === 'number' ? 'rt-number' : '')
+                        + (column.mono || column.type === 'date'
+                          ? ' rt-mono' : '')
                         + (column.sticky ? ' rt-sticky' : '')}
                     >
                       {cellContent(column, record)}
