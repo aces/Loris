@@ -11,29 +11,30 @@
 
     /* Every colour has the same five shades: -strong for pressed states and
        for text in that colour, the base, -border for edges and chart marks,
-       -fill for backgrounds and -highlight for hover. -strong and -border
-       meet WCAG AA against white and against the colour's own -fill. */
+       -fill for backgrounds and -highlight for hover. Each shade sits at the
+       same OKLCH lightness in every colour. -strong and -border meet WCAG AA
+       against white and against the colour's own -fill. */
 
     /* Actions, navigation and panel headings */
-    --primary-strong: #042d54;
+    --primary-strong: #013262;
     --primary: #064785;
-    --primary-border: #246eb6;
-    --primary-fill: #e4ebf2;
-    --primary-highlight: #f3f6f9;
+    --primary-border: #4983c6;
+    --primary-fill: #e7f1fe;
+    --primary-highlight: #f3f8ff;
 
     /* Help, notices, and rules that govern what the next action does */
-    --info-strong: #345d7b;
+    --info-strong: #2e5774;
     --info: #a6d3f5;
-    --info-border: #5f89a9;
-    --info-fill: #d4eafa;
-    --info-highlight: #ecf6fd;
+    --info-border: #4387b6;
+    --info-fill: #e3f3ff;
+    --info-highlight: #f2f9ff;
 
     /* A state being passed through, such as the rows a drag is selecting */
-    --secondary-strong: #7b5002;
+    --secondary-strong: #7b4200;
     --secondary: #e89a0c;
-    --secondary-border: #c07e04;
-    --secondary-fill: #fcf3e2;
-    --secondary-highlight: #fefaf2;
+    --secondary-border: #b66c02;
+    --secondary-fill: #fceedc;
+    --secondary-highlight: #fdf7ef;
 
     --warning-strong: var(--secondary-strong);
     --warning: var(--secondary);
@@ -41,25 +42,25 @@
     --warning-fill: var(--secondary-fill);
     --warning-highlight: var(--secondary-highlight);
 
-    --success-strong: #036737;
+    --success-strong: #026335;
     --success: #0f9d58;
-    --success-border: #0f9d58;
-    --success-fill: #e5f4ed;
-    --success-highlight: #f3faf7;
+    --success-border: #219858;
+    --success-fill: #e2f6e8;
+    --success-highlight: #f2faf4;
 
-    --danger-strong: #963221;
+    --danger-strong: #8c2f1f;
     --danger: #c0402a;
-    --danger-border: #e25f48;
-    --danger-fill: #f8eae8;
-    --danger-highlight: #fcf6f4;
+    --danger-border: #c65b48;
+    --danger-fill: #ffebe7;
+    --danger-highlight: #fef5f4;
 
     /* Telling categories apart, where the other colours already carry a
        meaning */
-    --category-strong: #4a016b;
+    --category-strong: #471663;
     --category: #690096;
-    --category-border: #b562e9;
-    --category-fill: #f2e9f6;
-    --category-highlight: #f9f5fb;
+    --category-border: #9a65be;
+    --category-fill: #f6ebff;
+    --category-highlight: #faf6fe;
 
     /* States: hover is the pointer, selected is a settled choice, active is a
        state being passed through */
