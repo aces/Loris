@@ -182,8 +182,10 @@ function RecordingDataProviderContent(props: RecordingDataProviderProps) {
                   </div>
                 </div>
                 <div ref={datasetTaggerTabsRef} style={{
+                  alignSelf: 'flex-end',
                   fontSize: '18px',
-                  marginBottom: '-30px',
+                  // Overlap the modal header's 16px padding and 1px border.
+                  marginBottom: '-17px',
                   marginLeft: 'auto',
                 }}>
                   <ul className='nav nav-tabs' role='tablist'>
