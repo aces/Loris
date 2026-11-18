@@ -157,17 +157,14 @@ class Files extends \NDB_Page
                 );
                 if (!isset($userPermission) && !$user->hasPermission('superuser')) {
                     return new \LORIS\Http\Response\JSON\Forbidden(
-                        dgettext(
-                            "data_release",
-                            "Overwrite failed. A file of this name already exists"
-                            . " which you do not have permission to overwrite."
-                        )
+                        "Overwrite failed. A file of this name already exists which "
+                        . " you do not have permission to overwrite."
                     );
                 }
             } else {
                 // File is duplicate and overwrite not declared
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    dgettext("data_release", "Can not upload duplicate file.")
+                    'Can not upload duplicate file.'
                 );
             }
         }
