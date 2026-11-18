@@ -144,6 +144,10 @@ function Montage3D({
     return computeCameraSettings(center, size);
   }, [normalizedFramingBox]);
 
+  // Allow zooming out to half the initial map scale.
+  const maxCameraDistance = new THREE.Vector3(...cameraSettings.position)
+    .distanceTo(new THREE.Vector3(...cameraSettings.target)) * 2;
+
   return (
     <div style={{width: '100%', height: '100%'}}>
       <Canvas
@@ -173,6 +177,7 @@ function Montage3D({
         <OrbitControls
           makeDefault
           target={cameraSettings.target}
+          maxDistance={maxCameraDistance}
           onStart={() => setIsDragging(true)}
           onEnd={() => setIsDragging(false)}
         />
