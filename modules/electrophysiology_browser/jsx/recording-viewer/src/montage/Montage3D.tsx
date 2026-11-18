@@ -97,6 +97,7 @@ function Montage3D({
   isSensorSelected: (sensor: Sensor) => boolean,
   hoveredChannelIndices: number[],
 }) {
+  const [isDragging, setIsDragging] = useState(false);
   const rawChannels = useContext(ChannelMetadataContext);
   const bidsChannels = useContext(ChannelInfosContext);
 
@@ -146,6 +147,7 @@ function Montage3D({
   return (
     <div style={{width: '100%', height: '100%'}}>
       <Canvas
+        style={{cursor: isDragging ? 'grabbing' : 'grab'}}
         camera={{
           position: cameraSettings.position,
           fov: 30,
@@ -168,7 +170,12 @@ function Montage3D({
             }
           />
         ))}
-        <OrbitControls makeDefault target={cameraSettings.target} />
+        <OrbitControls
+          makeDefault
+          target={cameraSettings.target}
+          onStart={() => setIsDragging(true)}
+          onEnd={() => setIsDragging(false)}
+        />
       </Canvas>
     </div>
   );

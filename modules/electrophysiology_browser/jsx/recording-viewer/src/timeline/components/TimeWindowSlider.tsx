@@ -322,7 +322,7 @@ export default function TimeWindowSlider({
           touchAction: 'none',
           userSelect: 'none',
           cursor: activeDragKind === 'window'
-            ? 'grab'
+            ? 'grabbing'
             : activeDragKind
               ? 'ew-resize'
               : 'pointer',
@@ -366,7 +366,7 @@ export default function TimeWindowSlider({
             left: windowHitLeft,
             width: windowHitWidth,
             height: 20,
-            cursor: 'grab',
+            cursor: activeDragKind === 'window' ? 'grabbing' : 'grab',
             zIndex: 2,
             outline: 'none',
             background: 'transparent',
