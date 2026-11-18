@@ -454,6 +454,32 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
               >
                 <ParentSize>
                   {({width, height}) => (<>
+                    {/* Keep interval fills behind the transparent signal canvas. */}
+                    <svg
+                      aria-hidden='true'
+                      viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
+                      width={width}
+                      height={height}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      <EventsLayer
+                        viewerWidth={width}
+                        viewerHeight={height}
+                        events={events}
+                        eventFilter={eventFilter}
+                        timeWindow={interval}
+                        displayedChannels={channels}
+                        visible={Boolean(rightPanel)}
+                        timeSelection={timeSelection}
+                        activeEvent={activeEvent}
+                        eventChannels={eventChannels}
+                      />
+                    </svg>
                     <WebGLSignalCanvas
                       ref={signalCanvasRef}
                       width={width}
@@ -486,18 +512,6 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
                       onPointerCancel={handlePointerCancel}
                       onPointerLeave={handlePointerLeave}
                     >
-                      <EventsLayer
-                        viewerWidth={width}
-                        viewerHeight={height}
-                        events={events}
-                        eventFilter={eventFilter}
-                        timeWindow={interval}
-                        displayedChannels={channels}
-                        visible={Boolean(rightPanel)}
-                        timeSelection={timeSelection}
-                        activeEvent={activeEvent}
-                        eventChannels={eventChannels}
-                      />
                       <XAxisLayer
                         viewerWidth={width}
                         viewerHeight={height}
