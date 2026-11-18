@@ -21,8 +21,9 @@ class ProjectDescription extends \LORIS\Http\Endpoint
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $settings = \NDB_Factory::singleton()->settings();
-        $desc     = $settings->projectDescription($request->getAttribute("user"));
+        $config = \NDB_Factory::singleton()->config();
+        $lang   = $request->getAttribute('lang');
+        $desc   = $config->getMultilingualSetting($lang, 'projectDescription');
         return new \LORIS\Http\Response\JSON\OK(['Description' => $desc]);
     }
 

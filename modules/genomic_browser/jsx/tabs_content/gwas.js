@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 import Loader from 'jsx/Loader';
+import {withTranslation} from 'react-i18next';
 
 /**
  * GWAS Component.
@@ -104,6 +105,7 @@ class GWAS extends Component {
    * @return {DOMRect}
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -112,7 +114,7 @@ class GWAS extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'SNP ID',
+        label: t('SNP ID', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'SNP ID',
@@ -120,7 +122,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'Chromosome',
+        label: t('Chromosome', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Chromosome',
@@ -128,7 +130,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'BP Position',
+        label: t('BP Position', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'BP Position',
@@ -136,7 +138,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'Major Allele',
+        label: t('Major Allele', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Major Allele',
@@ -150,7 +152,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'Minor Allele',
+        label: t('Minor Allele', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Minor Allele',
@@ -164,7 +166,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'MAF',
+        label: t('MAF', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'MAF',
@@ -172,7 +174,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'Estimate',
+        label: t('Estimate', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Estimate',
@@ -180,7 +182,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'Std Err',
+        label: t('Std Err', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Std Err',
@@ -188,7 +190,7 @@ class GWAS extends Component {
         },
       },
       {
-        label: 'P-value',
+        label: t('P-value', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'P-value',
@@ -216,6 +218,7 @@ GWAS.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default GWAS;
+export default withTranslation(['genomic_browser', 'loris'])(GWAS);

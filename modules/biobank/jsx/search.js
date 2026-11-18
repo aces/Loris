@@ -41,11 +41,12 @@ class Search extends PureComponent {
         <FormElement>
           <TextboxElement
             name='barcode'
-            label={this.props.t('Barcode')}
+            label={this.props.t('Barcode', {ns: 'biobank'})}
             value={this.state.barcode}
             options={this.props.barcodes}
             onUserInput={onInput}
-            placeHolder={this.props.t('Please Scan or Type Barcode')}
+            placeHolder={this.props.t('Please Scan or Type Barcode',
+              {ns: 'biobank'})}
             autoFocus={true}
           />
         </FormElement>

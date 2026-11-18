@@ -136,9 +136,10 @@ class MediaIndex extends Component {
       }
       break;
     case t('Visit Label', {ns: 'loris'}):
-      if (row['CandID'] !== null && row['SessionID']) {
+      if (row[t('CandID')] !== null && row[t('SessionID', {ns: 'loris'})]) {
         const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-          row['CandID'] + '&sessionID=' + row['SessionID'];
+          row[t('CandID')] + '&sessionID='
+          + t(row[t('SessionID', {ns: 'loris'})]);
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
@@ -186,7 +187,7 @@ class MediaIndex extends Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -212,6 +213,7 @@ class MediaIndex extends Component {
       {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
+        sortByValue: false,
         options: options.visits,
       }},
       {label: t('Language', {ns: 'loris'}), show: true, filter: {
@@ -234,7 +236,7 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.projects,
       }},
-      {label: t('Uploaded By', {ns: 'media'}), show: true, filter: {
+      {label: t('Uploaded By', {ns: 'loris'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},
@@ -247,7 +249,7 @@ class MediaIndex extends Component {
         options: options.fileTypes,
       }},
       {label: t('CandID', {ns: 'media'}), show: false},
-      {label: t('SessionID', {ns: 'media'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('File Visibility', {ns: 'media'}), show: false, filter: {
         name: 'fileVisibility',
         type: 'select',

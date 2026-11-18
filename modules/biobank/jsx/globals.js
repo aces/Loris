@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {mapFormOptions} from './helpers.js';
 
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import Loader from 'Loader';
 import {
   SelectElement,
@@ -66,7 +66,7 @@ function Globals(props) {
 
   const poolField = (specimen||{}).poolId ? (
     <InlineField
-      label={this.props.t('Pool', {ns: 'biobank'})}
+      label={this.props.t('Pool', {ns: 'biobank', count: 1})}
       value={data.pools[specimen.poolId].label}
     />
   ) : null;
@@ -224,7 +224,7 @@ function Globals(props) {
 
   const projectField = () => specimen && (
     <InlineField
-      label={this.props.t('Project', {ns: 'loris'})}
+      label={this.props.t('Project', {ns: 'loris', count: 1})}
       value={options.projects[specimen.projectId]}
     />
   );
@@ -249,7 +249,7 @@ function Globals(props) {
     if (container.shipmentBarcodes.length !== 0) {
       return (
         <InlineField
-          label={this.props.t('Shipment', {ns: 'biobank'})}
+          label={this.props.t('Shipment', {ns: 'biobank', count: 1})}
           value={container.shipmentBarcodes.slice(-1)[0]}
         />
       );
@@ -308,7 +308,7 @@ function Globals(props) {
                 </span>
               </div>
               <div>
-                <Modal
+                <FormModal
                   title={t('Update Parent Container', {ns: 'biobank'})}
                   onClose={props.clearAll}
                   show={editable.containerParentForm}
@@ -323,7 +323,7 @@ function Globals(props) {
                     setContainer={props.setContainer}
                     setCurrent={props.setCurrent}
                   />
-                </Modal>
+                </FormModal>
               </div>
             </div>
           );

@@ -1,0 +1,21 @@
+/*M!999999\- enable the sandbox mode */
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `ConfigCategories`;
+LOCK TABLES `ConfigCategories` WRITE;
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (1,'study','Settings related to details of the study',1,'Study',1);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (26,'paths','Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.',1,'Paths',2);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (39,'gui','Settings related to the overall display of LORIS',1,'GUI',3);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (43,'www','Web address settings',1,'WWW',4);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (45,'eeg_pipeline','EEG Pipeline settings',1,'EEG Pipeline',15);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (47,'dashboard','Settings that affect the appearance of the dashboard and its charts',1,'Dashboard',5);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (50,'imaging_modules','DICOM Archive and Imaging Browser settings',1,'Imaging Modules',6);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (57,'statistics','Statistics module settings',1,'Statistics',7);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (59,'mail','LORIS email settings for notifications sent to users',1,'Email',8);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (63,'uploads','Settings related to file uploading',1,'Uploads',9);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (65,'APIKeys','Specify any API keys required for LORIS',1,'API Keys',10);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (69,'imaging_pipeline','Imaging Pipeline settings',1,'Imaging Pipeline',14);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (111,'logs','Settings related to logging',1,'Log Settings',12);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (115,'minc2bids','Settings related to converting MINC to BIDS LORIS-MRI tool script',1,'MINC to BIDS Converter Tool Options',13);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (121,'aws','Settings related to AWS services',1,'AWS Settings',13);
+INSERT INTO `ConfigCategories` (`ID`, `Name`, `Description`, `Visible`, `Label`, `OrderNumber`) VALUES (135,'biobank','Settings related to the biobank module',1,'Biobank',14);
+UNLOCK TABLES;

@@ -100,7 +100,7 @@ class UploadCategory extends \NDB_Page
         if ($this->existCategoryName($category_name, intval($parent_id))) {
             return false;
         }
-        $DB->insert(
+        $DB->unsafeinsert(
             "document_repository_categories",
             [
                 "category_name" => $category_name,

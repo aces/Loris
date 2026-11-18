@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Publications"
 msgstr "प्रकाशन"
@@ -47,9 +48,6 @@ msgstr "कृपया सबमिट करने से पहले शे�
 
 msgid "Something went wrong!"
 msgstr "कुछ गलत हो गया!"
-
-msgid "Submission Successful!"
-msgstr "सबमिशन सफल रहा!"
 
 msgid "Propose a Project"
 msgstr "एक प्रोजेक्ट प्रस्तावित करें"

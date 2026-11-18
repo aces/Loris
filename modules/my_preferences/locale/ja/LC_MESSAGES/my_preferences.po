@@ -78,3 +78,9 @@ msgstr "コードの検証"
 
 msgid "Successfully registered multifactor authenticator"
 msgstr "多要素認証の登録に成功しました"
+
+msgid "Invalid code provided. MFA not registered."
+msgstr "入力されたコードは無効です。MFA は設定されていません。"
+
+msgid "Missing code or secret to validate"
+msgstr "検証するコードまたはシークレットがありません。"

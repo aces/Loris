@@ -27,12 +27,20 @@ INSERT INTO parameter_type (Name, Type, Description, SourceFrom, Queryable) VALU
 INSERT INTO parameter_type_category_rel (ParameterTypeID, ParameterTypeCategoryID) SELECT 
 pt.ParameterTypeID, ptc.ParameterTypeCategoryID FROM parameter_type_category ptc, 
 parameter_type pt WHERE ptc.Name='Candidate Parameters' AND pt.Name='candidate_plan';
+
+INSERT INTO parameter_candidate_rules
+  (ParameterTypeID, ProjectID, Required, ShowOnRegistration)
+SELECT pt.ParameterTypeID, p.ProjectID, 1, 1
+FROM parameter_type pt, Project p
+WHERE pt.Name='candidate_plan' AND p.Name='Pumpernickel';
 ```
 
 These queries will add a single additional dropdown with label _"Visit plan for candidate"_, 
 field name _"candidate_plan"_, and options _"6month"_, _"12month"_. 
 Values entered from the module in this field will be saved in the `parameter_candidate` 
-table in SQL. 
+table in SQL. The `parameter_candidate_rules` entry controls which projects display
+the field, whether it is required, and whether it appears while creating a candidate.
+Use `numeric` as the parameter type to render a numeric input.
 
 _Note that the first query inserting into `parameter_type_category` is only required 
 the first time an addition to the Candidate Information_ tab is done, once that entry 

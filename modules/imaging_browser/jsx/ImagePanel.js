@@ -471,13 +471,13 @@ class ImagePanelQCStatusSelector extends Component {
     let qcStatusLabel;
     if (this.props.HasQCPerm && this.props.FileNew) {
       qcStatusLabel = <span>
-        {t('QC Status', {ns: 'imaging_browser'})} <span className="text-info">
+        {t('QC Status', {ns: 'loris'})} <span className="text-info">
           ( <span className="glyphicon glyphicon-star">
           </span> {t('New', {ns: 'loris'})} )
         </span>
       </span>;
     } else {
-      qcStatusLabel = t('QC Status', {ns: 'imaging_browser'});
+      qcStatusLabel = t('QC Status', {ns: 'loris'});
     }
 
     return (

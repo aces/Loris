@@ -90,11 +90,16 @@ function getCandInfoFields()
         $caveat_options[$row['ID']] = $row['Description'];
     }
 
-    // get pscid
-    $pscid = $db->pselectOne(
-        'SELECT PSCID FROM candidate WHERE CandID = :candid',
+    $candidateInfo = $db->pselectRow(
+        'SELECT c.PSCID, p.Name AS RegistrationProject,
+            ch.title AS RegistrationCohort
+        FROM candidate c
+        LEFT JOIN Project p ON p.ProjectID=c.RegistrationProjectID
+        LEFT JOIN cohort ch ON ch.CohortID=c.RegistrationCohortID
+        WHERE c.CandID=:candid',
         ['candid' => $candID]
     );
+    assert($candidateInfo !== null);
 
     $flag = $db->pselectOne(
         'SELECT flagged_caveatemptor FROM candidate WHERE CandID = :candid',
@@ -111,15 +116,20 @@ function getCandInfoFields()
         ['candid' => $candID]
     );
 
-    $extra_parameters = $db->pselect(
-        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
-        pt.Type, pt.Description
-        FROM parameter_type pt
-        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
-        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
-        WHERE ptc.Name='Candidate Parameters'
-        ORDER BY pt.ParameterTypeID, pt.name ASC",
-        []
+    $extra_parameters = iterator_to_array(
+        $db->pselect(
+            "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
+            pt.Type, pt.Description, pcr.Required
+            FROM parameter_type pt
+            JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+            JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+            JOIN parameter_candidate_rules pcr USING (ParameterTypeID)
+            JOIN candidate c ON c.RegistrationProjectID = pcr.ProjectID
+            WHERE ptc.Name='Candidate Parameters'
+            AND c.CandID = :candid
+            ORDER BY pt.ParameterTypeID, pt.name ASC",
+            ['candid' => $candID]
+        )
     );
 
     $fields = $db->pselect(
@@ -136,8 +146,16 @@ function getCandInfoFields()
     }
 
     $result = [
-        'pscid'                => $pscid,
+        'pscid'                => $candidateInfo['PSCID'],
         'candID'               => $candID->__toString(),
+        'registrationProject'  => dgettext(
+            'Project',
+            $candidateInfo['RegistrationProject'] ?? ''
+        ),
+        'registrationCohort'   => dgettext(
+            'cohort',
+            $candidateInfo['RegistrationCohort'] ?? ''
+        ),
         'caveatReasonOptions'  => $caveat_options,
         'flagged_caveatemptor' => $flag,
         'flagged_reason'       => $reason,
@@ -563,8 +581,7 @@ function getDOBFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
-    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+    $formattedDate      = formatCandidateDate($dob, $dobProcessedFormat);
 
     $result = [
         'pscid'     => $pscid,
@@ -616,9 +633,10 @@ function getDODFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
-    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
-
+    $dob    = formatCandidateDate(
+        $candidateData['DoB'] ?? null,
+        $dobProcessedFormat
+    );
     $result = [
         'pscid'         => $candidateData['PSCID'],
         'candID'        => $candID->__toString(),
@@ -711,3 +729,27 @@ function getDiagnosisEvolutionFields(): array
     return $result;
 }
 
+/**
+ * Format a candidate date for display.
+ *
+ * Returns null when the date is null or invalid.
+ *
+ * @param string|null $date   Database date in Y-m-d format
+ * @param string      $format Display format
+ *
+ * @return string|null
+ */
+function formatCandidateDate(?string $date, string $format): ?string
+{
+    if (empty($date)) {
+        return null;
+    }
+
+    $dateTime = DateTime::createFromFormat('Y-m-d', $date);
+
+    if ($dateTime === false) {
+        return null;
+    }
+
+    return $dateTime->format($format);
+}

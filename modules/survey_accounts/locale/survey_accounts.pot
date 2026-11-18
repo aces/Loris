@@ -60,9 +60,6 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-msgid "Instrument"
-msgstr ""
-
 msgid "URL"
 msgstr ""
 
@@ -81,7 +78,7 @@ msgstr ""
 msgid "already exists for given candidate for visit"
 msgstr ""
 
-msgid "The email address is not valid."
+msgid "Email is not valid."
 msgstr ""
 
 msgid "Please confirm the email address."
@@ -94,9 +91,6 @@ msgid "You must specify a valid Visit Label."
 msgstr ""
 
 msgid "You are not affiliated with this session's project"
-msgstr ""
-
-msgid "Email is not valid."
 msgstr ""
 
 msgid "Confirm Email address"

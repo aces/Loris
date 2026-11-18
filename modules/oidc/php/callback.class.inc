@@ -159,7 +159,7 @@ class Callback extends \NDB_Page
             return null;
         }
 
-        $respjson = json_decode($response->getBody(), true);
+        $respjson = json_decode($response->getBody()->getContents(), true);
         if ($respjson === false) {
             return null;
         }
@@ -212,7 +212,7 @@ class Callback extends \NDB_Page
         if ($this->_isOKResponse($response) == false) {
             return null;
         }
-        $respjson = json_decode($response->getBody(), true);
+        $respjson = json_decode($response->getBody()->getContents(), true);
 
         if (!is_array($respjson)) {
             return null;
@@ -232,7 +232,7 @@ class Callback extends \NDB_Page
         // profile information.
         $idtoken   = $respjson['id_token'];
         $jwks      = $client->request('GET', $jwksendpoint, []);
-        $jwks_json = json_decode($jwks->getBody(), true);
+        $jwks_json = json_decode($jwks->getBody()->getContents(), true);
         // JWK::parseKeySet requires a 'kid' parameter because it uses the
         // kid (key id) internally as a key in an associative array. The
         // parameter is not required by JWKS and some providers (ie. Globus)

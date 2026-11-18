@@ -53,7 +53,7 @@ foreach ($files as $file) {
     echo "Instantiating new object...\n";
     $obj =new $className(
         $lorisInstance,
-        new NullModule($lorisInstance),
+        new NullModule($lorisInstance, "loris"),
         "",
         "",
         "",

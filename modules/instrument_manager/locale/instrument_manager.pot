@@ -21,3 +21,77 @@ msgstr ""
 msgid "Instrument Manager"
 msgstr ""
 
+msgid "No Permissions enforced."
+msgstr ""
+
+msgid "Add Permissions"
+msgstr ""
+
+msgid "Modify Permissions"
+msgstr ""
+
+msgid "Instrument Type"
+msgstr ""
+
+msgid "Table Installed"
+msgstr ""
+
+msgid "Table Valid"
+msgstr ""
+
+msgid "Pages Valid"
+msgstr ""
+
+msgid "Permission Required"
+msgstr ""
+
+msgid "Could not modify permissions"
+msgstr ""
+
+msgid "Oops.."
+msgstr ""
+
+msgid "Something went wrong!"
+msgstr ""
+
+msgid "error"
+msgstr ""
+
+msgid "Edit Permissions for {{instrument}}"
+msgstr ""
+
+msgid "Select the permissions required for accessing {{instrument}} in the dropdown below"
+msgstr ""
+
+msgid "Any user accessing the instrument (either for viewing the data or data entry) must have one of the access permissions selected."
+msgstr ""
+
+msgid "A user with <0>any</0> of the selected permissions will be able to access {{instrument}}. If no permissions are selected, the default LORIS permissions will be enforced for this instrument."
+msgstr ""
+
+msgid "Instrument installation is not possible given the current server configuration; the LORIS 'adminUser' is not configured properly. File upload is still possible but instruments will need to be installed manually"
+msgstr ""
+
+msgid "You do not have access to this page."
+msgstr ""
+
+msgid "Installation is not possible given the current server configuration. Please contact your administrator if you require this functionality"
+msgstr ""
+
+msgid "Installation Successful!"
+msgstr ""
+
+msgid "success"
+msgstr ""
+
+msgid "Instrument file"
+msgstr ""
+
+msgid "This instrument already exists in the test battery."
+msgstr ""
+
+msgid "This file has already been uploaded. Please contact your administrator to install the instrument."
+msgstr ""
+
+msgid "Automatic installation of instruments is not possible given the current server configuration. Please contact your administrator if you require this functionality."
+msgstr ""

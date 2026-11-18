@@ -474,12 +474,15 @@ class IssueForm extends Component {
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status);
-        response.json().then((data) => {
-          this.setState({submissionResult: 'error'});
-          let msgType = 'error';
-          const message = data.error ?? data.message;
-          this.showAlertMessage(msgType, message);
-        });
+        this.setState({submissionResult: 'error'});
+        let msgType = 'error';
+        let message = t('Upload error!', {ns: 'issue_tracker'});
+        if (response.status < 500) {
+          response.json().then((data) => {
+            message = data.error ?? data.message;
+          });
+        }
+        this.showAlertMessage(msgType, message);
         return;
       }
 

@@ -1,0 +1,98 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Instrument Manager"
+msgstr "Gestionnaire d'instruments"
+
+msgid "No Permissions enforced."
+msgstr "Aucune autorisation n'est appliquée."
+
+msgid "Add Permissions"
+msgstr "Ajouter les autorisations"
+
+msgid "Modify Permissions"
+msgstr "Modifier les autorisations"
+
+msgid "Instrument Type"
+msgstr "Type d'instrument"
+
+msgid "Table Installed"
+msgstr "Table installée"
+
+msgid "Table Valid"
+msgstr "Table valide"
+
+msgid "Pages Valid"
+msgstr "Pages valides"
+
+msgid "Permission Required"
+msgstr "Autorisation requise"
+
+msgid "Could not modify permissions"
+msgstr "Impossible de modifier les autorisations"
+
+msgid "Oops.."
+msgstr "Oups…"
+
+msgid "Something went wrong!"
+msgstr "Une erreur s'est produite!"
+
+msgid "error"
+msgstr "erreur"
+
+msgid "Edit Permissions for {{instrument}}"
+msgstr "Modifier les autorisations pour {{instrument}}"
+
+msgid "Select the permissions required for accessing {{instrument}} in the dropdown below"
+msgstr "Sélectionnez les autorisations nécessaires pour accéder à {{instrument}} dans le menu déroulant ci-dessous"
+
+msgid "Any user accessing the instrument (either for viewing the data or data entry) must have one of the access permissions selected."
+msgstr "Tout utilisateur accédant à l'instrument (que ce soit pour consulter les données ou pour les saisir) doit disposer d'au moins l'une des autorisations d'accès sélectionnées."
+
+msgid "A user with <0>any</0> of the selected permissions will be able to access {{instrument}}. If no permissions are selected, the default LORIS permissions will be enforced for this instrument."
+msgstr "Un utilisateur disposant de <0>n'importe laquelle</0> des autorisations sélectionnées pourra accéder à {{instrument}}. Si aucune autorisation n'est sélectionnée, les autorisations LORIS par défaut s'appliqueront à cet instrument."
+
+msgid "Instrument installation is not possible given the current server configuration; the LORIS 'adminUser' is not configured properly. File upload is still possible but instruments will need to be installed manually"
+msgstr "L'installation des instruments n'est pas possible compte tenu de la configuration actuelle du serveur ; l'utilisateur « adminUser » de LORIS n'est pas correctement configuré. Le téléchargement de fichiers reste possible, mais les instruments devront être installés manuellement."
+
+msgid "You do not have access to this page."
+msgstr "Vous n'avez pas accès à cette page."
+
+msgid "Installation is not possible given the current server configuration. Please contact your administrator if you require this functionality"
+msgstr "L'installation n'est pas possible compte tenu de la configuration actuelle du serveur. Veuillez contacter votre administrateur si vous avez besoin de cette fonctionnalité."
+
+msgid "Installation Successful!"
+msgstr "Installation réussie!"
+
+msgid "success"
+msgstr "succès"
+
+msgid "Instrument file"
+msgstr "Fichier d'instrument"
+
+msgid "This instrument already exists in the test battery."
+msgstr "Cet instrument existe déjà dans la batterie de tests."
+
+msgid "This file has already been uploaded. Please contact your administrator to install the instrument."
+msgstr "Ce fichier a déjà été téléversé. Veuillez communiquer avec votre administrateur pour installer l'instrument."
+
+msgid "Automatic installation of instruments is not possible given the current server configuration. Please contact your administrator if you require this functionality."
+msgstr "L'installation automatique des instruments n'est pas possible compte tenu de la configuration actuelle du serveur. Veuillez communiquer avec votre administrateur si vous avez besoin de cette fonctionnalité."

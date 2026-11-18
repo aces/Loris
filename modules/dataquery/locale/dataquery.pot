@@ -190,6 +190,12 @@ msgstr ""
 msgid "Add \"or\" condition"
 msgstr ""
 
+msgid "This will remove all currently selected filters"
+msgstr ""
+
+msgid "Remove all filters"
+msgstr ""
+
 msgid "Delete Item"
 msgstr ""
 
@@ -248,9 +254,6 @@ msgid "Invalid visits"
 msgstr ""
 
 msgid "No visits selected for criteria."
-msgstr ""
-
-msgid "Add criteria"
 msgstr ""
 
 msgid "Field"
@@ -339,10 +342,19 @@ msgstr ""
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
 msgstr ""
 
+msgid "Invalid visit label {{visitLabelVal}} on line {{line}}."
+msgstr ""
+
 msgid "Invalid DCCID"
 msgstr ""
 
 msgid "Invalid DCCID ({{id}}) on line {{line}}."
+msgstr ""
+
+msgid "Invalid PSCID"
+msgstr ""
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
 msgstr ""
 
 msgid "Welcome to the Data Query Tool"

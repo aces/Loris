@@ -1,4 +1,4 @@
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import swal from 'sweetalert2';
 import {useState} from 'react';
 import {CheckboxElement, TextboxElement, FieldsetElement} from 'jsx/Form';
@@ -67,7 +67,7 @@ function AdminQueryModal(props: {
     }
     return sbmt;
   };
-  return <Modal title={t('Pin Top Query', {ns: 'dataquery'})}
+  return <FormModal title={t('Pin Top Query', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
@@ -105,7 +105,7 @@ function AdminQueryModal(props: {
         }
       />
     </FieldsetElement>
-  </Modal>;
+  </FormModal>;
 }
 
 export default AdminQueryModal;

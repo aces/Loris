@@ -37,14 +37,8 @@ msgstr "取得時間"
 msgid "Insertion Time"
 msgstr "挿入時間"
 
-msgid "Type"
-msgstr "タイプ"
-
 msgid "Signal Viewer"
 msgstr "シグナルビューアー"
-
-msgid "SessionID"
-msgstr "SessionID"
 
 msgid "split {{splitNum}}"
 msgstr "{{splitNum}} を分割"

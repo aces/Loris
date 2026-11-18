@@ -90,6 +90,7 @@ class DataReleaseIndex extends Component {
     case t('File Name', {ns: 'data_release'}):
       if (this.props.hasPermission('superuser')
             || this.props.hasPermission('data_release_view')
+            || this.props.hasPermission('data_release_download_all')
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
         const downloadURL = loris.BaseURL
@@ -149,7 +150,7 @@ class DataReleaseIndex extends Component {
     const {t} = this.props;
 
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -252,8 +253,8 @@ class DataReleaseIndex extends Component {
     // Manage File modal window
     const manageFileForm = (
       <Modal
-        title="Manage File"
-        label="Manage File"
+        title={t('Manage File', {ns: 'data_release'})}
+        label={t('Manage File', {ns: 'data_release'})}
         show={this.state.show.manageFileForm}
         onClose={() => {
           this.hide('manageFileForm');
@@ -332,4 +333,3 @@ window.addEventListener('load', () => {
     />
   );
 });
-

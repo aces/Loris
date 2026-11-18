@@ -107,6 +107,8 @@ class Charts extends \NDB_Page
             return $this->_handleSiteLineData($request);
         case 'agedistribution_line':
             return $this->_handleAgeDistributionByProject($request);
+        case 'size_byproject':
+            return $this->_handleProjectSizeBreakdown();
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
@@ -177,8 +179,11 @@ class Charts extends \NDB_Page
             "
                 SELECT COUNT(c.CandID) as Count,
                     c.RegistrationCenterID as SiteID,
-                    c.Sex as Sex
+                    c.Sex as Sex,
+                    s.Name as SexLabel,
+                    s.Colour as Colour
                 FROM candidate c
+                LEFT JOIN sex s ON s.Name=c.Sex
                 {$conditions['sessionJoin']}
                 {$conditions['participantStatusJoin']}
                 WHERE c.Active='Y' AND c.Entity_type='Human'
@@ -187,34 +192,73 @@ class Charts extends \NDB_Page
                 {$conditions['visitQuery']}
                 {$conditions['siteQuery']}
                 {$conditions['participantStatusQuery']}
-                GROUP BY c.RegistrationCenterID, c.Sex",
+                GROUP BY c.RegistrationCenterID, c.Sex, s.Name, s.Colour",
             $conditions['params']
         );
         $processed_data = [];
+        $sexes          = [];
+        $sexMeta        = [];
         foreach ($data as $row) {
-            $siteid = $row['SiteID'];
-            $count  = intval($row['Count']);
-            $sex    = is_string($row['Sex']) ? strtolower($row['Sex']) : '';
+            $siteid   = $row['SiteID'];
+            $count    = intval($row['Count']);
+            $sexValue = is_string($row['Sex']) ? trim($row['Sex']) : '';
+            $sex      = $this->_normalizeSexKey($sexValue);
             if (!isset($processed_data[$siteid])) {
-                $processed_data[$siteid] = [
-                    strtolower($sex) => $count
+                $processed_data[$siteid] = [];
+            }
+
+            assert(!isset($processed_data[$siteid][$sex]));
+            $processed_data[$siteid][$sex] = $count;
+            $sexes[$sex] = true;
+            if (!isset($sexMeta[$sex])) {
+                $sexMeta[$sex] = [
+                    'label'  => is_string($row['SexLabel'])
+                        && trim($row['SexLabel']) !== ''
+                        ? trim($row['SexLabel'])
+                        : $sexValue,
+                    'colour' => is_string($row['Colour'])
+                        && trim($row['Colour']) !== ''
+                        ? trim($row['Colour'])
+                        : '#000000',
                 ];
-            } else {
-                assert(!isset($processed_data[$siteid][$sex]));
-                $processed_data[$siteid][$sex] = $count;
             }
         }
+
+        $sexes = array_keys($sexes);
+        sort($sexes);
+
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
+            foreach ($sexes as $sex) {
+                if (!isset($sexData['datasets'][$sex])) {
+                    $sexData['datasets'][$sex] = [
+                        'label'  => dgettext("sex", $sexMeta[$sex]['label'] ?? $sex),
+                        'colour' => $sexMeta[$sex]['colour'] ?? '#000000',
+                        'data'   => [],
+                    ];
+                }
 
-            $sexData['datasets']['female'][]
-                = $processed_data[$siteID]['female'] ?? 0;
-
-            $sexData['datasets']['male'][]
-                = $processed_data[$siteID]['male'] ?? 0;
+                $sexData['datasets'][$sex]['data'][]
+                    = $processed_data[$siteID][$sex] ?? 0;
+            }
         }
 
         return (new \LORIS\Http\Response\JsonResponse($sexData));
+    }
+
+    /**
+     * Normalize a sex value into a stable key for frontend datasets.
+     *
+     * @param string $sexValue Raw sex value.
+     *
+     * @return string
+     */
+    private function _normalizeSexKey(string $sexValue) : string
+    {
+        $normalized = strtolower(trim($sexValue));
+        $normalized = preg_replace('/[^a-z0-9]+/', '_', $normalized) ?? '';
+        $normalized = trim($normalized, '_');
+        return $normalized !== '' ? $normalized : 'unknown';
     }
 
     /**
@@ -367,7 +411,7 @@ class Charts extends \NDB_Page
             }
 
             $ageData['datasets'][] = [
-                'name' => $projectData['name'],
+                'name' => dgettext("Project", $projectData['name']),
                 'data' => $data
             ];
         }
@@ -426,7 +470,7 @@ class Charts extends \NDB_Page
             if ($id == null) {
                 $id = dgettext("statistics", "Unknown");
             }
-            $label = $id;
+            $label = dgettext("candidate", $id);
             $recruitmentByEthnicityData[] = ["label" => $label, "total" => $count];
         }
 
@@ -554,25 +598,6 @@ class Charts extends \NDB_Page
 
         $conditions = $this->_buildQueryConditions($request, false);
 
-        $recruitmentData      = [];
-        $recruitmentStartDate = $DB->pselectOne(
-            "SELECT MIN(Date_registered) FROM candidate",
-            []
-        );
-        $recruitmentEndDate   = $DB->pselectOne(
-            "SELECT MAX(Date_registered) FROM candidate",
-            []
-        );
-
-        if ($recruitmentStartDate !== null
-            && $recruitmentEndDate !== null
-        ) {
-            $recruitmentData['labels'] = $this->_createSiteLineChartLabels(
-                new \DateTimeImmutable($recruitmentStartDate),
-                new \DateTimeImmutable($recruitmentEndDate)
-            );
-        }
-
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
@@ -597,10 +622,12 @@ class Charts extends \NDB_Page
         );
 
         $recruitmentdata = [];
+        $labels          = [];
         foreach ($recruitment_summary as $row) {
             $siteId = $row['SiteID'];
             $year   = $row['Year'];
             $month  = $row['Month'];
+            $labels["{$month}-{$year}"] = true;
             if (!isset($recruitmentdata[$siteId])) {
                 $recruitmentdata[$siteId] = [
                     $year => [$month => $row['Count']]
@@ -613,6 +640,7 @@ class Charts extends \NDB_Page
             }
 
         }
+        $recruitmentData['labels'] = array_keys($labels);
         foreach ($list_of_sites as $siteID => $siteName) {
             if (!isset($recruitmentData['labels'])) {
                 continue;
@@ -755,15 +783,23 @@ class Charts extends \NDB_Page
         }
 
         if (($queryParams['dateRegisteredStart'] ?? "undefined") != 'undefined') {
-            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
-            $paramName          = 'dateStart' . (++$paramCounter);
-            $projectQuery      .= " AND c.Date_registered >= :$paramName";
+            $paramName = 'dateStart' . (++$paramCounter);
+            if ($scansbymonth === true) {
+                $projectQuery .= " AND DATE(pf.Value) >= :$paramName";
+            } else {
+                $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
+                $projectQuery .= " AND c.Date_registered >= :$paramName";
+            }
             $params[$paramName] = $queryParams['dateRegisteredStart'];
         }
         if (($queryParams['dateRegisteredEnd'] ?? "undefined") != 'undefined') {
-            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
-            $paramName          = 'dateEnd' . (++$paramCounter);
-            $projectQuery      .= " AND c.Date_registered <= :$paramName";
+            $paramName = 'dateEnd' . (++$paramCounter);
+            if ($scansbymonth === true) {
+                $projectQuery .= " AND DATE(pf.Value) <= :$paramName";
+            } else {
+                $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
+                $projectQuery .= " AND c.Date_registered <= :$paramName";
+            }
             $params[$paramName] = $queryParams['dateRegisteredEnd'];
         }
         if (is_numeric($queryParams['candidateAgeMin'] ?? null)) {
@@ -801,34 +837,6 @@ class Charts extends \NDB_Page
     }
 
     /**
-     * Helper to generate labels for every month between startDate and endDate.
-     *
-     * @param \DateTimeImmutable $startDate The start date for the labels.
-     * @param \DateTimeImmutable $endDate   The end date for the labels.
-     *
-     * @return array
-     */
-    private function _createSiteLineChartLabels(
-        \DateTimeImmutable $startDate,
-        \DateTimeImmutable $endDate
-    ) : array {
-        $month = date_interval_create_from_date_string('1 month');
-
-        // Since we're only concerned with months, act as if $startDate
-        // is always the first of the month so that the last month doesn't
-        // get truncated.
-        $betweenDate = new \DateTimeImmutable($startDate->format('Y-m-01'));
-
-        $labels = [];
-
-        while ($betweenDate <= $endDate) {
-            $labels[]    = $betweenDate->format('n-Y');
-            $betweenDate = $betweenDate->add($month);
-        }
-        return $labels;
-    }
-
-    /**
      * Helper to generate the data for the site recruitment line for $siteID.
      *
      * @param int   $siteID          The centerID to get data for.
@@ -849,5 +857,45 @@ class Charts extends \NDB_Page
             $data[] = intval($recruitmentdata[$siteID][$year][$month] ?? "0");
         }
         return $data;
+    }
+
+    /**
+     * Handle an incoming request for project size breakdown.
+     *
+     * @return ResponseInterface
+     */
+    private function _handleProjectSizeBreakdown()
+    {
+        $DB       = \NDB_Factory::singleton()->database();
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjects();
+
+        $cachedSizeData = json_decode(
+            html_entity_decode(
+                $DB->pselectOne(
+                    "SELECT Value
+                  FROM cached_data
+                  JOIN cached_data_type USING (CachedDataTypeID)
+                  WHERE Name='projects_disk_space'",
+                    []
+                ) ?? ''
+            ),
+            true
+        );
+
+        $projectData = [];
+        if (!is_null($cachedSizeData)) {
+            foreach ($projects as $project) {
+                $projectName = $project->getName();
+                if (in_array($projectName, array_keys($cachedSizeData))) {
+                    $projectData[] = [
+                        'label' => $projectName,
+                        ...$cachedSizeData[$projectName],
+                    ];
+                }
+            }
+        }
+
+        return (new \LORIS\Http\Response\JsonResponse($projectData));
     }
 }

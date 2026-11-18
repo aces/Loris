@@ -17,7 +17,22 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Configuration"
 msgstr "構成"
 
+msgid "To configure study cohorts <0>click here</0>."
+msgstr ""
+
+msgid "To configure study projects <0>click here</0>."
+msgstr ""
+
+msgid "To configure the diagnosis trajectory of the study <0>click here</0>."
+msgstr ""
+
+msgid "Value"
+msgstr "値"
+
+msgid "Mapped value"
+msgstr "対応する値"

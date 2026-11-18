@@ -358,7 +358,7 @@ class DashboardTest extends LorisIntegrationTest
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
     }
@@ -471,7 +471,8 @@ class DashboardTest extends LorisIntegrationTest
                 "conflict_resolver",
                 "access_all_profiles",
                 "data_dict_edit",
-                "data_dict_view"
+                "data_dict_view",
+                "view_instrument_data",
             ]
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -657,36 +658,19 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
-        $this->safeGet($this->url . '/configuration/');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
-            )
-        )->click();
-
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->clear();
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->sendKeys('888');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
-            )
-        )->click();
-        $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->safeFindElement(
-            WebDriverBy::Id("overall-recruitment")
-        )->getText();
-        $this->assertStringContainsString(
-            "888",
-            $testText
-        );
+        $this->setupConfigSetting('recruitmentTarget', '888');
+        try {
+            $this->safeGet($this->url . '/dashboard/');
+            $testText = $this->safeFindElement(
+                WebDriverBy::Id("overall-recruitment")
+            )->getText();
+            $this->assertStringContainsString(
+                "888",
+                $testText
+            );
+        } finally {
+            $this->restoreConfigSetting("recruitmentTarget");
+        }
     }
 
     /**
@@ -737,4 +721,3 @@ class DashboardTest extends LorisIntegrationTest
         );
     }
 }
-

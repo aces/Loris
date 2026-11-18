@@ -4,6 +4,7 @@ import Modal from 'jsx/Modal';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 import GenomicUploadForm from './filemanager/uploadForm';
 import Loader from 'jsx/Loader';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Files Component.
@@ -155,6 +156,7 @@ class Files extends Component {
    * @return {DOMRect}
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -166,11 +168,11 @@ class Files extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'ID',
+        label: t('ID', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Name',
+        label: t('Name', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Name',
@@ -178,7 +180,7 @@ class Files extends Component {
         },
       },
       {
-        label: 'Description',
+        label: t('Description', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Description',
@@ -186,7 +188,7 @@ class Files extends Component {
         },
       },
       {
-        label: 'Type',
+        label: t('Type', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Type',
@@ -194,7 +196,7 @@ class Files extends Component {
         },
       },
       {
-        label: 'Date',
+        label: t('Date', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Date',
@@ -202,11 +204,11 @@ class Files extends Component {
         },
       },
       {
-        label: 'Inserted by User',
+        label: t('Inserted by User', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Caveat',
+        label: t('Caveat', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Caveat',
@@ -215,7 +217,7 @@ class Files extends Component {
         },
       },
       {
-        label: 'Notes',
+        label: t('Notes', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Notes',
@@ -226,14 +228,14 @@ class Files extends Component {
 
     const actions = [{
       name: 'uploadFile',
-      label: 'Upload File',
+      label: t('Upload File', {ns: 'genomic_browser'}),
       action: this.openFileUploadModal,
     }];
 
     return (
       <React.Fragment>
         <Modal
-          title='Upload File'
+          title={t('Upload File', {ns: 'genomic_browser'})}
           onClose={this.closeFileUploadModal}
           show={this.state.showFileUploadModal}
         >
@@ -264,6 +266,7 @@ Files.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default Files;
+export default withTranslation(['genomic_browser', 'loris'])(Files);

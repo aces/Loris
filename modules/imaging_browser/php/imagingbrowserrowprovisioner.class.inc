@@ -244,6 +244,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         $pid = (int )$row['ProjectID'];
         unset($row['CenterID']);
         unset($row['ProjectID']);
+        $row['project'] = dgettext("Project", $row['project']);
         return new ImagingBrowserRow($row, $cid, $pid);
     }
 }

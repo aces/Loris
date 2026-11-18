@@ -161,10 +161,11 @@ class Email
             $body     = $message;
         }
 
+        $subject = mb_encode_mimeheader($match[1], 'UTF-8');
         // send the email
         return mail(
             $to,
-            $match[1],
+            $subject,
             preg_replace("/(?<!\r)\n/s", "\n", $body),
             $headers
         );

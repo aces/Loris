@@ -22,7 +22,7 @@ msgstr ""
 msgid "Behavioural Quality Control"
 msgstr "行動品質管理"
 
-msgid  "Behavioural Session"
+msgid "Behavioural Session"
 msgid_plural "Behavioural Sessions"
 msgstr[0] "行動品質管理"
 
@@ -56,3 +56,5 @@ msgstr "テスト名"
 msgid "Feedback Status"
 msgstr "フィードバックステータス"
 
+msgid "Profile"
+msgstr "プロフィール"

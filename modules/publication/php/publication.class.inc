@@ -232,15 +232,17 @@ class Publication extends \NDB_Menu_Filter_Form
             "Link"
         );
 
-        $pubPublished  = "Published";
         $pubInProgress = "In Progress";
+        $pubSubmitted  = "Submitted";
+        $pubPublished  = "Published";
 
         $this->addSelect(
             'publishingStatus',
             "Publishing Status",
             [
-                $pubPublished  => $pubPublished,
                 $pubInProgress => $pubInProgress,
+                $pubSubmitted  => $pubSubmitted,
+                $pubPublished  => $pubPublished,
             ]
         );
     }

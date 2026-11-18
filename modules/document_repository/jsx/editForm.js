@@ -11,7 +11,7 @@ import {
 } from 'jsx/Form';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
-import DocumentRepositoryClient from './DocumentRepositoryClient';
+import * as Files from './files';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
@@ -49,7 +49,6 @@ class DocEditForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.documentRepositoryClient = new DocumentRepositoryClient();
   }
 
   /**
@@ -70,7 +69,7 @@ class DocEditForm extends React.Component {
       this.props.dataURL.lastIndexOf('/') + 1
     );
 
-    return this.documentRepositoryClient.getFileData(fileID)
+    return Files.getMeta(fileID)
       .then((data) => {
         const formData = data.docData;
         this.setState({
@@ -93,7 +92,7 @@ class DocEditForm extends React.Component {
     const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
@@ -165,10 +164,10 @@ class DocEditForm extends React.Component {
               name="hiddenFile"
               label={t('Restrict access to the file?',
                 {ns: 'document_repository'})}
-              options={this.state.data.hiddenVideo}
+              options={this.state.data.hiddenFile}
               sortByValue={false}
               onUserInput={this.setFormData}
-              value={this.state.docData.hiddenVideo}
+              value={this.state.docData.hiddenFile}
             />)
           }
           <TextboxElement

@@ -27,6 +27,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     private $_candid;
     private $_projectname;
     private $_projectid;
+    private $_registrationcohort;
     private $_pscid;
     private $_sitename;
     private $_edc;
@@ -37,15 +38,19 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     /**
      * Create a new CandidatesRow.
      *
-     * @param array $row An array of candidate's properties
+     * @param array $row           An array of candidate's properties
+     * @param bool  $includeCohort Include cohort metadata.
      */
-    public function __construct(array $row)
-    {
+    public function __construct(
+        array $row,
+        private bool $includeCohort = false
+    ) {
         $this->_candid      = strval($row['CandID']) ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
         if ($row['ProjectID'] !== null) {
             $this->_projectid = \ProjectID::singleton(intval($row['ProjectID']));
         }
+        $this->_registrationcohort = $row['RegistrationCohort'] ?? '';
         $this->_pscid    = $row['PSCID'] ?? null;
         $this->_sitename = $row['SiteName'] ?? null;
         $this->_edc      = $row['EDC'] ?? null;
@@ -70,6 +75,10 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
             'DoB'     => $this->_dob,
             'Sex'     => $this->_sex,
         ];
+
+        if ($this->includeCohort) {
+            $obj['RegistrationCohort'] = $this->_registrationcohort;
+        }
 
         return $obj;
     }

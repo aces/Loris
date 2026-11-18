@@ -37,9 +37,7 @@ class RequestAccount extends Component {
           site: this.props.data.site
             ? Object.keys(this.props.data.site)['']
             : '',
-          project: this.props.data.project
-            ? Object.keys(this.props.data.project)['']
-            : '',
+          project: [],
           language_preference: this.props.data.language
             ? Object.keys(this.props.data.language)['']
             : '',
@@ -175,7 +173,12 @@ class RequestAccount extends Component {
         <div className='g-recaptcha'
           data-sitekey={this.state.form.captcha}/>
         <span id='helpBlock' className='help-block'>
-          <b className='text-danger'>Please complete the reCaptcha!</b>
+          <b className='text-danger'>{
+            this.props.t(
+              'Please complete the reCaptcha!',
+              {ns: 'login'}
+            )
+          }</b>
         </span>
       </div>
     ) : null;
@@ -258,9 +261,11 @@ class RequestAccount extends Component {
             options={this.props.data.project}
             value={this.state.form.value.project}
             onUserInput={this.setForm}
+            multiple={true}
             emptyOption={false}
             required={true}
-            placeholder={this.props.t('Choose your project:', {ns: 'login'})}
+            label={this.props.t('Project', {ns: 'loris', count: 99})}
+            labelPlacementTop={true}
           />
           <SelectElement
             name={'language_preference'}

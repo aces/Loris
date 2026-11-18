@@ -185,7 +185,7 @@ class DocIndex extends React.Component {
       let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
                           + encodeURIComponent(row[t('Uploaded By',
-                            {ns: 'document_repository'})])
+                            {ns: 'loris'})])
                           + '/'
                           + encodeURIComponent(row[t('File Name',
                             {ns: 'document_repository'})]);
@@ -262,7 +262,7 @@ class DocIndex extends React.Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -293,7 +293,7 @@ class DocIndex extends React.Component {
       {label: t('Instrument',
         {ns: 'loris', count: 1}), show: false},
       {label: t('Uploaded By',
-        {ns: 'document_repository'}), show: true, filter: {
+        {ns: 'loris'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},

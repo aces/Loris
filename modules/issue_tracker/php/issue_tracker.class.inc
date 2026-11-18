@@ -200,7 +200,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
                 $categories[$categoryName] = dgettext(
-                    "issue_tracker",
+                    "issues_categories",
                     $categoryName,
                 );
             }

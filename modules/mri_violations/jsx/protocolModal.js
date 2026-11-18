@@ -172,7 +172,7 @@ function ProtocolViolationModal(props) {
           <tr>
             <th>{t('Center Name', {ns: 'mri_violations'})}</th>
             <th>{t('Scanner ID', {ns: 'mri_violations'})}</th>
-            <th>{t('Scan Type', {ns: 'mri_violations'})}</th>
+            <th>{t('Scan Type', {ns: 'loris'})}</th>
             <th>{t('TR Range', {ns: 'mri_violations'})}</th>
             <th>{t('TE Range', {ns: 'mri_violations'})}</th>
             <th>{t('TI Range', {ns: 'mri_violations'})}</th>
@@ -299,7 +299,7 @@ function ProtocolCheckViolationModal(props) {
       {label: t('Patient Name', {ns: 'mri_violations'}), show: true},
       {label: t('DCCID', {ns: 'loris'}), show: true},
       {label: t('Visit', {ns: 'loris'}), show: true},
-      {label: t('Scan Type', {ns: 'mri_violations'}), show: true},
+      {label: t('Scan Type', {ns: 'loris'}), show: true},
       {label: t('Protocol Group', {ns: 'mri_violations'}), show: true},
       {label: t('Severity', {ns: 'mri_violations'}), show: true},
       {label: t('Header', {ns: 'mri_violations'}), show: true},

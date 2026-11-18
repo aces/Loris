@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #, fuzzy
 msgid "DICOM Archive"
@@ -49,14 +50,6 @@ msgid "Series UID"
 msgstr "Identifiant unique de la série"
 
 #, fuzzy
-msgid "TarchiveID"
-msgstr "ID de tarchive"
-
-#, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
-#, fuzzy
 msgid "CenterID"
 msgstr "Site ID"
 
@@ -68,8 +61,8 @@ msgstr "Fantôme data?"
 msgid "Tarchive Metadata"
 msgstr "Métadonnées de l'archive"
 
-msgid "Acquisition ID"
-msgstr "ID d'acquisition"
+msgid "Study Instance UID"
+msgstr "UID de l'instance d'étude"
 
 #, fuzzy
 msgid "Patient Birthdate"
@@ -93,9 +86,8 @@ msgstr "Numéro de série"
 msgid "Scanner Software Version"
 msgstr "Version du logiciel du scanner"
 
-#, fuzzy
-msgid "Acquired at"
-msgstr "Acquis à"
+msgid "Institution Name"
+msgstr "Nom de l'établissement"
 
 #, fuzzy
 msgid "Number of Acquisitions"
@@ -111,16 +103,8 @@ msgstr "Dernière mise à jour"
 msgid "Never"
 msgstr "Jamais"
 
-#, fuzzy
-msgid "Summary type version"
-msgstr "Version résumée"
-
 msgid "Source location"
 msgstr "Emplacement Original"
-
-#, fuzzy
-msgid "Archive type version"
-msgstr "Version du type d'archive"
 
 #, fuzzy
 msgid "Archive location"

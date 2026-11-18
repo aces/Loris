@@ -41,7 +41,9 @@ $(document).ready(function () {
             }
             if (email.length > 0 && email2.length > 0 && email !== email2)
             {
-                $("#email-error").show().html("Emails do not match");
+                $("#email-error")
+                    .show()
+                    .html($("#email-error").data("email-mismatch"));
             }
             } );
     $("#emailData").click(function(){
@@ -60,7 +62,7 @@ $(document).ready(function () {
         }).appendTo("#participant_accounts_form");
         $("#participant_accounts_form").submit();
     });
-    $("input[type=submit]").click(function (e) {
+    $("input[type=submit], button[type=submit]").click(function (e) {
         if(e.currentTarget.classList.contains('email')) {
             $.get(loris.BaseURL + "/survey_accounts/ajax/ValidateEmailSubmitInput.php", {
                 dccid: $("input[name=CandID]").val(),
@@ -71,11 +73,10 @@ $(document).ready(function () {
                 Email2: $("input[name=Email2]").val()
             },
             function(result) {
-                if (result) {
+                if (result && result.error_msg) {
                     // if an error was already thrown,
                     // hide it to avoid stacking error messages
                     $(".error").hide();
-                    result = JSON.parse(result);
                     $("#email-error").show();
                     $("#email-error").html(result.error_msg);
                 }
