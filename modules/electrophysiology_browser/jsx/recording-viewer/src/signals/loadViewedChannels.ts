@@ -207,7 +207,7 @@ function filterChunks(
     offset += chunk.originalValues.length;
   });
 
-  const filteredValues = filterList.reduce(
+  const filteredValues = filterList.reduce<Float32Array>(
     (values, filter) => filter.fn(values),
     originalValues
   );
