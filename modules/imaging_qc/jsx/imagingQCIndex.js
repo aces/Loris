@@ -26,6 +26,7 @@ class ImagingQCIndex extends Component {
       error: '',
     };
     this.fetchData = this.fetchData.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   /**
@@ -37,30 +38,31 @@ class ImagingQCIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Scan Done in MRI Parameter Form':
+    case t('Scan Done in MRI Parameter Form', {ns: 'imaging_qc'}):
       if (cell == 'Yes') {
         let mpfURL = loris.BaseURL
                        + '/instruments/mri_parameter_form/?commentID='
                        + row.CommentID
                        + '&sessionID='
-                       + row['Session ID']
+                       + row['SessionID']
                        + '&candID='
                        + row.DCCID;
         result = <td><a href={mpfURL}>{cell}</a></td>;
       }
       break;
-    case 'Scan Location':
-      if (cell == 'In Imaging Browser') {
+    case t('Scan Location', {ns: 'imaging_qc'}):
+      if (cell == t('In Imaging Browser', {ns: 'imaging_qc'})) {
         let imgURL = loris.BaseURL
                        + '/imaging_browser/viewSession/?sessionID='
-                       + row['Session ID'];
+                       + row['SessionID'];
         result = <td><a href={imgURL}>{cell}</a></td>;
       }
       break;
-    case 'Tarchive':
-      if (cell == 'In DICOM') {
+    case t('Tarchive', {ns: 'imaging_qc'}):
+      if (cell == t('In DICOM Archives', {ns: 'imaging_qc'})) {
         let tarchiveURL = loris.BaseURL +
               '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
         result = <td><a href = {tarchiveURL}>{cell}</a></td>;

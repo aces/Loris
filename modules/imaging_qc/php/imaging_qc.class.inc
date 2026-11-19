@@ -123,7 +123,7 @@ class Imaging_QC extends \NDB_Menu_Filter
                       ts.TarchiveID = t.TarchiveID
                       AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
                       AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)".
-               " ) THEN 'In DICOM'".
+               " ) THEN 'In DICOM Archives'".
               " ELSE 'Missing'
            END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=s.ProjectID) as project,".
@@ -191,7 +191,8 @@ class Imaging_QC extends \NDB_Menu_Filter
         $user      = \User::singleton();
         $db        = $this->loris->getDatabaseConnection();
         $siteList  = [];
-        $visitList = \Utility::getVisitList();
+        $visits    = \Utility::getVisitList();
+        $visitList = array_combine($visits, $visits);
         // allow to view all sites data through filter
         if ($user->hasPermission('imaging_browser_qc')) {
             $siteList = \Utility::getSiteList();
@@ -233,18 +234,24 @@ class Imaging_QC extends \NDB_Menu_Filter
             $uploaderList[$up['UploadedBy']] = $up['UploadedBy'];
         }
 
-        $scan_location = [
-            "In Imaging Browser"    => dgettext(
-                "imaging_qc",
-                "Found in Imaging Browser"
-            ),
-            "In MRI Violated Scans" => dgettext(
-                "imaging_qc",
-                "Found in MRI Violated Scans"
-            ),
-            "Missing"               => dgettext("imaging_qc", "Missing"),
-        ];
+        $incomplete = dgettext("imaging_qc", "Incomplete");
+        $complete   = dgettext("imaging_qc", "Complete");
+        $yes        = dgettext("loris", "Yes");
+        $no         = dgettext("loris", "No");
+        $inDicomArchives    = dgettext("imaging_qc", "In DICOM Archives");
+        $inImagingBrowser   = dgettext("imaging_qc", "In Imaging Browser");
+        $inMRIViolatedScans = dgettext("imaging_qc", "In MRI Violated Scans");
+        $pass    = dgettext("loris", "Pass");
+        $fail    = dgettext("loris", "Fail");
+        $true    = dgettext("loris", "True");
+        $false   = dgettext("loris", "False");
+        $missing = dgettext("imaging_qc", "Missing");
 
+        $scan_location      = [
+            $inImagingBrowser   => $inImagingBrowser,
+            $inMRIViolatedScans => $inMRIViolatedScans,
+            $missing            => $missing,
+        ];
         $this->fieldOptions
             = [
                 'site'                       => $siteList,
@@ -252,26 +259,26 @@ class Imaging_QC extends \NDB_Menu_Filter
                 'cohort'                     => $cohortList2,
                 'scanType'                   => $scan_types,
                 'mRIParameterForm'           => [
-                    "Incomplete" => dgettext("imaging_qc", "Incomplete"),
-                    "Complete"   => dgettext("imaging_qc", "Complete"),
+                    $incomplete => $incomplete,
+                    $complete   => $complete,
                 ],
                 'scanDoneInMRIParameterForm' => [
-                    "Yes" => dgettext("loris", "Yes"),
-                    "No"  => dgettext("loris", "No"),
+                    $yes => $yes,
+                    $no  => $no,
                 ],
                 'tarchive'                   => [
-                    "In DICOM" => dgettext("imaging_qc", "In DICOM Archives"),
-                    "Missing"  => dgettext("imaging_qc", "Missing"),
+                    $inDicomArchives => $inDicomArchives,
+                    $missing         => $missing,
                 ],
                 'scanLocation'               => $scan_location,
                 'qCStatus'                   => [
-                    "Pass" => dgettext("loris", "Pass"),
-                    "Fail" => dgettext("loris", "Fail"),
+                    $pass => $pass,
+                    $fail => $fail,
                 ],
                 'uploadedBy'                 => $uploaderList,
                 'selected'                   => [
-                    "True"  => dgettext("loris", "True"),
-                    "False" => dgettext("loris", "False"),
+                    $true  => $true,
+                    $false => $false,
                 ],
                 'visitLabel'                 => $visitList,
             ];
@@ -366,6 +373,91 @@ class Imaging_QC extends \NDB_Menu_Filter
             TarchiveID ';
 
         $this->order_by = 'PSCID';
+    }
+
+    /**
+     * Returns the full list of imaging QC rows with translated display values.
+     *
+     * @return array
+     */
+    function _getFullList()
+    {
+        $data = parent::_getFullList();
+
+        foreach ($data as &$row) {
+            if (!empty($row['site'])) {
+                $row['site'] = dgettext(
+                    'psc',
+                    $row['site']
+                );
+            }
+
+            if (!empty($row['project'])) {
+                $row['project'] = dgettext(
+                    'project',
+                    $row['project']
+                );
+            }
+
+            if (!empty($row['cohort'])) {
+                $row['cohort'] = dgettext(
+                    'cohort',
+                    $row['cohort']
+                );
+            }
+
+            if (!empty($row['visit_label'])) {
+                $row['visit_label'] = dgettext(
+                    'visit',
+                    $row['visit_label']
+                );
+            }
+
+            if (!empty($row['mri_parameter_form'])) {
+                $row['mri_parameter_form'] = dgettext(
+                    'imaging_qc',
+                    $row['mri_parameter_form']
+                );
+            }
+
+            if (!empty($row['scan_done'])) {
+                $row['scan_done'] = dgettext(
+                    'loris',
+                    $row['scan_done']
+                );
+            }
+
+            if (!empty($row['qc_status'])) {
+                $row['qc_status'] = dgettext(
+                    'loris',
+                    $row['qc_status']
+                );
+            }
+
+            if (!empty($row['tarchive_loc'])) {
+                $row['tarchive_loc'] = dgettext(
+                    'imaging_qc',
+                    $row['tarchive_loc']
+                );
+            }
+
+            if (!empty($row['scan_location'])) {
+                $row['scan_location'] = dgettext(
+                    'imaging_qc',
+                    $row['scan_location']
+                );
+            }
+
+            if (!empty($row['selected'])) {
+                $row['selected'] = dgettext(
+                    'loris',
+                    $row['selected']
+                );
+            }
+        }
+
+        unset($row);
+        return $data;
     }
 
     /**
