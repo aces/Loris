@@ -314,3 +314,9 @@ msgstr "non classé"
 
 msgid "Upload error!"
 msgstr "Erreur de téléversement !"
+
+msgid "Forward"
+msgstr "Sens"
+
+msgid "Reverse"
+msgstr "Antisens"

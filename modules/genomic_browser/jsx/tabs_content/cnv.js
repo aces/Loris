@@ -152,10 +152,6 @@ class CNV extends Component {
         },
       },
       {
-        label: t('Date of Birth', {ns: 'loris'}),
-        show: false,
-      },
-      {
         label: t('External ID', {ns: 'genomic_browser'}),
         show: false,
         filter: {
@@ -179,8 +175,8 @@ class CNV extends Component {
           name: 'Strand',
           type: 'select',
           options: {
-            F: 'Forward',
-            R: 'Reverse',
+            '+': t('Forward', {ns: 'genomic_browser'}),
+            '-': t('Reverse', {ns: 'genomic_browser'}),
           },
         },
       },

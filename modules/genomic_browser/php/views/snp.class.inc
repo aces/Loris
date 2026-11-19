@@ -40,11 +40,13 @@ class SNP
      */
     public function __construct($sites, $cohorts, $platform_options)
     {
+        $sexes = \Utility::getSexList();
+        $sexes = array_combine($sexes, $sexes);
         $this->_formElement = [
             'Sites'    => $sites,
             'Cohorts'  => $cohorts,
             'Platform' => $platform_options,
-            'Sex'      => \Utility::getSexList(),
+            'Sex'      => $sexes,
         ];
     }
 

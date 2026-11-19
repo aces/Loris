@@ -269,6 +269,13 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
             []
         );
 
+        $cohortOptions = array_map(
+            function ($name) {
+                return dgettext("cohort", $name);
+            },
+            $cohortOptions
+        );
+
         if (!$numericKeys) {
             $cohortNames = array_values($cohortOptions);
             return array_combine($cohortNames, $cohortNames);
