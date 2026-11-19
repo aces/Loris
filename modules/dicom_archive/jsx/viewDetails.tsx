@@ -75,8 +75,8 @@ type ViewDetailsProps = WithTranslation & {
 /**
  * React view for one DICOM archive's metadata.
  *
- * @param {ViewDetailsProps} props Component properties
- * @return {React.ReactElement}
+ * @param props Component properties
+ * @return
  */
 function ViewDetails({dataURL, t}: ViewDetailsProps): React.ReactElement {
   const [data, setData] = useState<ViewDetailsData | null>(null);
@@ -117,8 +117,8 @@ type ArchiveMetadataProps = ViewDetailsData & {
 /**
  * Archive summary and expandable series and file details.
  *
- * @param {ArchiveMetadataProps} props Component properties
- * @return {React.ReactElement}
+ * @param props Component properties
+ * @return
  */
 function ArchiveMetadata({
   archive,
@@ -246,8 +246,8 @@ type SeriesDetailsProps = {
 /**
  * Expandable table of DICOM series metadata.
  *
- * @param {SeriesDetailsProps} props Component properties
- * @return {React.ReactElement}
+ * @param props Component properties
+ * @return
  */
 function SeriesDetails({
   series,
@@ -330,8 +330,8 @@ type FileDetailsProps = {
 /**
  * Expandable table of archived DICOM files.
  *
- * @param {FileDetailsProps} props Component properties
- * @return {React.ReactElement}
+ * @param props Component properties
+ * @return
  */
 function FileDetails({files, t}: FileDetailsProps): React.ReactElement {
   const [expanded, setExpanded] = useState(false);
@@ -390,8 +390,8 @@ type DetailRowProps = {
 /**
  * One row in the archive metadata table.
  *
- * @param {DetailRowProps} props Row properties
- * @return {React.ReactElement}
+ * @param props Row properties
+ * @return
  */
 function DetailRow({
   children,
@@ -418,8 +418,8 @@ const DETAILS_TABLE_CLASS = [
 /**
  * Convert an API value into display text.
  *
- * @param {null | number | string | undefined} value API value
- * @return {string}
+ * @param value API value
+ * @return
  */
 function displayValue(
   value: null | number | string | undefined

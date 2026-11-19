@@ -22,8 +22,8 @@ import i18n from 'I18nSetup';
  * Order-independent signature for a query filter group. Reordering the terms
  * in an and/or group doesn't change the query, so they're sorted.
  *
- * @param {QueryGroup} group - the filter group to serialize
- * @returns {string} a stable signature for the group
+ * @param group - the filter group to serialize
+ * @returns a stable signature for the group
  */
 function criteriaSignature(group: QueryGroup): string {
   const terms = group.group.map((term) => {
@@ -51,8 +51,8 @@ function criteriaSignature(group: QueryGroup): string {
  * lets "eliminate duplicates" collapse them; columns and filter terms are
  * sorted so their order doesn't matter.
  *
- * @param {FlattenedQuery} query - the query to build a signature for
- * @returns {string} a stable signature for the query's content
+ * @param query - the query to build a signature for
+ * @returns a stable signature for the query's content
  */
 function queryContentSignature(query: FlattenedQuery): string {
   const fields = query.fields.map((field: FlattenedField) => JSON.stringify({
@@ -68,23 +68,23 @@ function queryContentSignature(query: FlattenedQuery): string {
 /**
  * Return the welcome tab for the DQT
  *
- * @param {object} props - React props
- * @param {FlattenedQuery[]} props.recentQueries - List of recent queries to display
- * @param {FlattenedQuery[]} props.topQueries - List of top queries to display pinned to the top of the tab
- * @param {FlattenedQuery[]} props.sharedQueries - List of queries shared with the current user
- * @param {function} props.onContinue - Callback when the "Continue" button is called in the welcome message
- * @param {boolean} props.queryAdmin - True if the current user can pin study queries
- * @param {function} props.reloadQueries - Reload the list of queries from the server
- * @param {function} props.loadQuery - Load a query to replace the active query
- * @param {function} props.starQuery - Function that will star a query
- * @param {function} props.unstarQuery - Function that will unstar a query
- * @param {function} props.shareQuery - Function that will share a query
- * @param {function} props.unshareQuery - Function that will unshare a query
- * @param {function} props.getModuleFields - Retrieve a module's fields from the backend and populate them into fulldictionary
- * @param {object} props.mapModuleName - Function to map the backend module name to a user friendly name
- * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
- * @param {object} props.fulldictionary - The dictionary of all modules that have been loaded
- * @returns {React.ReactElement} - The Welcome tab element
+ * @param props - React props
+ * @param props.recentQueries - List of recent queries to display
+ * @param props.topQueries - List of top queries to display pinned to the top of the tab
+ * @param props.sharedQueries - List of queries shared with the current user
+ * @param props.onContinue - Callback when the "Continue" button is called in the welcome message
+ * @param props.queryAdmin - True if the current user can pin study queries
+ * @param props.reloadQueries - Reload the list of queries from the server
+ * @param props.loadQuery - Load a query to replace the active query
+ * @param props.starQuery - Function that will star a query
+ * @param props.unstarQuery - Function that will unstar a query
+ * @param props.shareQuery - Function that will share a query
+ * @param props.unshareQuery - Function that will unshare a query
+ * @param props.getModuleFields - Retrieve a module's fields from the backend and populate them into fulldictionary
+ * @param props.mapModuleName - Function to map the backend module name to a user friendly name
+ * @param props.mapCategoryName - Function to map the backend category name to a user friendly name
+ * @param props.fulldictionary - The dictionary of all modules that have been loaded
+ * @returns - The Welcome tab element
  */
 function Welcome(props: {
     recentQueries: FlattenedQuery[]
@@ -218,22 +218,22 @@ function Welcome(props: {
 /**
  * Display a list of queries
  *
- * @param {object} props - React props
- * @param {FlattenedQuery[]} props.queries - The list of queries to show in the list
- * @param {boolean} props.queryAdmin - True if the current user can pin study queries
- * @param {boolean} props.useAdminName - True if the display should display the admin name of the query
- * @param {boolean} props.defaultCollapsed - True if the queries should default to be collapsed
- * @param {function} props.starQuery - Function that will star a query
- * @param {function} props.unstarQuery - Function that will unstar a query
- * @param {function} props.shareQuery - Function that will share a query
- * @param {function} props.unshareQuery - Function that will unshare a query
- * @param {function} props.loadQuery - Load a query to replace the active query
- * @param {function} props.reloadQueries - Reload the list of queries from the server
- * @param {function} props.getModuleFields - Retrieve a module's fields from the backend and populate them into fulldictionary
- * @param {object} props.mapModuleName - Function to map the backend module name to a user friendly name
- * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
- * @param {FullDictionary} props.fulldictionary - The dictionary of all modules that have been loaded
- * @returns {React.ReactElement} - The React element
+ * @param props - React props
+ * @param props.queries - The list of queries to show in the list
+ * @param props.queryAdmin - True if the current user can pin study queries
+ * @param props.useAdminName - True if the display should display the admin name of the query
+ * @param props.defaultCollapsed - True if the queries should default to be collapsed
+ * @param props.starQuery - Function that will star a query
+ * @param props.unstarQuery - Function that will unstar a query
+ * @param props.shareQuery - Function that will share a query
+ * @param props.unshareQuery - Function that will unshare a query
+ * @param props.loadQuery - Load a query to replace the active query
+ * @param props.reloadQueries - Reload the list of queries from the server
+ * @param props.getModuleFields - Retrieve a module's fields from the backend and populate them into fulldictionary
+ * @param props.mapModuleName - Function to map the backend module name to a user friendly name
+ * @param props.mapCategoryName - Function to map the backend category name to a user friendly name
+ * @param props.fulldictionary - The dictionary of all modules that have been loaded
+ * @returns - The React element
  */
 function QueryList(props: {
     queries: FlattenedQuery[],
@@ -283,8 +283,7 @@ function QueryList(props: {
          * Add all modules used in the QueryGroup to the modules
          * set so their fields can be fetched.
          *
-         * @param {QueryGroup} querygroup - The query group from the criteria
-         * @returns {void}
+         * @param querygroup - The query group from the criteria
          */
         const addModules = (querygroup: QueryGroup) => {
           querygroup.group.forEach((item) => {
@@ -506,8 +505,7 @@ function QueryList(props: {
            * Sets the anyFieldMatches variable to true if any
            * criteria in the QueryGroup matches the filter criteria.
            *
-           * @param {QueryGroup} group - The query group being checked
-           * @returns {void}
+           * @param group - The query group being checked
            */
           const itemInGroupMatches = (group: QueryGroup): void => {
             for (const field of group.group) {
@@ -670,12 +668,12 @@ function QueryList(props: {
 /**
  * A single list item in a saved/shared query
  *
- * @param {object} props - React props
- * @param {function} props.mapModuleName - Function to map the backend module name to a user friendly name
- * @param {function} props.mapCategoryName - Function to map the backend category name to a user friendly name
- * @param {FullDictionary} props.fulldictionary - The dictionary of all modules that have been loaded
- * @param {QueryGroup} props.criteria - The query criteria.
- * @returns {React.ReactElement} - The React element
+ * @param props - React props
+ * @param props.mapModuleName - Function to map the backend module name to a user friendly name
+ * @param props.mapCategoryName - Function to map the backend category name to a user friendly name
+ * @param props.fulldictionary - The dictionary of all modules that have been loaded
+ * @param props.criteria - The query criteria.
+ * @returns - The React element
  */
 function QueryListCriteria(props: {
     mapModuleName: (module: string) => string,
@@ -701,9 +699,9 @@ function QueryListCriteria(props: {
 /**
  * Paginate the results
  *
- * @param {object} props - React props
- * @param {React.ReactElement[]} props.children - The elements to page
- * @returns {React.ReactElement} - The React element
+ * @param props - React props
+ * @param props.children - The elements to page
+ * @returns - The React element
  */
 function Pager(props: {
     children: React.ReactElement[],
@@ -736,25 +734,25 @@ function Pager(props: {
 /**
  * Display a single query in a QueryList
  *
- * @param {object} props - React props
- * @param {FlattenedQuery} props.query - The query to display
- * @param {boolean} props.includeRuns - True if query run information should be displayed
- * @param {function} props.starQuery - Function that will star a query
- * @param {function} props.unstarQuery - Function that will unstar a query
- * @param {function} props.shareQuery - Function that will share a query
- * @param {function} props.unshareQuery - Function that will unshare a query
- * @param {function} props.unpinAdminQuery - Function that will unpin a query
- * @param {function} props.loadQuery - Load a query to replace the active query
- * @param {function} props.setDefaultModalQueryName - Function to set the default name to show in the name query modal
- * @param {function} props.setNameModalID - Function that will set the queryID to show a name modal for
- * @param {boolean} props.showFullQueryDefault - True if the query should be expanded by default
- * @param {boolean} props.queryAdmin - True if the admin query options (ie. pin query) should be shown
- * @param {boolean} props.useAdminName - True if the display should display the admin name of the query
- * @param {function} props.setAdminModalID - Function that will set the queryID to show an admin modal for
- * @param {object} props.mapModuleName - Function to map the backend module name to a user friendly name
- * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
- * @param {object} props.fulldictionary  The dictionary of all modules that have been loaded
- * @returns {React.ReactElement} - The React element
+ * @param props - React props
+ * @param props.query - The query to display
+ * @param props.includeRuns - True if query run information should be displayed
+ * @param props.starQuery - Function that will star a query
+ * @param props.unstarQuery - Function that will unstar a query
+ * @param props.shareQuery - Function that will share a query
+ * @param props.unshareQuery - Function that will unshare a query
+ * @param props.unpinAdminQuery - Function that will unpin a query
+ * @param props.loadQuery - Load a query to replace the active query
+ * @param props.setDefaultModalQueryName - Function to set the default name to show in the name query modal
+ * @param props.setNameModalID - Function that will set the queryID to show a name modal for
+ * @param props.showFullQueryDefault - True if the query should be expanded by default
+ * @param props.queryAdmin - True if the admin query options (ie. pin query) should be shown
+ * @param props.useAdminName - True if the display should display the admin name of the query
+ * @param props.setAdminModalID - Function that will set the queryID to show an admin modal for
+ * @param props.mapModuleName - Function to map the backend module name to a user friendly name
+ * @param props.mapCategoryName - Function to map the backend category name to a user friendly name
+ * @param props.fulldictionary  The dictionary of all modules that have been loaded
+ * @returns - The React element
  */
 function SingleQueryDisplay(props: {
     query: FlattenedQuery,
@@ -1013,21 +1011,21 @@ function SingleQueryDisplay(props: {
 /**
  * Display a list of Query Runs
  *
- * @param {object} props - React props
- * @param {array} props.queryruns - A list of query runs as returned by the API
- * @param {boolean} props.queryAdmin - True if the current user can pin study queries
- * @param {boolean} props.defaultCollapsed - True if the queries should not be expanded by default
- * @param {function} props.starQuery - Function that will star a query
- * @param {function} props.unstarQuery - Function that will unstar a query
- * @param {function} props.shareQuery - Function that will share a query
- * @param {function} props.unshareQuery - Function that will unshare a query
- * @param {function} props.reloadQueries - Reload the list of queries from the server
- * @param {function} props.loadQuery - Load a query to replace the active query
- * @param {function} props.getModuleFields - Retrieve a module's fields from the backend and populate them into fulldictionary
- * @param {function} props.mapModuleName - Function to map the backend module name to a user friendly name
- * @param {function} props.mapCategoryName - Function to map the backend category name to a user friendly name
- * @param {FullDictionary} props.fulldictionary  The dictionary of all modules that have been loaded
- * @returns {React.ReactElement} - The React element
+ * @param props - React props
+ * @param props.queryruns - A list of query runs as returned by the API
+ * @param props.queryAdmin - True if the current user can pin study queries
+ * @param props.defaultCollapsed - True if the queries should not be expanded by default
+ * @param props.starQuery - Function that will star a query
+ * @param props.unstarQuery - Function that will unstar a query
+ * @param props.shareQuery - Function that will share a query
+ * @param props.unshareQuery - Function that will unshare a query
+ * @param props.reloadQueries - Reload the list of queries from the server
+ * @param props.loadQuery - Load a query to replace the active query
+ * @param props.getModuleFields - Retrieve a module's fields from the backend and populate them into fulldictionary
+ * @param props.mapModuleName - Function to map the backend module name to a user friendly name
+ * @param props.mapCategoryName - Function to map the backend category name to a user friendly name
+ * @param props.fulldictionary  The dictionary of all modules that have been loaded
+ * @returns - The React element
  */
 function QueryRunList(props:{
     queryruns: FlattenedQuery[],
@@ -1080,9 +1078,9 @@ function QueryRunList(props:{
 /**
  * An icon to load a query
  *
- * @param {object} props - React props
- * @param {function} props.onClick - Handler to call when icon clicked
- * @returns {React.ReactElement} - The React element
+ * @param props - React props
+ * @param props.onClick - Handler to call when icon clicked
+ * @returns - The React element
  */
 function LoadIcon(props: {
     onClick?: () => void,
@@ -1105,11 +1103,11 @@ function LoadIcon(props: {
 /**
  * An icon to share a query
  *
- * @param {object} props - React props
- * @param {function} props.onClick - Handler to call when icon clicked
- * @param {function} props.title - the title to show on hover
- * @param {function} props.isShared - True if the query is currently shared
- * @returns {React.ReactElement} - The React element
+ * @param props - React props
+ * @param props.onClick - Handler to call when icon clicked
+ * @param props.title - the title to show on hover
+ * @param props.isShared - True if the query is currently shared
+ * @returns - The React element
  */
 function ShareIcon(props: {
     onClick?: () => void,
@@ -1133,11 +1131,11 @@ function ShareIcon(props: {
 /**
  * An icon to name a query
  *
- * @param {object} props - React props
- * @param {TFunction} props.t - useTranslation
- * @param {function} props.onClick - Handler to call when icon clicked
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.onClick - Handler to call when icon clicked
  *
- * @returns {React.ReactElement} - The React element
+ * @returns - The React element
  */
 function NameIcon(props: {
   t: TFunction,

@@ -17,28 +17,28 @@ import swal from 'sweetalert2';
 /**
  * The define filters tab of the DQT
  *
- * @param {object} props - React props
- * @param {APIQueryField[]} props.fields - The fields selected
- * @param {QueryGroup} props.query - The criteria currently selected
- * @param {function} props.setQuery - Sets the current criteria
- * @param {CategoriesAPIReturn} props.categories - The list of categories displayed
- * @param {DictionaryCategory} props.displayedFields - All fields from the currently selected category
- * @param {string} props.module - The module of the currently selected module
- * @param {string} props.category - The currently selected category
- * @param {function} props.onCategoryChange - Callback to call when the category changes
- * @param {FullDictionary} props.fulldictionary - The fully loaded dictionary
- * @param {function} props.mapModuleName - Mapper from backend name to frontend name
- * @param {function} props.mapCategoryName - Mapper from backend name to frontend name
- * @param {function} props.getModuleFields - Function that will ensure a module's fields
+ * @param props - React props
+ * @param props.fields - The fields selected
+ * @param props.query - The criteria currently selected
+ * @param props.setQuery - Sets the current criteria
+ * @param props.categories - The list of categories displayed
+ * @param props.displayedFields - All fields from the currently selected category
+ * @param props.module - The module of the currently selected module
+ * @param props.category - The currently selected category
+ * @param props.onCategoryChange - Callback to call when the category changes
+ * @param props.fulldictionary - The fully loaded dictionary
+ * @param props.mapModuleName - Mapper from backend name to frontend name
+ * @param props.mapCategoryName - Mapper from backend name to frontend name
+ * @param props.getModuleFields - Function that will ensure a module's fields
  *                                           are fully populated in fulldictionary
- * @param {function} props.addQueryGroupItem - Function that will add a new term to the
+ * @param props.addQueryGroupItem - Function that will add a new term to the
  *                                             existing QueryGroup
- * @param {function} props.addNewQueryGroup - Function that will add a new QueryGroup subgroup
+ * @param props.addNewQueryGroup - Function that will add a new QueryGroup subgroup
  *                                           to the existing QueryGroup
- * @param {function} props.removeQueryGroupItem - Function that will remove an item from a
+ * @param props.removeQueryGroupItem - Function that will remove an item from a
  *                                                QueryGroup by index.
- * @param {string[]} props.visitLabels - Array of allowed visit label values
- * @returns {React.ReactElement} - The Define Filters page
+ * @param props.visitLabels - Array of allowed visit label values
+ * @returns - The Define Filters page
  */
 function DefineFilters(props: {
     fields: APIQueryField[],

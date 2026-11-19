@@ -74,8 +74,8 @@ const EMPTY_PROJECT: Project = {
 /**
  * Convert server data into controlled form values.
  *
- * @param {Project} project Project data
- * @return {ProjectValues}
+ * @param project Project data
+ * @return
  */
 function formValues(project: Project): ProjectValues {
   return {
@@ -91,8 +91,8 @@ function formValues(project: Project): ProjectValues {
 /**
  * Create or edit one project through the established guarded endpoint.
  *
- * @param {ProjectFormProps} props Form properties
- * @return {React.ReactElement}
+ * @param props Form properties
+ * @return
  */
 function ProjectForm(props: ProjectFormProps): React.ReactElement {
   const [defaults, setDefaults] = useState(() => formValues(props.project));
@@ -103,8 +103,8 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
   /**
    * Update one controlled field and clear its prior save status.
    *
-   * @param {string} name Field name
-   * @param {string|string[]} value Field value
+   * @param name Field name
+   * @param value Field value
    */
   const updateValue = (
     name: string,
@@ -148,7 +148,7 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
   /**
    * Submit the project values to the existing update endpoint.
    *
-   * @param {React.SyntheticEvent} event Submit event
+   * @param event Submit event
    */
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -319,8 +319,8 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
 /**
  * React project manager.
  *
- * @param {ProjectManagerProps} props Page properties
- * @return {React.ReactElement}
+ * @param props Page properties
+ * @return
  */
 function ProjectManager(props: ProjectManagerProps): React.ReactElement {
   const [projects, setProjects] = useState(props.data.projects);
@@ -328,8 +328,8 @@ function ProjectManager(props: ProjectManagerProps): React.ReactElement {
   /**
    * Keep the current tab and heading in sync after an edit.
    *
-   * @param {string} projectID Updated project identifier
-   * @param {ProjectValues} values Updated project values
+   * @param projectID Updated project identifier
+   * @param values Updated project values
    */
   const updateProject = (projectID: string, values: ProjectValues) => {
     setProjects((current) => ({
@@ -414,8 +414,8 @@ function ProjectManager(props: ProjectManagerProps): React.ReactElement {
 /**
  * Load project data and render the manager.
  *
- * @param {WithTranslation} props Translation properties
- * @return {React.ReactElement}
+ * @param props Translation properties
+ * @return
  */
 function ProjectPage(props: WithTranslation): React.ReactElement {
   const [data, setData] = useState<ProjectData | null>(null);

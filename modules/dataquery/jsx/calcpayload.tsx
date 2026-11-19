@@ -9,9 +9,9 @@ import {
  * Calculates the payload to submit to the search endpoint
  * to run the query.
  *
- * @param {APIQueryField[]} fields - the fields to query
- * @param {QueryGroup} filters - the root of the filters
- * @returns {APIQueryObject} - The query to send to the API
+ * @param fields - the fields to query
+ * @param filters - the root of the filters
+ * @returns - The query to send to the API
  */
 export function calcPayload(
   fields: APIQueryField[],
