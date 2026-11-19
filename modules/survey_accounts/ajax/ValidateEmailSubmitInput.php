@@ -69,9 +69,10 @@ $numSessions = $db->pselectOne(
 if ($numSessions != 1) {
     echo json_encode(
         [
-            'error_msg' => dgettext('loris', 'Visit').' '.
-                  $_REQUEST['VL'].' '.
-                  dgettext('survey_accounts', 'does not exist for given candidate'),
+            'error_msg' => sprintf(
+                dgettext('survey_accounts', '%s does not exist for given candidate'),
+                dgettext('loris', 'Visit')
+            )
         ]
     );
     exit(0);
@@ -97,20 +98,22 @@ $instrument_list = $db->pselect(
         'v_VL'     => $_REQUEST['VL'],
     ]
 );
+
+// This line is too long inside the loop
+$msg = dgettext(
+    'survey_accounts',
+    'Instrument %s already exists for given candidate for visit %s'
+);
 foreach ($instrument_list as $instrument) {
     if ($_REQUEST['TN'] == $instrument['Test_name']) {
         echo json_encode(
             [
-                'error_msg' => dcngettext(
-                    'loris',
-                    'Instrument',
-                    'Instruments',
-                    1,
-                    LC_MESSAGES
-                ).' '. $_REQUEST['TN'].' ' .dgettext(
-                    'survey_accounts',
-                    'already exists for given candidate for visit'
-                ).' '. $_REQUEST['VL'],
+                'error_msg' =>
+            sprintf(
+                $msg,
+                $_REQUEST['TN'],
+                $_REQUEST['VL'],
+            )
             ]
         );
         exit(0);

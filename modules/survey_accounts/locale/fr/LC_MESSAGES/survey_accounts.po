@@ -25,7 +25,7 @@ msgstr "Comptes de sondage"
 msgid "Survey was added successfully."
 msgstr "Le sondage a été ajouté avec succès."
 
-msgid "Click here to go back to view the list of survey's created"
+msgid "Click here to go back to view the list of surveys created"
 msgstr "Cliquez ici pour revenir à la liste des sondages créés"
 
 msgid "Survey List"
@@ -46,9 +46,6 @@ msgstr "Créer un sondage"
 msgid "Email survey"
 msgstr "Envoyer le sondage par courriel"
 
-msgid "Close"
-msgstr "Fermer"
-
 msgid "Email to Study Participant"
 msgstr "Courriel au participant à l'étude"
 
@@ -58,26 +55,20 @@ msgstr "Saisissez éventuellement un message personnalisé ici. Un courriel par 
 msgid "This is where your message goes."
 msgstr "Votre message s'inscrit ici."
 
-msgid "Email"
-msgstr "Adresse courriel"
-
 msgid "URL"
 msgstr "URL"
-
-msgid "Status"
-msgstr "Statut"
 
 msgid "PSCID and DCCID do not match or candidate does not exist."
 msgstr "Le PSCID et le DCCID ne correspondent pas ou le candidat n'existe pas."
 
-msgid "does not exist for given candidate"
-msgstr "n'existe pas pour le candidat donné"
+msgid "Visit does not exist for given candidate"
+msgstr "La visite n'existe pas pour le candidat spécifié"
 
 msgid "Please choose an instrument."
 msgstr "Veuillez choisir un instrument."
 
-msgid "already exists for given candidate for visit"
-msgstr "existe déjà pour le candidat donné pour la visite"
+msgid "Instrument %s already exists for given candidate for visit %s"
+msgstr "L'instrument %s existe déjà pour le candidat spécifié pour la visite %s"
 
 msgid "Email is not valid."
 msgstr "L'adresse courriel n'est pas valide."

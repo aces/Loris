@@ -25,7 +25,7 @@ msgstr "सर्वे खाते"
 msgid "Survey was added successfully."
 msgstr "सर्वे सफलतापूर्वक जोड़ा गया।"
 
-msgid "Click here to go back to view the list of survey's created"
+msgid "Click here to go back to view the list of surveys created"
 msgstr "बनाए गए सर्वे की सूची देखने के लिए यहाँ क्लिक करें"
 
 msgid "Survey List"
@@ -46,9 +46,6 @@ msgstr "सर्वे बनाएँ"
 msgid "Email survey"
 msgstr "सर्वे ईमेल करें"
 
-msgid "Close"
-msgstr "बंद करें"
-
 msgid "Email to Study Participant"
 msgstr "अध्ययन प्रतिभागी को ईमेल"
 
@@ -58,26 +55,21 @@ msgstr "वैकल्पिक रूप से यहाँ एक कस्�
 msgid "This is where your message goes."
 msgstr "यहाँ आपका संदेश जाएगा।"
 
-msgid "Email"
-msgstr "ईमेल"
-
 msgid "URL"
 msgstr "यूआरएल"
-
-msgid "Status"
-msgstr "स्थिति"
 
 msgid "PSCID and DCCID do not match or candidate does not exist."
 msgstr "पीएससीआईडी ​​और डीसीसीआईडी ​​मेल नहीं खाते या उम्मीदवार मौजूद नहीं है।"
 
-msgid "does not exist for given candidate"
-msgstr "दिए गए उम्मीदवार के लिए मौजूद नहीं है"
+msgid "Visit does not exist for given candidate"
+msgstr "दिए गए कैंडिडेट के लिए विज़िट मौजूद नहीं है"
+
 
 msgid "Please choose an instrument."
 msgstr "कृपया एक उपकरण चुनें."
 
-msgid "already exists for given candidate for visit"
-msgstr "दिए गए उम्मीदवार के लिए यात्रा हेतु पहले से ही मौजूद है"
+msgid "Instrument %s already exists for given candidate for visit %s"
+msgstr "विज़िट %s के लिए दिए गए कैंडिडेट के लिए इंस्ट्रूमेंट %s पहले से मौजूद है"
 
 msgid "Please confirm the email address."
 msgstr "कृपया ईमेल पता की पुष्टि करें."

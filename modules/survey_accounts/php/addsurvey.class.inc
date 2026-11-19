@@ -182,10 +182,13 @@ class AddSurvey extends \NDB_Form
                 'v_VL'     => $values['VL'],
             ]
         );
-        $reminder        = dgettext(
+
+        // This is mostly here because the line is too long inside the loop
+        $reminder = dgettext(
             'survey_accounts',
-            'already exists for given candidate for visit'
+            'Instrument %s already exists for given candidate for visit %s',
         );
+
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 $instrument_instance = \NDB_BVL_Instrument::factory(
@@ -193,15 +196,12 @@ class AddSurvey extends \NDB_Form
                     $instrument['Test_name']
                 );
                 return [
-                    'Test_name' => dcngettext(
-                        'loris',
-                        'Instrument',
-                        'Instruments',
-                        1,
-                        LC_MESSAGES
-                    )." ".
-                        $instrument_instance->getFullName().
-                        " ". $reminder. " ". $values['VL'],
+                    'Test_name' => sprintf(
+                        $reminder,
+                        $instrument_instance->getFullName(),
+                        $values['VL'],
+                    )
+
                 ];
             }
         }
