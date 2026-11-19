@@ -762,7 +762,7 @@ class NDB_PageTest extends TestCase
     {
         $name     = $this->_page->name;
         $page     = $this->_page->page;
-        $sublabel = ucwords(str_replace('_', ' ', $page));
+        $sublabel = mb_convert_case(str_replace('_', ' ', $page), MB_CASE_TITLE);
         $this->assertEquals(
             new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb($this->_page->Module->getLongName(), "/$name"),
