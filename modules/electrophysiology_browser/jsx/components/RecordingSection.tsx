@@ -2,11 +2,12 @@
 import React, {useState} from 'react';
 import type {ReactNode} from 'react';
 import type {TFunction} from 'i18next';
-import Panel from 'jsx/Panel';
+import Panel from '../recording-viewer/src/ui/Panel';
 import DetailsPanel from './DetailsPanel';
 import SummaryPanel from './SummaryPanel';
 import DownloadPanel from './DownloadPanel';
 import type {DownloadGroup} from './DownloadPanel';
+import PanelGrid from './PanelGrid';
 import {
   getRecordingChannelsURL,
   hasRecordingHED,
@@ -21,20 +22,24 @@ declare const loris: {
   BaseURL: string;
 };
 
-let EEGLabSeriesProvider: React.ComponentType<any> | null = null;
-let SeriesRenderer: React.ComponentType<any> | null = null;
-let EEGMontage: React.ComponentType<any> | null = null;
+let RecordingDataProvider: React.ComponentType<any> | null = null;
+let SignalViewer: React.ComponentType<any> | null = null;
+let MontagePanel: React.ComponentType<any> | null = null;
 if (EEG_VIS_ENABLED) {
-  EEGLabSeriesProvider = require(
-    '../react-series-data-viewer/src/eeglab/EEGLabSeriesProvider'
+  RecordingDataProvider = require(
+    '../recording-viewer/src/recording/RecordingDataProvider'
   ).default;
-  SeriesRenderer = require(
-    '../react-series-data-viewer/src/series/components/SeriesRenderer'
+  SignalViewer = require(
+    '../recording-viewer/src/signals/components/SignalViewer'
   ).default;
-  EEGMontage = require(
-    '../react-series-data-viewer/src/series/components/EEGMontage'
+  MontagePanel = require(
+    '../recording-viewer/src/montage/MontagePanel'
   ).default;
 }
+
+export const RECORDING_VIEWER_ENABLED = Boolean(
+  RecordingDataProvider && SignalViewer && MontagePanel
+);
 
 type MetadataRow = {
   name: ReactNode;
@@ -46,7 +51,7 @@ type SplitData = {
   splitIndex: number;
 };
 
-type RecordingFile = {
+export type RecordingFile = {
   id: number;
   name: string;
   details: MetadataRow[];
@@ -55,27 +60,27 @@ type RecordingFile = {
   summary: MetadataRow[];
 };
 
-type RecordingDatabaseEntry = {
+export type RecordingDatabaseEntry = {
   chunksURLs?: string[];
   coordSystemURL?: Array<string | false | undefined>;
   datasetTagEndorsements: unknown;
   datasetTags: DatasetTags;
   eegMontage?: string;
   electrodesURL?: Array<string | false | undefined>;
-  epochsURL?: string[];
+  eventsURL?: string[];
   events: RecordingEvents;
   file: RecordingFile;
   hedSchema: unknown;
 };
 
-type PatientInfo = {
+export type PatientInfo = {
   dccid: string;
   pscid: string;
   'visit_label': string;
 };
 
 type RecordingSectionProps = {
-  dbEntry: RecordingDatabaseEntry;
+  recording: RecordingDatabaseEntry;
   fileIndex: number;
   getSplitData: (
     physioFileID: number,
@@ -83,6 +88,11 @@ type RecordingSectionProps = {
     splitIndex: number
   ) => void;
   patient: PatientInfo;
+  navigationRequest?: {
+    sequence: number;
+    targetID: string;
+    viewerPanel?: 'eventList' | 'hedEndorsement';
+  };
   t: TFunction;
 };
 
@@ -92,16 +102,17 @@ type RecordingSectionProps = {
  * This component renders all panels for one electrophysiology recording.
  */
 function RecordingSection({
-  dbEntry,
+  recording,
   fileIndex,
   getSplitData,
   patient,
+  navigationRequest,
   t,
 }: RecordingSectionProps): React.ReactElement {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const {
     chunksURLs,
-    epochsURL,
+    eventsURL,
     events,
     hedSchema,
     datasetTags,
@@ -109,11 +120,17 @@ function RecordingSection({
     electrodesURL,
     coordSystemURL,
     eegMontage,
-  } = dbEntry;
-  const file = dbEntry.file;
+  } = recording;
+  const file = recording.file;
   const splitData = file.splitData;
   const recordingPanelID = 'filename_panel_' + fileIndex;
   const recordingBodyID = recordingPanelID + '_body';
+
+  React.useEffect(() => {
+    if (navigationRequest?.targetID.endsWith(`-${fileIndex}`)) {
+      setIsCollapsed(false);
+    }
+  }, [fileIndex, navigationRequest]);
   const channelsURL = getRecordingChannelsURL(
     loris.BaseURL,
     patient,
@@ -138,7 +155,7 @@ function RecordingSection({
     : [];
 
   return (
-    <div style={{marginTop: '24px'}}>
+    <section id={`recording-${fileIndex}`} style={{marginTop: '24px'}}>
       <div
         style={{
           alignItems: 'center',
@@ -183,44 +200,43 @@ function RecordingSection({
         id={recordingBodyID}
         className={isCollapsed ? 'collapse' : 'collapse in'}
       >
-        <div className='container-fluid'>
-          <div className='row'>
-            {EEGLabSeriesProvider &&
-            SeriesRenderer &&
-            EEGMontage &&
-            <div className='react-series-data-viewer-scoped col-xs-12'>
-              <EEGLabSeriesProvider
-                channelsURL={channelsURL}
-                chunksURL={currentChunksURL}
-                epochsURL={epochsURL}
-                events={events}
-                electrodesURL={electrodesURL}
-                coordSystemURL={coordSystemURL}
-                hedSchema={hedSchema}
-                datasetTags={datasetTags}
-                datasetTagEndorsements={datasetTagEndorsements}
-                physioFileID={file.id}
-                samplingFrequency={file.summary[0].value}
-                eegMontageName={eegMontage}
-                recordingHasHED={recordingHasHED}
-                t={t}
+        <div className='recording-layout'>
+          {RECORDING_VIEWER_ENABLED &&
+          RecordingDataProvider && SignalViewer && MontagePanel &&
+          <div className='recording-viewer-scoped'>
+            <RecordingDataProvider
+              channelsURL={channelsURL}
+              chunksURL={currentChunksURL}
+              eventsURL={eventsURL}
+              events={events}
+              electrodesURL={electrodesURL}
+              coordSystemURL={coordSystemURL}
+              hedSchema={hedSchema}
+              datasetTags={datasetTags}
+              datasetTagEndorsements={datasetTagEndorsements}
+              physioFileID={file.id}
+              samplingFrequency={file.summary[0].value}
+              eegMontageName={eegMontage}
+              recordingHasHED={recordingHasHED}
+              t={t}
+            >
+              <Panel
+                collapsing={false}
+                id={`signal-viewer-${fileIndex}`}
+                title={
+                  t('Signal Viewer', {ns: 'electrophysiology_browser'}) + (
+                    splitData
+                      ? ` [${
+                        t('split {{splitNum}}', {
+                          ns: 'electrophysiology_browser',
+                          splitNum: splitData.splitIndex + 1,
+                        })
+                      }]`
+                      : ''
+                  )
+                }
               >
-                <Panel
-                  id='channel-viewer'
-                  title={
-                    t('Signal Viewer', {ns: 'electrophysiology_browser'}) + (
-                      splitData
-                        ? ` [${
-                          t('split {{splitNum}}', {
-                            ns: 'electrophysiology_browser',
-                            splitNum: splitData.splitIndex + 1,
-                          })
-                        }]`
-                        : ''
-                    )
-                  }
-                >
-                  {splitData &&
+                {splitData &&
                   <>
                     <span
                       style={{
@@ -270,44 +286,40 @@ function RecordingSection({
                       {'>'}
                     </a>
                   </>
-                  }
-                  <SeriesRenderer physioFileID={file.id} />
-                </Panel>
-                <div className='row'>
-                  <div className='col-md-6 col-lg-4'>
-                    <SummaryPanel
-                      id={'filename_summary_' + fileIndex}
-                      data={file.summary}
-                      t={t}
-                    />
-                  </div>
-                  <EEGMontage />
-                  <div className='col-md-6 col-lg-4'>
-                    <DownloadPanel
-                      id={'file_download_' + fileIndex}
-                      downloads={file.downloads}
-                      dccid={patient.dccid}
-                      visit={patient['visit_label']}
-                      physioFileID={file.id}
-                      physioFileName={file.name}
-                      t={t}
-                    />
-                  </div>
-                </div>
-              </EEGLabSeriesProvider>
-            </div>}
-            <div className='col-xs-12'>
-              <DetailsPanel
-                id={recordingPanelID + '_details'}
-                title={file.name}
-                data={file.details}
-                t={t}
-              />
-            </div>
-          </div>
+                }
+                <SignalViewer
+                  navigationRequest={navigationRequest}
+                  viewerID={`signal-viewer-${fileIndex}`}
+                />
+              </Panel>
+              <PanelGrid>
+                <MontagePanel id={`recording-montage-${fileIndex}`} />
+                <SummaryPanel
+                  id={`recording-summary-${fileIndex}`}
+                  data={file.summary}
+                  t={t}
+                />
+                <DownloadPanel
+                  id={`recording-downloads-${fileIndex}`}
+                  downloads={file.downloads}
+                  dccid={patient.dccid}
+                  visit={patient['visit_label']}
+                  physioFileID={file.id}
+                  physioFileName={file.name}
+                  t={t}
+                />
+              </PanelGrid>
+            </RecordingDataProvider>
+          </div>}
+          <DetailsPanel
+            id={`recording-details-${fileIndex}`}
+            title={file.name}
+            data={file.details}
+            t={t}
+          />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

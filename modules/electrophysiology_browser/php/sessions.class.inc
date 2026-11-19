@@ -677,7 +677,7 @@ class Sessions extends \NDB_Page
         $downloadLinks[] = [
             'type'  => 'physiological_file',
             'file'  => $physioFile,
-            'label' => dgettext('electrophysiology_browser', 'EEG File(s)'),
+            'label' => dgettext('electrophysiology_browser', 'Acquisition File'),
         ];
 
         $queryFDT = "SELECT
