@@ -107,7 +107,7 @@ class Files extends \NDB_Page
                 ['file_dir' => $filename]
             );
 
-            if (empty($data)) {
+            if ($data === null) {
                 return (new \LORIS\Http\Response\JSON\NotFound());
             }
 
