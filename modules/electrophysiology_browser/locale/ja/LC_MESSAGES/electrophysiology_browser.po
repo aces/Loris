@@ -615,3 +615,4 @@ msgstr "セッションを見る"
 
 msgid "Channel Types"
 msgstr "チャネルタイプ"
+
