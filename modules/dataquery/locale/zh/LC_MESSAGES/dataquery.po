@@ -533,3 +533,9 @@ msgstr "无效标签"
 
 msgid "or"
 msgstr "或者"
+
+msgid "Something went wrong."
+msgstr "出错了。"
+
+msgid "Run Query Again"
+msgstr "重新运行查询"
