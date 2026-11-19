@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  php = pkgs.php85.withExtensions ({ enabled, all }:
+  php = pkgs.php86.withExtensions ({ enabled, all }:
     enabled ++ [ all.ast ]);
 in
 pkgs.mkShell {
