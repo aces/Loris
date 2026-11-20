@@ -236,12 +236,30 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      */
     public function getProtocols() : array
     {
-        $query     = "SELECT SpecimenProtocolID as id,
-                         Label as label,
-                         SpecimenProcessID as processId,
-                         SpecimenTypeID as typeId
-                  FROM biobank_specimen_protocol";
-        $protocols = $this->db->pselectWithIndexKey($query, [], 'id');
+        $query  = "SELECT p.SpecimenProtocolID as id,
+                         p.Label as label,
+                         p.SpecimenProcessID as processId,
+                         r.SpecimenTypeID as typeId
+                  FROM biobank_specimen_protocol p
+                  LEFT JOIN biobank_specimen_protocol_type_rel r
+                    ON r.SpecimenProtocolID = p.SpecimenProtocolID";
+        $result = $this->db->pselect($query, []);
+
+        $protocols = [];
+        foreach ($result as $row) {
+            $id = $row['id'];
+            if (!isset($protocols[$id])) {
+                $protocols[$id] = [
+                    'id'        => $id,
+                    'label'     => $row['label'],
+                    'processId' => $row['processId'],
+                    'typeIds'   => [],
+                ];
+            }
+            if ($row['typeId'] !== null) {
+                $protocols[$id]['typeIds'][] = $row['typeId'];
+            }
+        }
 
         return $protocols;
     }
