@@ -60,9 +60,6 @@ msgstr "Développé par %1$s par %2$s"
 msgid "Created by %s"
 msgstr "Créé par %s"
 
-msgid "Developed at"
-msgstr "Développé par"
-
 msgid "The Neuro (Montreal Neurological Institute-Hospital)"
 msgstr "Le Neuro (L'Institut-Hôpital neurologique de Montréal)"
 
