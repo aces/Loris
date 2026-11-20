@@ -19,49 +19,49 @@ type OptionGroup = {
  * This is the unwrapped control, with no label or form row around it.
  * SelectElement renders it inside the usual form layout.
  *
- * @param {object} props - React props
- * @param {object} props.options - Selectable values, keyed by value
- * @param {string[]} props.value - The currently selected values
- * @param {function} props.onChange - Callback given the new list of values
- * @param {OptionGroup[]|undefined} props.groups - Ordered groups. Options no
- *                                                 group names are listed after
- *                                                 them.
- * @param {string[]|undefined} props.disabledOptions - Values that cannot be changed
- * @param {string|undefined} props.label - Names the control, and rises onto the
- *                                         top edge once something is selected
- * @param {string|undefined} props.placeholder - Shown when nothing is selected
- * @param {string|undefined} props.display - "names" (the default), "tags" or
- *                                           "count"
- * @param {number|undefined} props.maxVisible - How many values to name before
- *                                              counting the rest, default 5
- * @param {React.ReactNode|undefined} props.badge - Rendered at the right of the
- *                                                  trigger
- * @param {React.ReactNode|undefined} props.footer - Rendered at the foot of the
- *                                                   open panel
- * @param {string|undefined} props.searchPlaceholder - Placeholder for the search box
- * @param {string|undefined} props.selectLabel - Label for the select button
- * @param {string|undefined} props.deselectLabel - Label for the deselect button
- * @param {string|undefined} props.emptyMessage - Shown when the search matches nothing
- * @param {boolean|undefined} props.disabled - Disables the trigger
- * @param {boolean|undefined} props.multiple - Whether more than one option can be
- *                                             held, default true. A single
- *                                             selection uses radios and closes
- *                                             on choosing.
- * @param {boolean|undefined} props.mono - Sets the options in the monospace, for
- *                                         identifiers
- * @param {string|undefined} props.name - Name given to the checkbox inputs
- * @param {string|undefined} props.appearance - "field" (the default), or
- *                                              "button" for a quiet button
- *                                              naming the label and the
- *                                              selection, for toolbars
- * @param {React.ReactNode|undefined} props.icon - Shown before the label in the
- *                                                 button appearance
- * @param {boolean|undefined} props.clearable - Show a control inside the field
- *                                             that clears it once it holds a
- *                                             selection
- * @param {string|undefined} props.clearLabel - Accessible name for the clear
- *                                              control
- * @returns {React.ReactElement} - The dropdown
+ * @param props - React props
+ * @param props.options - Selectable values, keyed by value
+ * @param props.value - The currently selected values
+ * @param props.onChange - Callback given the new list of values
+ * @param props.groups - Ordered groups. Options no
+ *                       group names are listed after
+ *                       them.
+ * @param props.disabledOptions - Values that cannot be changed
+ * @param props.label - Names the control, and rises onto the
+ *                      top edge once something is selected
+ * @param props.placeholder - Shown when nothing is selected
+ * @param props.display - "names" (the default), "tags" or
+ *                        "count"
+ * @param props.maxVisible - How many values to name before
+ *                           counting the rest, default 5
+ * @param props.badge - Rendered at the right of the
+ *                      trigger
+ * @param props.footer - Rendered at the foot of the
+ *                       open panel
+ * @param props.searchPlaceholder - Placeholder for the search box
+ * @param props.selectLabel - Label for the select button
+ * @param props.deselectLabel - Label for the deselect button
+ * @param props.emptyMessage - Shown when the search matches nothing
+ * @param props.disabled - Disables the trigger
+ * @param props.multiple - Whether more than one option can be
+ *                         held, default true. A single
+ *                         selection uses radios and closes
+ *                         on choosing.
+ * @param props.mono - Sets the options in the monospace, for
+ *                     identifiers
+ * @param props.name - Name given to the checkbox inputs
+ * @param props.appearance - "field" (the default), or
+ *                           "button" for a quiet button
+ *                           naming the label and the
+ *                           selection, for toolbars
+ * @param props.icon - Shown before the label in the
+ *                     button appearance
+ * @param props.clearable - Show a control inside the field
+ *                          that clears it once it holds a
+ *                          selection
+ * @param props.clearLabel - Accessible name for the clear
+ *                           control
+ * @returns - The dropdown
  */
 function Select(props: {
     options: {[value: string]: string},
@@ -114,8 +114,7 @@ function Select(props: {
     /**
      * Close the panel when a click lands outside of it
      *
-     * @param {MouseEvent} e - The click
-     * @returns {void}
+     * @param e - The click
      */
     const onDocumentClick = (e: MouseEvent) => {
       if (wrapper.current && !wrapper.current.contains(e.target as Node)) {
@@ -125,8 +124,7 @@ function Select(props: {
     /**
      * Close the panel on escape
      *
-     * @param {KeyboardEvent} e - The keypress
-     * @returns {void}
+     * @param e - The keypress
      */
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -135,8 +133,6 @@ function Select(props: {
     };
     /**
      * Stop marking when the pointer is released
-     *
-     * @returns {void}
      */
     const onMouseUp = () => {
       dragging.current = false;
@@ -148,8 +144,7 @@ function Select(props: {
     /**
      * Remember where the pointer is so the list can scroll towards it
      *
-     * @param {MouseEvent} e - The movement
-     * @returns {void}
+     * @param e - The movement
      */
     const onMouseMove = (e: MouseEvent) => {
       pointerY.current = e.clientY;
@@ -190,8 +185,7 @@ function Select(props: {
   /**
    * Apply a new selection, leaving disabled values as they were
    *
-   * @param {Set<string>} next - The values that should now be selected
-   * @returns {void}
+   * @param next - The values that should now be selected
    */
   const commit = (next: Set<string>) => {
     all.forEach((option) => {
@@ -210,8 +204,8 @@ function Select(props: {
   /**
    * Test an option against the search box
    *
-   * @param {string} option - The option to test
-   * @returns {boolean} - true if it should be listed
+   * @param option - The option to test
+   * @returns - true if it should be listed
    */
   const matches = (option: string) => {
     const needle = filter.toLowerCase();
@@ -248,8 +242,7 @@ function Select(props: {
   /**
    * Mark every row between the anchor and the given one
    *
-   * @param {string} option - The row the run ends on
-   * @returns {void}
+   * @param option - The row the run ends on
    */
   const markRunTo = (option: string) => {
     if (anchor.current === null) {
@@ -268,9 +261,8 @@ function Select(props: {
    * Handle a click on a row. Shift marks the run and ctrl or command marks the
    * single row, neither changing the selection. A plain click toggles.
    *
-   * @param {string} option - The row that was clicked
-   * @param {React.MouseEvent} e - The click
-   * @returns {void}
+   * @param option - The row that was clicked
+   * @param e - The click
    */
   const onRowClick = (option: string, e: React.MouseEvent) => {
     if (locked.has(option) || !multiple) {
@@ -303,8 +295,6 @@ function Select(props: {
 
   /**
    * Scroll the list while a drag is held near its top or bottom edge.
-   *
-   * @returns {void}
    */
   const scrollTowardsPointer = () => {
     if (!dragging.current || list.current === null) {
@@ -325,9 +315,8 @@ function Select(props: {
   /**
    * Begin marking a run by dragging down the list
    *
-   * @param {string} option - The row the drag started on
-   * @param {React.MouseEvent} e - The mousedown
-   * @returns {void}
+   * @param option - The row the drag started on
+   * @param e - The mousedown
    */
   const onRowMouseDown = (option: string, e: React.MouseEvent) => {
     if (locked.has(option) || !multiple
@@ -347,8 +336,7 @@ function Select(props: {
   /**
    * Extend the run while the pointer is held down
    *
-   * @param {string} option - The row the pointer moved onto
-   * @returns {void}
+   * @param option - The row the pointer moved onto
    */
   const onRowMouseEnter = (option: string) => {
     if (!dragging.current || locked.has(option)) {
@@ -363,8 +351,7 @@ function Select(props: {
   /**
    * Add or remove a single value from the selection
    *
-   * @param {string} option - The value that was clicked
-   * @returns {void}
+   * @param option - The value that was clicked
    */
   const toggle = (option: string) => {
     if (!multiple) {
@@ -383,8 +370,6 @@ function Select(props: {
 
   /**
    * Select the marked run, or everything when nothing is marked
-   *
-   * @returns {void}
    */
   const selectTarget = () => {
     const next = new Set(selected);
@@ -395,8 +380,6 @@ function Select(props: {
 
   /**
    * Deselect the marked run, or everything when nothing is marked
-   *
-   * @returns {void}
    */
   const deselectTarget = () => {
     const next = new Set(selected);
@@ -408,7 +391,7 @@ function Select(props: {
   /**
    * Render what the trigger shows for the current selection
    *
-   * @returns {React.ReactElement} - The trigger contents
+   * @returns - The trigger contents
    */
   const renderSelection = () => {
     if (selected.size === 0) {
@@ -451,8 +434,8 @@ function Select(props: {
   /**
    * Render a single checkbox row
    *
-   * @param {string} option - The option to render
-   * @returns {React.ReactElement} - The row
+   * @param option - The option to render
+   * @returns - The row
    */
   const optionRow = (option: string) => {
     let className = 'loris-select-option';

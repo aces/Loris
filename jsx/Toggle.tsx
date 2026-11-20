@@ -8,15 +8,15 @@ import './Toggle.css';
  *
  * This is the unwrapped control, with no form row around it.
  *
- * @param {object} props - React props
- * @param {string} props.name - Name given to the underlying input
- * @param {boolean} props.checked - Whether the boolean is on
- * @param {function} props.onChange - Callback given the new state
- * @param {string|undefined} props.display - "switch" (the default) or "checkbox"
- * @param {string|undefined} props.label - Text shown beside the control
- * @param {string|undefined} props.value - Value submitted when checked
- * @param {boolean|undefined} props.disabled - Disables the control
- * @returns {React.ReactElement} - The control
+ * @param props - React props
+ * @param props.name - Name given to the underlying input
+ * @param props.checked - Whether the boolean is on
+ * @param props.onChange - Callback given the new state
+ * @param props.display - "switch" (the default) or "checkbox"
+ * @param props.label - Text shown beside the control
+ * @param props.value - Value submitted when checked
+ * @param props.disabled - Disables the control
+ * @returns - The control
  */
 function Toggle(props: {
     name: string,

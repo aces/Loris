@@ -8,10 +8,9 @@ type Range = {min?: string, max?: string};
 /**
  * Formats a date held as YYYY-MM-DD from its parts
  *
- * @param {number} year - the year
- * @param {number} month - the month, from 0
- * @param {number} day - the day of the month
- * @return {string}
+ * @param year - the year
+ * @param month - the month, from 0
+ * @param day - the day of the month
  */
 function isoDate(year: number, month: number, day: number): string {
   return `${String(year).padStart(4, '0')}-` +
@@ -26,29 +25,29 @@ function isoDate(year: number, month: number, day: number): string {
  * This is the unwrapped control, with no label or form row around it.
  * DateRangeElement renders it inside the usual form layout.
  *
- * @param {object} props - React props
- * @param {Range} props.value - The range, as YYYY-MM-DD strings
- * @param {function} props.onChange - Callback given the new range
- * @param {string|undefined} props.label - Names the control, and rises onto the
- *                                         top edge once a range is set
- * @param {string|undefined} props.placeholder - Shown when no range is set
- * @param {number|undefined} props.minYear - First year offered
- * @param {number|undefined} props.maxYear - Last year offered
- * @param {string|undefined} props.fromLabel - Label for the start input
- * @param {string|undefined} props.toLabel - Label for the end input
- * @param {string|undefined} props.clearLabel - Label for the clear button
- * @param {string|undefined} props.name - Names hidden inputs <name>Min and
- *                                        <name>Max holding the range
- * @param {string|undefined} props.doneLabel - Label for the done button
- * @param {string|undefined} props.previousLabel - Accessible name for the
- *                                                previous month control
- * @param {string|undefined} props.nextLabel - Accessible name for the next
- *                                            month control
- * @param {boolean|undefined} props.disabled - Disables the trigger
- * @param {boolean|undefined} props.clearable - Show a control inside the field
- *                                             that clears it once a range is
- *                                             set
- * @returns {React.ReactElement} - The control
+ * @param props - React props
+ * @param props.value - The range, as YYYY-MM-DD strings
+ * @param props.onChange - Callback given the new range
+ * @param props.label - Names the control, and rises onto the
+ *                      top edge once a range is set
+ * @param props.placeholder - Shown when no range is set
+ * @param props.minYear - First year offered
+ * @param props.maxYear - Last year offered
+ * @param props.fromLabel - Label for the start input
+ * @param props.toLabel - Label for the end input
+ * @param props.clearLabel - Label for the clear button
+ * @param props.name - Names hidden inputs <name>Min and
+ *                     <name>Max holding the range
+ * @param props.doneLabel - Label for the done button
+ * @param props.previousLabel - Accessible name for the
+ *                              previous month control
+ * @param props.nextLabel - Accessible name for the next
+ *                          month control
+ * @param props.disabled - Disables the trigger
+ * @param props.clearable - Show a control inside the field
+ *                          that clears it once a range is
+ *                          set
+ * @returns - The control
  */
 function DateRange(props: {
     value: Range,
@@ -89,7 +88,7 @@ function DateRange(props: {
     /**
      * Closes the panel on a click outside the control
      *
-     * @param {MouseEvent} e - the click
+     * @param e - the click
      */
     const close = (e: MouseEvent) => {
       if (root.current && !root.current.contains(e.target as Node)) {
@@ -103,8 +102,7 @@ function DateRange(props: {
   /**
    * Formats a YYYY-MM-DD date for the trigger
    *
-   * @param {string} iso - the date
-   * @return {string}
+   * @param iso - the date
    */
   const format = (iso: string) => new Intl.DateTimeFormat(undefined, {
     year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
@@ -113,7 +111,7 @@ function DateRange(props: {
   /**
    * Sets one end of the range from a clicked day
    *
-   * @param {string} day - the day clicked, as YYYY-MM-DD
+   * @param day - the day clicked, as YYYY-MM-DD
    */
   const pick = (day: string) => {
     if (!start || end) {
@@ -128,7 +126,7 @@ function DateRange(props: {
   /**
    * Moves the calendar by a number of months
    *
-   * @param {number} by - months to move, negative for earlier
+   * @param by - months to move, negative for earlier
    */
   const shift = (by: number) => {
     const next = new Date(Date.UTC(year, month + by, 1));

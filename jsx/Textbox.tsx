@@ -8,24 +8,24 @@ import './Textbox.css';
  * This is the unwrapped control, with no label or form row around it.
  * TextboxElement renders it inside the usual form layout.
  *
- * @param {object} props - React props
- * @param {string} props.value - The current text
- * @param {function} props.onChange - Callback given the new text
- * @param {string|undefined} props.label - Names the control, and rises onto the
- *                                         top edge once it holds text
- * @param {boolean|undefined} props.search - Show the search affordances
- * @param {boolean|undefined} props.clearable - Show the clear control once the
- *                                             input holds text, without the
- *                                             magnifier
- * @param {string|undefined} props.placeholder - Placeholder for the input
- * @param {string|undefined} props.clearLabel - Accessible name for the clear control
- * @param {boolean|undefined} props.disabled - Disables the input
- * @param {boolean|undefined} props.required - Marks the input as required
- * @param {string|undefined} props.name - Name given to the input
- * @param {string|undefined} props.id - Id given to the input
- * @param {function|undefined} props.onBlur - Callback when the input loses focus
- * @param {string|undefined} props.autoComplete - Autocomplete hint for the input
- * @returns {React.ReactElement} - The input
+ * @param props - React props
+ * @param props.value - The current text
+ * @param props.onChange - Callback given the new text
+ * @param props.label - Names the control, and rises onto the
+ *                      top edge once it holds text
+ * @param props.search - Show the search affordances
+ * @param props.clearable - Show the clear control once the
+ *                          input holds text, without the
+ *                          magnifier
+ * @param props.placeholder - Placeholder for the input
+ * @param props.clearLabel - Accessible name for the clear control
+ * @param props.disabled - Disables the input
+ * @param props.required - Marks the input as required
+ * @param props.name - Name given to the input
+ * @param props.id - Id given to the input
+ * @param props.onBlur - Callback when the input loses focus
+ * @param props.autoComplete - Autocomplete hint for the input
+ * @returns - The input
  */
 function Textbox(props: {
     value: string,

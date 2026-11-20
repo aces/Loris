@@ -8,15 +8,15 @@ import './Button.css';
  *
  * This is the unwrapped control, with no form row around it.
  *
- * @param {object} props - React props
- * @param {React.ReactNode} props.children - The label
- * @param {function} props.onClick - Callback when pressed
- * @param {string|undefined} props.display - "primary" (the default),
- *                                           "secondary", "quiet" or "danger"
- * @param {boolean|undefined} props.disabled - Disables the button
- * @param {string|undefined} props.type - Button type, defaults to "button"
- * @param {string|undefined} props.title - Tooltip text
- * @returns {React.ReactElement} - The button
+ * @param props - React props
+ * @param props.children - The label
+ * @param props.onClick - Callback when pressed
+ * @param props.display - "primary" (the default),
+ *                        "secondary", "quiet" or "danger"
+ * @param props.disabled - Disables the button
+ * @param props.type - Button type, defaults to "button"
+ * @param props.title - Tooltip text
+ * @returns - The button
  */
 function Button(props: {
     children: React.ReactNode,

@@ -8,12 +8,12 @@ const GAP = 4;
  * opens below the control, or above it when only that side has room, and
  * stays inside the window. It follows the control as the page scrolls.
  *
- * @param {RefObject} anchor - the control the panel belongs to
- * @param {RefObject} panel - the open panel
- * @param {boolean} open - whether the panel is shown
- * @param {string} align - "start" lines the panel up with the control's left
- *                         edge, "end" with its right edge
- * @return {CSSProperties} the panel's position
+ * @param anchor - the control the panel belongs to
+ * @param panel - the open panel
+ * @param open - whether the panel is shown
+ * @param align - "start" lines the panel up with the control's left
+ *                edge, "end" with its right edge
+ * @return the panel's position
  */
 export default function useFloatingPanel(
   anchor: RefObject<HTMLElement | null>,
