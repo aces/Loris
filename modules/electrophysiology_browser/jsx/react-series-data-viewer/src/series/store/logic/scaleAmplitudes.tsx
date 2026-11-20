@@ -16,8 +16,8 @@ export type Action = (_: (_: any) => void) => void;
 /**
  * createScaleAmplitudesEpic
  *
- * @param {Function} fromState - A function to parse the current state
- * @returns {Observable<Action>} - A stream of actions
+ * @param fromState - A function to parse the current state
+ * @returns - A stream of actions
  */
 export const createScaleAmplitudesEpic = (fromState: (_: any) => number) => (
   action$: Observable<any>,
@@ -42,7 +42,7 @@ export const createScaleAmplitudesEpic = (fromState: (_: any) => number) => (
 /**
  * createResetAmplitudesEpic
  *
- * @returns {Observable<Action>} - A stream of actions
+ * @returns - A stream of actions
  */
 export const createResetAmplitudesEpic = () => (
   action$: Observable<any>,

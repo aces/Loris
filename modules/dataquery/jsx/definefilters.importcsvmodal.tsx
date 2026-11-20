@@ -9,11 +9,11 @@ import {useTranslation} from 'react-i18next';
 /**
  * Render a modal window for adding a filter
  *
- * @param {object} props - React props
- * @param {function} props.setQuery - Function to set the current criteria
- * @param {function} props.closeModal - Callback to close the current modal
- * @param {string[]} props.visitLabels - Array of allowed visit label values
- * @returns {React.ReactElement} - The import modal window
+ * @param props - React props
+ * @param props.setQuery - Function to set the current criteria
+ * @param props.closeModal - Callback to close the current modal
+ * @param props.visitLabels - Array of allowed visit label values
+ * @returns - The import modal window
  */
 function ImportCSVModal(props: {
     setQuery: (root: QueryGroup) => void,
@@ -28,7 +28,7 @@ function ImportCSVModal(props: {
   /**
    * Promise for handling modal closing. Always accepts.
    *
-   * @returns {Promise} - a stub promise
+   * @returns - a stub promise
    */
   const submitPromise = () =>
     new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ function ImportCSVModal(props: {
   /**
    * Callback function for after papaparse has parsed the csv
    *
-   * @param {any} value - the value from papaparse callback
+   * @param value - the value from papaparse callback
    */
   const csvParsed = (value: Papa.ParseResult<any>) => {
     if (value.errors && value.errors.length > 0) {

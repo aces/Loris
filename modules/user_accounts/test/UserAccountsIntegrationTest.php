@@ -248,6 +248,64 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
+     * Tests saving and following the breadcrumb for an email-style username.
+     *
+     * @return void
+     */
+    function testEditEmailUsername(): void
+    {
+        $username = 'tester+review@example.com';
+        $this->DB->update('users', ['UserID' => $username], ['ID' => 999995]);
+        try {
+            $this->_verifyUserModification($username, 'First_name', 'SavedFirst');
+            $this->safeClick(WebDriverBy::linkText('Edit User'));
+            $this->assertEquals(
+                'SavedFirst',
+                $this->safeFindElement(WebDriverBy::Name('First_name'))
+                    ->getAttribute('value')
+            );
+        } finally {
+            $this->DB->update(
+                'users',
+                ['UserID' => self::UNITTESTERTWO_USERNAME],
+                ['ID' => 999995]
+            );
+        }
+    }
+
+    /**
+     * Tests that saving with every permission unchecked removes them all.
+     *
+     * @return void
+     */
+    function testAllPermissionsCanBeRemoved(): void
+    {
+        $this->DB->insert(
+            'user_perm_rel',
+            [
+                'userID' => 999995,
+                'permID' => 4,
+            ]
+        );
+        $this->_accessUser(self::UNITTESTERTWO_USERNAME);
+
+        $permissions = $this->webDriver->findElements(
+            WebDriverBy::cssSelector('input[name^="permID["]:checked')
+        );
+        $this->assertNotEmpty($permissions);
+        foreach ($permissions as $permission) {
+            $permission->click();
+        }
+        $this->submit();
+
+        $remaining = $this->DB->pselectOne(
+            'SELECT COUNT(*) FROM user_perm_rel WHERE userID = :userID',
+            ['userID' => 999995]
+        );
+        $this->assertSame(0, (int) $remaining);
+    }
+
+    /**
      * Tests that the creation of a new user works.
      *
      * @return void
@@ -315,10 +373,13 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
         $this->submit();
-        // Reload
-        $this->_accessUser($userId);
+        $this->safeClick(WebDriverBy::cssSelector('.swal2-confirm'));
+        $this->assertStringContainsString(
+            '/user_accounts/edit_user/' . rawurlencode($userId),
+            $this->webDriver->getCurrentURL()
+        );
 
-        // Verify changes appear on the page
+        // Verify the saved page keeps the values without a manual reload.
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
             $this->assertEquals($field->getAttribute('value'), $newValue);
@@ -530,7 +591,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function _accessUser($userId)
     {
         $this->safeGet(
-            $this->url . "/user_accounts/edit_user/?identifier=$userId"
+            $this->url . "/user_accounts/edit_user/?identifier="
+            . rawurlencode($userId)
         );
     }
 
@@ -548,4 +610,3 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
 }
-

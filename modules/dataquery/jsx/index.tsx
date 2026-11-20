@@ -35,9 +35,9 @@ type ActiveCategoryType = {
 /**
  * React hook to manage the selection of an active module and category
  *
- * @param {function} retrieveModuleDictionary - a function that will return a
+ * @param retrieveModuleDictionary - a function that will return a
                          promise to retrieve the module's dictionary
- * @returns {ActiveCategoryType} - an object of the current dictionary and action to change it
+ * @returns - an object of the current dictionary and action to change it
  */
 function useActiveCategory(
   retrieveModuleDictionary: (module: string) => Promise<ModuleDictionary>
@@ -49,9 +49,8 @@ function useActiveCategory(
    * Change the current category, retrieving the module dictionary from
    * the server if necessary.
    *
-   * @param {string} module - the module to become active
-   * @param {string} category - the category to become active
-   * @returns {void}
+   * @param module - the module to become active
+   * @param category - the category to become active
    */
   const changeCategory = (module: string, category: string) => {
     retrieveModuleDictionary(module).then( (dict) => {
@@ -71,11 +70,11 @@ function useActiveCategory(
 /**
  * Return the main page for the DQT
  *
- * @param {object} props - React props
- * @param {TFunction} props.t - useTranslation
- * @param {boolean} props.queryAdmin - true if the current user has permission to administer study queries
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.queryAdmin - true if the current user has permission to administer study queries
  *
- * @returns {React.ReactElement} - The main page of the app
+ * @returns - The main page of the app
  */
 function DataQueryApp(props: {
     t: TFunction,
@@ -117,8 +116,8 @@ function DataQueryApp(props: {
   /**
    * Maps a module name from the backend name to a human friendly name.
    *
-   * @param {string} name - The module name
-   * @returns {string} - the human friendly name
+   * @param name - The module name
+   * @returns - the human friendly name
    */
   const mapModuleName = (name: string): string => {
     if (categories && categories.modules) {
@@ -129,9 +128,9 @@ function DataQueryApp(props: {
     /**
      * Maps a category name from the backend name to a human friendly name.
      *
-     * @param {string} module - The module name
-     * @param {string} category - The category name within the module
-     * @returns {string} - the human friendly name
+     * @param module - The module name
+     * @param category - The category name within the module
+     * @returns - the human friendly name
      */
   const mapCategoryName = (module: string, category: string): string => {
     if (categories && categories.categories
@@ -144,8 +143,7 @@ function DataQueryApp(props: {
   /**
    * Function to retrieve a module's data dictionary from the server.
    *
-   * @param {string} module - the module whole fields should be retrieved
-   * @returns {void}
+   * @param module - the module whole fields should be retrieved
    */
   const getModuleFields = (module: string): void => {
     fetchModuleDictionary(module);

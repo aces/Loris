@@ -24,13 +24,13 @@ import {TFunction} from 'i18next';
 /**
  * Renders a selectable list of visits
  *
- * @param {object} props - React props
- * @param {TFunction} props.t - useTranslation
- * @param {string[]} props.selected - The currently selected visits
- * @param {string[]} props.options - The valid options
- * @param {function} props.onChange - callback when the value selected changes
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.selected - The currently selected visits
+ * @param props.options - The valid options
+ * @param props.onChange - callback when the value selected changes
  *
- * @returns {React.ReactElement} - The visit list dropdown
+ * @returns - The visit list dropdown
  */
 function VisitList(props: {
     t: TFunction,
@@ -64,8 +64,8 @@ function VisitList(props: {
             /**
              * Required for rendering properly on top of window.
              *
-             * @param {object} base - The base from React Select
-             * @returns {object} - The new CSS object
+             * @param base - The base from React Select
+             * @returns - The new CSS object
              */
             (base) => ({...base, zIndex: 9999})}
     }
@@ -76,17 +76,17 @@ function VisitList(props: {
 /**
  * Render a modal window for adding a filter
  *
- * @param {object} props - React props
- * @param {TFunction} props.t - useTranslation
- * @param {QueryGroup} props.query - The current query
- * @param {function} props.closeModal - Callback to close the modal
- * @param {function} props.addQueryGroupItem - Callback to add criteria to a querygroup
- * @param {CategoriesAPIReturn} props.categories - List of categories
- * @param {function} props.onCategoryChange - Callback to change the current category
- * @param {DictionaryCategory} props.displayedFields - The fields from the current category to display
- * @param {string} props.module - The module of the currently selected category
- * @param {string} props.category - The currently selected category
- * @returns {React.ReactElement} - The modal window
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.query - The current query
+ * @param props.closeModal - Callback to close the modal
+ * @param props.addQueryGroupItem - Callback to add criteria to a querygroup
+ * @param props.categories - List of categories
+ * @param props.onCategoryChange - Callback to change the current category
+ * @param props.displayedFields - The fields from the current category to display
+ * @param props.module - The module of the currently selected category
+ * @param props.category - The currently selected category
+ * @returns - The modal window
  */
 function AddFilterModal(props: {
     t: TFunction,
@@ -149,13 +149,15 @@ function AddFilterModal(props: {
       <h3>{t('Criteria', {ns: 'dataquery'})}</h3>
       <div style={{display: 'flex'}}>
         <div style={{width: '40%'}}>
-          <FilterableSelectGroup groups={
-            {'Operators': getOperatorOptions(fieldDictionary, t)}
-          }
-          onChange={(value: string, operator: string) => {
-            setOp(operator as Operators);
-          }}
-          placeholder={t('Select an operator', {ns: 'dataquery'})}
+          <FilterableSelectGroup
+            key={fieldname}
+            groups={
+              {'Operators': getOperatorOptions(fieldDictionary, t)}
+            }
+            onChange={(value: string, operator: string) => {
+              setOp(operator as Operators);
+            }}
+            placeholder={t('Select an operator', {ns: 'dataquery'})}
           />
         </div>
         <div style={{width: '60%'}}>{valueSelect}</div>
@@ -209,7 +211,7 @@ function AddFilterModal(props: {
    * Function that returns a promise on the modal's submission to check
    * if the input is valid.
    *
-   * @returns {Promise} - Promise that resolves if input is valid and rejects otherwise
+   * @returns - Promise that resolves if input is valid and rejects otherwise
    */
   const submitPromise = () =>
     new Promise((resolve, reject) => {
@@ -320,10 +322,10 @@ function AddFilterModal(props: {
 /**
  * Get a list of possible query operators based on a field's dictionary
  *
- * @param {object} dict - the field dictionary
- * @param {TFunction} t useTranslation
+ * @param dict - the field dictionary
+ * @param t useTranslation
  *
- * @returns {object} - list of options for this dictionary
+ * @returns - list of options for this dictionary
  */
 function getOperatorOptions(dict: FieldDictionary, t: TFunction) {
   let options: {[operator: string]: string};
@@ -385,12 +387,12 @@ function getOperatorOptions(dict: FieldDictionary, t: TFunction) {
  * Returns an input field for getting the value of a filter criteria
  * in a context-sensitive way
  *
- * @param {object} fielddict - The field dictionary
- * @param {string} op - The operator selected
- * @param {string|string[]} value - The current value
- * @param {string} setValue - a callback when a new value is selected
- * @param {TFunction} t - Translation function from i18next
- * @returns {React.ReactElement} - the react element
+ * @param fielddict - The field dictionary
+ * @param op - The operator selected
+ * @param value - The current value
+ * @param setValue - a callback when a new value is selected
+ * @param t - Translation function from i18next
+ * @returns - the react element
  */
 function valueInput(fielddict: FieldDictionary,
   op: Operators,
@@ -412,7 +414,7 @@ function valueInput(fielddict: FieldDictionary,
       onUserInput={(name: string, value: string) => setValue(value)} />;
   }
 
-  const dropdownTitle = t('Value', {ns: 'dataquery'});
+  const dropdownTitle = t('Value', {ns: 'dataquery', count: 1});
 
   switch (fielddict.type) {
   case 'date':

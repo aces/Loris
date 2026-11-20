@@ -4,6 +4,9 @@ Ensure that users with `data_release_view` permission only can see the data rele
 module without the 'Upload File', 'Add Permission' and 'Manage Permissions' 
 buttons at the top of the data table.
 
+Ensure that users with `data_release_download_all` permission can see and
+download every release file without entries in `data_release_permissions`.
+
 
 ## Upload File
 

@@ -98,3 +98,12 @@ msgstr "Permission refusée : vous ne pouvez pas assigner un examinateur à ce s
 
 msgid "This examiner already exists."
 msgstr "Cet examinateur existe déjà."
+
+msgid "Not Certified"
+msgstr "Non certifié"
+
+msgid "In Training"
+msgstr "En formation"
+
+msgid "Certified"
+msgstr "Certifié"

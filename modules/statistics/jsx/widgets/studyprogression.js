@@ -41,7 +41,7 @@ const StudyProgression = (props) => {
     newdetails['project_sizes']['size_byproject']['yLabel']
       = t('Size (GB)', {ns: 'statistics'});
     newdetails['project_sizes']['size_byproject']['titlePrefix']
-      = t('Project', {ns: 'loris'});
+      = t('Project', {ns: 'loris', count: 1});
     setChartDetails(newdetails);
   }, []);
 
@@ -91,7 +91,7 @@ const StudyProgression = (props) => {
         options: {pie: 'pie', bar: 'bar'},
         chartObject: null,
         yLabel: t('Size (GB)', {ns: 'statistics'}),
-        titlePrefix: t('Project', {ns: 'loris'}),
+        titlePrefix: t('Project', {ns: 'loris', count: 1}),
       },
     },
   });

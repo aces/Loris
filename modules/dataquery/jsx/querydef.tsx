@@ -12,12 +12,12 @@ export class QueryTerm {
     /**
      * Constructor
      *
-     * @param {string} module - the module name
-     * @param {string} category - the field name
-     * @param {string} fieldname - the field name within the module
-     * @param {string} op - the criteria operator
-     * @param {string} value - the criteria value
-     * @param {array} visits - the visits for the criteria
+     * @param module - the module name
+     * @param category - the field name
+     * @param fieldname - the field name within the module
+     * @param op - the criteria operator
+     * @param value - the criteria value
+     * @param visits - the visits for the criteria
      */
     constructor(
       module: string,
@@ -46,7 +46,7 @@ export class QueryGroup {
     /**
      * Constructor
      *
-     * @param {string} op -- 'and' or 'or' -- the operator used for this group
+     * @param op -- 'and' or 'or' -- the operator used for this group
      */
     constructor(op: 'and' | 'or') {
       this.operator = op;
@@ -56,7 +56,7 @@ export class QueryGroup {
     /**
      * Adds a term to this group
      *
-     * @param {object} condition - the term's conditions
+     * @param condition - the term's conditions
      */
     addTerm(condition: QueryTerm) {
       this.group.push(condition);
@@ -65,8 +65,8 @@ export class QueryGroup {
     /**
      * Removes the term and index idx from this group
      *
-     * @param {number} idx - the index to remove
-     * @returns {QueryGroup} - the new querygroup
+     * @param idx - the index to remove
+     * @returns - the new querygroup
      */
     removeTerm(idx: number): QueryGroup {
       this.group = this.group.filter((el, fidx) => {

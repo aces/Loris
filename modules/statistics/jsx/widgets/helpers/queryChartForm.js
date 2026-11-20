@@ -135,7 +135,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px', display: 'block'}}>
-              {t('Project', {ns: 'loris'})}</label>
+              {t('Project', {ns: 'loris', count: 1})}</label>
             <SelectElement
               name ='selectedProjects'
               options ={{__clear__: clearSelection,
@@ -181,7 +181,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>{t('Site', {ns: 'loris'})}</label>
+              display: 'block'}}>{t('Site', {ns: 'loris', count: 1})}</label>
             <SelectElement
               name ='selectedSites'
               options ={{__clear__: clearSelection, ...options.sites}}
@@ -203,7 +203,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>{t('Visit', {ns: 'loris'})}</label>
+              display: 'block'}}>{t('Visit Label', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedVisits'
               options ={{__clear__: clearSelection,

@@ -105,7 +105,7 @@ type CandidateInfoProps = Pick<
 /**
  * Render the candidate summary table.
  *
- * @param {CandidateInfoProps} props Component properties
+ * @param props Component properties
  * @return Candidate summary
  */
 function CandidateInfo({
@@ -130,7 +130,7 @@ function CandidateInfo({
           <th>{t('Derived Age', {ns: 'timepoint_list'})}</th>
           <th>{t('EDC Age', {ns: 'timepoint_list'})}</th>
           <th>{t('Biological Sex', {ns: 'timepoint_list'})}</th>
-          <th>{t('Project', {ns: 'loris'})}</th>
+          <th>{t('Project', {ns: 'loris', count: 1})}</th>
           {displayParameters.map(([name]) => <th key={name}>{name}</th>)}
         </tr>
       </thead>
@@ -156,7 +156,7 @@ type ActionsProps = Pick<TimepointListData, 'actions' | 'candID'>
 /**
  * Render the actions available for this candidate.
  *
- * @param {ActionsProps} props Component properties
+ * @param props Component properties
  * @return Candidate actions, when available
  */
 function Actions({actions, candID, t}: ActionsProps
@@ -217,7 +217,7 @@ type TimepointRowsProps = Pick<TimepointListData, 'candID' | 'timePoints'>
 /**
  * Render the visit rows.
  *
- * @param {TimepointRowsProps} props Component properties
+ * @param props Component properties
  * @return Visit rows
  */
 function TimepointRows({candID, timePoints, t}: TimepointRowsProps
@@ -331,7 +331,7 @@ type TimepointTableProps = Pick<TimepointListData, 'candID' | 'timePoints'>
 /**
  * Render the visit table.
  *
- * @param {TimepointTableProps} props Component properties
+ * @param props Component properties
  * @return Visit table
  */
 function TimepointTable({candID, timePoints, t}: TimepointTableProps
@@ -352,9 +352,9 @@ function TimepointTable({candID, timePoints, t}: TimepointTableProps
               {t('Visit Label', {ns: 'loris'})}<br/>
               ({t('Click to Open', {ns: 'timepoint_list'})})
             </th>
-            <th>{t('Cohort', {ns: 'loris'})}</th>
-            <th>{t('Site', {ns: 'loris'})}</th>
-            <th>{t('Project', {ns: 'loris'})}</th>
+            <th>{t('Cohort', {ns: 'loris', count: 1})}</th>
+            <th>{t('Site', {ns: 'loris', count: 1})}</th>
+            <th>{t('Project', {ns: 'loris', count: 1})}</th>
             <th>{t('Stage', {ns: 'loris'})}</th>
             <th>{t('Stage Status', {ns: 'timepoint_list'})}</th>
             <th>{t('Date of Stage', {ns: 'timepoint_list'})}</th>
@@ -383,7 +383,7 @@ type TimepointListProps = WithTranslation & {
 /**
  * Load and render the timepoint list.
  *
- * @param {TimepointListProps} props Component properties
+ * @param props Component properties
  * @return Timepoint list page
  */
 function TimepointList({dataURL, t}: TimepointListProps): React.ReactElement {

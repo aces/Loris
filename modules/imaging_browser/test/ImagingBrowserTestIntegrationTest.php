@@ -191,25 +191,21 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'tarchive',
             [
                 'TarchiveID'             => 263,
-                'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+                'StudyInstanceUID'       => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000004',
                 'PatientID'              => 'AOL0002_000002_Test1',
                 'PatientName'            => 'AOL0002_000002_Test1',
-                'CenterName'             => 'Test site AOL',
+                'InstitutionName'        => 'Test site AOL',
                 'AcquisitionCount'       => 10,
                 'NonDicomFileCount'      => 3,
                 'DicomFileCount'         => 1000,
                 'CreatingUser'           => 'lorisdev',
-                'sumTypeVersion'         => 1,
                 'SourceLocation'         => '/data/incoming/AOL0002_000002_Test1',
                 'ScannerManufacturer'    => 'Siemens',
                 'ScannerModel'           => 'TrioTim',
                 'ScannerSerialNumber'    => '33333',
                 'ScannerSoftwareVersion' => 'syngo MR B17',
-                'uploadAttempt'          => 1,
-                'AcquisitionMetadata'    => 'metadata',
                 'SessionID'              => 999998,
-                'PendingTransfer'        => 1,
             ]
         );
 
@@ -217,25 +213,21 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'tarchive',
             [
                 'TarchiveID'             => 264,
-                'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+                'StudyInstanceUID'       => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000001',
                 'PatientID'              => 'BOL0003_000003_Test2',
                 'PatientName'            => 'BOL0003_000003_Test2',
-                'CenterName'             => 'Test site BOL',
+                'InstitutionName'        => 'Test site BOL',
                 'AcquisitionCount'       => 10,
                 'NonDicomFileCount'      => 3,
                 'DicomFileCount'         => 1000,
                 'CreatingUser'           => 'lorisdev',
-                'sumTypeVersion'         => 1,
                 'SourceLocation'         => '/data/incoming/BOL0003_000003_Test2',
                 'ScannerManufacturer'    => 'Siemens',
                 'ScannerModel'           => 'TrioTim',
                 'ScannerSerialNumber'    => '33336',
                 'ScannerSoftwareVersion' => 'syngo MR B17',
-                'uploadAttempt'          => 1,
-                'AcquisitionMetadata'    => 'metadata',
                 'SessionID'              => 999999,
-                'PendingTransfer'        => 1,
             ]
         );
 

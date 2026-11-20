@@ -91,6 +91,7 @@ DROP TABLE IF EXISTS `help`;
 
 -- 0000-00-03-ConfigTables.sql
 DROP TABLE IF EXISTS `ConfigI18n`;
+DROP TABLE IF EXISTS `ConfigMappings`;
 DROP TABLE IF EXISTS `Config`;
 DROP TABLE IF EXISTS `ConfigSettings`;
 DROP TABLE IF EXISTS `ConfigCategories`;
@@ -169,6 +170,7 @@ DROP TABLE IF EXISTS `login_summary_statistics`;
 
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
+DROP TABLE IF EXISTS `parameter_candidate_rules`;
 DROP TABLE IF EXISTS `parameter_candidate`;
 DROP TABLE IF EXISTS `parameter_type_override`;
 DROP TABLE IF EXISTS `parameter_type_category_rel`;
@@ -278,6 +280,9 @@ DROP TABLE IF EXISTS `session_status`;
 DROP TABLE IF EXISTS `session`;
 DROP TABLE IF EXISTS `user_psc_rel`;
 DROP TABLE IF EXISTS `user_project_rel`;
+DROP TABLE IF EXISTS `candidate_identifiers`;
+DROP TABLE IF EXISTS `candidate_identifier_types_project_rel`;
+DROP TABLE IF EXISTS `candidate_identifier_types`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
 DROP TABLE IF EXISTS `users`;
@@ -290,3 +295,6 @@ DROP TABLE IF EXISTS `project_cohort_rel`;
 DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `cohort`;
+
+DROP TABLE IF EXISTS `bids_file`;
+DROP TABLE IF EXISTS `bids_dataset`;

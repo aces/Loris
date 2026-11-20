@@ -5,8 +5,8 @@ import {fetchBlob} from '../ajax';
 /**
  * fetchChunk
  *
- * @param {string} url - The url to fetch
- * @returns {Promise} - The chunk data
+ * @param url - The url to fetch
+ * @returns - The chunk data
  */
 export const fetchChunk = (url: string): Promise<typeof FloatChunk> => {
   return fetchBlob(url).then((blob) => {

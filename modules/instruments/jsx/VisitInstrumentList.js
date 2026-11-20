@@ -306,7 +306,7 @@ class VisitInstrumentList extends Component {
                   <dd>{this.props.Visit.Meta.Battery}</dd>
                 </div>
                 <div style={termstyle}>
-                  <dt>{this.props.t('Site', {ns: 'loris'})}</dt>
+                  <dt>{this.props.t('Site', {ns: 'loris', count: 1})}</dt>
                   <dd>{this.props.Visit.Meta.Site}</dd>
                 </div>
                 {vdate}

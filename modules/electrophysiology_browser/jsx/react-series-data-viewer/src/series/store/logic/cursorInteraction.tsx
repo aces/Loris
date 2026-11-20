@@ -14,8 +14,8 @@ export type Action = (_: (_: any) => void) => void;
 /**
  * createChannelInteractionEpic
  *
- * @param {Function} fromState - A function to parse the current state
- * @returns {Observable<Action>} - A stream of actions
+ * @param fromState - A function to parse the current state
+ * @returns - A stream of actions
  */
 export const createCursorInteractionEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
@@ -55,9 +55,9 @@ export const createCursorInteractionEpic = (fromState: (_: any) => any) => (
 /**
  * getChannelsAtCursor
  *
- * @param {[number, number]} cursorPosition - Cursor position from mouseMove callback
- * @param {object} viewerRef - Reference to corresponding ResponsiveViewer
- * @returns {Array} - The output signal
+ * @param cursorPosition - Cursor position from mouseMove callback
+ * @param viewerRef - Reference to corresponding ResponsiveViewer
+ * @returns - The output signal
  */
 const getChannelsAtCursor = (cursorPosition, viewerRef) => {
   if (cursorPosition === null || viewerRef === null) return [];

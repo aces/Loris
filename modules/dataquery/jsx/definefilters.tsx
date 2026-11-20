@@ -12,32 +12,33 @@ import {calcPayload} from './calcpayload';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import React from 'react';
 import {Trans, useTranslation} from 'react-i18next';
+import swal from 'sweetalert2';
 
 /**
  * The define filters tab of the DQT
  *
- * @param {object} props - React props
- * @param {APIQueryField[]} props.fields - The fields selected
- * @param {QueryGroup} props.query - The criteria currently selected
- * @param {function} props.setQuery - Sets the current criteria
- * @param {CategoriesAPIReturn} props.categories - The list of categories displayed
- * @param {DictionaryCategory} props.displayedFields - All fields from the currently selected category
- * @param {string} props.module - The module of the currently selected module
- * @param {string} props.category - The currently selected category
- * @param {function} props.onCategoryChange - Callback to call when the category changes
- * @param {FullDictionary} props.fulldictionary - The fully loaded dictionary
- * @param {function} props.mapModuleName - Mapper from backend name to frontend name
- * @param {function} props.mapCategoryName - Mapper from backend name to frontend name
- * @param {function} props.getModuleFields - Function that will ensure a module's fields
+ * @param props - React props
+ * @param props.fields - The fields selected
+ * @param props.query - The criteria currently selected
+ * @param props.setQuery - Sets the current criteria
+ * @param props.categories - The list of categories displayed
+ * @param props.displayedFields - All fields from the currently selected category
+ * @param props.module - The module of the currently selected module
+ * @param props.category - The currently selected category
+ * @param props.onCategoryChange - Callback to call when the category changes
+ * @param props.fulldictionary - The fully loaded dictionary
+ * @param props.mapModuleName - Mapper from backend name to frontend name
+ * @param props.mapCategoryName - Mapper from backend name to frontend name
+ * @param props.getModuleFields - Function that will ensure a module's fields
  *                                           are fully populated in fulldictionary
- * @param {function} props.addQueryGroupItem - Function that will add a new term to the
+ * @param props.addQueryGroupItem - Function that will add a new term to the
  *                                             existing QueryGroup
- * @param {function} props.addNewQueryGroup - Function that will add a new QueryGroup subgroup
+ * @param props.addNewQueryGroup - Function that will add a new QueryGroup subgroup
  *                                           to the existing QueryGroup
- * @param {function} props.removeQueryGroupItem - Function that will remove an item from a
+ * @param props.removeQueryGroupItem - Function that will remove an item from a
  *                                                QueryGroup by index.
- * @param {string[]} props.visitLabels - Array of allowed visit label values
- * @returns {React.ReactElement} - The Define Filters page
+ * @param props.visitLabels - Array of allowed visit label values
+ * @returns - The Define Filters page
  */
 function DefineFilters(props: {
     fields: APIQueryField[],
@@ -75,6 +76,43 @@ function DefineFilters(props: {
   const [modalQueryGroup, setModalGroup] = useState(props.query);
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
   const [queryMatches, setQueryMatches] = useState(null);
+
+  /**
+   * Clear all the filters currently added
+   *
+   * @param e - React Mouse Event
+   */
+  const clearAllFilters = (e: React.MouseEvent) => {
+    e.preventDefault();
+    swal.fire({
+      title: t('Are you sure?', {ns: 'loris'}),
+      text: t(
+        'This will remove all currently selected filters',
+        {ns: 'dataquery'},
+      ),
+      type: 'warning',
+      focusCancel: true,
+      showCancelButton: true,
+      confirmButtonText: t('Yes', {ns: 'loris'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
+    }).then((result) => {
+      if (result.value) {
+        const emptyQuery = new QueryGroup('and');
+        props.setQuery(emptyQuery);
+        setModalGroup(emptyQuery);
+      }
+    });
+  };
+
+  const removeFiltersButton = (
+    <ButtonElement
+      label={t('Remove all filters', {ns: 'dataquery'})}
+      columnSize="col-sm-12"
+      buttonClass='btn btn-danger btn-remove'
+      onUserInput={clearAllFilters}
+    />
+  );
+
   useEffect(() => {
     setQueryMatches(null);
     if (!props.fields || props.fields.length === 0) {
@@ -322,7 +360,11 @@ function DefineFilters(props: {
               style={{cursor: 'pointer'}} />
             </div>
           </div>
-          <div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
             <div style={bGroupStyle}>
               <ButtonElement
                 label={t('Add "and" condition', {ns: 'dataquery'})}
@@ -340,6 +382,9 @@ function DefineFilters(props: {
                   setAddModal(true);
                   props.query.operator = 'or';
                 }} />
+            </div>
+            <div style={{marginTop: '1ex'}}>
+              {removeFiltersButton}
             </div>
           </div>
           {toggleAdvancedButton}
@@ -371,6 +416,7 @@ function DefineFilters(props: {
             newGroup={props.addNewQueryGroup}
             fulldictionary={props.fulldictionary}
             setDeleteItemIndex={setDeleteItemIndex}
+            extraButton={removeFiltersButton}
           />
         </fieldset>
       </form>

@@ -89,7 +89,7 @@ class ContainerForm extends Component {
           <div className="col-xs-11">
             <SelectElement
               name="centerId"
-              label={t('Site', {ns: 'loris'})}
+              label={t('Site', {ns: 'loris', count: 1})}
               options={options.centers}
               onUserInput={this.setCurrent}
               required={true}

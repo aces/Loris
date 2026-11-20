@@ -604,7 +604,7 @@ class Specimen implements
             $this->setCenterId(new \CenterID(strval($data['centerId'])));
         }
         if (isset($data['projectId'])) {
-            $this->setProjectId($data['projectId']);
+            $this->setProjectId(new \ProjectID(strval($data['projectId'])));
         }
         if (isset($data['fTCycle'])) {
             $this->setFTCycle((int) $data['fTCycle']);
