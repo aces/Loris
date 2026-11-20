@@ -649,3 +649,158 @@ msgstr ""
 
 msgid "Registration Cohort"
 msgstr ""
+
+# Date range strings
+msgid "Any date"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+msgid "Next month"
+msgstr ""
+
+msgid "Previous month"
+msgstr ""
+
+# RecordTable strings
+msgid "Actions"
+msgstr ""
+
+msgid "Cards"
+msgstr ""
+
+msgid "Clear all"
+msgstr ""
+
+msgid "Clear search"
+msgstr ""
+
+msgid "Clear selection"
+msgstr ""
+
+msgid "Clear {{label}}"
+msgstr ""
+
+msgid "Click to sort, shift-click to add a sort. Drag, or Alt and an arrow key, to move."
+msgstr ""
+
+msgid "Columns"
+msgstr ""
+
+msgid "Delete view {{name}}"
+msgstr ""
+
+msgid "Display"
+msgstr ""
+
+msgid "Download CSV"
+msgstr ""
+
+msgid "Download selected"
+msgstr ""
+
+msgid "EDC"
+msgstr ""
+
+msgid "Every column is hidden."
+msgstr ""
+
+msgid "Filtered from {{count}}"
+msgstr ""
+
+msgid "Find a column…"
+msgstr ""
+
+msgid "Group by"
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "Loading…"
+msgstr ""
+
+msgid "Next page"
+msgstr ""
+
+msgid "Next record"
+msgstr ""
+
+msgid "No date"
+msgstr ""
+
+msgid "No records match."
+msgstr ""
+
+msgid "Previous page"
+msgstr ""
+
+msgid "Previous record"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Rows per page"
+msgstr ""
+
+msgid "Save as new view…"
+msgstr ""
+
+msgid "Save view…"
+msgstr ""
+
+msgid "Saves the filters, sort, grouping, layout and columns for you, in this browser."
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "Select all rows on this page"
+msgstr ""
+
+msgid "Select all {{count}}"
+msgstr ""
+
+msgid "Select row"
+msgstr ""
+
+msgid "Selection"
+msgstr ""
+
+msgid "Show all columns"
+msgstr ""
+
+msgid "Show filters"
+msgstr ""
+
+msgid "Table"
+msgstr ""
+
+msgid "View name"
+msgstr ""
+
+msgid "day"
+msgstr ""
+
+msgid "month"
+msgstr ""
+
+msgid "one row at a time"
+msgstr ""
+
+msgid "year"
+msgstr ""
+
+msgid "{{count}} selected"
+msgstr ""
+
+msgid "{{first}}–{{last}} of {{total}}"
+msgstr ""
+
+msgid "↑ ↓ to move between records · Esc to close"
+msgstr ""
