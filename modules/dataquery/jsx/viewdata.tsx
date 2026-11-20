@@ -391,8 +391,8 @@ function ViewData(props: {
          * Helper function to check if a row has any instrument data
          * (not just candidate metadata like PSCID)
          *
-         * @param {TableRow} row - The row to check
-         * @returns {boolean} - true if row has data
+         * @param row - The row to check
+         * @returns - true if row has data
          */
         const rowHasData = (row: TableRow): boolean => {
           // Cross-sectional mode prepends a 'Visit' column, so field indices are offset by 1
