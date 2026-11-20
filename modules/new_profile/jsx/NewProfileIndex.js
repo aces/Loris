@@ -8,6 +8,7 @@ import {
   SelectElement,
   DateElement,
   TextboxElement,
+  CheckboxElement,
   FormElement,
   ButtonElement,
   FieldsetElement,
@@ -135,6 +136,31 @@ class NewProfileIndex extends React.Component {
       }
     });
 
+    const identifiers = [];
+
+    this.getVisibleIdentifierTypes().forEach((type) => {
+      const name = `Identifier${type.CandidateIdentifierTypeID}`;
+      const value = formData[name];
+
+      if (typeof value === 'string' && value.trim() !== '') {
+        identifiers.push({
+          CandidateIdentifierTypeID: type.CandidateIdentifierTypeID,
+          Value: value,
+        });
+      }
+    });
+
+    this.getOptionalAutoIdentifierTypes().forEach((type) => {
+      const name = `GenerateIdentifier${type.CandidateIdentifierTypeID}`;
+
+      if (formData[name] === true) {
+        identifiers.push({
+          CandidateIdentifierTypeID: type.CandidateIdentifierTypeID,
+          Generate: true,
+        });
+      }
+    });
+
     let candidateObject = {
       'Candidate': {
         'Project': formData.project,
@@ -142,6 +168,7 @@ class NewProfileIndex extends React.Component {
         'Sex': formData.sex,
         'Site': configData.site[formData.site],
         'Parameters': parameters,
+        'Identifiers': identifiers,
       },
     };
 
@@ -222,6 +249,79 @@ class NewProfileIndex extends React.Component {
     const extraParameters = this.state.configData.extraParameters || [];
     return extraParameters.filter(
       (parameter) => parameter.Project === this.state.formData.project
+    );
+  }
+
+  /**
+ * Return manual identifier types applicable to the selected project.
+ *
+ * @return {Array} Identifier types to display
+ */
+  getVisibleIdentifierTypes() {
+    const identifierTypes = this.state.configData.identifierTypes || [];
+    const project = this.state.formData.project;
+
+    return identifierTypes.filter((type) =>
+      !type.AutoGenerate &&
+      (type.Projects.length === 0 || type.Projects.includes(project))
+    );
+  }
+
+  /**
+ * Return optional auto-generated identifiers for the selected project.
+ *
+ * @return {Array} Identifier types available for generation
+ */
+  getOptionalAutoIdentifierTypes() {
+    const identifierTypes = this.state.configData.identifierTypes || [];
+    const project = this.state.formData.project;
+
+    return identifierTypes.filter((type) =>
+      type.AutoGenerate &&
+      !type.Required &&
+      (type.Projects.length === 0 || type.Projects.includes(project))
+    );
+  }
+
+  /**
+ * Render a configured candidate identifier field.
+ *
+ * @param {object} type Candidate identifier type configuration
+ * @return {JSX}
+ */
+  renderIdentifierType(type) {
+    const name = `Identifier${type.CandidateIdentifierTypeID}`;
+
+    return (
+      <TextboxElement
+        key={name}
+        name={name}
+        label={type.Name}
+        onUserInput={this.setFormData}
+        value={this.state.formData[name]}
+        required={type.Required === true}
+      />
+    );
+  }
+
+  /**
+ * Render an optional auto-generated identifier checkbox.
+ *
+ * @param {object} type Candidate identifier type configuration
+ * @return {JSX}
+ */
+  renderAutoIdentifierType(type) {
+    const name = `GenerateIdentifier${type.CandidateIdentifierTypeID}`;
+
+    return (
+      <CheckboxElement
+        key={name}
+        id={name}
+        name={name}
+        label={`Generate ${type.Name}`}
+        onUserInput={this.setFormData}
+        value={this.state.formData[name] === true}
+      />
     );
   }
 
@@ -445,6 +545,12 @@ class NewProfileIndex extends React.Component {
           {fields.map((field, idx) => field.element)}
           {this.getVisibleExtraParameters().map(
             (parameter) => this.renderExtraParameter(parameter)
+          )}
+          {this.getVisibleIdentifierTypes().map(
+            (type) => this.renderIdentifierType(type)
+          )}
+          {this.getOptionalAutoIdentifierTypes().map(
+            (type) => this.renderAutoIdentifierType(type)
           )}
           <ButtonElement
             name = "fire_away"
