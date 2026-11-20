@@ -51,11 +51,14 @@ msgstr "Mes préférences"
 msgid "by"
 msgstr "par"
 
-msgid "Powered by"
-msgstr "Développé par"
+msgid "Powered by %s"
+msgstr "Développé par %s"
 
-msgid "Created by"
-msgstr "Créé par"
+msgid "Developed at %1$s by %2$s"
+msgstr "Développé par %1$s par %2$s"
+
+msgid "Created by %s"
+msgstr "Créé par %s"
 
 msgid "Developed at"
 msgstr "Développé par"

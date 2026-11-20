@@ -78,14 +78,14 @@
     {$workspace}
   </section>
 
+  {assign var="neuro" value=dgettext("loris", "The Neuro (Montreal Neurological Institute-Hospital)")}
+
   <footer class="footer">
-    {dgettext("loris", "Powered by")} <a href="https://loris.ca/" target="_blank">LORIS</a>
+    {sprintf(dgettext("loris", "Powered by %s"), '<a href="https://loris.ca/" target="_blank">LORIS</a>')}
     | GPL-3.0 &copy; {$currentyear} <br/>
-    {dgettext("loris", "Developed at")}
-    <a href="https://mcgill.ca/neuro/" target="_blank">
-      {dgettext("loris", "The Neuro (Montreal Neurological Institute-Hospital)")}
-    </a>
-    {dgettext("loris", "by")} <a href="https://mcin.ca/" target="_blank">MCIN</a>
+    {sprintf(dgettext('loris', 'Developed at %1$s by %2$s'),
+    "<a href='https://mcgill.ca/neuro/' target='_blank'>{$neuro}</a>",
+    '<a href="https://mcin.ca/" target="_blank">MCIN</a>')}
   </footer>
   <script src="{$baseurl}/js/modernizr/modernizr.min.js"/>
   <script>

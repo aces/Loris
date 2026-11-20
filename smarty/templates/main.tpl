@@ -349,12 +349,10 @@
                     </ul>
                 </center>
                 <div align="center" colspan="1">
-                    {dgettext("loris", "Powered by")} LORIS&copy; {$currentyear}. {dgettext("loris", "All rights reserved.")}
+                    {sprintf(dgettext("loris", "Powered by %s"), 'LORIS&copy;')} {$currentyear}. {dgettext("loris", "All rights reserved.")}
                 </div>
       		<div align="center" colspan="1">
-                    {dgettext("loris", "Created by")} <a href="http://mcin-cnim.ca/" target="_blank">
-                         MCIN
-                    </a>
+                    {sprintf(dgettext("loris", "Created by %s"), '<a href="http://mcin-cnim.ca/" target="_blank"> MCIN</a>')}
                 </div>
             </div>
         {/if}

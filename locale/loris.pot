@@ -49,13 +49,13 @@ msgstr ""
 msgid "by"
 msgstr ""
 
-msgid "Powered by"
+msgid "Powered by %s"
 msgstr ""
 
-msgid "Created by"
+msgid "Developed at %1$s by %2$s"
 msgstr ""
 
-msgid "Developed at"
+msgid "Created by %s"
 msgstr ""
 
 msgid "The Neuro (Montreal Neurological Institute-Hospital)"
