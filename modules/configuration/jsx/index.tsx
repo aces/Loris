@@ -171,6 +171,20 @@ function IntroText(props: BaseURLProps): React.ReactElement {
           ]}
         />
       </p>
+      <p>
+        <Trans
+          ns="configuration"
+          defaults={'To configure candidate identifier types'
+            + ' <0>click here</0>.'}
+          components={[
+            <a
+              href={
+                `${props.baseURL}/configuration/candidate_identifier_types/`
+              }
+            />,
+          ]}
+        />
+      </p>
     </div>
   );
 }
