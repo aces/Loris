@@ -9,10 +9,10 @@ export const colorOrder = scaleOrdinal(
 /**
  * hex2rgba
  *
- * @param {object} root - An object
- * @param {string} root.color - An hexadecimal color
- * @param {number} root.alpha - Opacity
- * @returns {string} - An rgba expression
+ * @param root - An object
+ * @param root.color - An hexadecimal color
+ * @param root.alpha - Opacity
+ * @returns - An rgba expression
  */
 export const hex2rgba = ({color = '#000000', alpha = 1} : {
   color: string,

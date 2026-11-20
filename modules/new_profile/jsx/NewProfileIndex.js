@@ -8,7 +8,6 @@ window.addEventListener('load', () => {
   ).render(
     <NewProfileForm
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL = {`${loris.BaseURL}/api/v0.0.4-dev/candidates/`}
       hasPermission = {loris.userHasPermission}
     />
   );

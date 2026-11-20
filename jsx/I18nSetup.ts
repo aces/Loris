@@ -40,7 +40,7 @@ const resources = {
 /**
  * Get language from cookie, session, or default
  *
- * @return {string} language code
+ * @return language code
  */
 const getLanguagePreference = () => {
   // Check for language cookie first (persists across session regeneration)

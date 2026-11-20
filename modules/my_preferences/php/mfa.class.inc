@@ -42,6 +42,9 @@ class MFA extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        if ($request->getAttribute("unhandledURI")->getPath() != '/mfa') {
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
         switch ($request->getMethod()) {
         case 'GET':
             return parent::handle($request);

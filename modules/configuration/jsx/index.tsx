@@ -134,8 +134,8 @@ type RenderInputConfig = {
 /**
  * Links to related study configuration pages and LORIS configuration docs.
  *
- * @param {BaseURLProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function IntroText(props: BaseURLProps): React.ReactElement {
   const {t} = useTranslation(['configuration']);
@@ -178,8 +178,8 @@ function IntroText(props: BaseURLProps): React.ReactElement {
 /**
  * Category navigation.
  *
- * @param {CategorySelectionProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function CategorySelection(
   props: CategorySelectionProps
@@ -213,8 +213,8 @@ function CategorySelection(
 /**
  * Render the development-only config name.
  *
- * @param {DevNameProps} props React props
- * @return {?JSX}
+ * @param props React props
+ * @return
  */
 function DevName(props: DevNameProps): React.ReactElement | null {
   if (!props.enabled) {
@@ -226,8 +226,8 @@ function DevName(props: DevNameProps): React.ReactElement | null {
 /**
  * User-facing label plus the development config key in sandbox mode.
  *
- * @param {SettingLabelProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function SettingLabel(
   props: SettingLabelProps
@@ -243,8 +243,8 @@ function SettingLabel(
 /**
  * Convert a config value into a stable comparison key.
  *
- * @param {ConfigValue} value Config value
- * @return {string}
+ * @param value Config value
+ * @return
  */
 function valueKey(value: ConfigValue): string {
   if (Array.isArray(value)) {
@@ -256,9 +256,9 @@ function valueKey(value: ConfigValue): string {
 /**
  * Return the save payload for a configuration item.
  *
- * @param {ConfigItem} item Configuration item
- * @param {ConfigValue} value Draft value
- * @return {object}
+ * @param item Configuration item
+ * @param value Draft value
+ * @return
  */
 function settingPayload(
   item: ConfigItem,
@@ -276,8 +276,8 @@ function settingPayload(
 /**
  * Interpret the stored boolean value for radio rendering.
  *
- * @param {ConfigValue} value Config value
- * @return {boolean}
+ * @param value Config value
+ * @return
  */
 function booleanValue(value: ConfigValue): boolean {
   return value === true || value === 1 || value === '1' || value === 'true';
@@ -286,8 +286,8 @@ function booleanValue(value: ConfigValue): boolean {
 /**
  * Include descendants when tracking category draft values.
  *
- * @param {ConfigItem[]} items Configuration settings
- * @return {ConfigItem[]}
+ * @param items Configuration settings
+ * @return
  */
 function flattenSettings(items: ConfigItem[]): ConfigItem[] {
   return items.flatMap((item) => [item, ...flattenSettings(item.Children)]);
@@ -296,8 +296,8 @@ function flattenSettings(items: ConfigItem[]): ConfigItem[] {
 /**
  * Render a nested configuration setting with its existing input controls.
  *
- * @param {SettingNodeProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function SettingNode(
   props: SettingNodeProps
@@ -359,8 +359,8 @@ function SettingNode(
 /**
  * Category body.
  *
- * @param {CategoryDisplayProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
   const {t} = useTranslation(['configuration', 'loris']);
@@ -368,7 +368,7 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
   /**
    * Build draft values from the loaded category items.
    *
-   * @return {object}
+   * @return
    */
   const initialDrafts = () => Object.fromEntries(
     items.map((item) => [item.Name, item.Value])
@@ -391,8 +391,8 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
   /**
    * Update the local draft value for an item.
    *
-   * @param {ConfigItem} item Configuration item
-   * @param {ConfigValue} value Draft value
+   * @param item Configuration item
+   * @param value Draft value
    */
   const updateDraft = (item: ConfigItem, value: ConfigValue) => {
     setDrafts((current) => ({
@@ -477,8 +477,8 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
 /**
  * Single configuration setting.
  *
- * @param {ItemDisplayProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function ItemDisplay(props: ItemDisplayProps): React.ReactElement {
   const item = props.item;
@@ -508,14 +508,14 @@ function ItemDisplay(props: ItemDisplayProps): React.ReactElement {
 /**
  * Single-value configuration input.
  *
- * @param {ItemDisplayProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
   /**
    * Update the draft value for this setting.
    *
-   * @param {ConfigValue} value Draft value
+   * @param value Draft value
    */
   const updateValue = (value: ConfigValue) => props.onChange(
     props.item,
@@ -536,8 +536,8 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
 /**
  * Multi-value configuration input.
  *
- * @param {ItemDisplayProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
   const {t} = useTranslation(['configuration']);
@@ -548,7 +548,7 @@ function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
   /**
    * Update the draft values for this setting.
    *
-   * @param {ConfigEntry[]} newValues Draft values
+   * @param newValues Draft values
    */
   const setValues = (newValues: ConfigEntry[]) => props.onChange(
     props.item,
@@ -598,8 +598,8 @@ function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
 /**
  * One row in a multi-value input.
  *
- * @param {MultiValueRowProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function MultiValueRow({
   dataType,
@@ -613,7 +613,7 @@ function MultiValueRow({
   /**
    * Update the draft value for this row.
    *
-   * @param {ConfigValue} newValue Draft value
+   * @param newValue Draft value
    */
   const updateValue = (newValue: ConfigValue) => onChange(
     String(newValue ?? '')
@@ -673,8 +673,8 @@ function MultiValueRow({
 /**
  * Render the proper form element for a config data type.
  *
- * @param {RenderInputConfig} config Render config
- * @return {JSX}
+ * @param config Render config
+ * @return
  */
 function renderInput(config: RenderInputConfig): React.ReactElement {
   const value = String(config.value ?? '');
@@ -766,10 +766,10 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
 /**
  * Save a configuration setting.
  *
- * @param {string} baseURL LORIS base URL
- * @param {string} setting Setting name
- * @param {object} payload JSON payload
- * @return {Promise<void>}
+ * @param baseURL LORIS base URL
+ * @param setting Setting name
+ * @param payload JSON payload
+ * @return
  */
 function saveSetting(
   baseURL: string,
@@ -794,8 +794,8 @@ function saveSetting(
 /**
  * Show save errors consistently.
  *
- * @param {Error} error Error object
- * @return {void}
+ * @param error Error object
+ * @return
  */
 function showSaveError(error: Error): void {
   void swal.fire(
@@ -808,8 +808,8 @@ function showSaveError(error: Error): void {
 /**
  * Entrypoint for the configuration module.
  *
- * @param {BaseURLProps} props React props
- * @return {JSX}
+ * @param props React props
+ * @return
  */
 function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
   const [activeCategory, setActiveCategory] = useState('');

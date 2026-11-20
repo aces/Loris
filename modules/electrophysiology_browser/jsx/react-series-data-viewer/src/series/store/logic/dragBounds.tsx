@@ -24,7 +24,7 @@ export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 /**
  * createDragBoundsEpic
  *
- * @returns {Observable<Action>} - A stream of actions
+ * @returns - A stream of actions
  */
 export const createDragBoundsEpic = () => (
   action$: Observable<any>,
@@ -45,8 +45,8 @@ export const createDragBoundsEpic = () => (
   /**
    * computeNewInterval
    *
-   * @param {[number, number]} interval - New time interval
-   * @returns {void}
+   * @param interval - New time interval
+   * @returns A callback that updates the time interval.
    */
   const computeNewInterval = (interval) => {
     return (dispatch) => {

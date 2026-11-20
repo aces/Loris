@@ -94,8 +94,8 @@ const ERROR_KEYS: Record<string, string[]> = {
 /**
  * Convert server values into values suitable for controlled React inputs.
  *
- * @param {FormField} field Form field definition
- * @return {FieldValue}
+ * @param field Form field definition
+ * @return
  */
 function initialFieldValue(field: FormField): FieldValue {
   if (field.type === 'advcheckbox') {
@@ -117,8 +117,8 @@ function initialFieldValue(field: FormField): FieldValue {
 /**
  * Build the initial value map in form order.
  *
- * @param {Record<string, FormField>} fields Form definitions
- * @return {Record<string, FieldValue>}
+ * @param fields Form definitions
+ * @return
  */
 function initialValues(
   fields: Record<string, FormField>
@@ -134,9 +134,9 @@ function initialValues(
 /**
  * Return the validation message associated with a field.
  *
- * @param {Record<string, string>} errors Server validation errors
- * @param {string} name Field name
- * @return {string}
+ * @param errors Server validation errors
+ * @param name Field name
+ * @return
  */
 function fieldError(
   errors: Record<string, string>,
@@ -154,8 +154,8 @@ function fieldError(
 /**
  * Password input with the established LORIS visibility toggle.
  *
- * @param {PasswordFieldProps} props Field props
- * @return {React.ReactElement}
+ * @param props Field props
+ * @return
  */
 function PasswordField(props: PasswordFieldProps): React.ReactElement {
   const [visible, setVisible] = useState(false);
@@ -201,8 +201,8 @@ function PasswordField(props: PasswordFieldProps): React.ReactElement {
 /**
  * Checkbox displayed beside a related field.
  *
- * @param {FormFieldProps} props Field props
- * @return {React.ReactElement}
+ * @param props Field props
+ * @return
  */
 function InlineCheckbox(props: FormFieldProps): React.ReactElement {
   return (
@@ -232,8 +232,8 @@ function InlineCheckbox(props: FormFieldProps): React.ReactElement {
 /**
  * Render one edit-user field.
  *
- * @param {FormFieldProps} props Field props
- * @return {React.ReactElement}
+ * @param props Field props
+ * @return
  */
 function FormFieldRow(props: FormFieldProps): React.ReactElement {
   const field = props.field;
@@ -353,8 +353,8 @@ function FormFieldRow(props: FormFieldProps): React.ReactElement {
 /**
  * React edit-user form.
  *
- * @param {EditUserFormProps} props Component props
- * @return {React.ReactElement}
+ * @param props Component props
+ * @return
  */
 function EditUserForm(props: EditUserFormProps): React.ReactElement {
   const data = props.data;
@@ -400,8 +400,8 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
   /**
    * Update a field and apply the two legacy checkbox interactions.
    *
-   * @param {string} name Field name
-   * @param {FieldValue} value Field value
+   * @param name Field name
+   * @param value Field value
    */
   const updateField = (name: string, value: FieldValue) => {
     setValues((current) => {
@@ -508,8 +508,8 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
   /**
    * Resolve the current state for a named server-defined field.
    *
-   * @param {string} name Field name
-   * @return {FormFieldProps | null}
+   * @param name Field name
+   * @return
    */
   const getFieldProps = (name: string): FormFieldProps | null => {
     const field = data.fields[name];
@@ -520,8 +520,8 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
     /**
      * Translate a server-provided form string using both relevant catalogs.
      *
-     * @param {string} text String to translate
-     * @return {string} Translated string
+     * @param text String to translate
+     * @return Translated string
      */
     const translateText = (text: string): string => {
       const trimmedText = text.trim();
@@ -594,9 +594,9 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
   /**
    * Render a field in the established edit-user order.
    *
-   * @param {string} name Field name
-   * @param {string} companionName Related checkbox field name
-   * @return {React.ReactElement | null}
+   * @param name Field name
+   * @param companionName Related checkbox field name
+   * @return
    */
   const renderField = (
     name: string,

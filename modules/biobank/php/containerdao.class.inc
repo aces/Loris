@@ -99,7 +99,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         ?array $conditions = [],
         string $operator = 'AND'
     ) : array {
-        $query = 'SELECT bc.ContainerID,
+        $query  = 'SELECT bc.ContainerID,
                      bc.Barcode,
                      bc.ContainerTypeID,
                      bs.SpecimenID,
@@ -134,18 +134,20 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                     ON bcsr.ShipmentID=s.ShipmentID
                   LEFT JOIN biobank_specimen bs
                     ON bc.ContainerID=bs.ContainerID';
+        $params = [];
         if (!empty($conditions)) {
             $whereClause = [];
+            $i           = 0;
             foreach ($conditions as $condition) {
-                $whereClause[] = $condition['column']
-                    . '="'
-                    . $condition['value']
-                    . '"';
+                $key           = 'param'.$i++;
+                $whereClause[] = $condition['column'].'=:'.$key;
+                $params[$key]  = $condition['value'];
             }
             $query .= ' WHERE '.implode(" $operator ", $whereClause);
         }
         $query        .= ' GROUP BY bc.ContainerID';
-        $containerRows = $this->db->pselectWithIndexKey($query, [], 'ContainerID');
+        $containerRows = $this->db
+            ->pselectWithIndexKey($query, $params, 'ContainerID');
 
         $containers = [];
         foreach ($containerRows as $id => $containerRow) {
@@ -213,7 +215,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     {
         $query      = 'SELECT ContainerCapacityID as id,
                           Quantity as quantity,
-                          UnitID as unitId 
+                          UnitID as unitId
                   FROM biobank_container_capacity';
         $capacities = $this->db->pselectWithIndexKey($query, [], 'id');
 
@@ -234,7 +236,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     public function getUnits() : array
     {
         $query = "SELECT UnitID as id,
-                         Label as unit 
+                         Label as unit
                   FROM biobank_unit";
         $units = $this->db->pselectWithIndexKey($query, [], 'id');
 
@@ -482,10 +484,14 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         if (empty($childContainerIds)) {
             return [];
         }
-        $query = "UPDATE biobank_container                                      
-                  SET $field=$value                                             
-                  WHERE ContainerID IN (".implode(',', $childContainerIds).");";
-        $this->db->run($query);
+        $query = "UPDATE biobank_container
+                  SET $field=:value
+                  WHERE ContainerID IN (".implode(',', $childContainerIds).")";
+        $this->db->execute(
+            $this->db->prepare($query),
+            ['value' => $value],
+            ['nofetch' => 'true']
+        );
         $conditions = [];
         foreach ($childContainerIds as $id) {
             $conditions[] = ['column' => 'bc.ContainerID', 'value' => $id];
@@ -507,12 +513,12 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     public function getAllChildContainerIds(Container $container) : array
     {
-        $query = 'WITH recursive cte (ContainerID) as 
+        $query = 'WITH recursive cte (ContainerID) as
                   (
                     SELECT ContainerID
                     FROM biobank_container_parent
                     WHERE ParentContainerID=:i
-                    UNION ALL 
+                    UNION ALL
                     SELECT child.ContainerID
                     FROM biobank_container_parent as child
                     INNER JOIN cte on cte.ContainerID=child.ParentContainerID

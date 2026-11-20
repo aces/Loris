@@ -4,13 +4,13 @@ import React from 'react';
 /**
  * Display pagination links (usually for a table) within LORIS
  *
- * @param {object} props - React props
- * @param {number} props.Total - The total number of pages
- * @param {function} props.onChangePage - Callback to call when page number
+ * @param props - React props
+ * @param props.Total - The total number of pages
+ * @param props.onChangePage - Callback to call when page number
  *                                        is clicked
- * @param {number|undefined} props.RowsPerPage - The number of rows on each page.
+ * @param props.RowsPerPage - The number of rows on each page.
  *                                               Defaults to 10.
- * @param {number|undefined} props.Active - The currently active page number.
+ * @param props.Active - The currently active page number.
  *                                          Defaults to 1.
  */
 function PaginationLinks(props: {

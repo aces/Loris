@@ -34,9 +34,9 @@ export type State = {
 /**
  * interval reducer
  *
- * @param {State} state - The current state
- * @param {Action} action - The action
- * @returns {State} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 const interval = (
   state: [number, number] = [0.25, 0.75],
@@ -54,9 +54,9 @@ const interval = (
 /**
  * domain reducer
  *
- * @param {State} state - The current state
- * @param {Action} action - The action
- * @returns {State} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 const domain = (
   state: [number, number] = [0, 1],
@@ -71,9 +71,9 @@ const domain = (
 /**
  * amplitudeScale reducer
  *
- * @param {State} state - The current state
- * @param {Action} action - The action
- * @returns {State} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 const amplitudeScale = (state = 0.0005, action?: Action): number => {
   if (action && action.type === 'SET_AMPLITUDE_SCALE') {
@@ -85,9 +85,9 @@ const amplitudeScale = (state = 0.0005, action?: Action): number => {
 /**
  * viewerWidth reducer
  *
- * @param {State} state - The current state
- * @param {Action} action - The action
- * @returns {State} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 const viewerWidth = (state = 400, action?: Action): number => {
   if (action && action.type === 'SET_VIEWER_WIDTH') {
@@ -99,9 +99,9 @@ const viewerWidth = (state = 400, action?: Action): number => {
 /**
  * viewerHeight reducer
  *
- * @param {State} state - The current state
- * @param {Action} action - The action
- * @returns {State} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 const viewerHeight = (
   state = DEFAULT_VIEWER_HEIGHT,
@@ -116,9 +116,9 @@ const viewerHeight = (
 /**
  * boundsReducer
  *
- * @param {State} state - The current state
- * @param {Action} action - The action
- * @returns {State} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 export const boundsReducer: (State, Action) => State = (
   state = {

@@ -144,7 +144,19 @@ class Diagnosis extends \NDB_Page
         $DB     = \NDB_Factory::singleton()->database();
         $values = $request->getParsedBody();
 
-        $dxEvolutionID  = $values['DxEvolutionID'] ?? null;
+        $dxEvolutionID = $values['DxEvolutionID'] ?? null;
+        if ($dxEvolutionID === 'new') {
+            // updateDiagnosisTX treats null as new, since the ID
+            // is an int
+            $dxEvolutionID = null;
+        }
+        if ($dxEvolutionID != null && !is_numeric($dxEvolutionID)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext('configuration', 'Invalid DxEvolutionID')
+            );
+        }
+        $dxEvolutionID = intval($dxEvolutionID);
+
         $name           = $values['Name'] ?? null;
         $projectID      = $values['ProjectID'] ?? null;
         $visit          = $values['visitLabel'] ?? null;
@@ -158,7 +170,7 @@ class Diagnosis extends \NDB_Page
         * VALIDATE THE FORM
         */
         // Validation: Form is complete
-        if (!($dxEvolutionID && $name && $visit
+        if (!($name && $visit
             && $instrumentName && $sourceFields && $orderNumber)
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -282,19 +294,19 @@ class Diagnosis extends \NDB_Page
     /**
      * Processes trajectory data submitted via diagnosis evolution form.
      *
-     * @param string $dxEvolutionID The Diagnosis Track ID
-     * @param array  $set           The data to insert oir update in the DB
+     * @param ?int  $dxEvolutionID The Diagnosis Track ID
+     * @param array $set           The data to insert oir update in the DB
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
     function updateDiagnosisTrajectory(
-        string $dxEvolutionID,
+        ?int $dxEvolutionID,
         array $set
     ) : ResponseInterface {
         $DB = \NDB_Factory::singleton()->database();
 
         // Create or update a Diagnosis Trajectory
-        if ($dxEvolutionID == 'new') {
+        if ($dxEvolutionID == null) {
             // Validation: Name does not already exist
             $dxNames = $DB->pselectCol(
                 "SELECT LOWER(Name) FROM diagnosis_evolution",

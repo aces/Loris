@@ -222,3 +222,6 @@ msgstr "Valeur"
 
 msgid "Mapped value"
 msgstr "Valeur correspondante"
+
+msgid "Conflict!"
+msgstr "Conflit !"

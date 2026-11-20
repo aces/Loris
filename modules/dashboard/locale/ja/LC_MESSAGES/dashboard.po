@@ -37,6 +37,6 @@ msgstr "…絶対にない。初めまして！"
 msgid "Welcome, %s!"
 msgstr "ようこそ、%s ！"
 
-msgid "Last login:"
-msgstr "最終ログイン:"
+msgid "Last login: "
+msgstr "最終ログイン: "
 

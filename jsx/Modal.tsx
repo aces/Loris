@@ -17,8 +17,8 @@ export type ModalProps = PropsWithChildren<{
  *
  * A React functional component that renders a generic modal dialog.
  *
- * @param {ModalProps} props - Properties for the modal component
- * @returns {JSX.Element} - A modal dialog box
+ * @param props - Properties for the modal component
+ * @returns - A modal dialog box
  */
 function Modal({
   throwWarning = false,

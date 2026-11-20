@@ -307,7 +307,6 @@ class CandidateListIndex extends Component {
         renderForm: (close) => (
           <NewProfileForm
             dataURL={`${baseURL}/new_profile/?format=json`}
-            submitURL={`${baseURL}/api/v0.0.4-dev/candidates/`}
             onCreated={() => {
               close();
               this.fetchData();

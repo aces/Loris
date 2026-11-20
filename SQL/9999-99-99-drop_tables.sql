@@ -280,6 +280,9 @@ DROP TABLE IF EXISTS `session_status`;
 DROP TABLE IF EXISTS `session`;
 DROP TABLE IF EXISTS `user_psc_rel`;
 DROP TABLE IF EXISTS `user_project_rel`;
+DROP TABLE IF EXISTS `candidate_identifiers`;
+DROP TABLE IF EXISTS `candidate_identifier_types_project_rel`;
+DROP TABLE IF EXISTS `candidate_identifier_types`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
 DROP TABLE IF EXISTS `users`;
@@ -292,3 +295,6 @@ DROP TABLE IF EXISTS `project_cohort_rel`;
 DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `cohort`;
+
+DROP TABLE IF EXISTS `bids_file`;
+DROP TABLE IF EXISTS `bids_dataset`;

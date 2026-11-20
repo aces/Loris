@@ -9,9 +9,12 @@
     '</div>';
   let inputButtonGroup = '<div class="input-group-btn"></div>';
   let inputButton = '<div class="btn btn-primary btn-file"></div>';
-  let buttonText = '<i class="glyphicon glyphicon-folder-open"></i>'
-                   + '&nbsp;Browse …';
   let wrapper = function(element) {
+    const browseLabel = $(element).data('browseLabel');
+
+    const buttonText =
+    '<i class="glyphicon glyphicon-folder-open"></i>'
+    + '&nbsp;' + browseLabel;
     $(element).wrap(inputGroup);
     $(element).before(fileNameDisplay);
     $(element).parent().find('.file-caption-name').attr('id', element.name);

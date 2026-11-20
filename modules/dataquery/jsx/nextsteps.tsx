@@ -7,12 +7,12 @@ import {QueryGroup} from './querydef';
 /**
  * Next steps options for query navigation
  *
- * @param {object} props - React props
- * @param {APIQueryField[]} props.fields - The fields selected
- * @param {QueryGroup} props.filters - The filters selected
- * @param {string} props.page - The current page name
- * @param {function} props.changePage - A function to change the current page
- * @returns {React.ReactElement} - The "Next Steps" menu
+ * @param props - React props
+ * @param props.fields - The fields selected
+ * @param props.filters - The filters selected
+ * @param props.page - The current page name
+ * @param props.changePage - A function to change the current page
+ * @returns - The "Next Steps" menu
  */
 function NextSteps(props: {
     fields: APIQueryField[]

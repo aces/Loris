@@ -70,7 +70,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
 
   /**
    * @class
-   * @param {object} props - React Component properties
+   * @param props - React Component properties
    */
   constructor(props: CProps) {
     super(props);
@@ -163,10 +163,10 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
 
     /**
      *
-     * @param {Function} fetcher The fn to collect the type of data
-     * @param {string} url - The url
-     * @param {string} route - The route
-     * @returns {Promise} - The data
+     * @param fetcher The fn to collect the type of data
+     * @param url - The url
+     * @param route - The route
+     * @returns - The data
      */
     const racers = (fetcher, url, route = '') => {
       if (url) {
@@ -376,7 +376,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
   /**
    * Renders the React component.
    *
-   * @returns {JSX} - React markup for the component
+   * @returns - React markup for the component
    */
   render() {
     const t = this.props.t;
