@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="direct.css" type="text/css" />
+    <link rel="stylesheet" href="{$baseurl}/css/tokens.css" type="text/css" />
     <link rel="stylesheet" href="{$css}" type="text/css" />
     <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
     <title>{$study_title}</title>

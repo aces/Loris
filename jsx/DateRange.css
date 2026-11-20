@@ -1,0 +1,119 @@
+/**
+ * Date range styles. The trigger and panel are Select's; values come from
+ * htdocs/css/tokens.css.
+ */
+
+.loris-daterange-panel {
+    width: 300px;
+}
+
+.loris-daterange-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+}
+
+.loris-daterange-pick {
+    flex: 1 1 auto;
+    height: var(--control-height-sm);
+    padding: 0 var(--space-sm);
+    border: 1px solid var(--field-border);
+    border-radius: var(--radius);
+    background: var(--field-bg);
+    font-size: var(--font-size);
+}
+
+.loris-daterange-step {
+    width: var(--control-height-sm);
+    height: var(--control-height-sm);
+    border: none;
+    border-radius: 50%;
+    background: none;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.loris-daterange-step:hover {
+    background: var(--state-hover);
+}
+
+.loris-daterange-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px 0;
+}
+
+.loris-daterange-weekday {
+    padding: var(--space-xs) 0;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.loris-daterange-day {
+    height: 34px;
+    border: none;
+    background: none;
+    font-size: var(--font-size-sm);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.loris-daterange-day:hover {
+    background: var(--state-hover);
+    border-radius: 50%;
+}
+
+.loris-daterange-day.today {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.loris-daterange-day.in-range {
+    background: var(--state-selected);
+    border-radius: 0;
+}
+
+.loris-daterange-day.end {
+    background: var(--state-selected-solid);
+    color: var(--surface);
+    border-radius: 50%;
+}
+
+.loris-daterange-inputs {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.loris-daterange-inputs label {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: normal;
+    color: var(--text-muted);
+}
+
+.loris-daterange-inputs input {
+    height: var(--control-height-sm);
+    padding: 0 var(--space-xs);
+    border: 1px solid var(--field-border);
+    border-radius: var(--radius);
+    font-size: var(--font-size-sm);
+    color: var(--text);
+}
+
+.loris-daterange-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
