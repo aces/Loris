@@ -8,6 +8,8 @@ Important standards and practices documented in our repo include:
 
 * [Coding Standards](../../CodingStandards.md)  
 
+* [Design System](../../DesignSystem.md)  
+
 * [Pull Request Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) and [Code Review guidelines](Code_Review_Guide.md)
 
 ## 1. Working off your fork

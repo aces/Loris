@@ -6,6 +6,7 @@ body {
 
 
 th, td, input, textarea, select {
+    font-family: inherit;
     font-weight: normal;
 }
 
