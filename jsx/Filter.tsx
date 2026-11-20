@@ -49,8 +49,8 @@ interface FilterProps {
  *
  * Alters the filter object and sends it to parent on every update.
  *
- * @param {props} props - Component properties
- * @return {JSX}
+ * @param props - Component properties
+ * @return
  */
 function Filter({
   fields,
@@ -101,8 +101,8 @@ function Filter({
   /**
    * Sets filter object to reflect values of input fields.
    *
-   * @param {string} name - form element type (i.e component name)
-   * @param {string} value - the name of the form element
+   * @param name - form element type (i.e component name)
+   * @param value - the name of the form element
    */
   const onFieldUpdate = (name: string, value: any) => {
     const field = fields.find((f) => f.filter?.name === name);
@@ -136,7 +136,7 @@ function Filter({
   /**
    * Renders the filters based on the defined fields.
    *
-   * @return {array}
+   * @return
    */
   const renderFilterFields = () => {
     return fields.filter((field) => !field.filter.hide).map((field) => {

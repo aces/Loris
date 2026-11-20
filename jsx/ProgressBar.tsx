@@ -16,8 +16,8 @@ interface ProgressBarProps {
  * Note: This component relies on Bootstrap 3 progress-bar classes
  * (http://getbootstrap.com/components/#progress)
  *
- * @param {object} props - The component props.
- * @param {number} props.value - The progress percentage (0-100), or -1 to hide.
+ * @param props - The component props.
+ * @param props.value - The progress percentage (0-100), or -1 to hide.
  */
 function ProgressBar({value = 0}: ProgressBarProps) {
   const progressStyle: CSSProperties = {
