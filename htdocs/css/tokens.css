@@ -4,7 +4,8 @@
  * Each token is named for the job it does. The colours they draw from are
  * shown in docs/DesignSystem.md.
  *
- * Loaded on every page from main.tpl and public_layout.tpl.
+ * Loaded on every page from main.tpl, public_layout.tpl, directentry.tpl
+ * and imaging_browser's form_feedback_mri_popup.tpl.
  */
 :root {
     /* ---- Colour -------------------------------------------------- */
