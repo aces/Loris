@@ -821,6 +821,7 @@ class NDB_PageTest extends TestCase
                 '/js/components/PolicyButton.js',
                 '/js/util/queryString.js',
                 '/js/components/Help.js',
+                '/js/components/LoginDialog.js',
             ],
             $this->_page->getJSDependencies()
         );

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import swal from 'sweetalert2';
 import Loader from 'Loader';
+import lorisFetch from 'jslib/lorisFetch';
 import {
   SearchableDropdown,
   SelectElement,
@@ -223,7 +224,7 @@ class DocUploadForm extends Component {
         }
       }
 
-      fetch(this.props.action, {
+      lorisFetch(this.props.action, {
         method: 'POST',
         cache: 'no-cache',
         credentials: 'same-origin',

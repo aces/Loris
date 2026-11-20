@@ -432,6 +432,27 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
+msgid "Login"
+msgstr ""
+
+msgid "Login failed."
+msgstr ""
+
+msgid "Your session has expired"
+msgstr ""
+
+msgid "Log in again to continue where you left off."
+msgstr ""
+
+msgid "Password expired for user."
+msgstr ""
+
+msgid "Multifactor authentication required"
+msgstr ""
+
+msgid "Enter the code from your authenticator app below to proceed."
+msgstr ""
+
 msgid "First name"
 msgstr ""
 
