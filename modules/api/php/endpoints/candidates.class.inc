@@ -178,10 +178,6 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (isset($this->_cache)) {
-            return $this->_cache;
-        }
-
         $filter = new HasAnyPermissionOrUserSiteMatch(
             ['access_all_profiles']
         );
@@ -196,13 +192,11 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $candidates = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
-            ->toArray($request->getAttribute('user'));
+            ->getRows($request->getAttribute('user'));
 
-        $this->_cache = new \LORIS\Http\Response\JsonResponse(
-            ['Candidates' => $candidates]
-        );
-
-        return $this->_cache;
+        return (new \LORIS\Http\Response())->withBody(
+            new \LORIS\Http\IterableStream($candidates, "Candidates")
+        )->withHeader("Content-Type", "application/json");
     }
 
     /**
@@ -460,6 +454,15 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGet($request)->getBody()));
+
+        $loris = $request->getAttribute('loris');
+        $db    = $loris->getDatabaseConnection();
+        $row   = $db->pselectRow(
+            "SELECT MAX(Testdate) as timestamp, COUNT('x') as count FROM candidate",
+            []
+        );
+
+        return "W/" . md5($row['timestamp'] . ':' . $row['count']);
+
     }
 }
