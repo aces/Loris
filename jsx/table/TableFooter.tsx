@@ -8,11 +8,10 @@ import type {TableState} from './useTableState';
 /**
  * The footer under a table: how many rows match, the page size and paging.
  *
- * @param {object} props - React props
- * @param {TableState} props.state - the table's state
- * @param {number} props.total - how many records the table holds
- * @param {number[]} props.pageSizes - the page sizes offered
- * @return {JSX.Element}
+ * @param props - React props
+ * @param props.state - the table's state
+ * @param props.total - how many records the table holds
+ * @param props.pageSizes - the page sizes offered
  */
 function TableFooter<R>(props: {
   state: TableState<R>,

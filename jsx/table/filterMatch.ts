@@ -11,10 +11,10 @@ export type Filters = {[name: string]: FilterValue};
  *
  * Note: Search is case-insensitive.
  *
- * @param {FilterValue} filter - the filter set on the column
- * @param {unknown} data - the column's value for one record
- * @param {string} type - the column filter's type
- * @return {boolean} true if the value matches the filter
+ * @param filter - the filter set on the column
+ * @param data - the column's value for one record
+ * @param type - the column filter's type
+ * @return true if the value matches the filter
  */
 export function matchesFilter(
   filter: FilterValue,

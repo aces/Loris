@@ -10,9 +10,8 @@ import type {TableState} from './useTableState';
  * A table's views as tabs: everything, the module's own views and the ones
  * the user saved, with a way to save the current state as a view.
  *
- * @param {object} props - React props
- * @param {TableState} props.state - the table's state
- * @return {JSX.Element}
+ * @param props - React props
+ * @param props.state - the table's state
  */
 function ViewTabs<R>(props: {state: TableState<R>}) {
   const {t} = useTranslation(['loris']);

@@ -4,9 +4,9 @@ import {useEffect, RefObject} from 'react';
  * Calls onDismiss when a click lands outside the referenced element, while
  * active is true
  *
- * @param {RefObject} ref - the element a click must stay inside
- * @param {boolean} active - whether to listen
- * @param {Function} onDismiss - called on a click outside
+ * @param ref - the element a click must stay inside
+ * @param active - whether to listen
+ * @param onDismiss - called on a click outside
  */
 export function useDismiss(
   ref: RefObject<HTMLElement>,
@@ -20,7 +20,7 @@ export function useDismiss(
     /**
      * Dismisses on a click outside the element
      *
-     * @param {MouseEvent} e - the click
+     * @param e - the click
      */
     const close = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {

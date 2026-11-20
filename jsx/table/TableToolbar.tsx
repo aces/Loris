@@ -12,18 +12,17 @@ import type {TableState} from './useTableState';
  * The bar above a table: its name and views, search, how the rows are shown,
  * the CSV download and the table's own actions.
  *
- * @param {object} props - React props
- * @param {string} props.title - the table's name
- * @param {object} props.sections - the module's tables, to switch between
- * @param {string} props.section - the table shown
- * @param {Function} props.onSectionChange - called with the table chosen
- * @param {ReactNode} props.controls - the module's own controls
- * @param {Column[]} props.columns - the table's columns
- * @param {boolean} props.csv - whether the CSV download is offered
- * @param {TableAction[]} props.actions - the table's own actions
- * @param {Function} props.onAction - opens the form of an action that has one
- * @param {TableState} props.state - the table's state
- * @return {JSX.Element}
+ * @param props - React props
+ * @param props.title - the table's name
+ * @param props.sections - the module's tables, to switch between
+ * @param props.section - the table shown
+ * @param props.onSectionChange - called with the table chosen
+ * @param props.controls - the module's own controls
+ * @param props.columns - the table's columns
+ * @param props.csv - whether the CSV download is offered
+ * @param props.actions - the table's own actions
+ * @param props.onAction - opens the form of an action that has one
+ * @param props.state - the table's state
  */
 function TableToolbar<R>(props: {
   title: string,

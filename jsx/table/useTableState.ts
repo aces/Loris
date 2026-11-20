@@ -14,18 +14,17 @@ type Group = {key: string, label: string, count: number};
  * The state behind a RecordTable: filters, search, sorting, grouping, layout,
  * columns, paging, selection and views, with the records they produce.
  *
- * @param {object} props - the table's props
- * @param {string} props.name - the table's name, which keys its saved views
- * @param {object[]} props.records - the records shown
- * @param {Column[]} props.columns - the table's columns
- * @param {Function} props.recordKey - gives a record's unique key
- * @param {PresetView[]} props.views - views the module defines
- * @param {SortKey[]} props.defaultSort - the sort before any is chosen
- * @param {string} props.urlPrefix - starts the filters' URL keys, when set
- * @param {Function} props.onFiltersChange - called with the new filters
- * @param {object|false} props.csv - the CSV file name, or false for none
- * @param {Function} t - the translation function
- * @return {object}
+ * @param props - the table's props
+ * @param props.name - the table's name, which keys its saved views
+ * @param props.records - the records shown
+ * @param props.columns - the table's columns
+ * @param props.recordKey - gives a record's unique key
+ * @param props.views - views the module defines
+ * @param props.defaultSort - the sort before any is chosen
+ * @param props.urlPrefix - starts the filters' URL keys, when set
+ * @param props.onFiltersChange - called with the new filters
+ * @param props.csv - the CSV file name, or false for none
+ * @param t - the translation function
  */
 export function useTableState<R>(
   props: {
@@ -85,8 +84,8 @@ export function useTableState<R>(
   /**
    * Moves a column to another column's place
    *
-   * @param {string} from - the column moved
-   * @param {string} to - the column whose place it takes
+   * @param from - the column moved
+   * @param to - the column whose place it takes
    */
   const moveColumn = (from: string, to: string) => {
     if (from === to) {
@@ -103,8 +102,8 @@ export function useTableState<R>(
   /**
    * Moves a column one place among the visible columns
    *
-   * @param {string} columnName - the column moved
-   * @param {number} by - -1 for left, 1 for right
+   * @param columnName - the column moved
+   * @param by - -1 for left, 1 for right
    */
   const nudgeColumn = (columnName: string, by: number) => {
     const i = visibleColumns.findIndex((c) => c.name === columnName);
@@ -131,8 +130,8 @@ export function useTableState<R>(
   /**
    * Sets or clears the filter on one column
    *
-   * @param {Column} column - the column filtered
-   * @param {any} value - the filter's new value
+   * @param column - the column filtered
+   * @param value - the filter's new value
    */
   const setFilter = (column: Column<R>, value: any) => {
     const next = {...filters};
@@ -159,8 +158,8 @@ export function useTableState<R>(
   /**
    * Puts the table in a view's state
    *
-   * @param {Partial<ViewState>} partial - the view's state, over the default
-   * @param {string} id - the view's id, empty for the default view
+   * @param partial - the view's state, over the default
+   * @param id - the view's id, empty for the default view
    */
   const applyView = (partial: Partial<ViewState>, id: string) => {
     const state = {...defaultState, ...partial};
@@ -188,7 +187,7 @@ export function useTableState<R>(
   /**
    * Saves the current state as a new view
    *
-   * @param {string} label - the view's name
+   * @param label - the view's name
    */
   const saveView = (label: string) => {
     const view = {id: String(Date.now()), name: label, state: currentState};
@@ -211,7 +210,7 @@ export function useTableState<R>(
   /**
    * Deletes a saved view
    *
-   * @param {string} id - the view's id
+   * @param id - the view's id
    */
   const deleteView = (id: string) => {
     const next = views.filter((v) => v.id !== id);
@@ -338,8 +337,8 @@ export function useTableState<R>(
   /**
    * Sorts by a column. Shift adds it as a further sort key.
    *
-   * @param {string} columnName - the column clicked
-   * @param {boolean} add - whether to keep the existing sort keys
+   * @param columnName - the column clicked
+   * @param add - whether to keep the existing sort keys
    */
   const sortBy = (columnName: string, add: boolean) => {
     setSort((prev) => {
@@ -371,7 +370,7 @@ export function useTableState<R>(
   /**
    * Selects or unselects one record
    *
-   * @param {string|number} key - the record's key
+   * @param key - the record's key
    */
   const toggleRecord = (key: string | number) => {
     setSelected((prev) => {
@@ -405,7 +404,7 @@ export function useTableState<R>(
   /**
    * Saves records as a CSV of the visible columns
    *
-   * @param {object[]} rows - the records to save
+   * @param rows - the records to save
    */
   const downloadCSV = (rows: R[]) => {
     const worker = new Worker(

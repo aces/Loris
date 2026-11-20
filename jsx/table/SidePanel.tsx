@@ -7,14 +7,13 @@ import {Icon} from './icons';
  * The panel that slides over the right side of a table's rows, holding one
  * record or a form
  *
- * @param {object} props - React props
- * @param {string} props.label - names the panel for assistive technology
- * @param {ReactNode} props.title - shown in the panel's head
- * @param {ReactNode} props.tools - controls shown before the close button
- * @param {boolean} props.wide - whether the panel is wide, for a form
- * @param {Function} props.onClose - closes the panel
- * @param {ReactNode} props.children - the panel's content
- * @return {JSX.Element}
+ * @param props - React props
+ * @param props.label - names the panel for assistive technology
+ * @param props.title - shown in the panel's head
+ * @param props.tools - controls shown before the close button
+ * @param props.wide - whether the panel is wide, for a form
+ * @param props.onClose - closes the panel
+ * @param props.children - the panel's content
  */
 function SidePanel(props: {
   label: string,

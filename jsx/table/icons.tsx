@@ -27,9 +27,8 @@ export type IconName = keyof typeof classes;
  * An icon from the Font Awesome set LORIS ships, hidden from assistive
  * technology since the control beside it carries the label
  *
- * @param {object} props - React props
- * @param {IconName} props.name - which icon
- * @return {JSX.Element}
+ * @param props - React props
+ * @param props.name - which icon
  */
 export function Icon(props: {name: IconName}) {
   return <i className={'rt-icon ' + classes[props.name]} aria-hidden="true" />;

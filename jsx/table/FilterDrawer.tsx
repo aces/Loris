@@ -13,13 +13,12 @@ import type {TableState} from './useTableState';
  * The filters beside a table: a drawer with one control per filterable
  * column, folding to a rail at the window's edge.
  *
- * @param {object} props - React props
- * @param {string} props.name - the table's name
- * @param {Column[]} props.columns - the table's columns
- * @param {TableState} props.state - the table's state
- * @param {boolean} props.open - whether the drawer is open
- * @param {Function} props.onOpenChange - called with the drawer's new state
- * @return {ReactNode}
+ * @param props - React props
+ * @param props.name - the table's name
+ * @param props.columns - the table's columns
+ * @param props.state - the table's state
+ * @param props.open - whether the drawer is open
+ * @param props.onOpenChange - called with the drawer's new state
  */
 function FilterDrawer<R>(props: {
   name: string,
@@ -35,8 +34,7 @@ function FilterDrawer<R>(props: {
   /**
    * Renders the control that edits a column's filter
    *
-   * @param {Column} column - the filtered column
-   * @return {ReactNode}
+   * @param column - the filtered column
    */
   const filterControl = (column: Column<R>): ReactNode => {
     const filter = column.filter as ColumnFilter;

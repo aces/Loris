@@ -41,8 +41,7 @@ export type Column<R, V = unknown> = {
  * Checks a column's display and format against the type its value returns,
  * and lets columns of different value types share one array.
  *
- * @param {Column} column - the column
- * @return {Column}
+ * @param column - the column
  */
 export function defineColumn<R, V>(column: Column<R, V>): Column<R, unknown> {
   return column;
@@ -128,8 +127,7 @@ type Props<R> = {
  * A table of records with a header, saved views, a filter bar, sorting on
  * several columns, grouping, a card layout and actions on selected rows.
  *
- * @param {Props} props - React props
- * @return {ReactNode}
+ * @param props - React props
  */
 function RecordTable<R>(props: Props<R>) {
   const {t} = useTranslation(['loris']);
@@ -229,9 +227,8 @@ function RecordTable<R>(props: Props<R>) {
   /**
    * Renders a cell's content
    *
-   * @param {Column} column - the column
-   * @param {object} record - the record
-   * @return {ReactNode}
+   * @param column - the column
+   * @param record - the record
    */
   const cellContent = (column: Column<R>, record: R): ReactNode => {
     const value = column.value(record);
@@ -315,9 +312,8 @@ function RecordTable<R>(props: Props<R>) {
   /**
    * Renders the header of a group
    *
-   * @param {string} key - the group's key
-   * @param {Function} wrap - wraps the header for the current layout
-   * @return {ReactNode}
+   * @param key - the group's key
+   * @param wrap - wraps the header for the current layout
    */
   const groupHeaderFor = (
     key: string,
@@ -356,10 +352,9 @@ function RecordTable<R>(props: Props<R>) {
   /**
    * Renders the group header shown before a record, if it starts a group
    *
-   * @param {object} record - the record
-   * @param {number} i - its position on the page
-   * @param {Function} wrap - wraps the header for the current layout
-   * @return {ReactNode}
+   * @param record - the record
+   * @param i - its position on the page
+   * @param wrap - wraps the header for the current layout
    */
   const groupHeader = (
     record: R,
@@ -380,8 +375,7 @@ function RecordTable<R>(props: Props<R>) {
    * Renders the headers of collapsed groups, which have no records on the
    * page and are listed after the page's records
    *
-   * @param {Function} wrap - wraps the header for the current layout
-   * @return {ReactNode}
+   * @param wrap - wraps the header for the current layout
    */
   const collapsedHeaders = (
     wrap: (content: ReactNode, key: string) => ReactNode,
@@ -412,8 +406,7 @@ function RecordTable<R>(props: Props<R>) {
   /**
    * Renders a record's own actions: one as a button, more as a menu
    *
-   * @param {object} record - the record
-   * @return {ReactNode}
+   * @param record - the record
    */
   const recordActionCell = (record: R): ReactNode => {
     const key = recordKey(record);
@@ -421,7 +414,7 @@ function RecordTable<R>(props: Props<R>) {
     /**
      * Runs a record action, opening its form when it has one
      *
-     * @param {RecordAction} action - the action chosen
+     * @param action - the action chosen
      */
     const run = (action: RecordAction<R>) => {
       setMenu(null);
@@ -728,7 +721,7 @@ function RecordTable<R>(props: Props<R>) {
   /**
    * Opens the record before or after the open one
    *
-   * @param {number} by - -1 for the one before, 1 for the one after
+   * @param by - -1 for the one before, 1 for the one after
    */
   const stepRecord = (by: number) => {
     const next = pageable[openIndex + by];
@@ -746,7 +739,7 @@ function RecordTable<R>(props: Props<R>) {
     /**
      * Moves between records with the arrow keys and closes with Escape
      *
-     * @param {KeyboardEvent} e - the key pressed
+     * @param e - the key pressed
      */
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;

@@ -4,10 +4,9 @@ import type {Filters} from './filterMatch';
 /**
  * Returns the text a column shows for a value
  *
- * @param {Column} column - the column
- * @param {unknown} value - the column's value for the record
- * @param {object} record - the record
- * @return {string}
+ * @param column - the column
+ * @param value - the column's value for the record
+ * @param record - the record
  */
 export function displayOf<R>(
   column: Column<R>,
@@ -32,10 +31,9 @@ export function displayOf<R>(
 /**
  * Compares two values of a column for sorting, empty values last
  *
- * @param {ColumnType} type - the column's type
- * @param {unknown} a - first value
- * @param {unknown} b - second value
- * @return {number}
+ * @param type - the column's type
+ * @param a - first value
+ * @param b - second value
  */
 export function compareValues(
   type: ColumnType,
@@ -56,8 +54,7 @@ export function compareValues(
 /**
  * Whether a filter value holds nothing
  *
- * @param {any} value - the filter's value
- * @return {boolean}
+ * @param value - the filter's value
  */
 export function isEmptyFilter(value: any): boolean {
   if (value === null || value === undefined || value === '') {
@@ -76,9 +73,8 @@ export function isEmptyFilter(value: any): boolean {
  * Gives the URL key for a filter: the column's name, after the table's
  * prefix when it shares the page with another table
  *
- * @param {string} name - the column's name
- * @param {string} prefix - the table's URL prefix, or empty
- * @return {string}
+ * @param name - the column's name
+ * @param prefix - the table's URL prefix, or empty
  */
 function urlKey(name: string, prefix: string): string {
   return prefix ? `${prefix}.${name}` : name;
@@ -87,9 +83,8 @@ function urlKey(name: string, prefix: string): string {
 /**
  * Reads the filters set in the page's URL
  *
- * @param {Column[]} columns - the table's columns
- * @param {string} prefix - the table's URL prefix, or empty
- * @return {Filters}
+ * @param columns - the table's columns
+ * @param prefix - the table's URL prefix, or empty
  */
 export function filtersFromURL<R>(
   columns: Column<R>[],
@@ -132,9 +127,9 @@ export function filtersFromURL<R>(
 /**
  * Writes the filters into the page's URL, keeping any other parameters
  *
- * @param {Filters} filters - the filters set
- * @param {string[]} names - every filterable column's name
- * @param {string} prefix - the table's URL prefix, or empty
+ * @param filters - the filters set
+ * @param names - every filterable column's name
+ * @param prefix - the table's URL prefix, or empty
  */
 export function filtersToURL(
   filters: Filters,
@@ -176,8 +171,7 @@ export function filtersToURL(
 /**
  * Reads the views saved for a table in this browser
  *
- * @param {string} name - the table's name
- * @return {SavedView[]}
+ * @param name - the table's name
  */
 export function loadViews(name: string): SavedView[] {
   try {
@@ -191,8 +185,8 @@ export function loadViews(name: string): SavedView[] {
 /**
  * Saves a table's views in this browser
  *
- * @param {string} name - the table's name
- * @param {SavedView[]} views - the views
+ * @param name - the table's name
+ * @param views - the views
  */
 export function storeViews(name: string, views: SavedView[]) {
   try {
