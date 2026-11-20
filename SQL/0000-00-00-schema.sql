@@ -1405,6 +1405,7 @@ CREATE TABLE `examiners` (
   `examinerID` int(10) unsigned NOT NULL auto_increment,
   `full_name` varchar(255) default NULL,
   `radiologist` tinyint(1) default 0 NOT NULL,
+  `LabTechnician` tinyint(1) NOT NULL DEFAULT 0,
   `userID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`examinerID`),
   UNIQUE KEY `unique_examiner` (`full_name`,`userID`),

@@ -50,6 +50,7 @@ class ExaminerIndex extends Component {
       isLoaded: false,
       formData: {
         addName: null,
+        addLabTechnician: false,
         addRadiologist: false,
         addSite: null,
       },
@@ -327,6 +328,13 @@ class ExaminerIndex extends Component {
             label={t('Radiologist', {ns: 'examiner'})}
             id="checkRadiologist"
             value={this.state.formData.addRadiologist}
+            onUserInput={this.setFormData}
+          />
+          <CheckboxElement
+            name="addLabTechnician"
+            label={t('Lab Technician', {ns: 'examiner'})}
+            id="checkLabTechnician"
+            value={this.state.formData.addLabTechnician}
             onUserInput={this.setFormData}
           />
           <ButtonElement
