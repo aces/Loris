@@ -50,6 +50,10 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
+        if($request->getMethod() === 'POST') {
+            // ETag is meaningless, do not waste time calculating it.
+            return $handler->handle($request);
+	}
         if (($handler instanceof ETagCalculator) === false) {
             // Handler does not have a way to calculate ETags, so we don't
             // do anything special.
