@@ -208,3 +208,6 @@ msgstr ""
 
 msgid "Download DICOM"
 msgstr ""
+
+msgid "Image Acquisitions"
+msgstr ""

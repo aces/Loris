@@ -5,8 +5,8 @@ interface LoaderProps {
 /**
  * Loader component renders a spinner wheel of a specified size.
  *
- * @param {LoaderProps} props - The properties for the Loader component
- * @returns {JSX.Element} A div representing the loading spinner
+ * @param props - The properties for the Loader component
+ * @returns A div representing the loading spinner
  */
 const Loader = ({size = 120}: LoaderProps) => {
   const loaderStyle = {

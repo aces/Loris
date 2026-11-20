@@ -3,11 +3,11 @@ import {FullDictionary} from './types';
 /**
  * Get the dictionary for a given term
  *
- * @param {string} module - the module
- * @param {string} category - the category
- * @param {string} fieldname - the field
- * @param {FullDictionary} dict - all loaded dictionaries
- * @returns {string} - the description if available, otherwise the fieldname
+ * @param module - the module
+ * @param category - the category
+ * @param fieldname - the field
+ * @param dict - all loaded dictionaries
+ * @returns - the description if available, otherwise the fieldname
  */
 function getDictionaryDescription(
   module: string,

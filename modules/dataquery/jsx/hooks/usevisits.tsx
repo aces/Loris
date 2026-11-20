@@ -13,7 +13,7 @@ type UseVisitsReturn = {
  * React hook to load a list of valid visits from the server
  * and manage which should be selected by default
  *
- * @returns {UseVisitsReturn} - list of default and all visits
+ * @returns - list of default and all visits
  */
 function useVisits(): UseVisitsReturn {
   const [allVisits, setAllVisits] = useState<string[]>([]);
@@ -39,8 +39,7 @@ function useVisits(): UseVisitsReturn {
     /**
      * Modify the default visits to use
      *
-     * @param {VisitOption[]} values - The selected options from ReactSelect
-     * @returns {void}
+     * @param values - The selected options from ReactSelect
      */
     modifyDefault: (values: readonly VisitOption[]) => {
       setDefaultVisits(values.map((el) => el.value));

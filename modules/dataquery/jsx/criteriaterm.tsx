@@ -8,8 +8,8 @@ import {useTranslation, Trans} from 'react-i18next';
  * Convert an operator serialization back to unicode for
  * display.
  *
- * @param {string} op - the backend operator
- * @returns {string} - The frontend value to display for op
+ * @param op - the backend operator
+ * @returns - The frontend value to display for op
  */
 function op2str(op: string): string {
   const {t} = useTranslation();
@@ -37,10 +37,10 @@ function op2str(op: string): string {
 /**
  * Get the dictionary for a given term
  *
- * @param {QueryTerm} term - The term whose dictionary
+ * @param term - The term whose dictionary
                           should be extracted
- * @param {FullDictionary} dict - all loaded dictionaries
- * @returns {FieldDictionary} - The dictionary for this term
+ * @param dict - all loaded dictionaries
+ * @returns - The dictionary for this term
  */
 function getDictionary(
   term: QueryTerm,
@@ -56,12 +56,12 @@ function getDictionary(
 /**
  * Renders a single term of a condition
  *
- * @param {object} props - React props
- * @param {QueryTerm} props.term - The term being rendered
- * @param {FullDictionary} props.fulldictionary - The full dictionary
- * @param {function} props.mapModuleName - backend => human friendly name mapper
- * @param {function} props.mapCategoryName - backend => human friendly name mapper
- * @returns {React.ReactElement} - The term to display
+ * @param props - React props
+ * @param props.term - The term being rendered
+ * @param props.fulldictionary - The full dictionary
+ * @param props.mapModuleName - backend => human friendly name mapper
+ * @param props.mapCategoryName - backend => human friendly name mapper
+ * @returns - The term to display
  */
 export function CriteriaTerm(props: {
     term: QueryTerm,

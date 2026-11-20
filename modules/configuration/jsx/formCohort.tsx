@@ -73,8 +73,8 @@ const EMPTY_COHORT: Cohort = {
 /**
  * Convert server data into controlled form values.
  *
- * @param {Cohort} cohort Cohort data
- * @return {CohortValues}
+ * @param cohort Cohort data
+ * @return
  */
 function formValues(cohort: Cohort): CohortValues {
   return {
@@ -90,8 +90,8 @@ function formValues(cohort: Cohort): CohortValues {
 /**
  * Create or edit one cohort through the established guarded endpoint.
  *
- * @param {CohortFormProps} props Form properties
- * @return {React.ReactElement}
+ * @param props Form properties
+ * @return
  */
 function CohortForm(props: CohortFormProps): React.ReactElement {
   const [defaults, setDefaults] = useState(() => formValues(props.cohort));
@@ -102,8 +102,8 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
   /**
    * Update one controlled field and clear its prior save status.
    *
-   * @param {string} name Field name
-   * @param {string} value Field value
+   * @param name Field name
+   * @param value Field value
    */
   const updateValue = (name: string, value: string) => {
     setValues((current) => ({...current, [name]: value}));
@@ -113,7 +113,7 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
   /**
    * Submit the cohort values to the existing update endpoint.
    *
-   * @param {React.SyntheticEvent} event Submit event
+   * @param event Submit event
    */
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -299,8 +299,8 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
 /**
  * React cohort manager.
  *
- * @param {CohortManagerProps} props Page properties
- * @return {React.ReactElement}
+ * @param props Page properties
+ * @return
  */
 function CohortManager(props: CohortManagerProps): React.ReactElement {
   const [cohorts, setCohorts] = useState(props.data.cohorts);
@@ -308,8 +308,8 @@ function CohortManager(props: CohortManagerProps): React.ReactElement {
   /**
    * Keep the current tab and heading in sync after an edit.
    *
-   * @param {string} cohortID Updated cohort identifier
-   * @param {CohortValues} values Updated cohort values
+   * @param cohortID Updated cohort identifier
+   * @param values Updated cohort values
    */
   const updateCohort = (cohortID: string, values: CohortValues) => {
     setCohorts((current) => ({
@@ -385,8 +385,8 @@ function CohortManager(props: CohortManagerProps): React.ReactElement {
 /**
  * Load cohort data and render the manager.
  *
- * @param {WithTranslation} props Translation properties
- * @return {React.ReactElement}
+ * @param props Translation properties
+ * @return
  */
 function CohortPage(props: WithTranslation): React.ReactElement {
   const [data, setData] = useState<CohortData | null>(null);

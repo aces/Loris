@@ -4,10 +4,10 @@ import Panel from 'jsx/Panel';
 /**
  * Render a series of expansion panels
  *
- * @param {object} props - React props
- * @param {boolean?} props.alwaysOpen - If true, panels can not be toggled
- * @param {object} props.panels - Array of individual panels
- * @returns {React.ReactElement} - The panels
+ * @param props - React props
+ * @param props.alwaysOpen - If true, panels can not be toggled
+ * @param props.panels - Array of individual panels
+ * @returns - The panels
  */
 const ExpansionPanels = (props: {
     alwaysOpen?: boolean,

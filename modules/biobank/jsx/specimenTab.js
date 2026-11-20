@@ -89,7 +89,7 @@ class SpecimenTab extends Component {
    * @return {JSX}
    */
   formatSpecimenColumns(column, value, row, lookups) {
-    const {t} = this.props;
+    const {t, options} = this.props;
     const display = this.mapSpecimenColumns(column, value);
     const candidate = lookups.candidatesByPSCID
       .get(row[t('PSCID', {ns: 'loris'})]);
