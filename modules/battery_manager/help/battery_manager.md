@@ -30,8 +30,8 @@ You cannot add an entry if it has a duplicate entry in the Test Battery.
 *For more information on the behaviour of each parameter refer to the [Behaviour of Parameters](#behaviour-of-parameters) section of this document*
 
 ## Editing an entry in the Test Battery
-You can edit an entry by clicking on the `Edit` link in the `Edit Metadata` column of the Menu Table.
-The link will display a form that is populated with the values of the entry.
+You can edit an entry by ticking its checkbox in the Menu Table and clicking the **Edit Metadata** button above the table.
+The button will display a form that is populated with the values of the entry.
 You can update information in the form by selecting from the dropdown menus and filling in the numeric text fields.
 You will have to fill out the required fields `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`, and `Active`.
 Finally, press the **Submit** button to edit the entry in the Test Battery.
@@ -44,8 +44,9 @@ You cannot edit an entry if it becomes the same as another active entry in the T
 ## Activating/Deactivating an entry in the Test Battery
 
 ### Change status (Activate/Deactivate)
-You can change the status of an entry by clicking on the **Activate** or
-**Deactivate** button on the `Change Status` column of the Menu Table, to directly change the status of an entry.
+You can change the status of one or more entries by ticking their checkboxes
+in the Menu Table and clicking the **Activate** or **Deactivate** button above
+the table.
 
 ### Add tab (activate)
 Clicking the `Add` tab, you can add an entry that already exists in the Test
@@ -53,8 +54,8 @@ Battery but has been deactivated. A pop-up will appear that will give you
 the option to activate the existing entry.
 
 ### Edit window (Activate/Deactivate)
-For a given entry in the Menu table and click on `Edit`.
-In the `Edit` window, edit an entry and make sure the new entry has no duplicate in the Test Battery.
+Tick an entry in the Menu Table and click **Edit Metadata**.
+In the `Edit Test` window, edit an entry and make sure the new entry has no duplicate in the Test Battery.
 This will add the new entry to the table and deactivate the original one.
 Alternatively, if you edit an entry so that it becomes the same as another deactivated entry in the Test Battery,
 a pop-up will appear that will give you the option to activate the other entry and deactivate the original one.

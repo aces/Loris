@@ -9,6 +9,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import {FormModal} from 'Modal';
 import swal from 'sweetalert2';
+import lorisFetch from 'jslib/lorisFetch';
 
 import BatteryManagerForm from './batteryManagerForm';
 import hiStrings from '../locale/hi/LC_MESSAGES/battery_manager.json';
@@ -89,8 +90,7 @@ class BatteryManagerIndex extends Component {
    * @return {object} promise
    */
   postData(url, data, method) {
-    return fetch(url, {
-      credentials: 'same-origin',
+    return lorisFetch(url, {
       method: method,
       body: JSON.stringify(data),
     })
@@ -192,7 +192,7 @@ class BatteryManagerIndex extends Component {
    * once. A test is not activated if an identical active test exists.
    *
    * @param {object[]} changes - {id, active} for each test to update
-   * @return {object} promise
+   * @return {object} promise resolving to true if every update was saved
    */
   setActive(changes) {
     const {t} = this.props;
@@ -211,10 +211,9 @@ class BatteryManagerIndex extends Component {
       updated.push(test);
     });
 
-    const requests = updated.map((test) => fetch(
+    const requests = updated.map((test) => lorisFetch(
       this.props.testEndpoint + test.id,
       {
-        credentials: 'same-origin',
         method: 'PUT',
         body: JSON.stringify(test),
       }
@@ -225,9 +224,17 @@ class BatteryManagerIndex extends Component {
       }
     }));
 
-    return Promise.all(requests)
-      .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
-      .then(() => {
+    return Promise.allSettled(requests)
+      .then((results) => this.fetchData(
+        this.props.testEndpoint,
+        'GET',
+        'tests'
+      ).then(() => results))
+      .then((results) => {
+        const failed = results.find((r) => r.status === 'rejected');
+        if (failed) {
+          throw failed.reason;
+        }
         if (skipped.length > 0) {
           swal.fire({
             title: t('Test Duplicate', {ns: 'battery_manager'}),
@@ -242,14 +249,16 @@ class BatteryManagerIndex extends Component {
             'success'
           );
         }
+        return true;
       })
       .catch((e) => {
         swal.fire({
           title: t('Error', {ns: 'loris'}),
-          text: e.message || t('An error occurred while saving the test.',
+          text: e?.message || t('An error occurred while saving the test.',
             {ns: 'battery_manager'}),
           icon: 'error',
         });
+        return false;
       });
   }
 
@@ -275,11 +284,11 @@ class BatteryManagerIndex extends Component {
         ))
         .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests')))
       .catch((e) => {
-        if (!['Validation failed', 'Duplicate test'].includes(e.message)) {
+        if (!['Validation failed', 'Duplicate test'].includes(e?.message)) {
           const {t} = this.props;
           swal.fire({
             title: t('Error', {ns: 'loris'}),
-            text: e.message || t('An error occurred while saving the test.',
+            text: e?.message || t('An error occurred while saving the test.',
               {ns: 'battery_manager'}),
             icon: 'error',
           });
@@ -469,8 +478,9 @@ class BatteryManagerIndex extends Component {
           ? t('The selected tests are already active.',
             {ns: 'battery_manager'})
           : null),
-        onUserInput: (rows) => this.setActive(
-          rows.map((row) => ({id: row[0], active: 'Y'}))
+        onUserInput: (rows) => this.setActive(rows
+          .filter((row) => row[11] !== 'Y')
+          .map((row) => ({id: row[0], active: 'Y'}))
         ),
       },
       {
@@ -482,8 +492,9 @@ class BatteryManagerIndex extends Component {
           ? t('The selected tests are already inactive.',
             {ns: 'battery_manager'})
           : null),
-        onUserInput: (rows) => this.setActive(
-          rows.map((row) => ({id: row[0], active: 'N'}))
+        onUserInput: (rows) => this.setActive(rows
+          .filter((row) => row[11] !== 'N')
+          .map((row) => ({id: row[0], active: 'N'}))
         ),
       },
     ];
@@ -536,7 +547,8 @@ class BatteryManagerIndex extends Component {
   }
 
   /**
-   * Finds another test with the same configuration as the given test.
+   * Finds another test with the same configuration as the given test,
+   * preferring an active one.
    *
    * @param {object} test
    * @param {object[]} tests - tests to search
@@ -554,8 +566,10 @@ class BatteryManagerIndex extends Component {
       'firstVisit',
       'DoubleDataEntryEnabled',
     ];
-    return tests.find((other) => other.id !== test.id
+    const duplicates = tests.filter((other) => other.id !== test.id
       && fields.every((field) => test[field] == other[field]));
+    return duplicates.find((other) => other.active === 'Y')
+      || duplicates[0];
   }
 
   /**
@@ -615,7 +629,12 @@ class BatteryManagerIndex extends Component {
       if (test.id) {
         changes.push({id: test.id, active: 'N'});
       }
-      return this.setActive(changes).then(() => true);
+      return this.setActive(changes).then((saved) => {
+        if (!saved) {
+          throw new Error('Duplicate test');
+        }
+        return true;
+      });
     });
   }
 

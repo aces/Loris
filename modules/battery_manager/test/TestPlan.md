@@ -26,18 +26,18 @@ Test Battery.
 **Testing with view permission** [Automation Testing]
   1. Add `battery_manager_view` permission to the aforementioned user.
   2. Battery Manager module should be accessible in read-only mode.
-  3. The **Change Status** column should not be in the data table.
-  4. The **Edit Metadata** column should not be in the data table.
+  3. The data table should have no row checkboxes.
+  4. The **Edit Metadata**, **Activate** and **Deactivate** buttons should not be shown.
 
 **Testing with edit permission** [Automation Testing]
   1. Add `battery_manager_edit permissions` permission.
   2. Battery Manager module should now have an action button labeled "New Test".
-  3. The **Change Status** column should be in the data table.
-  4. The **Edit Metadata** column should be in the data table.
+  3. The data table should have a checkbox on each row.
+  4. The **Edit Metadata**, **Activate** and **Deactivate** buttons should be shown above the table, disabled until a row is ticked.
   5. Clicking on the "New Test" button should trigger a modal window displaying a form with the following fields:
      `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Cohort`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
-  6. Clicking on Edit in **Edit Metadata** takes you to a new page with a form with the following fields:
+  6. Ticking one row and clicking **Edit Metadata** opens a modal window with a form with the following fields:
      `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Cohort`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
 
@@ -66,15 +66,17 @@ Click the "New Test" button in the upper right corner of the data table.
   2. Ensure that information in the data table corresponds to the information in the `test_battery` table.
   3. Click on **column headers** to ensure sorting functionality is working as expected (Ascending/Descending).
 
-**Testing Change Status column**
-  1. Press the `Deactivate` button in the `Change Status` column on an entry in the data table.
-     - Ensure that when you press "Deactivate", a success message appears and the table data refreshes.
-     - Ensure the entry has the new Active status in the data table.
-  2. Repeat step 1 using the `Activate` button.
+**Testing Activate and Deactivate**
+  1. Tick one or more active entries and press the `Deactivate` button above the data table.
+     - Ensure that a success message appears and the table data refreshes.
+     - Ensure the entries have the new Active status in the data table and are no longer ticked.
+  2. Repeat step 1 with inactive entries and the `Activate` button.
+  3. Tick only active entries and check that `Activate` is disabled; tick only inactive entries and check that `Deactivate` is disabled.
 
-**Testing Edit Metadata column**
-  1. Press the `Edit` button in the `Edit Metadata` column on an entry in the data table to edit.
-     - Ensure that you are taken to an Edit page with a form that is populated with the entry's values.
+**Testing Edit Metadata**
+  1. Tick one entry in the data table and press the `Edit Metadata` button.
+     - Ensure that a modal window opens with a form populated with the entry's values.
+  2. Tick two entries and check that `Edit Metadata` is disabled.
 
 **Test filters** [Automation Testing]
   1. A selection filter should be present on top of the page containing the following fields:
