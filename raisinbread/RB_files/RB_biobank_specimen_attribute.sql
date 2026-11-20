@@ -1,5 +1,10 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `biobank_specimen_attribute`;
 LOCK TABLES `biobank_specimen_attribute` WRITE;
+INSERT INTO `biobank_specimen_attribute` (`SpecimenAttributeID`, `Label`, `DatatypeID`) VALUES (1,'Fasting',5);
+INSERT INTO `biobank_specimen_attribute` (`SpecimenAttributeID`, `Label`, `DatatypeID`) VALUES (2,'Tube Lot Number',1);
+INSERT INTO `biobank_specimen_attribute` (`SpecimenAttributeID`, `Label`, `DatatypeID`) VALUES (3,'Centrifuge Date',3);
+INSERT INTO `biobank_specimen_attribute` (`SpecimenAttributeID`, `Label`, `DatatypeID`) VALUES (4,'Centrifuge Time',4);
+INSERT INTO `biobank_specimen_attribute` (`SpecimenAttributeID`, `Label`, `DatatypeID`) VALUES (5,'Hemolysis Index',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
