@@ -86,7 +86,7 @@ class Module extends \Module
         foreach ($dashboard_links as $text => $url) {
             $links[] = [
                 'url'        => $url,
-                'label'      => $text,
+                'label'      => dgettext("ExternalLinks", $text),
                 'WindowName' => md5($url),
             ];
         }
