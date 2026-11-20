@@ -86,7 +86,8 @@ class PoolTab extends Component {
   formatPoolColumns(column, value, row, candidatesByPSCID) {
     const {t, options} = this.props;
     value = this.mapPoolColumns(column, value);
-    const candId = candidatesByPSCID.get(row[t('PSCID', {ns: 'loris'})])?.id;
+    const candidate = candidatesByPSCID.get(row[t('PSCID', {ns: 'loris'})]);
+    const candId = candidate?.candID;
 
     // If candId is defined, then the user has access to the candidate and a
     // hyperlink can be established.
@@ -106,7 +107,7 @@ class PoolTab extends Component {
       return <td>{value}</td>;
     case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
-        const sessId = options.candidates[candId].sessionIds
+        const sessId = candidate.sessionIds
           .find((id) => options.sessions[id]?.label === value);
         const sessionPermission = sessId !== undefined;
         if (sessionPermission) {

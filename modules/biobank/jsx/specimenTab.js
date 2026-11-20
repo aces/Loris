@@ -107,7 +107,7 @@ class SpecimenTab extends Component {
       if (candidatePermission) {
         return (
           <td>
-            <a href={loris.BaseURL + '/' + candidate.id}>{display}</a>
+            <a href={loris.BaseURL + '/' + candidate.candID}>{display}</a>
           </td>
         );
       }
@@ -117,7 +117,7 @@ class SpecimenTab extends Component {
         const sessionId = candidate.sessionIds
           .find((id) => options.sessions[id]?.label === value);
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
-          candidate.id+'&sessionID='+sessionId;
+          candidate.candID+'&sessionID='+sessionId;
         return <td><a href={visitLabelURL}>{display}</a></td>;
       }
       return <td>{display}</td>;
@@ -188,15 +188,17 @@ class SpecimenTab extends Component {
               const sopt = options.specimen;
               const process = sopt.processes[processId].label.toLowerCase();
               if ((specimen[process]||{}).data) {
-                const processIdStr = specimen[process].protocolId.toString();
+                const protocolId = specimen[process].protocolId;
                 const attrs = options.specimen.processAttributes;
                 const protocols = attrs[processId][attributeId].protocolIds;
-                if (protocols.includes(processIdStr)) {
+                if (protocols.includes(protocolId)) {
                   const data = specimen[process].data[attributeId];
                   specimenAttributeData.push(data);
                 } else {
                   specimenAttributeData.push(null);
                 }
+              } else {
+                specimenAttributeData.push(null);
               }
             });
         });
