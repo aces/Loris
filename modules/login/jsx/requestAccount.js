@@ -328,8 +328,7 @@ class RequestAccount extends Component {
       <div className={'container'}>
         <Panel
           title={this.props.t('Request Account', {ns: 'login'})}
-          class={'panel-default panel-center'}
-          collapsing={false}
+          className={'panel-default panel-center'}
         >
           {request}
         </Panel>

@@ -139,9 +139,9 @@ export default function DownloadPanel({
               <Panel
                 id={id + '-' + i}
                 title={panelName}
-                initCollapsed={i !== 0}
+                collapsible={true}
+                defaultCollapsed={i !== 0}
                 key={i}
-                parentId={id + '-group'}
               >
                 {links}
               </Panel>
