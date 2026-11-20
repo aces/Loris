@@ -1,0 +1,142 @@
+/**
+ * Design tokens: the values components style themselves with.
+ *
+ * Each token is named for the job it does. The colours they draw from are
+ * shown in docs/DesignSystem.md.
+ *
+ * Loaded on every page from main.tpl, public_layout.tpl, directentry.tpl
+ * and imaging_browser's form_feedback_mri_popup.tpl.
+ */
+:root {
+    /* ---- Colour -------------------------------------------------- */
+
+    /* Every colour has the same five shades: the base, -strong for pressed
+       states and for text in that colour, -border for edges and chart marks,
+       -fill for backgrounds and -highlight for hover. -fill and -highlight
+       are faint so text on them stays readable. -strong and -border meet WCAG
+       AA against white and against the colour's own -fill. */
+
+    /* Actions, navigation and panel headings */
+    --primary: #064785;
+    --primary-strong: #01376b;
+    --primary-border: #528cd0;
+    --primary-fill: #f7faff;
+    --primary-highlight: #fbfdff;
+
+    /* Help, notices, and rules that govern what the next action does */
+    --info: #a6d3f5;
+    --info-strong: #047693;
+    --info-border: #0496ba;
+    --info-fill: #f4fcff;
+    --info-highlight: #fafdff;
+
+    /* A state being passed through, such as the rows a drag is selecting */
+    --secondary: #e89a0c;
+    --secondary-strong: #a85500;
+    --secondary-border: #c97401;
+    --secondary-fill: #fffae9;
+    --secondary-highlight: #fffdf5;
+
+    --warning: var(--secondary);
+    --warning-strong: var(--secondary-strong);
+    --warning-border: var(--secondary-border);
+    --warning-fill: var(--secondary-fill);
+    --warning-highlight: var(--secondary-highlight);
+
+    --success: #059669;
+    --success-strong: #037b55;
+    --success-border: #1a9d70;
+    --success-fill: #eefff6;
+    --success-highlight: #f8fffb;
+
+    --danger: #cc1e1e;
+    --danger-strong: #a92420;
+    --danger-border: #ec5449;
+    --danger-fill: #fff8f7;
+    --danger-highlight: #fffcfc;
+
+    /* Telling categories apart, where the other colours already carry a
+       meaning */
+    --category: #9137bb;
+    --category-strong: #79329b;
+    --category-border: #b665e0;
+    --category-fill: #fcf8ff;
+    --category-highlight: #fefcff;
+
+    /* States: hover is the pointer, selected is a settled choice, active is a
+       state being passed through. Stronger than the -fill tints so a row or
+       option in that state shows against white. */
+    --state-hover: #f0f6fe;
+    --state-selected: #e0edfd;
+    --state-selected-solid: var(--primary);
+    --state-active: #fcf3d1;
+    --state-active-solid: var(--secondary-border);
+
+    /* Grey, one scale from text down to surfaces */
+    --text: #333;
+    --text-muted: #666;
+    --text-faint: #717171;
+    --border-strong: #8f8f8f;
+    --border: #ccc;
+    --text-disabled: #ccc;
+    --border-subtle: #efefef;
+    --surface-sunken: #f8f8f8;
+    --surface: #fff;
+
+    /* Controls. The off track and its edge differ from the on state in
+       lightness, not only in hue. */
+    --control-off: var(--border-strong);
+    --control-off-edge: var(--text-muted);
+
+    /* Elevation */
+    --shadow-overlay: 0 6px 18px rgba(0, 0, 0, .18);
+    --shadow-raised: 0 1px 2px rgba(0, 0, 0, .3);
+
+    /* Fields, so a control outside a form matches one inside it. The border
+       meets 3:1 against white so the field can be found. */
+    --field-bg: var(--surface);
+    --field-border: var(--border-strong);
+    --field-border-focus: var(--primary-border);
+    --field-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+
+    /* The focus glow on its own, for a field whose border something else
+       draws */
+    --field-glow-focus: 0 0 8px color-mix(in srgb, var(--primary-border) 50%, transparent);
+    --field-shadow-focus: var(--field-shadow), var(--field-glow-focus);
+    --field-padding: 6px 12px;
+
+    /* ---- Shape, spacing and type --------------------------------- */
+
+    /* Corners */
+    --radius: 4px;
+    --radius-sm: 3px;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 6px;
+    --space-md: 8px;
+    --space-lg: 10px;
+    --space-xl: 16px;
+
+    /* Type. The family is the operating system's own interface face; the
+       size and line height record what bootstrap's base already sets. */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+
+    /* Identifiers, where I, l and 1 have to stay apart */
+    --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+                        Consolas, "Liberation Mono", monospace;
+    --font-size: 14px;
+    --font-size-sm: 12px;
+    --font-size-xs: 11px;
+    --line-height: 1.42857143;
+
+    /* Height of a control sitting in a row with a form-control */
+    --control-height: 34px;
+    --control-height-sm: 30px;
+}
+
+/* Qualified with html so it does not depend on load order against bootstrap */
+html body {
+    font-family: var(--font-family);
+}
