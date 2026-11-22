@@ -11,6 +11,7 @@ import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import DataTable from 'jsx/DataTable';
 import RecordingSection from './components/RecordingSection';
 import Sidebar from './components/Sidebar';

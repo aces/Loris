@@ -5,6 +5,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 

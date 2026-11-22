@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import type {ReactNode} from 'react';
 import type {TFunction} from 'i18next';
+import {loris} from 'jslib/loris';
 import Panel from 'jsx/Panel';
 import DetailsPanel from './DetailsPanel';
 import SummaryPanel from './SummaryPanel';
@@ -17,9 +18,6 @@ import type {
 } from '../utils';
 
 declare const EEG_VIS_ENABLED: boolean;
-declare const loris: {
-  BaseURL: string;
-};
 
 let EEGLabSeriesProvider: React.ComponentType<any> | null = null;
 let SeriesRenderer: React.ComponentType<any> | null = null;

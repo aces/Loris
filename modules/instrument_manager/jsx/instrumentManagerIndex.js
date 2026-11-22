@@ -14,6 +14,7 @@ import InfoPanel from 'jsx/InfoPanel';
 import Select from 'react-select';
 import {withTranslation, Trans} from 'react-i18next';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import i18n from 'I18nSetup';
 
 import frStrings from '../locale/fr/LC_MESSAGES/instrument_manager.json';

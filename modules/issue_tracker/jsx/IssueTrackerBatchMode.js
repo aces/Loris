@@ -8,6 +8,7 @@ import {Tabs, TabPane} from 'jsx/Tabs';
 import swal from 'sweetalert2';
 import '../css/issue_tracker_batchmode.css';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 const NO_CHANGE = '__no_change__';
 const INITIAL_BATCH_UPDATES = {

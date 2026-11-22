@@ -12,6 +12,7 @@ import {
   DateElement,
 } from 'jsx/Form';
 import {Trans, withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 /**
  * Email element component

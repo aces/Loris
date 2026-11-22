@@ -17,6 +17,7 @@ import {
 
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/schedule_module.json';

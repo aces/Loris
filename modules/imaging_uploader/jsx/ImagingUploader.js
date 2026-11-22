@@ -4,6 +4,7 @@ import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';

@@ -32,6 +32,36 @@ export interface Loris extends LorisPageParams {
   config: LorisStudyConfig;
 }
 
+declare global {
+  interface Window {
+    loris: Loris;
+  }
+}
+
+/**
+ * Shared LORIS instance used in `window.loris`. The template code must call
+ * `initializeLoris` before this module is imported by other modules, or this
+ * variable will be `undefined`.
+ */
+export let loris: Loris = window.loris;
+
+/**
+ * Initialize the shared LORIS instance and assign it to `window.loris`.
+ *
+ * @param user - Current user.
+ * @param params - Page parameters.
+ * @param permissions - Granted permission names.
+ * @param study - Whitelisted study settings.
+ */
+export function initializeLoris(
+  user: LorisUser,
+  params: LorisPageParams,
+  permissions: readonly string[],
+  study: LorisStudyConfig,
+) {
+  loris = window.loris = createLoris(user, params, permissions, study);
+}
+
 /**
  * Create a LORIS instance from the provided initialization data.
  *

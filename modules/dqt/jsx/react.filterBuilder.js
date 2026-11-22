@@ -11,6 +11,7 @@ import React, {Component} from 'react';
 import ModalImportCSV from './react.importCSV';
 import {getSessions, enumToArray} from '../js/arrayintersect';
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 import {debounce} from './debounce';
 
 /**

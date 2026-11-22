@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {loris} from 'jslib/loris';
 import {get, post} from './helpers.js';
 
 /**

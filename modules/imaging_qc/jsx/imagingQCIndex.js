@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import frStrings from '../locale/fr/LC_MESSAGES/imaging_qc.json';
 

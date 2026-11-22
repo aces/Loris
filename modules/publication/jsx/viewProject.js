@@ -9,6 +9,7 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 /**
  * View project component

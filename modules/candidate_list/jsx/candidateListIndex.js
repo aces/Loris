@@ -11,6 +11,7 @@ import OpenProfileForm from './openProfileForm';
 
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';

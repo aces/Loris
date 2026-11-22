@@ -3,11 +3,8 @@
  */
 import React from 'react';
 import type {TFunction} from 'i18next';
+import {loris} from 'jslib/loris';
 import Panel from 'jsx/Panel';
-
-declare const loris: {
-  BaseURL: string;
-};
 
 type DownloadLink = {
   file: string;

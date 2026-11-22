@@ -6,6 +6,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import Modal from 'Modal';
 import Panel from 'Panel';
 import Loader from 'Loader';

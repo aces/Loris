@@ -14,6 +14,7 @@ import frStrings from
 import zhStrings from '../locale/zh/LC_MESSAGES/examiner.json';
 
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import Modal from 'Modal';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';

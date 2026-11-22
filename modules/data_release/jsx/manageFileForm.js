@@ -4,6 +4,7 @@ import Loader from 'jsx/Loader';
 import AddPermissionForm from './addPermissionForm';
 import swal from 'sweetalert2';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import {
   FormElement,
   SelectElement,

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import 'I18nSetup';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import {
   FormElement,
   StaticElement,

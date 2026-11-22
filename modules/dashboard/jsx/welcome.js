@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify';
+import {loris} from 'jslib/loris';
 import i18n from 'I18nSetup';
 
 window.addEventListener('load', () => {

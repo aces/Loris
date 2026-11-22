@@ -1,3 +1,4 @@
+import {loris} from 'jslib/loris';
 import lorisFetch from 'jslib/lorisFetch';
 
 /**

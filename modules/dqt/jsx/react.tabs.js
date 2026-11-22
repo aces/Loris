@@ -17,6 +17,7 @@ import {
 } from 'jsx/Form';
 const {jStat} = require('jstat');
 import JSZip from 'jszip';
+import {loris} from 'jslib/loris';
 
 /**
  * Loading Component

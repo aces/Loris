@@ -4,6 +4,7 @@ import {Trans, useTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import lorisFetch from 'jslib/lorisFetch';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import {
   EmailElement,
   RadioElement,
@@ -12,8 +13,6 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import frStrings from '../locale/fr/LC_MESSAGES/configuration.json';
-
-declare const loris: {BaseURL: string};
 
 type ConfigOptionMap = Record<string, string>;
 type ConfigOptionKey = 'dateFormat'

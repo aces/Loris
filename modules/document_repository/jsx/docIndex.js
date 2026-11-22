@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import {CheckboxElement} from 'jsx/Form';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';

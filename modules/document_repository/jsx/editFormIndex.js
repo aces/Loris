@@ -1,6 +1,7 @@
 import DocEditForm from './editForm';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import {loris} from 'jslib/loris';
 const pageURL = window.location.href;
 const id = pageURL.substr(pageURL.lastIndexOf('/') + 1);
 

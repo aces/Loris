@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 import 'I18nSetup';
 
 import {

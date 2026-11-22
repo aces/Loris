@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import ProtocolModal from './protocolModal.js';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/mri_violations.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/mri_violations.json';

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import SpecimenProcessForm from './processForm';
 import ContainerParentForm from './containerParentForm';
 import {ListForm, ListItem} from './listForm';

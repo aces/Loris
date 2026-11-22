@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import Breadcrumbs from 'jsx/Breadcrumbs';
 
 // Declared in smarty main.tpl
 declare const breadcrumbsRoot: any;
-declare const loris: any;
 
 /**
  * Update the DQT breadcrumbs based on the active tab

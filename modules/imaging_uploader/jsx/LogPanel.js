@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import Panel from 'Panel';
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import {
   FormElement,
   SelectElement,

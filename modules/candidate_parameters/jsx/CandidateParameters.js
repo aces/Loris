@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import CandidateInfo from './CandidateInfo';
 import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';

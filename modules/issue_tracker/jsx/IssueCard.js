@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import Modal from 'jsx/Modal';
 import {withTranslation, Trans} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import '../css/issue_card.css';
 import Markdown from 'jsx/Markdown';
 

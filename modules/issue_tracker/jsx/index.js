@@ -1,6 +1,7 @@
 import IssueForm from './IssueForm';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import {loris} from 'jslib/loris';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';

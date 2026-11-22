@@ -8,6 +8,7 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import i18n from 'I18nSetup';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';

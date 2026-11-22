@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import 'I18nSetup';
 
 /**

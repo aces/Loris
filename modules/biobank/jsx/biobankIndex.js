@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import BiobankFilter from './filter';
 import BarcodePage from './barcodePage';

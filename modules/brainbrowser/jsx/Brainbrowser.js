@@ -2,6 +2,7 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import i18n from 'I18nSetup';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';

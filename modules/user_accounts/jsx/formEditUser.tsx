@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {withTranslation, WithTranslation} from 'react-i18next';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 
 import i18n from 'I18nSetup';
 
@@ -9,8 +10,6 @@ import frStrings from '../locale/fr/LC_MESSAGES/user_accounts.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/user_accounts.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/user_accounts.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/user_accounts.json';
-
-declare const loris: {BaseURL: string};
 
 type FieldValue = boolean | string | string[];
 

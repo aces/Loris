@@ -9,10 +9,10 @@
 
         {*
         Initialize the shared helper with PHP data before loading module scripts,
-        so they can access page settings through the loris global. *}
+        so bundled imports and window.loris share the same instance. *}
         <script src="{$baseurl}/js/components/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        let loris = lorisjs.loris.createLoris({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
+        lorisjs.loris.initializeLoris({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
 
         const switchLanguage = (selectEl) => {
           const queryParams = new URLSearchParams(window.location.search);

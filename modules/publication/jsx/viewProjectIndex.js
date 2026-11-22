@@ -1,4 +1,5 @@
 import {createRoot} from 'react-dom/client';
+import {loris} from 'jslib/loris';
 import ViewProject from './viewProject';
 import i18n from 'I18nSetup';
 import frStrings from '../locale/fr/LC_MESSAGES/publication.json';

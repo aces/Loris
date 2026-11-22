@@ -11,6 +11,7 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 import {NavigationStepper, NavigationWithSave} from './react.navigationStepper';
 import {StepperPanel, ProgressBar} from './components/stepper';
 import SavedQueriesList from './react.savedqueries';
