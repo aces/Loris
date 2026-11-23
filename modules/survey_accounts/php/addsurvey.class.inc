@@ -347,7 +347,6 @@ class AddSurvey extends \NDB_Form
         );
         $this->addSelect(
             "Test_name",
-<<<<<<< HEAD
             dcngettext(
                 'loris',
                 'Instrument',
@@ -358,14 +357,10 @@ class AddSurvey extends \NDB_Form
             array_merge(
                 ['' => ''],
                 \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
-            )
-=======
-            "Instrument",
-            \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris),
+            ),
             [
-                'multiple' => 'multiple',
+                'multiple' => 'multiple'
             ]
->>>>>>> c9577197b ([Survey Accounts] Batch send surveys)
         );
         $this->addBasicText("Email", dgettext('loris', 'Email address'));
         $this->addBasicText(

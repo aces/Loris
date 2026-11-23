@@ -119,6 +119,7 @@ foreach ($instrument_list as $instrument) {
                 ]
             );
             exit(0);
+        }
     }
 }
 
