@@ -2262,6 +2262,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         $params = [];
+
+        // The visit restriction is storage-layout independent, so it is built
+        // once here and applied to both the JSON-backed and table-backed
+        // queries below.
+        $visitCondition = null;
+        if (is_array($v) && !empty($v)) {
+            $placeholders = [];
+            foreach (array_values($v) as $i => $visit) {
+                $params["visit$i"] = $visit;
+                $placeholders[]    = ":visit$i";
+            }
+            $visitCondition = 's.Visit_label IN ('
+                . join(',', $placeholders)
+                . ')';
+        }
+
         if ($this->jsonData) {
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
@@ -2307,7 +2323,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     . ' ';
                 }
 
-                $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
+                $conditions[] ="flag.CommentID NOT LIKE 'DDE_%'";
+            }
+            if ($visitCondition !== null) {
+                $conditions[] = $visitCondition;
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
@@ -2386,20 +2405,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . ' ';
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
-            if (is_array($v) && !empty($v)) {
-                    $vescaped = array_map(
-                        function ($visit) use ($db) {
-                            return $db->quote($visit);
-                        },
-                        $v
-                    );
-
-                    $visitString = '(' . implode(',', $vescaped) . ')';
-                    $where       = 'WHERE ' . join(' AND ', $conditions) .
-                                   ' AND s.Visit_label IN ' . $visitString;
-            } else {
-                $where = 'WHERE ' . join(' AND ', $conditions);
+            if ($visitCondition !== null) {
+                $conditions[] = $visitCondition;
             }
+            $where = 'WHERE ' . join(' AND ', $conditions);
 
             $query = "SELECT
                 c.CandID as CandID,
