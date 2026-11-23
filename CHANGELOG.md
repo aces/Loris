@@ -8,6 +8,10 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## Unreleased
+### Document Repository
+- Build category labels and trees from a single category query per request.
+
 ## LORIS 28.0 (Release Date: 2026-02-27)
 ### Core
 #### Summary

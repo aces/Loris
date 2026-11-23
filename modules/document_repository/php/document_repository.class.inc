@@ -54,18 +54,11 @@ class Document_Repository extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $user  = \User::singleton();
-        $db    = $this->loris->getDatabaseConnection();
-        $query = $db->pselect(
-            "SELECT * FROM document_repository_categories",
-            []
-        );
-        //categories
-        $categoriesList = [];
-        foreach ($query as $value) {
-               $arr = $this->parseCategory($value);
-               $categoriesList[$arr['id']] =$arr['name'];
-        }
+        $user = \User::singleton();
+        $db   = $this->loris->getDatabaseConnection();
+        $categoriesList = (new CategoryTree(
+            $db->pselect("SELECT * FROM document_repository_categories", [])
+        ))->getLabels();
         //site
         $siteList = [];
 
@@ -110,39 +103,6 @@ class Document_Repository extends \DataFrameworkMenu
             'fileTypes'      => $fileTypeList,
             'hiddenFile'     => ['0' => "No", '1' => "Yes"],
         ];
-    }
-
-    /**
-     * Handler of parsing category
-     *
-     * @param array $value the value
-     *
-     * @return array
-     */
-    function parseCategory($value): array
-    {
-        $id = $value['id'];
-        $DB = $this->loris->getDatabaseConnection();
-            $categoryName = $value['category_name'];
-        do {
-            if ($value['parent_id'] != 0) {
-                $parent_id = $value['parent_id'];
-                $query     = "SELECT * FROM document_repository_categories".
-                            " where id=$parent_id";
-                $value     = $DB->pselectRow($query, []);
-                if (is_null($value)) {
-                    throw new \LorisException(
-                        'Could not find data for specified parent ID. '
-                        . 'Cannot parse category.'
-                    );
-                }
-                $categoryName = $value['category_name'] . ">" . $categoryName;
-            }
-        } while ($value['parent_id'] != 0);
-         return [
-             "name" => $categoryName,
-             "id"   => $id,
-         ];
     }
 
     /**
