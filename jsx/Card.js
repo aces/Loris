@@ -64,10 +64,10 @@ class Card extends Component {
         <Panel
           id={this.props.id}
           title={this.props.title}
-          initCollapsed={this.props.initCollapsed}
+          defaultCollapsed={this.props.defaultCollapsed}
           style={{overflow: 'auto'}}
           panelSize={this.props.cardSize}
-          collapsing={this.props.collapsing}
+          collapsible={this.props.collapsible}
           maxHeight={this.props.maxHeight}
         >
           <div
@@ -90,17 +90,17 @@ Card.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func,
-  initCollapsed: PropTypes.bool,
+  defaultCollapsed: PropTypes.bool,
   style: PropTypes.object,
   cardSize: PropTypes.string,
   children: PropTypes.node,
-  collapsing: PropTypes.bool,
+  collapsible: PropTypes.bool,
   maxHeight: PropTypes.string,
 };
 
 Card.defaultProps = {
   onClick: null,
-  initCollapsed: false,
+  defaultCollapsed: false,
 };
 
 export default Card;

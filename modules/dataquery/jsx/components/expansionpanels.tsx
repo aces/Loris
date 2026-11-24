@@ -27,8 +27,10 @@ const ExpansionPanels = (props: {
           key={index}
           id={panel.id}
           title={panel.title}
-          collapsed={panel.alwaysOpen}
-          initCollapsed={panel.defaultOpen || props.alwaysOpen || true}>
+          collapsible={!(panel.alwaysOpen || props.alwaysOpen)}
+          defaultCollapsed={!(
+            panel.defaultOpen || panel.alwaysOpen || props.alwaysOpen
+          )}>
           {panel.content}
         </Panel>
       ))}
