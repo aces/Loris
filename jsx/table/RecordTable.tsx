@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import {useTranslation} from 'react-i18next';
 import Button from 'jsx/Button';
-import {Icon} from './icons';
+import {Icon, IconName} from './icons';
 import {Filters} from './filterMatch';
 import {displayOf} from './tableState';
 import {useTableState, Row} from './useTableState';
@@ -50,6 +50,8 @@ export type Column<R, V = unknown> = {
   tag?: boolean | {[value: string]: TagTone},
   // The page a value opens, when it has one
   link?(value: V, record: R): string | undefined,
+  // Marks values that name other records, with the icon of their kind
+  relation?: IconName,
 };
 
 /**
@@ -271,7 +273,8 @@ function RecordTable<R>(props: Props<R>) {
   // Columns take their width from the rows the filters, search and sort
   // leave, and keep it while those rows scroll.
   const {widths, clipped} = useColumnWidths(
-    shown, state.visibleColumns, scrollEl
+    shown, state.visibleColumns, scrollEl,
+    (props.recordActions || []).length > 0 ? state.lead : undefined
   );
 
   // A shadow and an arrow at the right edge show there are more columns to
@@ -351,7 +354,7 @@ function RecordTable<R>(props: Props<R>) {
       onSectionChange={props.onSectionChange}
       controls={props.controls}
       columns={columns}
-      filters={columns.some((c) => c.filter) && (
+      filters={columns.some((c) => c.filter) && !drawerOpen && (
         <FiltersButton
           state={state}
           open={drawerOpen}
@@ -387,23 +390,49 @@ function RecordTable<R>(props: Props<R>) {
     // shows and they wrap. An empty value shows nothing. A list without tags
     // shows as text the same way.
     const options = column.filter?.options;
-    if (Array.isArray(value) && !column.tag && !full && value.length > 0) {
-      const items = value.map((v) => (
-        <span key={String(v)} className="rt-list-item">
-          {options?.[String(v)] ?? String(v)}
+    /**
+     * The label of one of the cell's values
+     *
+     * @param v - the value
+     */
+    const labelOf = (v: unknown): string => Array.isArray(value)
+      ? options?.[String(v)] ?? String(v)
+      : displayOf(column, v, record);
+    if (column.relation) {
+      const names = (Array.isArray(value) ? value : [value])
+        .map(labelOf)
+        .filter((n) => n !== '');
+      if (names.length === 0) {
+        return null;
+      }
+      const icon = column.relation;
+      const items = names.map((n) => (
+        <span key={n} className="rt-relation">
+          <Icon name={icon} />{n}
         </span>
       ));
-      return (
-        <Tooltip content={displayOf(column, value, record)}>
-          <FitTags className="rt-list">{items}</FitTags>
-        </Tooltip>
+      if (full) {
+        return (
+          <span className="rt-tags rt-tags-wrap rt-relations">{items}</span>
+        );
+      }
+      const row = <FitTags className="rt-relations">{items}</FitTags>;
+      return names.length < 2 ? row : (
+        <Tooltip content={names.join(', ')}>{row}</Tooltip>
+      );
+    }
+    if (Array.isArray(value) && !column.tag && !full && value.length > 0) {
+      const items = value.map((v) => (
+        <span key={String(v)} className="rt-list-item">{labelOf(v)}</span>
+      ));
+      const row = <FitTags className="rt-list">{items}</FitTags>;
+      return value.length < 2 ? row : (
+        <Tooltip content={displayOf(column, value, record)}>{row}</Tooltip>
       );
     }
     if (column.tag) {
       const values = (Array.isArray(value) ? value : [value]).filter(
-        (v) => (Array.isArray(value)
-          ? options?.[String(v)] ?? String(v)
-          : displayOf(column, v, record)) !== ''
+        (v) => labelOf(v) !== ''
       );
       if (values.length === 0) {
         return null;
@@ -411,9 +440,7 @@ function RecordTable<R>(props: Props<R>) {
       const tones = typeof column.tag === 'object' ? column.tag : {};
       const each = values.map((v) => (
         <Tag key={String(v)} tone={tones[String(v)] || 'neutral'}>
-          {Array.isArray(value)
-            ? options?.[String(v)] ?? String(v)
-            : displayOf(column, v, record)}
+          {labelOf(v)}
         </Tag>
       ));
       const tags = full
@@ -560,11 +587,10 @@ function RecordTable<R>(props: Props<R>) {
 
 
   const detail = props.renderDetail;
-  // With every column hidden, an empty column takes the width, so the
-  // columns menu stays in its corner.
+  // With every column hidden, an empty column keeps the header row's width.
   const filler = visibleColumns.length === 0;
   const columnCount = visibleColumns.length + (selectable ? 1 : 0)
-    + (hasRecordActions ? 1 : 0) + (filler ? 1 : 0);
+    + 1 + (filler ? 1 : 0);
   const leadCells = selectable ? 1 : 0;
   const hasGroups = visibleColumns.some((c) => c.group);
   const groupBands: {label: string, span: number}[] = [];
@@ -781,16 +807,20 @@ function RecordTable<R>(props: Props<R>) {
             key={column.name}
             className={(column.type === 'number' ? 'rt-number' : '')
               + (column.type === 'id' ? ' rt-mono' : '')
-              + (column.sticky ? ' rt-sticky' : '')}
+              + (column.sticky ? ' rt-sticky' : '')
+              + (column.name === state.lead ? ' rt-lead-cell' : '')}
           >
-            {cellContent(column, record)}
+            {column.name === state.lead && hasRecordActions ? (
+              <span className="rt-lead">
+                <span className="rt-lead-value">
+                  {cellContent(column, record)}
+                </span>
+                {recordActionCell(record)}
+              </span>
+            ) : cellContent(column, record)}
           </td>
         ))}
-        {hasRecordActions && (
-          <td className="rt-actions-cell">
-            {recordActionCell(record)}
-          </td>
-        )}
+        <td className="rt-edge-cell" aria-hidden="true" />
       </tr>
     );
   };
@@ -815,7 +845,7 @@ function RecordTable<R>(props: Props<R>) {
             />
           ))}
           {filler && <col />}
-          {hasRecordActions && <col style={{width: 0}} />}
+          <col style={{width: 0}} />
         </colgroup>
         <thead>
           {hasGroups && (
@@ -826,7 +856,7 @@ function RecordTable<R>(props: Props<R>) {
                   {band.label}
                 </th>
               ))}
-              {hasRecordActions && <th />}
+              <th />
             </tr>
           )}
           <tr
@@ -862,12 +892,15 @@ function RecordTable<R>(props: Props<R>) {
                   aria-sort={key
                     ? (key.ascending ? 'ascending' : 'descending')
                     : 'none'}
-                  draggable
+                  draggable={column.name !== state.lead}
                   onDragStart={(e) => {
                     dragged.current = column.name;
                     e.dataTransfer.effectAllowed = 'move';
                   }}
                   onDragOver={(e) => {
+                    if (column.name === state.lead) {
+                      return;
+                    }
                     e.preventDefault();
                     setDropTarget(column.name);
                   }}
@@ -908,9 +941,7 @@ function RecordTable<R>(props: Props<R>) {
               );
             })}
             {filler && <th aria-hidden="true" />}
-            {hasRecordActions && (
-              <th className="rt-actions-cell" aria-hidden="true" />
-            )}
+            <th className="rt-edge-cell" aria-hidden="true" />
           </tr>
         </thead>
         <tbody ref={setBodyEl}>
@@ -919,8 +950,8 @@ function RecordTable<R>(props: Props<R>) {
               <td colSpan={columnCount}><span /></td>
             </tr>
           ))}
-          {/* With every column hidden, the header and its columns menu stay,
-              and the note sits where an empty table's does. */}
+          {/* With every column hidden, the header stays, and the note sits
+              where an empty table's does. */}
           {visibleColumns.length === 0 ? (
             <tr>
               <td colSpan={columnCount} className="rt-empty">

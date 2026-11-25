@@ -29,6 +29,7 @@ export function ColumnsMenu<R>(props: {
       appearance="button"
       icon={<Icon name="columns" />}
       iconOnly={props.iconOnly}
+      disabledOptions={props.state.lead ? [props.state.lead] : []}
       label={t('Columns')}
       options={options}
       value={visibleColumns.map((c) => c.name)}
@@ -55,7 +56,7 @@ export function ColumnsMenu<R>(props: {
  * @param props.actions - the table's own actions
  * @param props.onAction - opens the form of an action that has one
  * @param props.captureFind - whether Ctrl or Cmd and F opens Search
- * @param props.filters - the Filters button, after Search
+ * @param props.filters - the Filters button, at the start
  * @param props.state - the table's state
  */
 function TableToolbar<R>(props: {
@@ -161,6 +162,7 @@ function TableToolbar<R>(props: {
 
   return (
     <div className="rt-toolbar">
+      {props.filters}
       <div className="rt-heading">
         {props.sections && props.onSectionChange ? (
           <div className="rt-title rt-title-switch">
@@ -219,7 +221,6 @@ function TableToolbar<R>(props: {
         </span>
       )}
       <div className="rt-toolbar-group" role="group" aria-label={t('Display')}>
-        {props.filters}
         {props.controls}
         <span className="rt-value-menu">
           <Select

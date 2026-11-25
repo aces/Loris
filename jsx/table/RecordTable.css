@@ -136,42 +136,40 @@
 /* A row's menu hangs from the row's bottom line, and each item is a row
    high, so its edges fall on the lines of the rows beneath it. A cell rises
    above the others while a menu it holds is open, frozen columns included. */
-.rt-table .rt-actions-cell .rt-menu-anchor {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0 var(--space-sm) 0 var(--space-xl);
-    background: linear-gradient(
-        to right, transparent, var(--rt-row-bg) var(--space-xl)
-    );
+/* The menu sets its own text, apart from the identifier's monospace. */
+.rt-table .rt-lead-cell .rt-menu-anchor {
+    margin-left: auto;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--duration-fast) var(--ease);
 }
 
-.rt-table tbody tr:hover .rt-actions-cell .rt-menu-anchor,
-.rt-table tbody tr:focus-within .rt-actions-cell .rt-menu-anchor,
-.rt-table .rt-actions-cell:has(.rt-menu) .rt-menu-anchor {
+.rt-table tbody tr:hover .rt-lead-cell .rt-menu-anchor,
+.rt-table tbody tr:focus-within .rt-lead-cell .rt-menu-anchor,
+.rt-table .rt-lead-cell:has(.rt-menu) .rt-menu-anchor {
     opacity: 1;
     pointer-events: auto;
 }
 
-.rt-table .rt-actions-cell:has(.rt-menu),
+.rt-table td:has(.rt-menu),
 .rt-table :is(th, td):has(.loris-select.open) {
     z-index: 4;
 }
 
-.rt-table .rt-actions-cell .rt-menu {
+.rt-table .rt-lead-cell .rt-menu {
     top: 100%;
-    min-width: 180px;
+    right: auto;
+    left: 0;
+    min-width: 140px;
     gap: 0;
     padding: 0;
     border-radius: 0 0 var(--radius) var(--radius);
     box-shadow: var(--shadow-raised);
 }
 
-.rt-table .rt-actions-cell .rt-menu-item {
+.rt-table .rt-lead-cell .rt-menu-item {
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -181,7 +179,7 @@
     border-radius: 0;
 }
 
-.rt-table .rt-actions-cell .rt-menu-item:last-child {
+.rt-table .rt-lead-cell .rt-menu-item:last-child {
     height: 35px;
     border-bottom: none;
 }
@@ -399,8 +397,8 @@
     padding: 0 var(--space-xl);
 }
 
-/* A cell that opens a page is one link, edge to edge, with an arrow on
-   hover. */
+/* A cell that opens a page is one link across the cell. On hover it shows
+   as a rounded box inside the cell, outlined, with an arrow. */
 .rt-table td:has(> .rt-cell-link) {
     position: relative;
 }
@@ -411,17 +409,23 @@
 
 .rt-cell-link {
     position: absolute;
-    inset: 0;
+    inset: var(--space-xs);
     display: flex;
     align-items: center;
     gap: var(--space-xs);
-    padding: 0 var(--space-sm) 0 var(--space-lg);
+    padding: 0 var(--space-xs) 0 calc(var(--space-lg) - var(--space-xs) - 1px);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
     color: var(--primary);
     text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease),
+        background var(--duration-fast) var(--ease);
 }
 
 .rt-cell-link:hover,
 .rt-cell-link:focus {
+    border-color: var(--primary-border);
+    background: var(--surface);
     color: var(--primary);
     text-decoration: none;
 }
@@ -441,6 +445,7 @@
 
 .rt-cell-link:hover > .loris-icon,
 .rt-cell-link:focus-visible > .loris-icon {
+    color: var(--primary);
     opacity: 1;
 }
 
@@ -448,9 +453,22 @@
     text-decoration: underline;
 }
 
-/* The actions cell holds a menu that opens past its edges. */
-.rt-table tbody td.rt-actions-cell {
+/* The record's identifier, with its row menu beside it on hover. The cell
+   holds a menu that opens past its edges. */
+.rt-table tbody td.rt-lead-cell {
     overflow: visible;
+}
+
+.rt-lead {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.rt-lead-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .rt-table thead th {
@@ -715,7 +733,7 @@
 }
 
 .rt-table thead .rt-sticky,
-.rt-table thead .rt-actions-cell {
+.rt-table thead .rt-edge-cell {
     background: var(--surface-sunken);
 }
 
@@ -727,25 +745,14 @@
     background: var(--state-selected);
 }
 
-/* A record's own actions show over the right end of its row while the
-   pointer is on it, or it holds focus or an open menu. The cell that holds
-   them takes no width, so the columns keep the whole row. */
+/* The table's right edge: a cell with no width, held at the edge, that
+   casts the shadow when columns run past it. */
 
-.rt-table .rt-actions-cell {
-    --rt-row-bg: var(--surface);
+.rt-table .rt-edge-cell {
     position: sticky;
     right: 0;
     width: 0;
     padding: 0;
-    text-align: center;
-}
-
-.rt-table tbody tr:hover .rt-actions-cell {
-    --rt-row-bg: var(--state-hover);
-}
-
-.rt-table tbody tr.rt-selected .rt-actions-cell {
-    --rt-row-bg: var(--state-selected);
 }
 
 .rt-row-menu {
@@ -779,12 +786,6 @@
 
 .rt-menu-item:hover {
     background: var(--state-hover);
-}
-
-.rt-actions-cell .rt-menu {
-    min-width: 180px;
-    gap: 0;
-    padding: var(--space-xs);
 }
 
 /* Loading */
@@ -913,10 +914,6 @@ body:has(.rt-fill) #footer {
 .rt-table tbody tr.rt-open,
 .rt-table tbody tr.rt-open .rt-sticky {
     background: var(--state-active);
-}
-
-.rt-table tbody tr.rt-open .rt-actions-cell {
-    --rt-row-bg: var(--state-active);
 }
 
 /* One bar marks the open row, on its first cell only. */
@@ -1165,7 +1162,7 @@ body:has(.rt-fill) .navbar {
     flex-shrink: 0;
 }
 
-/* A list of linked records reads as text, its names apart by commas. */
+/* A list without tags reads as text, its values apart by commas. */
 .rt-tags-fit.rt-list {
     gap: 0;
 }
@@ -1177,6 +1174,25 @@ body:has(.rt-fill) .navbar {
 
 .rt-list > .rt-tags-more {
     margin-left: var(--space-xs);
+}
+
+/* Values that name other records: each with its kind's icon, apart by a
+   space. */
+.rt-tags.rt-relations {
+    gap: var(--space-md);
+}
+
+.rt-relation {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.rt-relation .loris-icon {
+    color: var(--text-disabled);
+    font-size: var(--font-size-sm);
 }
 
 .rt-tag-hidden {
@@ -1441,9 +1457,9 @@ body:has(.rt-fill) .navbar {
     cursor: pointer;
 }
 
-/* When columns run past the right edge, the actions column casts a shadow
-   over them and a small arrow scrolls them into view. */
-.rt-table .rt-actions-cell::before {
+/* When columns run past the right edge, the edge casts a shadow over them
+   and a small arrow scrolls them into view. */
+.rt-table .rt-edge-cell::before {
     content: '';
     position: absolute;
     top: 0;
@@ -1458,7 +1474,7 @@ body:has(.rt-fill) .navbar {
     transition: opacity var(--duration-fast) var(--ease);
 }
 
-.rt-scroll-more .rt-table .rt-actions-cell::before {
+.rt-scroll-more .rt-table .rt-edge-cell::before {
     opacity: 1;
 }
 
@@ -1480,7 +1496,7 @@ body:has(.rt-fill) .navbar {
 
 .rt-more-right button {
     position: absolute;
-    top: 6px;
+    top: 50%;
     right: var(--space-xs);
     display: flex;
     align-items: center;
@@ -1494,6 +1510,7 @@ body:has(.rt-fill) .navbar {
     box-shadow: var(--shadow-raised);
     color: var(--text-muted);
     font-size: var(--font-size-sm);
+    transform: translateY(-50%);
     cursor: pointer;
 }
 

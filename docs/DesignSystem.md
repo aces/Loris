@@ -251,9 +251,9 @@ and `-strong` shades: `neutral` (the default), `primary`, `info`, `success`,
 
 A value is a tag when it is an option from a short, fixed set that the reader scans a
 column for: a status, a category, a flag. A value that names another record, such as a
-site, a project or a cohort, is plain text, and several of them in one cell are
-separated by commas. Identifiers, dates, numbers and free text are plain text too. A
-value shows the same way in a table and in its filter.
+site, a project or a cohort, shows its name after a small icon of its kind, and several
+in one cell are set apart by a space. Identifiers, dates, numbers and free text are
+plain text. A value shows the same way in a table and in its filter.
 
 A tag takes a colour when its value is a state someone acts on: `success` for a good or
 finished state, `warning` for one that needs attention, `danger` for a problem, `info`
@@ -266,11 +266,12 @@ A yes-or-no value shows as a check for yes and stays empty for no.
 
 In a RecordTable, a column shows its values as tags with `tag: true`, or with a map
 from value to tone, such as `tag: {'1': 'danger', '3': 'success'}`, where a value the
-map leaves out is neutral. A row shows the tags or names that fit, with a count for
-the rest; the record panel shows them all.
+map leaves out is neutral. A column of linked records names its kind's icon with
+`relation`, such as `relation: 'place'`. A row shows the tags or names that fit, with a
+count for the rest; the record panel shows them all.
 
-A cell that opens a page is one link from edge to edge, with an arrow that shows on
-hover: `link: (value, record) => url`. A value links only when it has a page to open.
+A cell that opens a page is one link across the cell, outlined with an arrow on hover:
+`link: (value, record) => url`. A value links only when it has a page to open.
 
 ### Tooltip
 

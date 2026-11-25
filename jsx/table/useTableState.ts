@@ -75,11 +75,16 @@ export function useTableState<R>(
     return map;
   }, [columns]);
 
+  // The record's own identifier: always the first column, always shown
+  const lead = columns.find((c) => c.sticky)?.name;
   const orderedColumns = [
-    ...order.filter((n) => byName[n]).map((n) => byName[n]),
-    ...columns.filter((c) => !order.includes(c.name)),
+    ...(lead ? [byName[lead]] : []),
+    ...order.filter((n) => byName[n] && n !== lead).map((n) => byName[n]),
+    ...columns.filter((c) => !order.includes(c.name) && c.name !== lead),
   ];
-  const visibleColumns = orderedColumns.filter((c) => !hidden.includes(c.name));
+  const visibleColumns = orderedColumns.filter(
+    (c) => c.name === lead || !hidden.includes(c.name)
+  );
 
   /**
    * Moves a column to another column's place
@@ -88,7 +93,7 @@ export function useTableState<R>(
    * @param to - the column whose place it takes
    */
   const moveColumn = (from: string, to: string) => {
-    if (from === to) {
+    if (from === to || from === lead || to === lead) {
       return;
     }
     const names = orderedColumns.map((c) => c.name).filter((n) => n !== from);
@@ -307,10 +312,10 @@ export function useTableState<R>(
       for (let i = 0; i < keys.length; i++) {
         const column = byName[keys[i].name];
         const result = compareValues(
-          column.type || 'text', a.values[i], b.values[i]
+          column.type || 'text', a.values[i], b.values[i], keys[i].ascending
         );
         if (result !== 0) {
-          return keys[i].ascending ? result : -result;
+          return result;
         }
       }
       return a.index - b.index;
@@ -481,6 +486,7 @@ export function useTableState<R>(
     hidden,
     setHidden,
     byName,
+    lead,
     orderedColumns,
     visibleColumns,
     moveColumn,

@@ -13,6 +13,8 @@ const SHOWN_TAGS = 3;
 const CELL_PADDING = 24;
 // The arrow a linked cell shows on hover
 const LINK_EXTRA = 20;
+// The row menu beside the record's identifier
+const MENU_EXTRA = 32;
 // The header's sort icon and its gap.
 const HEADER_EXTRA = 44;
 // Enough records to find each column's long values without reading them all.
@@ -32,11 +34,13 @@ const CANDIDATES = 3;
  * @param records - the records to fit, those in view
  * @param columns - the visible columns
  * @param container - an element inside the table to measure in
+ * @param menuBeside - the column that holds the row menu, if any
  */
 export function useColumnWidths<R>(
   records: R[],
   columns: Column<R>[],
   container: HTMLElement | null,
+  menuBeside?: string,
 ): {widths: {[name: string]: number}, clipped: Set<string>} {
   const names = columns.map((c) => c.name).join('|');
   return useMemo(() => {
@@ -119,7 +123,10 @@ export function useColumnWidths<R>(
             el.textContent = text;
           }
         }
-      ))) + (column.link ? LINK_EXTRA : 0);
+      ) + (column.relation
+        ? LINK_EXTRA * (Array.isArray(value) ? value.length : 1) : 0)
+      )) + (column.link ? LINK_EXTRA : 0)
+        + (column.name === menuBeside ? MENU_EXTRA : 0);
       const header = measure((el) => {
         el.style.fontWeight = '500';
         el.style.fontSize = 'var(--font-size-sm)';
@@ -134,5 +141,5 @@ export function useColumnWidths<R>(
     });
     probe.remove();
     return {widths, clipped};
-  }, [records, names, container]);
+  }, [records, names, container, menuBeside]);
 }

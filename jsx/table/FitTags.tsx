@@ -10,6 +10,7 @@ import React, {ReactElement, useLayoutEffect, useRef, useState} from 'react';
  */
 function FitTags(props: {children: ReactElement[], className?: string}) {
   const count = props.children.length;
+  const keys = props.children.map((tag) => tag.key).join('|');
   const ref = useRef<HTMLSpanElement>(null);
   const [fit, setFit] = useState(count);
 
@@ -48,7 +49,7 @@ function FitTags(props: {children: ReactElement[], className?: string}) {
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [count, fit]);
+  }, [count, fit, keys]);
 
   return (
     <span

@@ -31,26 +31,29 @@ export function displayOf<R>(
 }
 
 /**
- * Compares two values of a column for sorting, empty values last
+ * Compares two values of a column for sorting, empty values last in either
+ * direction
  *
  * @param type - the column's type
  * @param a - first value
  * @param b - second value
+ * @param ascending - whether the order runs from low to high
  */
 export function compareValues(
   type: ColumnType,
   a: unknown,
   b: unknown,
+  ascending = true,
 ): number {
   const emptyA = a === null || a === undefined || a === '';
   const emptyB = b === null || b === undefined || b === '';
   if (emptyA || emptyB) {
     return emptyA === emptyB ? 0 : (emptyA ? 1 : -1);
   }
-  if (type === 'number') {
-    return Number(a) - Number(b);
-  }
-  return String(a).localeCompare(String(b), undefined, {numeric: true});
+  const order = type === 'number'
+    ? Number(a) - Number(b)
+    : String(a).localeCompare(String(b), undefined, {numeric: true});
+  return ascending ? order : -order;
 }
 
 /**
