@@ -111,8 +111,10 @@
 1. Assert that: the message `Query not yet run` is displayed when page loads.
 2. Assert that: changing the `header display format` dropdown immediately changes the table header.
 3. Assert that: changing the `Display visits as` dropdown immediately changes the table organization.
-4. Assert that: `Display visits as = inline values (no download)` has a `Display empty visits?` checkbox.
-5. Make sure the checkbox update the table.
+4. Assert that: every `Display visits as` option has a `Show candidates with no data` checkbox, checked by default, and `inline values (no download)` also has a `Display empty visits?` checkbox.
+5. Make sure each checkbox updates the table.
+   1. Assert that: `Show candidates with no data` is disabled when only candidate fields such as `PSCID` are selected.
+   2. Select `t1_file` (Image Acquisitions), run the query, go to a later page and uncheck `Show candidates with no data`. Assert that: only candidates with a t1 file remain, starting on page 1.
 6. Assert that: the `Download table as CSV` button triggers the file download with the right information in it.
 7. Assert that: table pagination buttons work.
 8. Assert that: table maximum number of rows per page dropdown modifies the number of displayed rows.

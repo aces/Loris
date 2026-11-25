@@ -354,6 +354,14 @@ function ViewData(props: {
     props.fulldictionary
   );
   const [emptyVisits, setEmptyVisits] = useState<boolean>(true);
+  const [showEmptyCandidates, setShowEmptyCandidates] = useState<boolean>(true);
+
+  // Candidate scoped fields are skipped when looking for data, so the filter
+  // can only tell rows apart when some other field is selected.
+  const hasNonCandidateFields = props.fields.some((field) => {
+    const dict = getDictionary(field, props.fulldictionary);
+    return !dict || dict.scope !== 'candidate';
+  });
 
   let queryTable;
   if (queryData.loading) {
@@ -379,40 +387,129 @@ function ViewData(props: {
       break;
     case 'done':
       try {
-        queryTable = <DataTable
-          rowNumLabel={t('Row Number')}
-          fields={organizedData.headers.map(
-            (val: string) => {
-              return {show: true, label: val};
-            })
-          }
-          data={organizedData.data}
-          getMappedCell={
-            organizedMapper(
-              visitOrganization,
-              props.fields,
-              props.fulldictionary,
-            )
-          }
-          getFormattedCell={
-            organizedFormatter(
-              queryData.data,
-              visitOrganization,
-              props.fields,
-              props.fulldictionary,
-              emptyVisits,
-              enumDisplay,
-              props.t
-            )
-          }
-          hide={
-            {
-              rowsPerPage: false,
-              defaultColumn: true,
-              downloadCSV: visitOrganization == 'inline',
+        /**
+         * Whether a row has data in any field that is not candidate scoped
+         *
+         * @param row - The row to check
+         * @returns - true if row has data
+         */
+        const rowHasData = (row: TableRow): boolean => {
+          // Cross-sectional mode prepends a 'Visit' column, so field indices are offset by 1
+          const offset = visitOrganization === 'crosssection' ? 1 : 0;
+
+          for (let i = 0; i < props.fields.length; i++) {
+            const field = props.fields[i];
+            const dict = getDictionary(field, props.fulldictionary);
+
+            if (dict && dict.scope === 'candidate') {
+              continue;
+            }
+
+            // Check if this field has any data (accounting for offset)
+            const rowIndex = i + offset;
+            if (rowIndex < row.length) {
+              const cellValue = row[rowIndex];
+
+              // Basic null/empty check
+              if (cellValue === null || cellValue === '') {
+                continue;
+              }
+
+              // Outside Cross-sectional mode, a session scoped cell holds
+              // every visit as JSON
+              if (dict && dict.scope === 'session' &&
+                  visitOrganization !== 'crosssection') {
+                try {
+                  const visits: unknown[] = Object.values(
+                    JSON.parse(cellValue)
+                  );
+                  const hasData = visits.some((visit) => {
+                    if (typeof visit !== 'object' || visit === null) {
+                      return false;
+                    }
+                    const cell = visit as SessionRowCell;
+
+                    if (cell.value !== undefined
+                        && cell.value !== null
+                        && cell.value !== '') {
+                      return true;
+                    }
+
+                    // Fields with cardinality many hold 'values'
+                    if (cell.values !== undefined && cell.values !== null) {
+                      const valueKeys = Object.keys(cell.values);
+                      if (valueKeys.length > 0) {
+                        return true;
+                      }
+                    }
+
+                    return false;
+                  });
+
+                  if (hasData) {
+                    return true; // Has actual session data
+                  }
+                } catch (e) {
+                  // If parsing fails, treat as no data
+                  continue;
+                }
+              } else {
+                return true;
+              }
             }
           }
-        />;
+          return false;
+        };
+
+        // Filter out empty candidates if toggle is off. In Cross-sectional
+        // mode each row is a single visit, so this also drops empty visits.
+        const filteredData = (showEmptyCandidates || !hasNonCandidateFields)
+          ? organizedData.data
+          : organizedData.data.filter(rowHasData);
+
+        if (filteredData.length === 0) {
+          queryTable = (
+            <div className='alert alert-info no-result-found-panel'>
+              <strong>{t('No result found.', {ns: 'loris'})}</strong>
+            </div>
+          );
+        } else {
+          queryTable = <DataTable
+            key={String(showEmptyCandidates)}
+            rowNumLabel={t('Row Number')}
+            fields={organizedData.headers.map(
+              (val: string) => {
+                return {show: true, label: val};
+              })
+            }
+            data={filteredData}
+            getMappedCell={
+              organizedMapper(
+                visitOrganization,
+                props.fields,
+                props.fulldictionary,
+              )
+            }
+            getFormattedCell={
+              organizedFormatter(
+                queryData.data,
+                visitOrganization,
+                props.fields,
+                props.fulldictionary,
+                emptyVisits,
+                enumDisplay,
+                props.t
+              )
+            }
+            hide={
+              {
+                rowsPerPage: false,
+                defaultColumn: true,
+                downloadCSV: visitOrganization == 'inline',
+              }
+            }
+          />;
+        }
       } catch (e) {
         // OrganizedMapper/Formatter can throw an error
         // before the loading is complete
@@ -424,7 +521,7 @@ function ViewData(props: {
     }
   }
 
-  const emptyCheckbox = (visitOrganization === 'inline' ?
+  const emptyVisitsCheckbox = visitOrganization === 'inline' ? (
     <CheckboxElement
       name="emptyvisits"
       value={emptyVisits}
@@ -434,7 +531,20 @@ function ViewData(props: {
           setEmptyVisits(value)
       }
     />
-    : <div />);
+  ) : null;
+
+  const emptyCandidatesCheckbox = (
+    <CheckboxElement
+      name="emptycandidates"
+      value={showEmptyCandidates || !hasNonCandidateFields}
+      disabled={!hasNonCandidateFields}
+      label={t('Show candidates with no data', {ns: 'dataquery'})}
+      onUserInput={
+        (name: string, value: boolean) =>
+          setShowEmptyCandidates(value)
+      }
+    />
+  );
   return <div>
     <SelectElement
       name='headerdisplay'
@@ -494,7 +604,8 @@ function ViewData(props: {
       }
       sortByValue={false}
     />
-    {emptyCheckbox}
+    {emptyCandidatesCheckbox}
+    {emptyVisitsCheckbox}
     {queryTable}
   </div>;
 }
