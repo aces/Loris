@@ -146,7 +146,6 @@
    above the others while a menu it holds is open, frozen columns included. */
 /* The menu sets its own text, apart from the identifier's monospace. */
 .rt-table .rt-lead-cell .rt-menu-anchor {
-    margin-left: auto;
     font-family: var(--font-family);
     font-size: var(--font-size);
     opacity: 0;
@@ -688,11 +687,6 @@
 .rt-caret {
         transition: none;
     }
-}
-
-.rt-selection-note {
-    color: var(--text-muted);
-    font-size: var(--font-size-sm);
 }
 
 .rt-visually-hidden {

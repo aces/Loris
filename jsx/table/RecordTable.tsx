@@ -510,7 +510,6 @@ function RecordTable<R>(props: Props<R>) {
     }
     return {action, reason};
   });
-  const blocked = rowActionStates.filter((s) => s.reason !== null);
 
   // A selection takes over the footer's start, as data grids show it: the
   // count, a way to clear it, what can be done to it and its download.
@@ -523,27 +522,24 @@ function RecordTable<R>(props: Props<R>) {
         {t('Clear selection')}
       </Button>
       {rowActionStates.map(({action, reason}) => {
+        const button = (
+          <Button
+            display="secondary"
+            aria-disabled={reason !== null || undefined}
+            onClick={() => reason === null
+              && action.onClick(selectedRecords)}
+          >
+            {action.label}
+          </Button>
+        );
         return (
           <span key={action.name} className={`action-${action.name}`}>
-            <Button
-              display="secondary"
-              disabled={reason !== null}
-              title={reason || undefined}
-              onClick={() => action.onClick(selectedRecords)}
-            >
-              {action.label}
-            </Button>
+            {reason === null ? button : (
+              <Tooltip content={reason}>{button}</Tooltip>
+            )}
           </span>
         );
       })}
-      {blocked.length > 0 && (
-        <span className="rt-selection-note">
-          {Array.from(new Set(blocked.map((s) => s.reason))).map((reason) =>
-            blocked.filter((s) => s.reason === reason)
-              .map((s) => s.action.label).join(', ') + ': ' + reason
-          ).join(' · ')}
-        </span>
-      )}
       {csv !== false && (
         <Button display="quiet" onClick={() => downloadCSV(selectedRecords)}>
           <Icon name="download" /> {t('Download selected')}
@@ -1144,22 +1140,26 @@ function RecordTable<R>(props: Props<R>) {
         )}
       </>}
       tools={<>
-        <Button
-          display="quiet"
-          title={t('Previous record')}
-          disabled={openIndex <= 0}
-          onClick={() => stepRecord(-1)}
-        >
-          <Icon name="chevronUp" />
-        </Button>
-        <Button
-          display="quiet"
-          title={t('Next record')}
-          disabled={openIndex >= shown.length - 1}
-          onClick={() => stepRecord(1)}
-        >
-          <Icon name="chevronDown" />
-        </Button>
+        <Tooltip content={t('Previous record')} placement="bottom">
+          <Button
+            display="quiet"
+            aria-label={t('Previous record')}
+            aria-disabled={openIndex <= 0 || undefined}
+            onClick={() => openIndex > 0 && stepRecord(-1)}
+          >
+            <Icon name="chevronUp" />
+          </Button>
+        </Tooltip>
+        <Tooltip content={t('Next record')} placement="bottom">
+          <Button
+            display="quiet"
+            aria-label={t('Next record')}
+            aria-disabled={openIndex >= shown.length - 1 || undefined}
+            onClick={() => openIndex < shown.length - 1 && stepRecord(1)}
+          >
+            <Icon name="chevronDown" />
+          </Button>
+        </Tooltip>
       </>}
     >
       <RecordFields

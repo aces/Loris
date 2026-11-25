@@ -15,7 +15,9 @@
     white-space: nowrap;
 }
 
-.loris-button:disabled {
+/* A control that can't be used keeps its hover, so it can say why. */
+.loris-button:disabled,
+.loris-button[aria-disabled='true'] {
     opacity: .55;
     cursor: not-allowed;
 }
@@ -27,7 +29,7 @@
 }
 
 /* Hover deepens the fill. A button has no selected state to be told apart from. */
-.loris-button.primary:hover:not(:disabled),
+.loris-button.primary:hover:not(:disabled):not([aria-disabled='true']),
 .loris-button.primary:focus-visible {
     background: var(--primary-strong);
     border-color: var(--primary-strong);
@@ -42,7 +44,7 @@
 
 /* The outline and the label carry the state. The ground stays put, so the label
    keeps the contrast it was chosen against. */
-.loris-button.secondary:hover:not(:disabled),
+.loris-button.secondary:hover:not(:disabled):not([aria-disabled='true']),
 .loris-button.secondary:focus-visible {
     background: var(--state-hover);
     border-color: var(--primary-strong);
@@ -52,14 +54,14 @@
 /* Aimed at a marked run, so it takes the run's colour. Hover draws a ring rather
    than moving the ground, which would break the link. */
 .loris-button.secondary.targeted,
-.loris-button.secondary.targeted:hover:not(:disabled),
+.loris-button.secondary.targeted:hover:not(:disabled):not([aria-disabled='true']),
 .loris-button.secondary.targeted:focus-visible {
     background: var(--state-active);
     border-color: var(--state-active-solid);
     color: var(--text);
 }
 
-.loris-button.secondary.targeted:hover:not(:disabled),
+.loris-button.secondary.targeted:hover:not(:disabled):not([aria-disabled='true']),
 .loris-button.secondary.targeted:focus-visible {
     box-shadow: 0 0 0 3px var(--state-active);
 }
@@ -71,7 +73,7 @@
 }
 
 /* An action, not a link: hovering tints it rather than underlining it. */
-.loris-button.quiet:hover:not(:disabled),
+.loris-button.quiet:hover:not(:disabled):not([aria-disabled='true']),
 .loris-button.quiet:focus-visible {
     color: var(--primary-strong);
     text-decoration: none;
@@ -83,7 +85,7 @@
     color: var(--danger);
 }
 
-.loris-button.danger:hover:not(:disabled),
+.loris-button.danger:hover:not(:disabled):not([aria-disabled='true']),
 .loris-button.danger:focus-visible {
     color: var(--danger-strong);
     text-decoration: underline;
