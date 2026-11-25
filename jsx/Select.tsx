@@ -190,6 +190,13 @@ function Select(props: {
   const maxVisible = props.maxVisible === undefined ? 5 : props.maxVisible;
   const multiple = props.multiple !== false;
   const searchable = all.length > SEARCH_MIN;
+  /**
+   * The label shown for an option
+   *
+   * @param option - The option's value
+   * @returns - Its label, or the value when it has none
+   */
+  const labelOf = (option: string) => props.options[option] || option;
 
   /**
    * Apply a new selection, leaving disabled values as they were
@@ -218,7 +225,7 @@ function Select(props: {
    */
   const matches = (option: string) => {
     const needle = filter.toLowerCase();
-    return (props.options[option] || option).toLowerCase().includes(needle)
+    return labelOf(option).toLowerCase().includes(needle)
         || option.toLowerCase().includes(needle);
   };
 
@@ -420,16 +427,15 @@ function Select(props: {
     }
     const shown = props.value.slice(0, maxVisible);
     const hidden = selected.size - shown.length;
-    const names = shown.map((option) => props.options[option] || option);
+    const names = shown.map(labelOf);
     if (props.display === 'tags') {
       return <span className="loris-select-tags">
         {shown.map((option, i) => (
           <span key={option} className="loris-select-tag">{names[i]}</span>
         ))}
         {hidden > 0 ?
-          <span className="loris-select-tag muted">
-            {'+' + hidden + ' more'}
-          </span> : null}
+          <span className="loris-select-tag muted">{'+' + hidden}</span> :
+          null}
       </span>;
     }
     return <span className="loris-select-names">
@@ -529,6 +535,9 @@ function Select(props: {
   }
 
   const canClear = props.clearable && !props.disabled && selected.size > 0;
+  const chosen = multiple && selected.size === all.length ?
+    '' :
+    props.value.map(labelOf).join(', ');
   if (props.appearance === 'button') {
     return (
       <div ref={wrapper}
@@ -573,6 +582,7 @@ function Select(props: {
         null}
       <button type="button"
         className="loris-select-trigger"
+        title={chosen || undefined}
         disabled={props.disabled}
         aria-expanded={open}
         aria-haspopup="true"

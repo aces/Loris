@@ -153,6 +153,19 @@ selected or active row shows against white.
 Buttons do not have a selected state. On hover, a button's border and label change
 colour and its background stays the same.
 
+## Page chrome
+
+The navbar is the darker navy, `--primary-strong`, so a filled primary button
+stands apart from the bar above it. A hovered or open menu item turns white and
+joins the menu that opens below it.
+
+| Token | Draws from | Used for |
+|---|---|---|
+| `--chrome-bg` | `--primary-strong` | The navbar's background |
+| `--chrome-text` | `--surface` | Its links and icons |
+| `--chrome-hover` | `--surface` | A hovered or open menu item |
+| `--chrome-hover-text` | `--primary-strong` | That item's text |
+
 ## Motion
 
 | Token | Value | Used for |

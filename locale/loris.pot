@@ -659,3 +659,6 @@ msgstr ""
 
 msgid "Previous month"
 msgstr ""
+
+msgid "Help"
+msgstr ""

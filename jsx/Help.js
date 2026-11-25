@@ -2,6 +2,7 @@ import Markdown from 'jsx/Markdown';
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {useTranslation} from 'react-i18next';
+import Icon from 'jsx/Icon';
 
 /**
  * Help Widget
@@ -117,9 +118,10 @@ const Help = (props) => {
       <button
         type="button"
         className={'help-button' + (isActive ? ' help-open' : '')}
+        aria-label={t('Help', {ns: 'loris'})}
         onClick={() => setIsActive(!isActive)}
       >
-        <img width="17" src={props.baseURL + '/images/help.gif'} />
+        <Icon name="help" />
       </button>
 
       <div

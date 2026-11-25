@@ -80,6 +80,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
+    min-width: 0;
     overflow: hidden;
 }
 
@@ -99,10 +100,12 @@
     user-select: none;
 }
 
+/* Tags stay on one line. A long name is cut short inside its tag and the
+   count of the rest keeps its full width. */
 .loris-select-tags {
     display: flex;
-    flex-wrap: wrap;
     gap: var(--space-xs);
+    min-width: 0;
     overflow: hidden;
 }
 
@@ -113,6 +116,9 @@
     color: var(--primary-strong);
     border-radius: var(--radius-sm);
     padding: 1px var(--space-sm);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
@@ -320,6 +326,7 @@
 }
 
 .loris-select-tag.muted {
+    flex: none;
     background: var(--surface-sunken);
     border-color: var(--border-subtle);
     color: var(--text-muted);

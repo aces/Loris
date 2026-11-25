@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  ChevronDown, ChevronLeft, ChevronRight, Search, X,
+  ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Search, X,
 } from 'lucide-react';
 import './Icon.css';
 
@@ -9,6 +9,7 @@ const glyphs = {
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   close: X,
+  help: CircleHelp,
   search: Search,
 };
 
