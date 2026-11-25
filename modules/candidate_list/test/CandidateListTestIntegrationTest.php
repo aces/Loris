@@ -103,6 +103,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Access Profile", $bodyText);
+        $this->_showFilters();
         $drawerText = $this->safeFindElement(
             WebDriverBy::cssSelector(".rt-drawer")
         )->getText();
@@ -145,7 +146,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString("Access Profile", $bodyText);
-        $this->safeFindElement(WebDriverBy::cssSelector(".rt-drawer"));
+        $this->_showFilters();
         $filters = [
             self::$scanDone,
             self::$Participant,
@@ -175,6 +176,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testFilters()
     {
         $this->safeGet($this->url . "/candidate_list/");
+        $this->_showFilters();
         $this->_filterTest(
             self::$PSCID,
             $this->_total(0),
@@ -294,6 +296,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "High Yeast",
             '2'
         );
+    }
+
+    /**
+     * Opens the filters when they start folded away, as they do in a narrow
+     * window, and waits for them
+     *
+     * @return void
+     */
+    private function _showFilters(): void
+    {
+        $shown = $this->safeFindElement(
+            WebDriverBy::cssSelector(".rt-drawer, .rt-filters-toggle")
+        );
+        if (str_contains($shown->getAttribute('class'), 'rt-filters-toggle')) {
+            $shown->click();
+        }
+        $this->safeFindElement(WebDriverBy::cssSelector(".rt-drawer"));
     }
 
     /**

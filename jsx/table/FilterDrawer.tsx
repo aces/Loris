@@ -5,6 +5,7 @@ import Select from 'jsx/Select';
 import Textbox from 'jsx/Textbox';
 import DateRange from 'jsx/DateRange';
 import Toggle from 'jsx/Toggle';
+import Tooltip from 'jsx/Tooltip';
 import {Icon} from './icons';
 import type {Column, ColumnFilter} from './RecordTable';
 import type {TableState} from './useTableState';
@@ -98,51 +99,79 @@ function FilterDrawer<R>(props: {
   if (filterColumns.length === 0) {
     return null;
   }
-  if (!open) {
-    return (
-      <aside className="rt-rail" aria-label={t('Filters')}>
-        <button
-          type="button"
-          className="rt-rail-button"
-          aria-expanded={false}
-          title={t('Show filters')}
-          aria-label={t('Show filters')}
-          onClick={() => props.onOpenChange(true)}
-        >
-          <Icon name="filter" />
-          {activeCount > 0 && <span className="rt-badge">{activeCount}</span>}
-        </button>
-      </aside>
-    );
-  }
+  // The drawer stays in the page while folded, at no width, so it can grow
+  // and shrink rather than appear and vanish.
   return (
-    <aside className="rt-drawer" aria-label={t('Filters')}>
-      <div className="rt-drawer-head">
-        <h3 className="rt-drawer-title">
-          {t('Filters')}
-          {activeCount > 0 && <span className="rt-badge">{activeCount}</span>}
-        </h3>
-        <span className="rt-clear-all">
-          <Button
-            display="quiet"
-            disabled={activeCount === 0}
-            onClick={() => setFilters({})}
-          >
-            {t('Clear all')}
-          </Button>
-        </span>
-        <Button display="quiet" onClick={() => props.onOpenChange(false)}>
-          <Icon name="collapse" /> {t('Hide')}
-        </Button>
-      </div>
-      <div className="rt-drawer-fields">
-        {filterColumns.map((column) => (
-          <div key={column.name} className="rt-drawer-field">
-            {filterControl(column)}
-          </div>
-        ))}
+    <aside
+      className={'rt-drawer' + (open ? ' rt-drawer-open' : '')}
+      aria-label={t('Filters')}
+      aria-hidden={!open}
+      {...(open ? {} : {inert: ''})}
+    >
+      <div className="rt-drawer-inner">
+        <div className="rt-drawer-head">
+          <h3 className="rt-drawer-title">
+            {t('Filters')}
+            {activeCount > 0 && <span className="rt-badge">{activeCount}</span>}
+          </h3>
+          {activeCount > 0 && (
+            <Button display="quiet" onClick={() => setFilters({})}>
+              {t('Clear all')}
+            </Button>
+          )}
+          <Tooltip content={t('Hide filters')} placement="bottom">
+            <Button
+              display="quiet"
+              aria-label={t('Hide filters')}
+              onClick={() => props.onOpenChange(false)}
+            >
+              <Icon name="collapse" />
+            </Button>
+          </Tooltip>
+        </div>
+        <div className="rt-drawer-fields">
+          {filterColumns.map((column) => (
+            <div key={column.name} className="rt-drawer-field">
+              {filterControl(column)}
+            </div>
+          ))}
+        </div>
       </div>
     </aside>
+  );
+}
+
+/**
+ * The toolbar's Filters button, which shows or folds the filters and counts
+ * the ones set
+ *
+ * @param props - React props
+ * @param props.state - the table's state
+ * @param props.open - whether the filters are shown
+ * @param props.onToggle - shows or folds the filters
+ */
+export function FiltersButton<R>(props: {
+  state: TableState<R>,
+  open: boolean,
+  onToggle: () => void,
+}) {
+  const {t} = useTranslation(['loris']);
+  const {filters, byName} = props.state;
+  const activeCount = Object.keys(filters).filter((k) => byName[k]).length;
+  const label = props.open ? t('Hide filters') : t('Show filters');
+  return (
+    <Tooltip content={label} placement="bottom">
+      <Button
+        display="quiet"
+        aria-label={label}
+        aria-expanded={props.open}
+        onClick={props.onToggle}
+      >
+        <Icon name="filter" />
+        <span className="rt-label" aria-hidden="true">{t('Filters')}</span>
+        {activeCount > 0 && <span className="rt-badge">{activeCount}</span>}
+      </Button>
+    </Tooltip>
   );
 }
 

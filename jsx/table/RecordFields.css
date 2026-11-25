@@ -1,0 +1,15 @@
+/**
+ * A record's fields in the record panel. Values come from
+ * htdocs/css/tokens.css.
+ */
+
+.rt-record-fields {
+    padding: var(--space-md) var(--space-xl);
+}
+
+/* Tags wrap onto a second line rather than run out of the panel. */
+.rt-record-fields .rt-tags {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 2px;
+}

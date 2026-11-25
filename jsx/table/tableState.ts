@@ -16,14 +16,16 @@ export function displayOf<R>(
   if (column.display) {
     return column.display(value, record);
   }
+  if (Array.isArray(value)) {
+    return value.map(
+      (v) => column.filter?.options?.[String(v)] ?? String(v)
+    ).join(', ');
+  }
   if (column.filter?.options && value !== null && value !== undefined) {
     const label = column.filter.options[String(value)];
     if (label !== undefined) {
       return label;
     }
-  }
-  if (Array.isArray(value)) {
-    return value.join(', ');
   }
   return value === null || value === undefined ? '' : String(value);
 }

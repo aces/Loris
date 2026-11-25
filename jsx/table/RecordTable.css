@@ -27,11 +27,6 @@
     outline-offset: 2px;
 }
 
-.rt-icon {
-    width: 1.1em;
-    text-align: center;
-}
-
 .rt .loris-button {
     display: inline-flex;
     align-items: center;
@@ -39,15 +34,19 @@
     white-space: nowrap;
 }
 
+/* A count beside a control: small and in the control's own tint, so it
+   informs without shouting. */
 .rt-badge {
-    min-width: 18px;
-    padding: 0 5px;
-    border-radius: 9px;
-    background: var(--primary);
-    color: var(--surface);
-    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    min-width: 15px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--primary-fill);
+    box-shadow: inset 0 0 0 1px var(--primary-border);
+    color: var(--primary-strong);
+    font-size: 10px;
     font-weight: 600;
-    line-height: 18px;
+    line-height: 15px;
     text-align: center;
     font-variant-numeric: tabular-nums;
 }
@@ -56,7 +55,7 @@
 
 .rt-title {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     line-height: 1.3;
 }
@@ -91,33 +90,34 @@
     color: var(--primary);
 }
 
-.rt-tab-label {
-    padding: 0;
-    border: none;
-    background: none;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
+/* The views menu: plain rows, a note under an item that cannot be used yet,
+   and a destructive item in the danger colour. */
+.rt-view-menu {
+    gap: 0;
+    min-width: 220px;
+    padding: var(--space-xs) 0;
 }
 
-.rt-tab-remove {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    margin-left: 2px;
-    border: none;
-    border-radius: 50%;
-    background: none;
+.rt-view-menu .rt-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 0;
+}
+
+.rt-menu-note {
     color: var(--text-muted);
     font-size: var(--font-size-sm);
-    cursor: pointer;
+    white-space: normal;
 }
 
-.rt-tab-remove:hover {
-    background: var(--state-hover);
-    color: var(--text);
+.rt-menu-danger {
+    color: var(--danger-strong);
+}
+
+.rt-menu-text {
+    max-width: 260px;
+    margin: 0;
 }
 
 .rt-actions {
@@ -131,6 +131,42 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
+}
+
+/* A row's menu hangs from the row's bottom line, and each item is a row
+   high, so its edges fall on the lines of the rows beneath it. A cell rises
+   above the others while a menu it holds is open, frozen columns included. */
+.rt-table .rt-actions-cell .rt-menu-anchor {
+    position: static;
+}
+
+.rt-table .rt-actions-cell:has(.rt-menu),
+.rt-table :is(th, td):has(.loris-select.open) {
+    z-index: 4;
+}
+
+.rt-table .rt-actions-cell .rt-menu {
+    top: 100%;
+    min-width: 180px;
+    gap: 0;
+    padding: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    box-shadow: var(--shadow-raised);
+}
+
+.rt-table .rt-actions-cell .rt-menu-item {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 0 var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+    border-radius: 0;
+}
+
+.rt-table .rt-actions-cell .rt-menu-item:last-child {
+    height: 35px;
+    border-bottom: none;
 }
 
 .rt-menu {
@@ -162,11 +198,30 @@
     border-top: 1px solid var(--border-subtle);
 }
 
+/* The filters grow from no width and push the rows aside, and shrink back
+   the same way. Their content keeps its width while the drawer changes, so
+   nothing inside reflows. */
 .rt-drawer {
-    flex: 0 0 280px;
-    border-right: 1px solid var(--border);
+    flex: 0 0 0;
+    overflow: hidden;
+    border-right: 0 solid var(--border);
     border-radius: var(--radius) 0 0 var(--radius);
-    background: var(--surface-sunken);
+    background: var(--surface);
+    transition: flex-basis var(--duration-slow) var(--ease),
+        border-right-width var(--duration-slow) var(--ease);
+}
+
+.rt-drawer.rt-drawer-open {
+    flex-basis: 240px;
+    border-right-width: 1px;
+}
+
+.rt-drawer-inner {
+    box-sizing: border-box;
+    width: 240px;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 /* The drawer's head and the toolbar share one height and one rule, so the
@@ -245,8 +300,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-md);
-    padding-left: var(--space-xl);
-    border-left: 1px solid var(--border);
 }
 
 .rt-search + .rt-toolbar-group {
@@ -268,16 +321,14 @@
     cursor: grab;
 }
 
-/* Selection: one bar, with what is selected and what can be done to it. */
+/* Selection, at the footer's start: what is selected and what can be done to
+   it. */
 
 .rt-selection {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-md);
-    padding: var(--space-sm) var(--space-xl);
-    border-bottom: 1px solid var(--primary-border);
-    background: var(--state-selected);
+    gap: var(--space-xs);
 }
 
 .rt-selected-count {
@@ -285,12 +336,6 @@
     color: var(--primary-strong);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-}
-
-.rt-selection-end {
-    display: flex;
-    gap: var(--space-xs);
-    margin-left: auto;
 }
 
 /* Table */
@@ -301,7 +346,8 @@
 }
 
 .rt-table {
-    width: 100%;
+    min-width: 100%;
+    table-layout: fixed;
     border-collapse: separate;
     border-spacing: 0;
     font-variant-numeric: tabular-nums;
@@ -309,19 +355,48 @@
 
 .rt-table th,
 .rt-table td {
-    height: 44px;
-    padding: 0 var(--space-xl);
+    height: 36px;
+    font-family: inherit;
+    padding: 0 var(--space-lg);
     border-bottom: 1px solid var(--border-subtle);
     vertical-align: middle;
     white-space: nowrap;
+}
+
+/* A row is one line: a value too long for its column ends in an ellipsis,
+   and shows in full in its tooltip and the record panel. */
+.rt-table tbody td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* The empty message stays in view however wide the table runs. */
+.rt-table tbody td.rt-empty {
+    height: auto;
+    padding: 48px 0;
+    overflow: visible;
+    text-align: left;
+}
+
+.rt-table td.rt-empty span {
+    position: sticky;
+    left: 0;
+    padding: 0 var(--space-xl);
+}
+
+/* The actions cell holds a menu that opens past its edges. */
+.rt-table tbody td.rt-actions-cell {
+    overflow: visible;
 }
 
 .rt-table thead th {
     position: sticky;
     top: 0;
     z-index: 1;
-    height: 48px;
-    padding: 0 var(--space-md);
+    height: 40px;
+    /* With the sort button's own padding, a label starts where the values
+       under it do. */
+    padding: 0 var(--space-xs);
     border-bottom: 1px solid var(--border);
     background: var(--surface);
 }
@@ -339,7 +414,7 @@
     align-items: center;
     gap: var(--space-sm);
     min-height: 32px;
-    padding: 0 var(--space-md);
+    padding: 0 var(--space-sm);
     border: none;
     border-radius: var(--radius);
     background: none;
@@ -360,7 +435,8 @@
     color: var(--text-muted);
     font-size: var(--font-size-sm);
     opacity: 0;
-    transition: transform .15s, opacity .15s;
+    transition: transform var(--duration-fast) var(--ease),
+        opacity var(--duration-fast) var(--ease);
 }
 
 .rt-sort:hover .rt-sort-icon,
@@ -393,7 +469,8 @@
 
 /* Identifiers and dates are set in the monospace, so their characters line up
    down a column. */
-.rt-mono {
+.rt-mono,
+.rt-table td.rt-mono {
     font-family: var(--font-family-mono);
     font-size: var(--font-size-sm);
 }
@@ -403,12 +480,18 @@
     padding: 0 0 0 var(--space-xl);
 }
 
-.rt-check-cell input,
-.rt-card-title input {
-    width: 16px;
-    height: 16px;
+.rt-check-cell input {
+    width: 14px;
+    height: 14px;
     margin: 0;
     accent-color: var(--primary);
+}
+
+/* A block box sits on the cell's middle, where an inline one would sit on
+   the text's baseline, a little low. */
+.rt-table .rt-check-cell input[type='checkbox'] {
+    display: block;
+    margin: 0;
 }
 
 .rt-table tbody tr.rt-spacer td {
@@ -421,7 +504,7 @@
 }
 
 .rt-group-row td {
-    height: 36px;
+    height: 32px;
     padding: 0 var(--space-md);
     background: var(--surface-sunken);
 }
@@ -443,7 +526,7 @@
 .rt-caret {
     color: var(--text-muted);
     font-size: var(--font-size-sm);
-    transition: transform .15s;
+    transition: transform var(--duration-fast) var(--ease);
 }
 
 .rt-caret-closed {
@@ -466,60 +549,8 @@
     text-align: center;
 }
 
-/* Cards */
-
-.rt-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: var(--space-xl);
-    padding: var(--space-xl);
-    background: var(--surface-sunken);
-}
-
-.rt-card-group,
-.rt-cards-more {
-    grid-column: 1 / -1;
-}
-
-.rt-card {
-    padding: var(--space-xl);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-}
-
-.rt-card.rt-selected {
-    border-color: var(--primary-border);
-    background: var(--state-selected);
-}
-
-.rt-card-title {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-    font-weight: 600;
-}
-
-.rt-card-fields {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--space-xs) var(--space-lg);
-    margin: 0;
-    font-size: var(--font-size-sm);
-    font-variant-numeric: tabular-nums;
-}
-
-.rt-card-fields dt {
-    color: var(--text-muted);
-    font-weight: normal;
-}
-
-.rt-card-fields dd {
-    margin: 0;
-}
-
-/* Footer: Material's pagination row. */
+/* Footer: one quiet line counting the rows, as high as the column header
+   so the table's top and bottom edges match. */
 
 .rt-footer {
     display: flex;
@@ -527,16 +558,27 @@
     align-items: center;
     justify-content: flex-end;
     gap: var(--space-md);
-    min-height: 52px;
-    padding: var(--space-xs) var(--space-md) var(--space-xs) var(--space-xl);
+    box-sizing: border-box;
+    min-height: 40px;
+    padding: 0 var(--space-md) 0 var(--space-xl);
     border-top: 1px solid var(--border);
     color: var(--text-muted);
     font-size: var(--font-size-sm);
     font-variant-numeric: tabular-nums;
 }
 
-.rt-footer > .rt-muted {
+.rt-footer > .rt-muted,
+.rt-footer > .rt-footer-start {
     margin-right: auto;
+}
+
+.rt-footer-start ~ .rt-muted {
+    margin-right: 0;
+}
+
+.rt-footer .loris-button {
+    height: 26px;
+    font-size: var(--font-size-sm);
 }
 
 .rt-range {
@@ -614,11 +656,10 @@
 .rt-table .rt-actions-cell {
     position: sticky;
     right: 0;
-    width: 1%;
-    padding: 0 var(--space-md);
+    padding: 0;
     background: var(--surface);
     box-shadow: inset 1px 0 0 var(--border-subtle);
-    text-align: right;
+    text-align: center;
 }
 
 .rt-table tbody tr:hover .rt-actions-cell {
@@ -629,8 +670,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border: none;
     border-radius: 50%;
     background: none;
@@ -677,7 +718,7 @@
     height: 100%;
     background: var(--primary);
     transform-origin: left;
-    transition: transform .2s;
+    transition: transform var(--duration-base) var(--ease);
 }
 
 .rt-skeleton td span {
@@ -749,11 +790,6 @@ body:has(.rt-fill) #footer {
     overflow: auto;
 }
 
-.rt-fill .rt-drawer {
-    overflow-y: auto;
-    overscroll-behavior: contain;
-}
-
 @media (prefers-reduced-motion: reduce) {
     .rt-progress span {
         transition: none;
@@ -766,21 +802,42 @@ body:has(.rt-fill) #footer {
     cursor: pointer;
 }
 
+/* A focused row's ring is drawn on its cells, so frozen columns, which
+   paint over the row, carry their part of it. The open row is marked by the
+   active colour and bar, so it needs no ring. */
 .rt-table tbody tr:focus-visible {
-    outline: 2px solid var(--field-border-focus);
-    outline-offset: -2px;
+    outline: none;
 }
 
+.rt-table tbody tr:focus-visible:not(.rt-open) > td {
+    box-shadow: inset 0 2px 0 var(--field-border-focus),
+        inset 0 -2px 0 var(--field-border-focus);
+}
+
+.rt-table tbody tr:focus-visible:not(.rt-open) > td:first-child {
+    box-shadow: inset 2px 0 0 var(--field-border-focus),
+        inset 0 2px 0 var(--field-border-focus),
+        inset 0 -2px 0 var(--field-border-focus);
+}
+
+.rt-table tbody tr:focus-visible:not(.rt-open) > td:last-child {
+    box-shadow: inset -2px 0 0 var(--field-border-focus),
+        inset 0 2px 0 var(--field-border-focus),
+        inset 0 -2px 0 var(--field-border-focus);
+}
+
+/* The open row is the active one, in the active colour; a selected row
+   stays blue. */
 .rt-table tbody tr.rt-open,
 .rt-table tbody tr.rt-open .rt-sticky,
 .rt-table tbody tr.rt-open .rt-actions-cell {
-    background: var(--state-selected);
+    background: var(--state-active);
 }
 
 /* One bar marks the open row, on its first cell only. */
 
 .rt-table tbody tr.rt-open > td:first-child {
-    box-shadow: inset 3px 0 0 var(--primary);
+    box-shadow: inset 3px 0 0 var(--state-active-solid);
 }
 
 .rt-record {
@@ -798,43 +855,24 @@ body:has(.rt-fill) #footer {
     align-items: center;
     gap: var(--space-xs);
     box-sizing: border-box;
-    min-height: 48px;
+    /* As high as the column header, so its line runs on from the header's. */
+    min-height: 40px;
     padding: 0 var(--space-md) 0 var(--space-xl);
-    border-bottom: 1px solid var(--border);
     background: var(--surface);
 }
 
 .rt-record-title {
     margin: 0 auto 0 0;
-    font-size: var(--font-size);
+    font-size: var(--font-size-lg);
     font-weight: 600;
+    line-height: 24px;
 }
 
 .rt-record-actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-md);
-    padding: var(--space-lg) var(--space-xl);
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.rt-record-fields {
-    display: grid;
-    grid-template-columns: minmax(110px, auto) 1fr;
-    gap: var(--space-md) var(--space-lg);
-    margin: 0;
-    padding: var(--space-xl);
-    font-variant-numeric: tabular-nums;
-}
-
-.rt-record-fields dt {
-    color: var(--text-muted);
-    font-weight: normal;
-}
-
-.rt-record-fields dd {
-    margin: 0;
-    overflow-wrap: anywhere;
+    padding: var(--space-xs) var(--space-xl) var(--space-xl);
 }
 
 .rt-record-detail {
@@ -857,7 +895,7 @@ body:has(.rt-fill) #footer {
 
 .rt-toolbar .rt-title {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     line-height: 1.3;
     white-space: nowrap;
@@ -903,76 +941,63 @@ body:has(.rt-fill) #footer {
 
 .rt-record {
     flex: 0 0 360px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow: hidden;
     border-left: 1px solid var(--border);
     border-radius: 0;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    z-index: 3;
+    z-index: 5;
     width: 380px;
     max-width: 90%;
-    box-shadow: var(--shadow-overlay);
-    animation: rt-slide-in .18s ease-out;
+    /* The panel lies over the rows, so its one shadow falls on them, to its
+       left; the header and footer stay flat. */
+    box-shadow: var(--shadow-side);
+    animation: rt-slide-in var(--duration-slow) var(--ease);
+}
+
+/* A panel slides in from the table's right edge and back out the same way. */
+.rt-record.rt-record-leaving {
+    animation: rt-slide-out var(--duration-slow) var(--ease) forwards;
 }
 
 @keyframes rt-slide-in {
     from {
-        opacity: 0;
-        transform: translateX(24px);
+        transform: translateX(100%);
     }
+}
+
+@keyframes rt-slide-out {
     to {
-        opacity: 1;
-        transform: none;
+        transform: translateX(100%);
     }
 }
 
-/* Filters fold to a rail at the window's edge rather than leaving. */
-
-.rt-rail {
-    flex: 0 0 48px;
-    border-right: 1px solid var(--border);
-    background: var(--surface-sunken);
+/* The title starts on the table's own left inset, over the checkboxes. */
+.rt-toolbar {
+    padding-left: var(--space-xl);
 }
 
-.rt-rail-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-md);
-    width: 100%;
-    padding: var(--space-lg) 0;
-    border: none;
+/* The save control follows the view tabs, on their text's line. */
+.rt-view-save {
+    align-self: center;
+    padding-top: 4px;
+}
+
+.rt-view-save [aria-disabled='true'] {
+    color: var(--text-disabled);
+    cursor: default;
+}
+
+.rt-view-save [aria-disabled='true']:hover {
     background: none;
-    color: var(--text-muted);
-    cursor: pointer;
-}
-
-.rt-rail-button:hover {
-    color: var(--text);
-    background: var(--state-hover);
-}
-
-.rt-drawer {
-    animation: rt-fade-in .18s ease-out;
-}
-
-@keyframes rt-fade-in {
-    from {
-        opacity: 0;
-        transform: translateX(-12px);
-    }
-    to {
-        opacity: 1;
-        transform: none;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .rt-record,
-.rt-drawer {
+    .rt-drawer {
+        transition: none;
         animation: none;
     }
 }
@@ -983,12 +1008,11 @@ body:has(.rt-fill) #footer {
 
 .rt-toolbar .rt-toolbar-group {
     gap: var(--space-xs);
-    padding-left: var(--space-lg);
 }
 
 @media (prefers-reduced-motion: reduce) {
     .rt-toolbar .rt-search {
-        animation: none;
+        transition: none;
     }
 }
 
@@ -999,10 +1023,93 @@ body:has(.rt-fill) #footer {
     container-type: inline-size;
 }
 
+/* The navbar's own bottom margin would leave a gap above a full-page
+   table. */
+body:has(.rt-fill) .navbar {
+    margin-bottom: 0;
+}
+
+/* Columns ease to their new widths when they refit to the rows in view. */
+.rt-table col {
+    transition: width var(--duration-base) var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-table col {
+        transition: none;
+    }
+}
+
+/* In full, as in the record panel, a list's tags wrap onto as many lines as
+   they need. */
+/* The count of values not shown reads as a note, not one more value. */
+.rt-tags-more {
+    align-self: center;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+}
+
+.rt-tags.rt-tags-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Several values from a fixed set of options, as tags. */
+.rt-tags {
+    display: inline-flex;
+    gap: var(--space-xs);
+    vertical-align: middle;
+}
+
+
+/* On a narrow window the filters open over the rows rather than beside
+   them. */
+@media (max-width: 760px) {
+    .rt {
+        position: relative;
+    }
+
+    .rt > .rt-drawer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 4;
+        width: min(280px, 85%);
+        box-shadow: var(--shadow-overlay);
+        transform: translateX(-100%);
+        transition: transform var(--duration-slow) var(--ease);
+    }
+
+    .rt > .rt-drawer.rt-drawer-open {
+        transform: none;
+    }
+
+    .rt > .rt-drawer .rt-drawer-inner {
+        width: 100%;
+    }
+}
+
+/* Search opens in the button's place and grows to its width. */
 .rt-toolbar .rt-search {
     min-width: 120px;
-    animation: rt-fade-in .15s ease-out;
-    flex: 0 1 220px;
+    flex: 0 1 180px;
+    transition: flex-basis var(--duration-base) var(--ease),
+        opacity var(--duration-base) var(--ease);
+}
+
+@starting-style {
+    .rt-toolbar .rt-search {
+        flex-basis: 80px;
+        opacity: 0;
+    }
+}
+
+/* It shrinks back the same way when closed. */
+.rt-toolbar .rt-search.rt-search-closing {
+    flex-basis: 80px;
+    opacity: 0;
 }
 
 .rt-toolbar > * {
@@ -1013,11 +1120,6 @@ body:has(.rt-fill) #footer {
     flex-shrink: 1;
 }
 
-@container (max-width: 1000px) {
-    .rt-toolbar {
-        flex-wrap: wrap;
-    }
-}
 
 /* In a full-page table the rows' area takes what the bars leave, and only it
    scrolls, so the header row stays in place above the rows. */
@@ -1027,46 +1129,115 @@ body:has(.rt-fill) #footer {
     min-height: 0;
 }
 
-/* The heading: the table's name, or a switcher between a module's tables,
-   with its views directly beneath. */
+/* The toolbar's own height, beside the filters' head. */
 
 .rt-toolbar {
     gap: var(--space-md) var(--space-lg);
     flex-wrap: nowrap;
-    min-height: 64px;
+    min-height: 48px;
     padding-top: 0;
     padding-bottom: 0;
 }
 
 .rt-drawer-head {
-    min-height: 64px;
+    min-height: 48px;
 }
 
+/* The heading: the table's name with its views beside it on one line. The
+   views scroll sideways rather than wrap when there are many. */
 .rt-heading {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    align-items: stretch;
     align-self: stretch;
-    gap: 3px;
-    padding-top: var(--space-md);
+    gap: var(--space-xl);
+    min-width: 0;
+}
+
+.rt-heading .rt-title {
+    align-self: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rt-toolbar > .rt-heading {
+    flex-shrink: 1;
 }
 
 .rt-toolbar .rt-tabs {
+    flex-wrap: nowrap;
     align-self: stretch;
     align-items: stretch;
+    min-width: 0;
     margin-bottom: -1px;
+    overflow-x: auto;
+    scrollbar-width: none;
     gap: var(--space-xl);
 }
 
+/* The views sit on the title's baseline: their smaller text, centred
+   alone, would ride a few pixels high. */
 .rt-toolbar .rt-tab {
-    height: 26px;
-    align-items: flex-start;
+    height: auto;
+    align-items: center;
+    padding-top: 4px;
+    white-space: nowrap;
+}
+
+/* The layout menu names its choice, so its label is for assistive
+   technology. */
+.rt-value-menu .loris-select-button-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* A narrower table shows the toolbar's controls as icons, each named by its
+   tooltip; only the table's own actions keep their words. */
+@container (max-width: 980px) {
+    .rt-toolbar .rt-label,
+    .rt-toolbar .loris-select-button-label,
+    .rt-toolbar .loris-select-button-value,
+    .rt-toolbar .loris-select-caret {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}
+
+/* A narrow table puts its name and views on their own line above the
+   controls. */
+@container (max-width: 620px) {
+    .rt-toolbar {
+        flex-wrap: wrap;
+        padding-bottom: var(--space-xs);
+    }
+
+    .rt-toolbar > .rt-heading {
+        flex: 1 0 100%;
+        min-height: 44px;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .rt-toolbar .rt-search-closed,
+    .rt-toolbar .rt-search {
+        margin-left: 0;
+    }
+
+    .rt-toolbar .rt-search {
+        flex: 1 1 auto;
+    }
 }
 
 .rt-title-switch .loris-select-button {
     padding-left: 0;
     color: var(--text);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
 }
 
@@ -1076,8 +1247,53 @@ body:has(.rt-fill) #footer {
 
 /* A form opened from the table, in the same panel as a record. */
 
-.rt-record-wide {
-    width: 520px;
+/* The panel holds still while its body scrolls, so the handle on its left
+   edge stays put. */
+.rt-record-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* The panel's left edge is a handle for making it wider or narrower. */
+.rt-record-resize {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    width: 6px;
+    cursor: col-resize;
+    touch-action: none;
+}
+
+/* At rest the handle is only a cursor; after a moment's hover, or on
+   keyboard focus, the panel's edge turns into a thin line. */
+.rt-record-resize::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: transparent;
+    transition: background var(--duration-fast) var(--ease);
+}
+
+.rt-record-resize:hover::after {
+    background: var(--primary-border);
+    transition-delay: 300ms;
+}
+
+.rt-record-resize:focus-visible {
+    outline: 0;
+}
+
+.rt-record-resize:focus-visible::after {
+    background: var(--primary-border);
 }
 
 .rt-record-form {

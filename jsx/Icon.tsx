@@ -1,15 +1,30 @@
 import React from 'react';
 import {
-  ChevronDown, ChevronLeft, ChevronRight, Search, X,
+  ArrowUp, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft,
+  Columns3, Download, EllipsisVertical, Funnel, Layers, LayoutGrid, Plus,
+  Save, Search, Table, X,
 } from 'lucide-react';
 import './Icon.css';
 
 const glyphs = {
+  add: Plus,
+  cards: LayoutGrid,
   chevronDown: ChevronDown,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
+  chevronUp: ChevronUp,
   close: X,
+  collapse: ChevronsLeft,
+  columns: Columns3,
+  download: Download,
+  expand: ChevronDown,
+  filter: Funnel,
+  group: Layers,
+  actions: EllipsisVertical,
+  save: Save,
   search: Search,
+  sort: ArrowUp,
+  table: Table,
 };
 
 export type IconName = keyof typeof glyphs;

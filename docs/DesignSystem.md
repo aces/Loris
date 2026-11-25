@@ -150,8 +150,26 @@ The greys are one scale, from text down to surfaces.
 The state tokens are their own tints, stronger than the `-fill` shades, so a hovered,
 selected or active row shows against white.
 
-Buttons do not have a selected state. On hover, a button's border and label change
-colour and its background stays the same.
+In a table, a row whose checkbox is ticked is selected, in blue, and the row open in
+the record panel is active, in orange, with the active bar on its left edge. A row can
+be both: the active colour shows.
+
+Buttons do not have a selected state. On hover, a primary or secondary button's border
+and label change colour. A quiet button, drawn as text, takes `--state-hover` behind
+its label; an underline marks a link, not an action.
+
+## Elevation
+
+| Token | Used for |
+|---|---|
+| `--shadow-raised` | A small control lifted off its surface, such as a row's menu |
+| `--shadow-overlay` | A floating panel, such as a dropdown or a dialog |
+| `--shadow-side` | A panel that slides over the rows from the right, casting its shadow to the left only |
+
+The data sits on the bottom layer. Headers, footers and toolbars that stay in place
+above it are flat, divided from it by a border rather than a shadow, so the data never
+sits under a heavy edge. Only what lies over the data casts a shadow, and only onto
+the data.
 
 ## Motion
 
@@ -198,12 +216,91 @@ inactive controls. A disabled control should say why it is disabled on hover, us
 If a token's value does not meet these rules, the value should be changed in
 `tokens.css` so the fix applies everywhere.
 
+## Components
+
+New React components take their colours, spacing and states from the tokens and
+live at the top of `jsx/`, so any module can use them.
+
+### Icon
+
+`jsx/Icon.tsx` draws an icon from [Lucide](https://lucide.dev) by name, as tall as
+the text around it and in its colour: `<Icon name="search" />`. The icon is hidden
+from assistive technology, so the control it sits in needs its own label: visible
+text, or an `aria-label` with a Tooltip. New icons are added to its list of names.
+Font Awesome remains for the page templates.
+
+### Tag
+
+`jsx/Tag.tsx` labels a value from a fixed set, such as a status or a category:
+`<Tag tone="success">Closed</Tag>`. Each tone uses its colour's `-fill`, `-border`
+and `-strong` shades: `neutral` (the default), `primary`, `info`, `success`,
+`warning` and `danger`. The label always says what the colour means.
+
+In a RecordTable, a column shows its values as tags with `tag: true`, or with a map
+from value to tone, such as `tag: {'1': 'danger', '3': 'success'}`. A list of values
+from a filter's options shows as neutral tags without being asked. A row shows three
+tags at most, with a count for the rest; the record panel shows them all.
+
+### Tooltip
+
+`jsx/Tooltip.tsx` names or explains the element it wraps, on hover and on keyboard
+focus. Icon-only buttons use it for their name, and table cells use it to show a value
+their column cuts short.
+
+### Field list
+
+`jsx/FieldList.tsx` shows label and value pairs, one pair per row, as on a
+record's card or in the record panel. Labels sit in one column in `--text-muted`
+and values in the next, with a faint rule between rows.
+
+```tsx
+import FieldList from 'jsx/FieldList';
+
+<FieldList
+  size="sm"
+  fields={[
+    {name: 'site', label: t('Site'), value: site},
+    {name: 'cohort', label: t('Cohort'), value: <Tag>{cohort}</Tag>},
+  ]}
+/>
+```
+
+| Prop | Values | Effect |
+|---|---|---|
+| `fields` | `{name, label, value}[]` | The rows, in order; `name` is the React key |
+| `size` | `md` (default), `sm` | `sm` sets `--font-size-sm` and tighter rows, for cards |
+
+The label column fits the longest label, up to 40% of the list's width. Lists
+that sit side by side, such as a grid of cards, set `--field-list-label-width`
+on a shared ancestor (the cards use `10em`), so every value starts at the same
+offset in every list.
+
+Every row is at least a tag's height, so a row of text and a row of tags are the
+same height. Long values and several tags wrap inside the value column, and the
+label stays on the value's first line. An empty value (`null`, `undefined`,
+`false`, `''` or `[]`) shows a dash; `0` is a value and shows as `0`.
+
+### Select menus
+
+A dropdown is as wide as its options need, at least 180px and never narrower than its
+field. Its options run edge to edge, each highlighted with a square fill; the chosen
+option takes `--state-selected` with the selected bar on the menu's left border. A list of eight options
+or fewer has no search box. In a multiple choice, the line at the foot counts what is
+selected and holds Select all and Deselect all as text actions.
+
 ## Fonts
 
 | Token | Font | Used for |
 |---|---|---|
 | `--font-family` | The operating system's default interface font | All text |
 | `--font-family-mono` | The operating system's default monospace font | Identifiers |
+
+| Token | Size | Used for |
+|---|---|---|
+| `--font-size-lg` | 18px | Titles: a table's name, the record in a side panel |
+| `--font-size` | 14px | Body text |
+| `--font-size-sm` | 12px | Labels, counts and notes |
+| `--font-size-xs` | 11px | Raised field labels |
 
 The monospace font should be used for values someone might copy or type out:
 PSCIDs, DCCIDs, visit labels, barcodes, file names and paths. It should not be used

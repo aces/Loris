@@ -1,0 +1,117 @@
+/**
+ * Card layout styles: the cards' grid and one card per record. Values
+ * come from htdocs/css/tokens.css.
+ */
+
+.rt-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    align-items: start;
+    gap: var(--space-xl);
+    padding: var(--space-xl);
+    background: var(--surface-sunken);
+    transition: padding-right var(--duration-slow) var(--ease);
+}
+
+.rt-card-group,
+.rt-cards-more {
+    grid-column: 1 / -1;
+}
+
+/* Every card gives its labels the same width, so values line up from one
+   card to the next. */
+.rt-card {
+    --field-list-label-width: 10em;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.rt-card-openable {
+    cursor: pointer;
+}
+
+.rt-card-openable:hover {
+    background: var(--state-hover);
+}
+
+.rt-card:focus-visible {
+    outline: 2px solid var(--field-border-focus);
+    outline-offset: -2px;
+}
+
+.rt-card.rt-selected {
+    border-color: var(--primary-border);
+    background: var(--state-selected);
+}
+
+/* The open card is the active one, in the active colour, marked by a bar
+   on its left edge as the open row is. */
+.rt-card.rt-open {
+    background: var(--state-active);
+    box-shadow: inset 3px 0 0 var(--state-active-solid);
+}
+
+.rt-card-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    min-height: 40px;
+    padding: 0 var(--space-xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.rt-card-check {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin: 0 0 0 calc(-1 * var(--space-xs));
+    cursor: pointer;
+}
+
+.rt-card-check input[type='checkbox'] {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+.rt-card-title {
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 600;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rt-card .loris-field-list {
+    padding: var(--space-sm) var(--space-xl) var(--space-md);
+}
+
+/* Tags wrap onto a second line rather than run out of the card. */
+.rt-card .rt-tags {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 2px;
+}
+
+/* The columns menu takes the cards' corner, as it takes the table's. */
+.rt-cards-corner {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    margin: calc(-1 * var(--space-md)) calc(-1 * var(--space-md)) 0 0;
+}
+
+/* While the record panel is open, the cards keep clear of it. On a narrow
+   window the panel covers nearly everything, so they stay as they are. */
+@media (min-width: 761px) {
+    .rt-content:has(> .rt-record) > .rt-cards {
+        padding-right: calc(var(--rt-panel-width, 380px) + var(--space-xl));
+    }
+}

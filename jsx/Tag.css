@@ -1,0 +1,50 @@
+/**
+ * Tag styles: each tone is its colour's fill, border and strong text, from
+ * htdocs/css/tokens.css.
+ */
+
+.loris-tag {
+    display: inline-block;
+    padding: 0 var(--space-sm);
+    border: 1px solid;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    white-space: nowrap;
+}
+
+.loris-tag-neutral {
+    border-color: var(--border-subtle);
+    background: var(--surface-sunken);
+    color: var(--text);
+}
+
+.loris-tag-primary {
+    border-color: var(--primary-border);
+    background: var(--primary-fill);
+    color: var(--primary-strong);
+}
+
+.loris-tag-info {
+    border-color: var(--info-border);
+    background: var(--info-fill);
+    color: var(--info-strong);
+}
+
+.loris-tag-success {
+    border-color: var(--success-border);
+    background: var(--success-fill);
+    color: var(--success-strong);
+}
+
+.loris-tag-warning {
+    border-color: var(--warning-border);
+    background: var(--warning-fill);
+    color: var(--warning-strong);
+}
+
+.loris-tag-danger {
+    border-color: var(--danger-border);
+    background: var(--danger-fill);
+    color: var(--danger-strong);
+}

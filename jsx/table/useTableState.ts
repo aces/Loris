@@ -220,6 +220,18 @@ export function useTableState<R>(
     }
   };
 
+  /**
+   * Renames a saved view
+   *
+   * @param id - the view's id
+   * @param label - its new name
+   */
+  const renameView = (id: string, label: string) => {
+    const next = views.map((v) => v.id === id ? {...v, name: label} : v);
+    setViews(next);
+    storeViews(name, next);
+  };
+
   // Only the columns with an active filter are read.
   const filtered = useMemo(() => {
     const active = Object.keys(filters).filter((key) => byName[key]);
@@ -482,6 +494,7 @@ export function useTableState<R>(
     saveView,
     updateView,
     deleteView,
+    renameView,
     filtered,
     sorted,
     groups,

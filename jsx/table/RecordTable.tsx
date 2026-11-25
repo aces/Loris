@@ -9,16 +9,26 @@ import {Filters} from './filterMatch';
 import {displayOf} from './tableState';
 import {useTableState, Row} from './useTableState';
 import {useRowWindow} from './useRowWindow';
-import FilterDrawer from './FilterDrawer';
-import TableToolbar from './TableToolbar';
+import {useColumnWidths} from './useColumnWidths';
+import FilterDrawer, {FiltersButton} from './FilterDrawer';
+import TableToolbar, {ColumnsMenu} from './TableToolbar';
 import SidePanel from './SidePanel';
+import Tooltip from 'jsx/Tooltip';
+import Tag, {TagTone} from 'jsx/Tag';
 import {useDismiss} from './useDismiss';
 import TableFooter from './TableFooter';
+import RecordCard from './RecordCard';
+import RecordFields from './RecordFields';
 import './RecordTable.css';
 
 const CARD_BATCH = 60;
+const CHECK_WIDTH = 40;
+const ACTIONS_WIDTH = 56;
+const SHOWN_TAGS = 3;
+const FIT_PAUSE = 200;
 
-export type ColumnType = 'text' | 'number' | 'date';
+// An id is an identifier: set in the monospace and never cut short.
+export type ColumnType = 'text' | 'number' | 'date' | 'id';
 
 export type ColumnFilter = {
   type: 'text' | 'numeric' | 'select' | 'multiselect' | 'date-range'
@@ -38,7 +48,9 @@ export type Column<R, V = unknown> = {
   groupable?: boolean,
   sticky?: boolean,
   group?: string,
-  mono?: boolean,
+  // Shows the value as a tag: true for a neutral one, or each value's tone.
+  // A list of values from the filter's options shows as tags on its own.
+  tag?: boolean | {[value: string]: TagTone},
 };
 
 /**
@@ -141,7 +153,11 @@ function RecordTable<R>(props: Props<R>) {
     emptyMessage,
   } = props;
 
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  // On a narrow window the filters start folded away, since they cover the
+  // rows there.
+  const [drawerOpen, setDrawerOpen] = useState(
+    () => !window.matchMedia?.('(max-width: 760px)').matches
+  );
 
   const dragged = useRef<string>('');
   const [dropTarget, setDropTarget] = useState('');
@@ -151,6 +167,25 @@ function RecordTable<R>(props: Props<R>) {
     {action: string, key?: string | number} | null
   >(null);
   const [openKey, setOpenKey] = useState<string | number | null>(null);
+
+  // A side panel slides out before it closes, then the close goes through.
+  const [leaving, setLeaving] = useState(false);
+  const afterLeaving = useRef<() => void>(() => undefined);
+  const dismissPanel = useCallback((close: () => void) => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      close();
+      return;
+    }
+    afterLeaving.current = close;
+    setLeaving(true);
+  }, []);
+  /**
+   *
+   */
+  const panelLeft = () => {
+    setLeaving(false);
+    afterLeaving.current();
+  };
   const menuRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
@@ -217,8 +252,59 @@ function RecordTable<R>(props: Props<R>) {
     return map;
   }, [rows, recordKey]);
 
+  // Columns fit the rows in view, refitted once scrolling pauses rather than
+  // while it moves, and at once for a new filter, search or sort.
+  const [settled, setSettled] = useState(
+    () => ({start: view.start, end: view.end, rows})
+  );
+  useEffect(() => {
+    const next = {start: view.start, end: view.end, rows};
+    if (rows !== settled.rows) {
+      setSettled(next);
+      return;
+    }
+    const timer = window.setTimeout(() => setSettled(next), FIT_PAUSE);
+    return () => window.clearTimeout(timer);
+  }, [view.start, view.end, rows]);
+  const recordsInView = useMemo(
+    () => settled.rows.slice(settled.start, settled.end)
+      .flatMap((row) => row.kind === 'record' ? [row.record] : []),
+    [settled]
+  );
+  const fitted = useColumnWidths(
+    recordsInView, state.visibleColumns, scrollEl
+  );
+  // While the rows stay the same, columns only widen: a column that fitted a
+  // long value keeps that room when the rows in view are shorter, so scrolling
+  // back never finds it cut short. A new filter, search or sort starts again.
+  const grown = useRef<{rows: unknown, widths: {[name: string]: number}}>(
+    {rows: null, widths: {}}
+  );
+  if (grown.current.rows !== settled.rows) {
+    grown.current = {rows: settled.rows, widths: {}};
+  }
+  const widths: {[name: string]: number} = {};
+  Object.keys(fitted.widths).forEach((name) => {
+    widths[name] = Math.max(
+      fitted.widths[name], grown.current.widths[name] || 0
+    );
+  });
+  grown.current.widths = widths;
+  const {clipped} = fitted;
+
   const cardsRef = useRef<HTMLDivElement>(null);
   const [cardLimit, setCardLimit] = useState(CARD_BATCH);
+  // The record panel covers the cards' right side, so the cards move over to
+  // its left (in CSS) and the open card is brought into view.
+  useEffect(() => {
+    const index = openKey === null ? undefined : rowIndex.get(openKey);
+    if (layout === 'cards' && index !== undefined && index >= cardLimit) {
+      setCardLimit(index + CARD_BATCH);
+      return;
+    }
+    cardsRef.current?.querySelector('.rt-card.rt-open')
+      ?.scrollIntoView({block: 'nearest'});
+  }, [openKey, layout, cardLimit]);
   const [cardSentinel, setCardSentinel] = useState<HTMLDivElement | null>(
     null
   );
@@ -242,6 +328,15 @@ function RecordTable<R>(props: Props<R>) {
     setCardLimit(CARD_BATCH);
   }, [filters, keyword, sort, groupBy]);
 
+  const recordActions = props.recordActions || [];
+  const hasRecordActions = recordActions.length > 0;
+  // The columns menu takes the corner above the record actions, in either
+  // layout, so the toolbar stays the same.
+  const columnsInTable = hasRecordActions;
+
+  const shownRowActions = rowActions.filter((a) => a.show !== false);
+  const selectable = shownRowActions.length > 0 || !!props.selectable;
+
   const toolbar = (
     <TableToolbar
       title={title}
@@ -250,29 +345,81 @@ function RecordTable<R>(props: Props<R>) {
       onSectionChange={props.onSectionChange}
       controls={props.controls}
       columns={columns}
-      csv={csv !== false}
+      filters={columns.some((c) => c.filter) && (
+        <FiltersButton
+          state={state}
+          open={drawerOpen}
+          onToggle={() => setDrawerOpen(!drawerOpen)}
+        />
+      )}
       actions={actions.filter((a) => a.show !== false)}
       onAction={(action) => setForm({action})}
       captureFind={!!props.fill}
+      columnsInTable={columnsInTable}
       state={state}
     />
   );
 
-  const shownRowActions = rowActions.filter((a) => a.show !== false);
-  const selectable = shownRowActions.length > 0 || !!props.selectable;
 
   /**
    * Renders a cell's content
    *
    * @param column - the column
    * @param record - the record
+   * @param full - whether to show every value, as the record panel does
    */
-  const cellContent = (column: Column<R>, record: R): ReactNode => {
+  const cellContent = (
+    column: Column<R>,
+    record: R,
+    full = false,
+  ): ReactNode => {
     const value = column.value(record);
     if (column.format) {
       return column.format(value, record);
     }
-    return displayOf(column, value, record);
+    // In a row, tags show three at most: past that, a count stands for the
+    // rest, and the tooltip lists them all. In full, as in the record panel,
+    // every one shows and they wrap. An empty value shows nothing.
+    const options = column.filter?.options;
+    if (column.tag || (Array.isArray(value) && options)) {
+      const values = (Array.isArray(value) ? value : [value]).filter(
+        (v) => (Array.isArray(value)
+          ? options?.[String(v)] ?? String(v)
+          : displayOf(column, v, record)) !== ''
+      );
+      if (values.length === 0) {
+        return null;
+      }
+      const shown = !full && values.length > SHOWN_TAGS
+        ? values.slice(0, SHOWN_TAGS - 1) : values;
+      const more = values.length - shown.length;
+      const tones = typeof column.tag === 'object' ? column.tag : {};
+      const tags = (
+        <span className={'rt-tags' + (full ? ' rt-tags-wrap' : '')}>
+          {shown.map((v) => (
+            <Tag key={String(v)} tone={tones[String(v)] || 'neutral'}>
+              {Array.isArray(value)
+                ? options?.[String(v)] ?? String(v)
+                : displayOf(column, v, record)}
+            </Tag>
+          ))}
+          {more > 0 && <span className="rt-tags-more">+{more}</span>}
+        </span>
+      );
+      return full || values.length < 2 ? tags : (
+        <Tooltip content={displayOf(column, value, record)}>{tags}</Tooltip>
+      );
+    }
+    const text = displayOf(column, value, record);
+    // Free text too long for its column shows in full on hover.
+    if (clipped.has(column.name) && text) {
+      return (
+        <Tooltip content={text}>
+          <span>{text}</span>
+        </Tooltip>
+      );
+    }
+    return text;
   };
 
   const drawer = (
@@ -298,11 +445,16 @@ function RecordTable<R>(props: Props<R>) {
   });
   const blocked = rowActionStates.filter((s) => s.reason !== null);
 
-  const selectionBar = selectable && selected.size > 0 && (
+  // A selection takes over the footer's start, as data grids show it: the
+  // count, a way to clear it, what can be done to it and its download.
+  const selection = selectable && selected.size > 0 ? (
     <div className="rt-selection" role="region" aria-label={t('Selection')}>
       <span className="rt-selected-count">
         {t('{{count}} selected', {count: selected.size})}
       </span>
+      <Button display="quiet" onClick={() => setSelected(new Set())}>
+        {t('Clear selection')}
+      </Button>
       {rowActionStates.map(({action, reason}) => {
         return (
           <span key={action.name} className={`action-${action.name}`}>
@@ -330,13 +482,8 @@ function RecordTable<R>(props: Props<R>) {
           <Icon name="download" /> {t('Download selected')}
         </Button>
       )}
-      <span className="rt-selection-end">
-        <Button display="quiet" onClick={() => setSelected(new Set())}>
-          <Icon name="close" /> {t('Clear selection')}
-        </Button>
-      </span>
     </div>
-  );
+  ) : undefined;
 
   /**
    * Renders the header of a group
@@ -373,8 +520,7 @@ function RecordTable<R>(props: Props<R>) {
     );
   };
 
-  const recordActions = props.recordActions || [];
-  const hasRecordActions = recordActions.length > 0;
+
   const detail = props.renderDetail;
   const columnCount = visibleColumns.length + (selectable ? 1 : 0)
     + (hasRecordActions ? 1 : 0);
@@ -432,7 +578,7 @@ function RecordTable<R>(props: Props<R>) {
           aria-expanded={menu === id}
           onClick={() => setMenu(menu === id ? null : id)}
         >
-          <Icon name="more" />
+          <Icon name="actions" />
         </button>
         {menu === id && (
           <div className="rt-menu" role="menu">
@@ -453,6 +599,11 @@ function RecordTable<R>(props: Props<R>) {
     );
   };
   const empty = rows.length === 0;
+  // The last column takes any width the table has to spare.
+  const tableWidth = visibleColumns.reduce(
+    (sum, column) => sum + (widths[column.name] || 0),
+    (selectable ? CHECK_WIDTH : 0) + (hasRecordActions ? ACTIONS_WIDTH : 0)
+  );
   const headerRows = hasGroups ? 2 : 1;
   const drawn = rows.slice(view.start, view.end);
 
@@ -551,7 +702,11 @@ function RecordTable<R>(props: Props<R>) {
             .closest('a, button, input, label, select')) {
             return;
           }
-          setOpenKey(openKey === key ? null : key);
+          if (openKey === key) {
+            dismissPanel(() => setOpenKey(null));
+          } else {
+            setOpenKey(key);
+          }
         }}
         onKeyDown={(e) => {
           if (e.target !== e.currentTarget) {
@@ -582,7 +737,7 @@ function RecordTable<R>(props: Props<R>) {
           <td
             key={column.name}
             className={(column.type === 'number' ? 'rt-number' : '')
-              + (column.mono || column.type === 'date'
+              + (column.type === 'id' || column.type === 'date'
                 ? ' rt-mono' : '')
               + (column.sticky ? ' rt-sticky' : '')}
           >
@@ -602,8 +757,20 @@ function RecordTable<R>(props: Props<R>) {
     <div className="rt-scroll" ref={setScrollEl}>
       <table
         className="rt-table"
+        style={{width: tableWidth}}
         aria-rowcount={empty ? undefined : headerRows + rows.length}
       >
+        <colgroup>
+          {selectable && <col style={{width: CHECK_WIDTH}} />}
+          {visibleColumns.map((column, i) => (
+            <col
+              key={column.name}
+              style={i < visibleColumns.length - 1
+                ? {width: widths[column.name]} : undefined}
+            />
+          ))}
+          {hasRecordActions && <col style={{width: ACTIONS_WIDTH}} />}
+        </colgroup>
         <thead>
           {hasGroups && (
             <tr className="rt-band-row" aria-rowindex={1}>
@@ -694,7 +861,7 @@ function RecordTable<R>(props: Props<R>) {
             })}
             {hasRecordActions && (
               <th className="rt-actions-cell">
-                <span className="rt-visually-hidden">{t('Actions')}</span>
+                <ColumnsMenu state={state} iconOnly />
               </th>
             )}
           </tr>
@@ -705,25 +872,44 @@ function RecordTable<R>(props: Props<R>) {
               <td colSpan={columnCount}><span /></td>
             </tr>
           ))}
-          {empty && !(props.loading && records.length === 0) && (
+          {/* With every column hidden, the header and its columns menu stay,
+              and the note sits where an empty table's does. */}
+          {visibleColumns.length === 0 ? (
             <tr>
               <td colSpan={columnCount} className="rt-empty">
-                {emptyMessage || t('No records match.')}
+                <span>
+                  {t('Every column is hidden.')}{' '}
+                  <Button display="quiet" onClick={() => setHidden([])}>
+                    {t('Show all columns')}
+                  </Button>
+                </span>
               </td>
             </tr>
-          )}
-          {spacer(view.before, 'before')}
-          {drawn.map((row, i) => tableRow(row, view.start + i))}
-          {spacer(view.after, 'after')}
+          ) : <>
+            {empty && !(props.loading && records.length === 0) && (
+              <tr>
+                <td colSpan={columnCount} className="rt-empty">
+                  <span>{emptyMessage || t('No records match.')}</span>
+                </td>
+              </tr>
+            )}
+            {spacer(view.before, 'before')}
+            {drawn.map((row, i) => tableRow(row, view.start + i))}
+            {spacer(view.after, 'after')}
+          </>}
         </tbody>
       </table>
     </div>
   );
 
-  const [titleColumn, ...detailColumns] = visibleColumns;
   const cardRows = rows.slice(0, cardLimit);
   const cardLayout = (
     <div className="rt-cards" ref={cardsRef}>
+      {columnsInTable && (
+        <div className="rt-cards-corner">
+          <ColumnsMenu state={state} iconOnly />
+        </div>
+      )}
       {empty && (
         <div className="rt-empty">{emptyMessage || t('No records match.')}</div>
       )}
@@ -735,34 +921,19 @@ function RecordTable<R>(props: Props<R>) {
             </div>
           );
         }
-        const {record} = row;
-        const key = recordKey(record);
-        const isSelected = selected.has(key);
+        const key = recordKey(row.record);
         return (
-          <div
+          <RecordCard
             key={key}
-            className={'rt-card' + (isSelected ? ' rt-selected' : '')}
-          >
-            <div className="rt-card-title">
-              {selectable && (
-                <input
-                  type="checkbox"
-                  aria-label={t('Select row')}
-                  checked={isSelected}
-                  onChange={() => toggleRecord(key)}
-                />
-              )}
-              {titleColumn && cellContent(titleColumn, record)}
-            </div>
-            <dl className="rt-card-fields">
-              {detailColumns.map((column) => (
-                <React.Fragment key={column.name}>
-                  <dt>{column.label}</dt>
-                  <dd>{cellContent(column, record)}</dd>
-                </React.Fragment>
-              ))}
-            </dl>
-          </div>
+            record={row.record}
+            columns={visibleColumns}
+            cell={cellContent}
+            selectable={selectable}
+            selected={selected.has(key)}
+            onToggle={() => toggleRecord(key)}
+            open={openKey === key}
+            onOpen={() => setOpenKey(key)}
+          />
         );
       })}
       {cardLimit < rows.length && (
@@ -783,6 +954,9 @@ function RecordTable<R>(props: Props<R>) {
       total={records.length}
       first={inView[0] || 0}
       last={inView[inView.length - 1] || 0}
+      onDownload={csv !== false
+        ? () => downloadCSV(state.sorted) : undefined}
+      start={selection}
     />
   );
 
@@ -820,7 +994,7 @@ function RecordTable<R>(props: Props<R>) {
         return;
       }
       if (e.key === 'Escape') {
-        setOpenKey(null);
+        dismissPanel(() => setOpenKey(null));
       } else if (target.closest?.('tr[data-record]')) {
         // A focused row moves between records itself.
         return;
@@ -837,7 +1011,9 @@ function RecordTable<R>(props: Props<R>) {
     <SidePanel
       label={t('Record')}
       title={visibleColumns[0] && cellContent(visibleColumns[0], openRecord)}
-      onClose={() => setOpenKey(null)}
+      leaving={leaving}
+      onLeft={panelLeft}
+      onClose={() => dismissPanel(() => setOpenKey(null))}
       tools={<>
         <Button
           display="quiet"
@@ -874,14 +1050,11 @@ function RecordTable<R>(props: Props<R>) {
             ))}
         </div>
       )}
-      <dl className="rt-record-fields">
-        {orderedColumns.map((column) => (
-          <React.Fragment key={column.name}>
-            <dt>{column.label}</dt>
-            <dd>{cellContent(column, openRecord) || '—'}</dd>
-          </React.Fragment>
-        ))}
-      </dl>
+      <RecordFields
+        record={openRecord}
+        columns={orderedColumns}
+        cell={(column, record) => cellContent(column, record, true)}
+      />
       {detail && <div className="rt-record-detail">{detail(openRecord)}</div>}
       <p className="rt-hint rt-record-keys">
         {t('↑ ↓ to move between records · Esc to close')}
@@ -895,7 +1068,7 @@ function RecordTable<R>(props: Props<R>) {
     /**
      * Closes the form, after it saves or is cancelled
      */
-    const close = () => setForm(null);
+    const close = () => dismissPanel(() => setForm(null));
     if (form.key === undefined) {
       const action = actions.find((a) => a.name === form.action);
       formTitle = action?.title || action?.label || '';
@@ -914,7 +1087,9 @@ function RecordTable<R>(props: Props<R>) {
       label={formTitle}
       title={formTitle}
       wide
-      onClose={() => setForm(null)}
+      leaving={leaving}
+      onLeft={panelLeft}
+      onClose={() => dismissPanel(() => setForm(null))}
     >
       <div className="rt-record-form">{formContent}</div>
     </SidePanel>
@@ -960,16 +1135,9 @@ function RecordTable<R>(props: Props<R>) {
         <div className="rt-main">
           {toolbar}
           {progressBar}
-          {selectionBar}
           <div className="rt-content">
-            {visibleColumns.length === 0 ? (
-              <div className="rt-empty">
-                <p>{t('Every column is hidden.')}</p>
-                <Button display="secondary" onClick={() => setHidden([])}>
-                  <Icon name="columns" /> {t('Show all columns')}
-                </Button>
-              </div>
-            ) : layout === 'table' ? tableLayout : cardLayout}
+            {layout === 'table' || visibleColumns.length === 0
+              ? tableLayout : cardLayout}
             {panel}
           </div>
           {footer}

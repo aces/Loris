@@ -109,7 +109,9 @@ class CandidateListIndex extends Component {
       project, edc,
     ] = row;
     return {
-      pscid, dccid, visitLabel, site, cohort, entityType, scanDone,
+      pscid, dccid, site, entityType, scanDone,
+      visitLabel: visitLabel ? visitLabel.split(',') : [],
+      cohort: cohort ? cohort.split(',') : [],
       participantStatus, dob, dateRegistered, sex, visitCount, feedback,
       project, edc,
     };
@@ -142,8 +144,8 @@ class CandidateListIndex extends Component {
     const {t, baseURL, betaProfileLink} = this.props;
     const formatDate = (value) => value
       ? this.dateFormatter.format(new Date(value)) : '';
-    const feedbackColours = {
-      '1': '#E4A09E', '2': '#EEEEAA', '3': '#99CC99', '4': '#99CCFF',
+    const feedbackTones = {
+      '1': 'danger', '2': 'warning', '3': 'success', '4': 'info',
     };
     const feedbackOptions = {
       '0': t('None', {ns: 'loris'}),
@@ -161,7 +163,7 @@ class CandidateListIndex extends Component {
         name: 'pscid',
         label: t('PSCID', {ns: 'loris'}),
         sticky: true,
-        mono: true,
+        type: 'id',
         value: (c) => c.pscid,
         format: (pscid, c) => <a href={profileURL(c.dccid)}>{pscid}</a>,
         filter: {type: 'text'},
@@ -169,7 +171,7 @@ class CandidateListIndex extends Component {
       {
         name: 'dccid',
         label: t('DCCID', {ns: 'loris'}),
-        mono: true,
+        type: 'id',
         value: (c) => c.dccid,
         filter: {type: 'text'},
       },
@@ -263,14 +265,9 @@ class CandidateListIndex extends Component {
         label: t('Feedback', {ns: 'loris'}),
         value: (c) => c.feedback,
         groupable: true,
-        format: (feedback) => feedbackColours[feedback]
-          ? <span
-            className="feedback-chip"
-            style={{background: feedbackColours[feedback]}}
-          >
-            {feedbackOptions[feedback]}
-          </span>
-          : feedbackOptions['0'],
+        display: (feedback) => feedback === '0'
+          ? '' : feedbackOptions[feedback],
+        tag: feedbackTones,
         filter: {type: 'select', options: feedbackOptions},
       },
       {
