@@ -96,6 +96,10 @@
     padding: 0;
 }
 
+.loris-field-list-grid .loris-field-wide {
+    grid-column: 1 / -1;
+}
+
 /* Sections: each opens with a rule and a heading that folds it away. The
    heading sits nearer its own fields than the section above. */
 .loris-field-section {

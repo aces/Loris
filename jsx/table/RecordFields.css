@@ -31,12 +31,6 @@
     row-gap: var(--space-lg);
 }
 
-/* A list of several tags takes the band's full width, so it stays on one
-   line. */
-.rt-record-key .loris-field:has(.rt-tags > :nth-child(2)) {
-    grid-column: 1 / -1;
-}
-
 /* The first section follows the band's own rule. */
 .rt-record-key + .loris-field-sections > .loris-field-section:first-child {
     margin-top: 0;

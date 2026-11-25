@@ -334,7 +334,12 @@ class CandidateListIndex extends Component {
 
     const recordLayout = {
       title: 'pscid',
-      key: ['dccid', 'site', 'cohort', 'participantStatus'],
+      key: [
+        'dccid',
+        'participantStatus',
+        {name: 'site', wide: true},
+        {name: 'cohort', wide: true},
+      ],
       sections: [
         {
           label: t('Participant', {ns: 'candidate_list'}),

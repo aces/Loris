@@ -33,8 +33,9 @@ function RecordFields<R>(props: {
    * The fields for the named columns, skipping unknown and placed ones
    *
    * @param names - the columns' names
+   * @param wide - the names of those that take the full width
    */
-  const fieldsOf = (names: string[]) => names
+  const fieldsOf = (names: string[], wide: string[] = []) => names
     .map((name) => byName.get(name))
     .filter((c): c is Column<R> => !!c && !placed.has(c.name))
     .map((column) => {
@@ -43,10 +44,17 @@ function RecordFields<R>(props: {
         name: column.name,
         label: column.label,
         value: cell(column, record),
+        wide: wide.includes(column.name),
       };
     });
 
-  const key = fieldsOf(layout?.key || []);
+  const keyFields = (layout?.key || []).map(
+    (k) => typeof k === 'string' ? {name: k, wide: false} : k
+  );
+  const key = fieldsOf(
+    keyFields.map((k) => k.name),
+    keyFields.filter((k) => k.wide).map((k) => k.name),
+  );
   const sections: FieldSection[] = (layout?.sections || []).map(
     (section, i) => ({
       name: 'section-' + i,

@@ -7,6 +7,8 @@ export type Field = {
   name: string,
   label: ReactNode,
   value: ReactNode,
+  // In the grid layout, the pair takes the list's full width.
+  wide?: boolean,
 };
 
 /**
@@ -52,7 +54,10 @@ function FieldList(props: {
         + ' loris-field-list-' + (props.size || 'md')}
     >
       {props.fields.map((field) => (
-        <div key={field.name} className="loris-field">
+        <div
+          key={field.name}
+          className={'loris-field' + (field.wide ? ' loris-field-wide' : '')}
+        >
           <dt>{field.label}</dt>
           <dd>
             {isEmpty(field.value)

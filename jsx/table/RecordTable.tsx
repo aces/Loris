@@ -92,10 +92,11 @@ export type RowAction<R> = {
 
 // How the record panel presents a record: the column in its title, the key
 // fields shown first, then sections of fields under headings. Columns left
-// out follow in a last section, in column order.
+// out follow in a last section, in column order. A key field marked wide
+// takes the band's full width, for long values such as names and tag lists.
 export type RecordLayout = {
   title?: string,
-  key?: string[],
+  key?: (string | {name: string, wide?: boolean})[],
   sections?: {label: string, fields: string[], collapsed?: boolean}[],
 };
 

@@ -267,7 +267,7 @@ import FieldList from 'jsx/FieldList';
 
 | Prop | Values | Effect |
 |---|---|---|
-| `fields` | `{name, label, value}[]` | The rows, in order; `name` is the React key |
+| `fields` | `{name, label, value, wide}[]` | The rows, in order; `name` is the React key, and `wide` gives a pair the full width in the `grid` layout |
 | `layout` | `inline` (default), `inline-end`, `stacked`, `grid` | `inline` puts labels in one column and values in the next; `inline-end` aligns those labels against their values; `stacked` puts each label above its value; `grid` sets label-above-value pairs in as many columns of at least 150px as fit |
 | `size` | `md` (default), `sm` | `sm` sets `--font-size-sm` and tighter rows, for cards |
 
@@ -314,7 +314,7 @@ A table says how its records read with `recordLayout`, naming its columns:
 ```js
 recordLayout={{
   title: 'pscid',
-  key: ['dccid', 'site', 'cohort', 'participantStatus'],
+  key: ['dccid', 'participantStatus', {name: 'site', wide: true}],
   sections: [
     {label: t('Participant'), fields: ['sex', 'DoB', 'project']},
     {label: t('Visits'), fields: ['visitLabel', 'visitCount'], collapsed: true},
@@ -325,12 +325,14 @@ recordLayout={{
 | Key | Effect |
 |---|---|
 | `title` | The column whose value names the record in the panel's head; the first column otherwise |
-| `key` | The fields that matter most, in a band under the head |
+| `key` | The fields that matter most, in a band under the head; `{name, wide: true}` gives one the band's full width |
 | `sections` | Groups of fields under headings that fold, in order |
 
 The key fields read as the record's summary, as in Salesforce's highlights panel:
 label-above-value pairs, two to a row, on `--surface-sunken` between two faint
-rules. A value of several tags takes the band's full width. The sections below set
+rules. A field with long values, such as a site's name or a list of tags, is marked
+wide and takes a row to itself, so the band keeps the same shape from one record to
+the next. The sections below set
 one label and value a row, with labels in one column all the way down.
 
 Every column the layout leaves out follows in a last section, More fields, in
