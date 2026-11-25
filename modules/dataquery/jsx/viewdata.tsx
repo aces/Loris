@@ -388,8 +388,7 @@ function ViewData(props: {
     case 'done':
       try {
         /**
-         * Helper function to check if a row has any instrument data
-         * (not just candidate metadata like PSCID)
+         * Whether a row has data in any field that is not candidate scoped
          *
          * @param row - The row to check
          * @returns - true if row has data
@@ -402,7 +401,6 @@ function ViewData(props: {
             const field = props.fields[i];
             const dict = getDictionary(field, props.fulldictionary);
 
-            // Skip candidate metadata fields (use scope instead of hardcoded names)
             if (dict && dict.scope === 'candidate') {
               continue;
             }
@@ -417,27 +415,27 @@ function ViewData(props: {
                 continue;
               }
 
-              // For session-scoped fields in longitudinal/inline/raw modes,
-              // the data is JSON-encoded. Need to parse and check if it contains actual visit data
+              // Outside Cross-sectional mode, a session scoped cell holds
+              // every visit as JSON
               if (dict && dict.scope === 'session' &&
-                  (visitOrganization === 'longitudinal'
-                   || visitOrganization === 'inline'
-                   || visitOrganization === 'raw')) {
+                  visitOrganization !== 'crosssection') {
                 try {
-                  const parsed = JSON.parse(cellValue);
-                  // Iterate over the parsed object values (session cells)
-                  const hasData = Object.values(parsed).some((cell: any) => {
-                    // unexpected types (like verify that it is an object)
-                    if (typeof cell !== 'object' || cell === null) return false;
+                  const visits: unknown[] = Object.values(
+                    JSON.parse(cellValue)
+                  );
+                  const hasData = visits.some((visit) => {
+                    if (typeof visit !== 'object' || visit === null) {
+                      return false;
+                    }
+                    const cell = visit as SessionRowCell;
 
-                    // Check for standard 'value' property
                     if (cell.value !== undefined
                         && cell.value !== null
                         && cell.value !== '') {
                       return true;
                     }
 
-                    // Check for 'values' property (cardinality: many)
+                    // Fields with cardinality many hold 'values'
                     if (cell.values !== undefined && cell.values !== null) {
                       const valueKeys = Object.keys(cell.values);
                       if (valueKeys.length > 0) {
@@ -456,7 +454,6 @@ function ViewData(props: {
                   continue;
                 }
               } else {
-                // For non-session fields or cross-sectional/raw modes, non-null/non-empty means has data
                 return true;
               }
             }
@@ -470,8 +467,6 @@ function ViewData(props: {
           ? organizedData.data
           : organizedData.data.filter(rowHasData);
 
-        // If all data is filtered out, show "No result found" message directly
-        // This avoids potential React reconciliation errors in DataTable when switching from populated table to empty
         if (filteredData.length === 0) {
           queryTable = (
             <div className='alert alert-info no-result-found-panel'>
@@ -480,6 +475,7 @@ function ViewData(props: {
           );
         } else {
           queryTable = <DataTable
+            key={String(showEmptyCandidates)}
             rowNumLabel={t('Row Number')}
             fields={organizedData.headers.map(
               (val: string) => {
@@ -525,11 +521,7 @@ function ViewData(props: {
     }
   }
 
-  // Only show empty visits toggle for modes where it works
-  // (Inline only, as Cross-sectional is handled by 'empty candidates')
-  const showEmptyVisitsToggle = ['inline'].includes(visitOrganization);
-
-  const emptyVisitsCheckbox = showEmptyVisitsToggle ? (
+  const emptyVisitsCheckbox = visitOrganization === 'inline' ? (
     <CheckboxElement
       name="emptyvisits"
       value={emptyVisits}
@@ -544,7 +536,7 @@ function ViewData(props: {
   const emptyCandidatesCheckbox = (
     <CheckboxElement
       name="emptycandidates"
-      value={showEmptyCandidates}
+      value={showEmptyCandidates || !hasNonCandidateFields}
       disabled={!hasNonCandidateFields}
       label={t('Show candidates with no data', {ns: 'dataquery'})}
       onUserInput={
