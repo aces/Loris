@@ -8,6 +8,9 @@ import type {
   Column, SortKey, Layout, ViewState, SavedView, PresetView,
 } from './RecordTable';
 
+// How long Search waits after the last key before the rows follow, in ms
+const SEARCH_PAUSE = 300;
+
 type Group = {key: string, label: string, count: number};
 
 export type Row<R> =
@@ -59,6 +62,17 @@ export function useTableState<R>(
     () => filtersFromURL(columns, props.urlPrefix || '')
   );
   const [keyword, setKeyword] = useState('');
+  // The search the rows follow: the keyword once typing pauses, or at once
+  // when it is cleared
+  const [query, setQuery] = useState('');
+  useEffect(() => {
+    if (keyword === '') {
+      setQuery('');
+      return;
+    }
+    const timer = setTimeout(() => setQuery(keyword), SEARCH_PAUSE);
+    return () => clearTimeout(timer);
+  }, [keyword]);
   const [sort, setSort] = useState<SortKey[]>(defaultState.sort);
   const [groupBy, setGroupBy] = useState('');
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
@@ -240,7 +254,7 @@ export function useTableState<R>(
   // Only the columns with an active filter are read.
   const filtered = useMemo(() => {
     const active = Object.keys(filters).filter((key) => byName[key]);
-    const search = keyword.trim().toLowerCase();
+    const search = query.trim().toLowerCase();
     if (active.length === 0 && search === '') {
       return records;
     }
@@ -260,7 +274,7 @@ export function useTableState<R>(
         column, column.value(record), record
       ).toLowerCase().includes(search));
     });
-  }, [records, filters, keyword, byName, hidden]);
+  }, [records, filters, query, byName, hidden]);
 
   const groupOf = useCallback((record: R): {key: string, label: string} => {
     const [columnName, granularity] = groupBy.split(':');
@@ -395,9 +409,28 @@ export function useTableState<R>(
     });
   };
 
+  const shownKeys = useMemo(() => shown.map(recordKey), [shown, recordKey]);
+  const matchedKeys = useMemo(
+    () => sorted.map(recordKey), [sorted, recordKey]
+  );
+
+  // A selection holds only rows the filters and search match: one that
+  // hides a selected row takes it out of the selection. A folded group's
+  // rows stay selected.
+  useEffect(() => {
+    setSelected((prev) => {
+      if (prev.size === 0) {
+        return prev;
+      }
+      const kept = new Set(matchedKeys.filter((key) => prev.has(key)));
+      return kept.size === prev.size ? prev : kept;
+    });
+  }, [matchedKeys]);
+
+  // In the order the rows are shown
   const selectedRecords = useMemo(
-    () => records.filter((r) => selected.has(recordKey(r))),
-    [records, selected, recordKey]
+    () => sorted.filter((r) => selected.has(recordKey(r))),
+    [sorted, selected, recordKey]
   );
 
   /**
@@ -417,7 +450,6 @@ export function useTableState<R>(
     });
   };
 
-  const shownKeys = useMemo(() => shown.map(recordKey), [shown, recordKey]);
   const {allSelected, partlySelected} = useMemo(() => {
     const count = shownKeys.filter((key) => selected.has(key)).length;
     return {

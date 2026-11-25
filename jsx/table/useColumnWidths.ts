@@ -12,7 +12,7 @@ const SHOWN_TAGS = 3;
 // The cell's side padding, and a pixel or two of slack.
 const CELL_PADDING = 24;
 // The arrow a linked cell shows on hover
-const LINK_EXTRA = 20;
+const LINK_EXTRA = 32;
 // The row menu beside the record's identifier
 const MENU_EXTRA = 32;
 // The header's sort icon and its gap.

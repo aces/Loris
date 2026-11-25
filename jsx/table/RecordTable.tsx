@@ -630,13 +630,6 @@ function RecordTable<R>(props: Props<R>) {
     if (shown.length === 0) {
       return null;
     }
-    if (recordActions.length === 1) {
-      return (
-        <Button display="quiet" onClick={() => run(shown[0])}>
-          {shown[0].label}
-        </Button>
-      );
-    }
     const id = `row:${key}`;
     return (
       <div className="rt-menu-anchor" ref={menu === id ? menuRef : undefined}>
