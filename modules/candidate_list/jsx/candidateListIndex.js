@@ -289,7 +289,7 @@ class CandidateListIndex extends Component {
         name: 'project',
         label: t('Project', {ns: 'loris', count: 1}),
         value: (c) => c.project,
-        relation: 'folder',
+        relation: 'study',
         groupable: true,
         filter: {type: 'select', options: options.project},
       },
@@ -318,6 +318,7 @@ class CandidateListIndex extends Component {
         label: t('New Profile', {ns: 'candidate_list'}),
         show: this.props.hasPermission('data_entry'),
         primary: true,
+        icon: 'addPerson',
         renderForm: (close) => (
           <NewProfileForm
             dataURL={`${baseURL}/new_profile/?format=json`}

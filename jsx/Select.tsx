@@ -35,8 +35,9 @@ const SEARCH_MIN = 8;
  * @param props.label - Names the control, and rises onto the
  *                      top edge once something is selected
  * @param props.placeholder - Shown when nothing is selected
- * @param props.display - "names" (the default), "tags" or
- *                        "count"
+ * @param props.display - "names" (the default), "tags",
+ *                        "count", or "label" for a button
+ *                        that shows its label alone
  * @param props.maxVisible - How many values to name before
  *                           counting the rest, default 5
  * @param props.badge - Rendered at the right of the
@@ -79,7 +80,7 @@ function Select(props: {
     disabledOptions?: string[],
     label?: string,
     placeholder?: string,
-    display?: 'names' | 'tags' | 'count',
+    display?: 'names' | 'tags' | 'count' | 'label',
     maxVisible?: number,
     badge?: React.ReactNode,
     footer?: React.ReactNode,
@@ -566,9 +567,10 @@ function Select(props: {
             <span className="loris-select-button-label">{props.label}</span> :
             null}
           {props.iconOnly ? null : <>
-            <span className="loris-select-button-value">
-              {renderSelection()}
-            </span>
+            {props.display === 'label' ? null :
+              <span className="loris-select-button-value">
+                {renderSelection()}
+              </span>}
             <Icon name="chevronDown" className="loris-select-caret" />
           </>}
         </button>

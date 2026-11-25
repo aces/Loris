@@ -9,17 +9,25 @@
     font-size: var(--font-size);
 }
 
-/* The box holds the drawer beside the table. The drawer grows with its
-   fields and the page scrolls, so nothing scrolls inside it. */
+/* The box holds the table's name, views and controls across its width, and
+   under them the filters beside the rows. The filters grow with their
+   fields and the page scrolls, so nothing scrolls inside them. */
 
 .rt {
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--surface);
     color: var(--text);
     font-size: var(--font-size);
+}
+
+.rt-body {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: stretch;
+    min-height: 0;
 }
 
 .rt button:focus-visible {
@@ -220,7 +228,7 @@
     flex: 0 0 0;
     overflow: hidden;
     border-right: 0 solid var(--border);
-    border-radius: var(--radius) 0 0 var(--radius);
+    border-radius: 0 0 0 var(--radius);
     background: var(--surface);
     transition: flex-basis var(--duration-slow) var(--ease),
         border-right-width var(--duration-slow) var(--ease);
@@ -845,7 +853,13 @@ body:has(.rt-fill) #footer {
 }
 
 /* Edge to edge: the filters open from the window's left side and the record
-   from its right, with the data between. */
+   from its right, with the data between. The rows fade out softly at the
+   window's sides, so the data does not run hard into its edges. */
+
+.rt-page.rt-fill {
+    box-sizing: border-box;
+    padding: 0 calc(2 * var(--space-xl));
+}
 
 .rt-fill .rt {
     flex: 1 1 auto;
@@ -857,6 +871,27 @@ body:has(.rt-fill) #footer {
 .rt-fill .rt-drawer,
 .rt-fill .rt-record {
     border-radius: 0;
+}
+
+.rt-fill .rt-content::before,
+.rt-fill .rt-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 3;
+    width: var(--space-xl);
+    pointer-events: none;
+}
+
+.rt-fill .rt-content::before {
+    left: 0;
+    background: linear-gradient(to right, var(--surface), transparent);
+}
+
+.rt-fill .rt-content::after {
+    right: 0;
+    background: linear-gradient(to left, var(--surface), transparent);
 }
 
 .rt-fill .rt-main {
@@ -1071,7 +1106,13 @@ body:has(.rt-fill) #footer {
     padding-left: var(--space-xl);
 }
 
-/* The save control follows the view tabs, on their text's line. */
+/* A saved view's tab sits in line with the others; its wrapper only
+   catches the right-click. */
+.rt-tab-wrap {
+    display: contents;
+}
+
+/* The new-view control follows the view tabs, on their text's line. */
 .rt-view-save {
     align-self: center;
     padding-top: 4px;
@@ -1096,6 +1137,12 @@ body:has(.rt-fill) #footer {
 
 .rt-search-closed {
     margin-left: auto;
+}
+
+/* The toolbar's controls take the small control height, a step below a
+   form's, so they sit lightly on their row. */
+.rt-toolbar .loris-button {
+    height: var(--control-height-sm);
 }
 
 .rt-toolbar .rt-toolbar-group {
@@ -1216,11 +1263,11 @@ body:has(.rt-fill) .navbar {
 /* On a narrow window the filters open over the rows rather than beside
    them. */
 @media (max-width: 760px) {
-    .rt {
+    .rt-body {
         position: relative;
     }
 
-    .rt > .rt-drawer {
+    .rt-body > .rt-drawer {
         position: absolute;
         top: 0;
         bottom: 0;
@@ -1232,11 +1279,11 @@ body:has(.rt-fill) .navbar {
         transition: transform var(--duration-slow) var(--ease);
     }
 
-    .rt > .rt-drawer.rt-drawer-open {
+    .rt-body > .rt-drawer.rt-drawer-open {
         transform: none;
     }
 
-    .rt > .rt-drawer .rt-drawer-inner {
+    .rt-body > .rt-drawer .rt-drawer-inner {
         width: 100%;
     }
 }
@@ -1289,8 +1336,58 @@ body:has(.rt-fill) .navbar {
     padding-bottom: 0;
 }
 
-/* The heading: the table's name with its views beside it on one line. The
-   views scroll sideways rather than wrap when there are many. */
+/* The table's name on a line of its own, with room above it. A page with
+   several tables names each one there, the others paler. The views sit
+   below, on the row with the table's controls, their underline on the
+   table's top edge. */
+.rt-titlebar {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--space-xl) var(--space-xs);
+}
+
+.rt-titlebar .rt-title,
+.rt-section {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.rt-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xl);
+}
+
+.rt-section {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    opacity: .6;
+    cursor: pointer;
+}
+
+.rt-section:hover {
+    opacity: 1;
+}
+
+.rt-section-on {
+    color: var(--text);
+    opacity: 1;
+}
+
+.rt-toolbar {
+    min-height: 40px;
+}
+
+.rt-toolbar .rt-tab {
+    height: 39px;
+}
+
+/* The views scroll sideways rather than wrap when there are many. */
 .rt-heading {
     display: flex;
     align-items: stretch;

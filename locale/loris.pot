@@ -721,6 +721,12 @@ msgstr ""
 msgid "Columns"
 msgstr ""
 
+msgid "Tables"
+msgstr ""
+
+msgid "New view"
+msgstr ""
+
 msgid "Display"
 msgstr ""
 

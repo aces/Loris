@@ -72,6 +72,8 @@ export type TableAction = {
   title?: string,
   show?: boolean,
   primary?: boolean,
+  // Shown before the label
+  icon?: IconName,
 };
 
 export type RecordAction<R> = {
@@ -354,7 +356,7 @@ function RecordTable<R>(props: Props<R>) {
       onSectionChange={props.onSectionChange}
       controls={props.controls}
       columns={columns}
-      filters={columns.some((c) => c.filter) && !drawerOpen && (
+      filters={columns.some((c) => c.filter) && (
         <FiltersButton
           state={state}
           open={drawerOpen}
@@ -1250,33 +1252,35 @@ function RecordTable<R>(props: Props<R>) {
       data-testid={`${name}-table`}
     >
       <section className="rt" aria-label={title}>
-        {drawer}
-        <div className="rt-main">
-          {toolbar}
-          {progressBar}
-          <div className="rt-content">
-            {layout === 'table' || visibleColumns.length === 0
-              ? tableLayout : cardLayout}
-            {layout === 'table' && (
-              <div
-                className={'rt-more-right'
+        {toolbar}
+        <div className="rt-body">
+          {drawer}
+          <div className="rt-main">
+            {progressBar}
+            <div className="rt-content">
+              {layout === 'table' || visibleColumns.length === 0
+                ? tableLayout : cardLayout}
+              {layout === 'table' && (
+                <div
+                  className={'rt-more-right'
                   + (moreRight ? ' rt-more-right-on' : '')}
-                aria-hidden="true"
-              >
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  onClick={() => scrollEl?.scrollBy({
-                    left: scrollEl.clientWidth * 0.6, behavior: 'smooth',
-                  })}
+                  aria-hidden="true"
                 >
-                  <Icon name="chevronRight" />
-                </button>
-              </div>
-            )}
-            {panel}
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => scrollEl?.scrollBy({
+                      left: scrollEl.clientWidth * 0.6, behavior: 'smooth',
+                    })}
+                  >
+                    <Icon name="chevronRight" />
+                  </button>
+                </div>
+              )}
+              {panel}
+            </div>
+            {footer}
           </div>
-          {footer}
         </div>
       </section>
     </div>

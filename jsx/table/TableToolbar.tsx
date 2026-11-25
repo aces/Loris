@@ -33,7 +33,7 @@ export function ColumnsMenu<R>(props: {
       label={t('Columns')}
       options={options}
       value={visibleColumns.map((c) => c.name)}
-      display="count"
+      display="label"
       searchPlaceholder={t('Find a column…')}
       onChange={(values) => setHidden(
         orderedColumns.map((c) => c.name).filter((n) => !values.includes(n))
@@ -48,7 +48,8 @@ export function ColumnsMenu<R>(props: {
  *
  * @param props - React props
  * @param props.title - the table's name
- * @param props.sections - the module's tables, to switch between
+ * @param props.sections - the page's tables, named beside the title to switch
+ *                         between
  * @param props.section - the table shown
  * @param props.onSectionChange - called with the table chosen
  * @param props.controls - the module's own controls
@@ -56,7 +57,7 @@ export function ColumnsMenu<R>(props: {
  * @param props.actions - the table's own actions
  * @param props.onAction - opens the form of an action that has one
  * @param props.captureFind - whether Ctrl or Cmd and F opens Search
- * @param props.filters - the Filters button, at the start
+ * @param props.filters - the Filters button, first of the display controls
  * @param props.state - the table's state
  */
 function TableToolbar<R>(props: {
@@ -153,6 +154,7 @@ function TableToolbar<R>(props: {
               ? props.onAction(action.name)
               : action.onClick?.()}
           >
+            {action.icon && <Icon name={action.icon} />}
             {action.label}
           </Button>
         </span>
@@ -160,104 +162,126 @@ function TableToolbar<R>(props: {
     </div>
   );
 
+  const sections = props.sections;
+  const current = props.section || Object.keys(sections || {})[0];
   return (
-    <div className="rt-toolbar">
-      {props.filters}
-      <div className="rt-heading">
-        {props.sections && props.onSectionChange ? (
-          <div className="rt-title rt-title-switch">
-            <Select
-              appearance="button"
-              multiple={false}
-              options={props.sections}
-              value={[props.section || Object.keys(props.sections)[0]]}
-              onChange={(values) => values[0]
-                && props.onSectionChange?.(values[0])}
-            />
+    <>
+      <div className="rt-titlebar">
+        {sections && props.onSectionChange ? (
+          <div
+            className="rt-sections"
+            role="tablist"
+            aria-label={t('Tables')}
+          >
+            {Object.entries(sections).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                role="tab"
+                aria-selected={value === current}
+                className={'rt-section'
+                  + (value === current ? ' rt-section-on' : '')}
+                onClick={() => props.onSectionChange?.(value)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         ) : (
           <h2 className="rt-title">{title}</h2>
         )}
-        <ViewTabs state={state} />
       </div>
-      {searchOpen || keyword ? (
-        <div
-          className={'rt-search' + (searchClosing ? ' rt-search-closing' : '')}
-          ref={searchRef}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              setKeyword('');
-              closeSearch();
-            }
-          }}
-          onTransitionEnd={(e) => {
-            if (searchClosing && e.propertyName === 'flex-basis') {
-              setSearchClosing(false);
-              setSearchOpen(false);
-            }
-          }}
-        >
-          <Textbox
-            search
-            value={keyword}
-            placeholder={t('Search…')}
-            clearLabel={t('Clear search')}
-            onBlur={() => keyword === '' && closeSearch()}
-            onChange={setKeyword}
-          />
+      <div className="rt-toolbar">
+        <div className="rt-heading">
+          <ViewTabs state={state} />
         </div>
-      ) : (
-        <span className="rt-search-closed">
-          <Tooltip content={t('Search')} placement="bottom">
-            <Button
-              display="quiet"
-              aria-label={t('Search')}
-              onClick={() => setSearchOpen(true)}
-            >
-              <Icon name="search" />
-              <span className="rt-label" aria-hidden="true">{t('Search')}</span>
-            </Button>
-          </Tooltip>
-        </span>
-      )}
-      <div className="rt-toolbar-group" role="group" aria-label={t('Display')}>
-        {props.controls}
-        <span className="rt-value-menu">
-          <Select
-            appearance="button"
-            icon={<Icon name={layout} />}
-            label={t('Layout')}
-            multiple={false}
-            options={layoutOptions}
-            value={[layout]}
-            onChange={(values) => setLayout(
-              (values[0] || 'table') as Layout
-            )}
-          />
-        </span>
-        <span className="rt-value-menu">
-          <Select
-            appearance="button"
-            icon={<Icon name="group" />}
-            label={t('Group by')}
-            multiple={false}
-            options={groupOptions}
-            value={[groupBy]}
-            onChange={(values) => setGroupBy(values[0] || '')}
-          />
-        </span>
-        <ColumnsMenu state={state} />
-      </div>
-      {actionButtons && (
+        {searchOpen || keyword ? (
+          <div
+            className={'rt-search'
+              + (searchClosing ? ' rt-search-closing' : '')}
+            ref={searchRef}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setKeyword('');
+                closeSearch();
+              }
+            }}
+            onTransitionEnd={(e) => {
+              if (searchClosing && e.propertyName === 'flex-basis') {
+                setSearchClosing(false);
+                setSearchOpen(false);
+              }
+            }}
+          >
+            <Textbox
+              search
+              value={keyword}
+              placeholder={t('Search…')}
+              clearLabel={t('Clear search')}
+              onBlur={() => keyword === '' && closeSearch()}
+              onChange={setKeyword}
+            />
+          </div>
+        ) : (
+          <span className="rt-search-closed">
+            <Tooltip content={t('Search')} placement="bottom">
+              <Button
+                display="quiet"
+                aria-label={t('Search')}
+                onClick={() => setSearchOpen(true)}
+              >
+                <Icon name="search" />
+                <span className="rt-label" aria-hidden="true">
+                  {t('Search')}
+                </span>
+              </Button>
+            </Tooltip>
+          </span>
+        )}
         <div
           className="rt-toolbar-group"
           role="group"
-          aria-label={t('Actions')}
+          aria-label={t('Display')}
         >
-          {actionButtons}
+          {props.filters}
+          {props.controls}
+          <span className="rt-value-menu">
+            <Select
+              appearance="button"
+              icon={<Icon name={layout} />}
+              label={t('Layout')}
+              multiple={false}
+              options={layoutOptions}
+              value={[layout]}
+              onChange={(values) => setLayout(
+                (values[0] || 'table') as Layout
+              )}
+            />
+          </span>
+          <span className="rt-value-menu">
+            <Select
+              appearance="button"
+              icon={<Icon name="group" />}
+              label={t('Group by')}
+              multiple={false}
+              options={groupOptions}
+              value={[groupBy]}
+              onChange={(values) => setGroupBy(values[0] || '')}
+            />
+          </span>
+          <ColumnsMenu state={state} />
         </div>
-      )}
-    </div>
+        {actionButtons && (
+          <div
+            className="rt-toolbar-group"
+            role="group"
+            aria-label={t('Actions')}
+          >
+            {actionButtons}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

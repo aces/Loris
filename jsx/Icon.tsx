@@ -1,14 +1,16 @@
 import React from 'react';
 import {
-  ArrowUp, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight,
-  ChevronUp, ChevronsLeft, CircleHelp, Columns3, Download, EllipsisVertical,
-  Folder, Funnel, Layers, LayoutGrid, MapPin, Plus, Save, Search, Table, Users,
-  X,
+  ArrowUp, ArrowUpRight, Brain, Check, ChevronDown, ChevronLeft, ChevronRight,
+  ChevronUp, ChevronsLeft, CircleHelp, Columns3, Download,
+  EllipsisVertical,
+  Funnel, Layers, LayoutGrid, MapPin, Plus, Save, Search, Table,
+  UserPlus, Users, X,
 } from 'lucide-react';
 import './Icon.css';
 
 const glyphs = {
   add: Plus,
+  addPerson: UserPlus,
   cards: LayoutGrid,
   check: Check,
   chevronDown: ChevronDown,
@@ -21,10 +23,10 @@ const glyphs = {
   download: Download,
   expand: ChevronDown,
   filter: Funnel,
-  folder: Folder,
   group: Layers,
   help: CircleHelp,
   open: ArrowUpRight,
+  study: Brain,
   people: Users,
   place: MapPin,
   actions: EllipsisVertical,
