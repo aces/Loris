@@ -100,14 +100,6 @@
     row-gap: 2px;
 }
 
-/* The columns menu takes the cards' corner, as it takes the table's. */
-.rt-cards-corner {
-    display: flex;
-    grid-column: 1 / -1;
-    justify-content: flex-end;
-    margin: calc(-1 * var(--space-md)) calc(-1 * var(--space-md)) 0 0;
-}
-
 /* While the record panel is open, the cards keep clear of it. On a narrow
    window the panel covers nearly everything, so they stay as they are. */
 @media (min-width: 761px) {

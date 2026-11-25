@@ -49,7 +49,7 @@ function FilterDrawer<R>(props: {
         clearLabel={t('Clear {{label}}', {label: column.label})}
         options={filter.options || {}}
         value={Array.isArray(value) ? value : []}
-        display="tags"
+        display={column.tag ? 'tags' : 'names'}
         maxVisible={1}
         onChange={(values) => setFilter(column, values)}
       />;
@@ -113,6 +113,7 @@ function FilterDrawer<R>(props: {
       <div className="rt-drawer-inner">
         <div className="rt-drawer-head">
           <h3 className="rt-drawer-title">
+            <Icon name="filter" />
             {t('Filters')}
             {activeCount > 0 && <span className="rt-badge">{activeCount}</span>}
           </h3>

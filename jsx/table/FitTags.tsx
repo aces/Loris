@@ -6,8 +6,9 @@ import React, {ReactElement, useLayoutEffect, useRef, useState} from 'react';
  *
  * @param props - React props
  * @param props.children - the tags, each with its own key
+ * @param props.className - more classes for the row
  */
-function FitTags(props: {children: ReactElement[]}) {
+function FitTags(props: {children: ReactElement[], className?: string}) {
   const count = props.children.length;
   const ref = useRef<HTMLSpanElement>(null);
   const [fit, setFit] = useState(count);
@@ -50,7 +51,11 @@ function FitTags(props: {children: ReactElement[]}) {
   }, [count, fit]);
 
   return (
-    <span className="rt-tags rt-tags-fit" ref={ref}>
+    <span
+      className={'rt-tags rt-tags-fit'
+        + (props.className ? ' ' + props.className : '')}
+      ref={ref}
+    >
       {props.children.map((tag, i) => i < fit ? tag : (
         <span key={tag.key} className="rt-tag-hidden" aria-hidden="true">
           {tag}

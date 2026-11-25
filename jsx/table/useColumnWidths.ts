@@ -11,6 +11,8 @@ const LIST_WIDTH = 280;
 const SHOWN_TAGS = 3;
 // The cell's side padding, and a pixel or two of slack.
 const CELL_PADDING = 24;
+// The arrow a linked cell shows on hover
+const LINK_EXTRA = 20;
 // The header's sort icon and its gap.
 const HEADER_EXTRA = 44;
 // Enough records to find each column's long values without reading them all.
@@ -57,6 +59,7 @@ export function useColumnWidths<R>(
     const measure = (build: (el: HTMLElement) => void): number => {
       probe.className = '';
       probe.style.fontWeight = '';
+      probe.style.fontSize = '';
       probe.replaceChildren();
       build(probe);
       return probe.getBoundingClientRect().width;
@@ -94,7 +97,7 @@ export function useColumnWidths<R>(
       }
       const content = Math.max(0, ...longest.map(({text, value}) => measure(
         (el) => {
-          if (column.tag || (Array.isArray(value) && options)) {
+          if (column.tag) {
             el.className = 'rt-tags';
             const values = Array.isArray(value) ? value : [value];
             const shown = values.length > SHOWN_TAGS
@@ -112,14 +115,14 @@ export function useColumnWidths<R>(
               el.appendChild(tag);
             });
           } else {
-            el.className = column.type === 'id' || column.type === 'date'
-              ? 'rt-mono' : '';
+            el.className = column.type === 'id' ? 'rt-mono' : '';
             el.textContent = text;
           }
         }
-      )));
+      ))) + (column.link ? LINK_EXTRA : 0);
       const header = measure((el) => {
         el.style.fontWeight = '500';
+        el.style.fontSize = 'var(--font-size-sm)';
         el.textContent = column.label;
       }) + HEADER_EXTRA;
       widths[column.name] = Math.ceil(Math.min(

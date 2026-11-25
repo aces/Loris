@@ -137,7 +137,24 @@
    high, so its edges fall on the lines of the rows beneath it. A cell rises
    above the others while a menu it holds is open, frozen columns included. */
 .rt-table .rt-actions-cell .rt-menu-anchor {
-    position: static;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 var(--space-sm) 0 var(--space-xl);
+    background: linear-gradient(
+        to right, transparent, var(--rt-row-bg) var(--space-xl)
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-table tbody tr:hover .rt-actions-cell .rt-menu-anchor,
+.rt-table tbody tr:focus-within .rt-actions-cell .rt-menu-anchor,
+.rt-table .rt-actions-cell:has(.rt-menu) .rt-menu-anchor {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .rt-table .rt-actions-cell:has(.rt-menu),
@@ -224,26 +241,19 @@
     overscroll-behavior: contain;
 }
 
-/* The drawer's head and the toolbar share one height and one rule, so the
-   two columns start on one line. */
-
-.rt-drawer-head {
-    box-sizing: border-box;
-    min-height: 48px;
-    border-bottom: 1px solid var(--border);
-}
-
 .rt-toolbar {
     box-sizing: border-box;
     min-height: 56px;
     border-bottom: 1px solid var(--border);
 }
 
+/* The filters panel opens with its name and its own controls, set apart
+   from the table beside it. */
 .rt-drawer-head {
     display: flex;
     align-items: center;
     gap: var(--space-xs);
-    padding: 0 var(--space-md) 0 var(--space-xl);
+    padding: var(--space-md) var(--space-md) 0 var(--space-xl);
 }
 
 .rt-drawer-title {
@@ -252,14 +262,18 @@
     gap: var(--space-sm);
     margin: 0 auto 0 0;
     font-size: var(--font-size);
-    font-weight: 600;
+    font-weight: 500;
+}
+
+.rt-drawer-title .loris-icon {
+    color: var(--text-muted);
 }
 
 .rt-drawer-fields {
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
-    padding: var(--space-xl);
+    padding: var(--space-lg) var(--space-xl) var(--space-xl);
 }
 
 .rt-drawer-field {
@@ -357,6 +371,7 @@
 .rt-table td {
     height: 36px;
     font-family: inherit;
+    font-variant-numeric: tabular-nums;
     padding: 0 var(--space-lg);
     border-bottom: 1px solid var(--border-subtle);
     vertical-align: middle;
@@ -384,6 +399,55 @@
     padding: 0 var(--space-xl);
 }
 
+/* A cell that opens a page is one link, edge to edge, with an arrow on
+   hover. */
+.rt-table td:has(> .rt-cell-link) {
+    position: relative;
+}
+
+.rt-table td.rt-sticky:has(> .rt-cell-link) {
+    position: sticky;
+}
+
+.rt-cell-link {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0 var(--space-sm) 0 var(--space-lg);
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.rt-cell-link:hover,
+.rt-cell-link:focus {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.rt-cell-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rt-cell-link > .loris-icon {
+    margin-left: auto;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-cell-link:hover > .loris-icon,
+.rt-cell-link:focus-visible > .loris-icon {
+    opacity: 1;
+}
+
+.rt-cell-link:hover .rt-cell-text {
+    text-decoration: underline;
+}
+
 /* The actions cell holds a menu that opens past its edges. */
 .rt-table tbody td.rt-actions-cell {
     overflow: visible;
@@ -393,7 +457,7 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    height: 40px;
+    height: 36px;
     /* With the sort button's own padding, a label starts where the values
        under it do. */
     padding: 0 var(--space-xs);
@@ -413,12 +477,13 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
-    min-height: 32px;
+    min-height: 28px;
     padding: 0 var(--space-sm);
     border: none;
     border-radius: var(--radius);
     background: none;
     color: var(--text-muted);
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
 }
@@ -472,8 +537,8 @@
     text-align: right;
 }
 
-/* Identifiers and dates are set in the monospace, so their characters line up
-   down a column. */
+/* Identifiers are set in the monospace, so their characters line up down a
+   column. */
 .rt-mono,
 .rt-table td.rt-mono {
     font-family: var(--font-family-mono);
@@ -564,9 +629,10 @@
     justify-content: flex-end;
     gap: var(--space-md);
     box-sizing: border-box;
-    min-height: 40px;
+    min-height: 36px;
     padding: 0 var(--space-md) 0 var(--space-xl);
     border-top: 1px solid var(--border);
+    background: var(--surface-sunken);
     color: var(--text-muted);
     font-size: var(--font-size-sm);
     font-variant-numeric: tabular-nums;
@@ -661,19 +727,25 @@
     background: var(--state-selected);
 }
 
-/* A record's own actions, in the last column, held at the right edge. */
+/* A record's own actions show over the right end of its row while the
+   pointer is on it, or it holds focus or an open menu. The cell that holds
+   them takes no width, so the columns keep the whole row. */
 
 .rt-table .rt-actions-cell {
+    --rt-row-bg: var(--surface);
     position: sticky;
     right: 0;
+    width: 0;
     padding: 0;
-    background: var(--surface);
-    box-shadow: inset 1px 0 0 var(--border-subtle);
     text-align: center;
 }
 
 .rt-table tbody tr:hover .rt-actions-cell {
-    background: var(--state-hover);
+    --rt-row-bg: var(--state-hover);
+}
+
+.rt-table tbody tr.rt-selected .rt-actions-cell {
+    --rt-row-bg: var(--state-selected);
 }
 
 .rt-row-menu {
@@ -839,9 +911,12 @@ body:has(.rt-fill) #footer {
 /* The open row is the active one, in the active colour; a selected row
    stays blue. */
 .rt-table tbody tr.rt-open,
-.rt-table tbody tr.rt-open .rt-sticky,
-.rt-table tbody tr.rt-open .rt-actions-cell {
+.rt-table tbody tr.rt-open .rt-sticky {
     background: var(--state-active);
+}
+
+.rt-table tbody tr.rt-open .rt-actions-cell {
+    --rt-row-bg: var(--state-active);
 }
 
 /* One bar marks the open row, on its first cell only. */
@@ -935,7 +1010,6 @@ body:has(.rt-fill) #footer {
     display: contents;
 }
 
-.rt-drawer-head,
 .rt-toolbar {
     min-height: 56px;
 }
@@ -1091,6 +1165,20 @@ body:has(.rt-fill) .navbar {
     flex-shrink: 0;
 }
 
+/* A list of linked records reads as text, its names apart by commas. */
+.rt-tags-fit.rt-list {
+    gap: 0;
+}
+
+.rt-list > .rt-list-item + .rt-list-item::before {
+    content: ', ';
+    white-space: pre;
+}
+
+.rt-list > .rt-tags-more {
+    margin-left: var(--space-xs);
+}
+
 .rt-tag-hidden {
     position: absolute;
     visibility: hidden;
@@ -1183,10 +1271,6 @@ body:has(.rt-fill) .navbar {
     min-height: 48px;
     padding-top: 0;
     padding-bottom: 0;
-}
-
-.rt-drawer-head {
-    min-height: 48px;
 }
 
 /* The heading: the table's name with its views beside it on one line. The
@@ -1357,17 +1441,34 @@ body:has(.rt-fill) .navbar {
     cursor: pointer;
 }
 
-/* When columns run past the right edge, a soft shadow and a small arrow say
-   so; the arrow scrolls them into view. */
+/* When columns run past the right edge, the actions column casts a shadow
+   over them and a small arrow scrolls them into view. */
+.rt-table .rt-actions-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 100%;
+    bottom: -1px;
+    width: 12px;
+    background: linear-gradient(
+        to left, color-mix(in srgb, var(--text) 8%, transparent), transparent
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-scroll-more .rt-table .rt-actions-cell::before {
+    opacity: 1;
+}
+
 .rt-more-right {
     position: absolute;
     top: 0;
+    right: 0;
     bottom: 0;
     z-index: 3;
-    width: 24px;
-    background: linear-gradient(
-        to left, color-mix(in srgb, var(--text) 5%, transparent), transparent
-    );
+    width: 32px;
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--duration-fast) var(--ease);
@@ -1379,7 +1480,7 @@ body:has(.rt-fill) .navbar {
 
 .rt-more-right button {
     position: absolute;
-    top: 50%;
+    top: 6px;
     right: var(--space-xs);
     display: flex;
     align-items: center;
@@ -1393,7 +1494,6 @@ body:has(.rt-fill) .navbar {
     box-shadow: var(--shadow-raised);
     color: var(--text-muted);
     font-size: var(--font-size-sm);
-    transform: translateY(-50%);
     cursor: pointer;
 }
 

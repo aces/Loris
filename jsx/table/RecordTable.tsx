@@ -11,7 +11,7 @@ import {useTableState, Row} from './useTableState';
 import {useRowWindow} from './useRowWindow';
 import {useColumnWidths} from './useColumnWidths';
 import FilterDrawer, {FiltersButton} from './FilterDrawer';
-import TableToolbar, {ColumnsMenu} from './TableToolbar';
+import TableToolbar from './TableToolbar';
 import SidePanel from './SidePanel';
 import Tooltip from 'jsx/Tooltip';
 import Tag, {TagTone} from 'jsx/Tag';
@@ -24,7 +24,6 @@ import './RecordTable.css';
 
 const CARD_BATCH = 60;
 const CHECK_WIDTH = 40;
-const ACTIONS_WIDTH = 40;
 
 // An id is an identifier: set in the monospace and never cut short.
 export type ColumnType = 'text' | 'number' | 'date' | 'id';
@@ -48,8 +47,9 @@ export type Column<R, V = unknown> = {
   sticky?: boolean,
   group?: string,
   // Shows the value as a tag: true for a neutral one, or each value's tone.
-  // A list of values from the filter's options shows as tags on its own.
   tag?: boolean | {[value: string]: TagTone},
+  // The page a value opens, when it has one
+  link?(value: V, record: R): string | undefined,
 };
 
 /**
@@ -339,9 +339,6 @@ function RecordTable<R>(props: Props<R>) {
 
   const recordActions = props.recordActions || [];
   const hasRecordActions = recordActions.length > 0;
-  // The columns menu takes the corner above the record actions, in either
-  // layout, so the toolbar stays the same.
-  const columnsInTable = hasRecordActions;
 
   const shownRowActions = rowActions.filter((a) => a.show !== false);
   const selectable = shownRowActions.length > 0 || !!props.selectable;
@@ -364,7 +361,6 @@ function RecordTable<R>(props: Props<R>) {
       actions={actions.filter((a) => a.show !== false)}
       onAction={(action) => setForm({action})}
       captureFind={!!props.fill}
-      columnsInTable={columnsInTable}
       state={state}
     />
   );
@@ -377,7 +373,7 @@ function RecordTable<R>(props: Props<R>) {
    * @param record - the record
    * @param full - whether to show every value, as the record panel does
    */
-  const cellContent = (
+  const valueContent = (
     column: Column<R>,
     record: R,
     full = false,
@@ -388,12 +384,22 @@ function RecordTable<R>(props: Props<R>) {
     }
     // In a row, the tags that fit show and a count stands for the rest; the
     // tooltip lists them all. In full, as in the record panel, every one
-    // shows and they wrap. An empty value shows nothing.
+    // shows and they wrap. An empty value shows nothing. A list without tags
+    // shows as text the same way.
     const options = column.filter?.options;
-    // With a map of tones, only the values it names become tags.
-    const untoned = typeof column.tag === 'object' && !Array.isArray(value)
-      && !column.tag[String(value)];
-    if (!untoned && (column.tag || (Array.isArray(value) && options))) {
+    if (Array.isArray(value) && !column.tag && !full && value.length > 0) {
+      const items = value.map((v) => (
+        <span key={String(v)} className="rt-list-item">
+          {options?.[String(v)] ?? String(v)}
+        </span>
+      ));
+      return (
+        <Tooltip content={displayOf(column, value, record)}>
+          <FitTags className="rt-list">{items}</FitTags>
+        </Tooltip>
+      );
+    }
+    if (column.tag) {
       const values = (Array.isArray(value) ? value : [value]).filter(
         (v) => (Array.isArray(value)
           ? options?.[String(v)] ?? String(v)
@@ -427,6 +433,31 @@ function RecordTable<R>(props: Props<R>) {
       );
     }
     return text;
+  };
+
+  /**
+   * A cell's content, which opens the value's page when it has one
+   *
+   * @param column - the column
+   * @param record - the row's record
+   * @param full - whether the value shows in full, as in the record panel
+   */
+  const cellContent = (
+    column: Column<R>,
+    record: R,
+    full = false,
+  ): ReactNode => {
+    const content = valueContent(column, record, full);
+    const href = column.link?.(column.value(record), record);
+    if (!href) {
+      return content;
+    }
+    return full ? <a href={href}>{content}</a> : (
+      <a className="rt-cell-link" href={href}>
+        <span className="rt-cell-text">{content}</span>
+        <Icon name="open" />
+      </a>
+    );
   };
 
   const drawer = (
@@ -612,7 +643,7 @@ function RecordTable<R>(props: Props<R>) {
   // The last column takes any width the table has to spare.
   const tableWidth = visibleColumns.reduce(
     (sum, column) => sum + (widths[column.name] || 0),
-    (selectable ? CHECK_WIDTH : 0) + (hasRecordActions ? ACTIONS_WIDTH : 0)
+    selectable ? CHECK_WIDTH : 0
   );
   const headerRows = hasGroups ? 2 : 1;
   const drawn = rows.slice(view.start, view.end);
@@ -749,8 +780,7 @@ function RecordTable<R>(props: Props<R>) {
           <td
             key={column.name}
             className={(column.type === 'number' ? 'rt-number' : '')
-              + (column.type === 'id' || column.type === 'date'
-                ? ' rt-mono' : '')
+              + (column.type === 'id' ? ' rt-mono' : '')
               + (column.sticky ? ' rt-sticky' : '')}
           >
             {cellContent(column, record)}
@@ -766,7 +796,10 @@ function RecordTable<R>(props: Props<R>) {
   };
 
   const tableLayout = (
-    <div className="rt-scroll" ref={setScrollEl}>
+    <div
+      className={'rt-scroll' + (moreRight ? ' rt-scroll-more' : '')}
+      ref={setScrollEl}
+    >
       <table
         className="rt-table"
         style={{width: tableWidth}}
@@ -782,7 +815,7 @@ function RecordTable<R>(props: Props<R>) {
             />
           ))}
           {filler && <col />}
-          {hasRecordActions && <col style={{width: ACTIONS_WIDTH}} />}
+          {hasRecordActions && <col style={{width: 0}} />}
         </colgroup>
         <thead>
           {hasGroups && (
@@ -876,9 +909,7 @@ function RecordTable<R>(props: Props<R>) {
             })}
             {filler && <th aria-hidden="true" />}
             {hasRecordActions && (
-              <th className="rt-actions-cell">
-                <ColumnsMenu state={state} iconOnly />
-              </th>
+              <th className="rt-actions-cell" aria-hidden="true" />
             )}
           </tr>
         </thead>
@@ -921,11 +952,6 @@ function RecordTable<R>(props: Props<R>) {
   const cardRows = rows.slice(0, cardLimit);
   const cardLayout = (
     <div className="rt-cards" ref={cardsRef}>
-      {columnsInTable && (
-        <div className="rt-cards-corner">
-          <ColumnsMenu state={state} iconOnly />
-        </div>
-      )}
       {empty && (
         <div className="rt-empty">{emptyMessage || t('No records match.')}</div>
       )}
@@ -1204,7 +1230,6 @@ function RecordTable<R>(props: Props<R>) {
               <div
                 className={'rt-more-right'
                   + (moreRight ? ' rt-more-right-on' : '')}
-                style={{right: hasRecordActions ? ACTIONS_WIDTH : 0}}
                 aria-hidden="true"
               >
                 <button

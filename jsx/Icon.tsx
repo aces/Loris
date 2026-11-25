@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-  ArrowUp, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft,
-  CircleHelp, Columns3, Download, EllipsisVertical, Funnel, Layers,
-  LayoutGrid, Plus, Save, Search, Table, X,
+  ArrowUp, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight,
+  ChevronUp, ChevronsLeft, CircleHelp, Columns3, Download, EllipsisVertical,
+  Funnel, Layers, LayoutGrid, Plus, Save, Search, Table, X,
 } from 'lucide-react';
 import './Icon.css';
 
 const glyphs = {
   add: Plus,
   cards: LayoutGrid,
+  check: Check,
   chevronDown: ChevronDown,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
@@ -21,6 +22,7 @@ const glyphs = {
   filter: Funnel,
   group: Layers,
   help: CircleHelp,
+  open: ArrowUpRight,
   actions: EllipsisVertical,
   save: Save,
   search: Search,

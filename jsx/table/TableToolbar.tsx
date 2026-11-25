@@ -56,8 +56,6 @@ export function ColumnsMenu<R>(props: {
  * @param props.onAction - opens the form of an action that has one
  * @param props.captureFind - whether Ctrl or Cmd and F opens Search
  * @param props.filters - the Filters button, after Search
- * @param props.columnsInTable - whether the columns menu sits in the table
- *                               rather than here
  * @param props.state - the table's state
  */
 function TableToolbar<R>(props: {
@@ -70,7 +68,6 @@ function TableToolbar<R>(props: {
   actions: TableAction[],
   onAction: (name: string) => void,
   captureFind?: boolean,
-  columnsInTable?: boolean,
   filters?: ReactNode,
   state: TableState<R>,
 }) {
@@ -248,7 +245,7 @@ function TableToolbar<R>(props: {
             onChange={(values) => setGroupBy(values[0] || '')}
           />
         </span>
-        {!props.columnsInTable && <ColumnsMenu state={state} />}
+        <ColumnsMenu state={state} />
       </div>
       {actionButtons && (
         <div

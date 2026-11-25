@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
 import RecordTable from 'jsx/table/RecordTable';
+import Icon from 'jsx/Icon';
 import Modal from 'Modal';
 
 import fetchDataStream from 'jslib/fetchDataStream';
@@ -173,7 +174,7 @@ class CandidateListIndex extends Component {
         sticky: true,
         type: 'id',
         value: (c) => c.pscid,
-        format: (pscid, c) => <a href={profileURL(c.dccid)}>{pscid}</a>,
+        link: (pscid, c) => profileURL(c.dccid),
         filter: {type: 'text'},
       },
       {
@@ -211,7 +212,7 @@ class CandidateListIndex extends Component {
         name: 'entityType',
         label: t('Entity Type', {ns: 'loris'}),
         value: (c) => c.entityType,
-        tag: {Scanner: 'info'},
+        tag: {Human: 'primary', Scanner: 'info'},
         groupable: true,
         filter: {type: 'select', options: options.entitytype},
       },
@@ -220,11 +221,13 @@ class CandidateListIndex extends Component {
         label: t('Scan Done', {ns: 'loris'}),
         value: (c) => c.scanDone,
         groupable: true,
-        format: (scanDone, c) => scanDone === 'Y'
-          ? <a href={baseURL + '/imaging_browser/?PSCID=' + c.pscid}>
-            {t('Yes', {ns: 'loris'})}
-          </a>
-          : t('No', {ns: 'loris'}),
+        format: (scanDone) => scanDone === 'Y' && (
+          <span role="img" aria-label={t('Yes', {ns: 'loris'})}>
+            <Icon name="check" />
+          </span>
+        ),
+        link: (scanDone, c) => scanDone === 'Y'
+          ? baseURL + '/imaging_browser/?PSCID=' + c.pscid : undefined,
         filter: {
           type: 'select',
           options: {'Y': t('Yes', {ns: 'loris'}), 'N': t('No', {ns: 'loris'})},
@@ -260,6 +263,7 @@ class CandidateListIndex extends Component {
         name: 'sex',
         label: t('Sex', {ns: 'loris'}),
         value: (c) => c.sex,
+        tag: true,
         groupable: true,
         filter: {type: 'select', options: options.Sex},
       },

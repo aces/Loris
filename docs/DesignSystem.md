@@ -249,13 +249,28 @@ Font Awesome remains for the page templates.
 and `-strong` shades: `neutral` (the default), `primary`, `info`, `success`,
 `warning` and `danger`. The label always says what the colour means.
 
+A value is a tag when it is an option from a short, fixed set that the reader scans a
+column for: a status, a category, a flag. A value that names another record, such as a
+site, a project or a cohort, is plain text, and several of them in one cell are
+separated by commas. Identifiers, dates, numbers and free text are plain text too. A
+value shows the same way in a table and in its filter.
+
+A tag takes a colour when its value is a state someone acts on: `success` for a good or
+finished state, `warning` for one that needs attention, `danger` for a problem, `info`
+for a state worth noticing. A category with no state is a neutral tag. When a category
+has two or three values worth telling apart at a glance, such as entity type, each takes
+`primary` or `info`, never a state colour. Sex stays neutral, since a colour per sex
+reads as a stereotype.
+
+A yes-or-no value shows as a check for yes and stays empty for no.
+
 In a RecordTable, a column shows its values as tags with `tag: true`, or with a map
-from value to tone, such as `tag: {'1': 'danger', '3': 'success'}`; with a map, only
-the values it names become tags and the rest stay plain text. Colour suits values from
-a short fixed set, such as a status; a set that keeps growing, such as cohorts, stays
-neutral. A list of values
-from a filter's options shows as neutral tags without being asked. A row shows three
-tags at most, with a count for the rest; the record panel shows them all.
+from value to tone, such as `tag: {'1': 'danger', '3': 'success'}`, where a value the
+map leaves out is neutral. A row shows the tags or names that fit, with a count for
+the rest; the record panel shows them all.
+
+A cell that opens a page is one link from edge to edge, with an arrow that shows on
+hover: `link: (value, record) => url`. A value links only when it has a page to open.
 
 ### Tooltip
 
@@ -381,6 +396,9 @@ selected and holds Select all and Deselect all as text actions.
 The monospace font should be used for values someone might copy or type out:
 PSCIDs, DCCIDs, visit labels, barcodes, file names and paths. It should not be used
 for field names, counts or sentences.
+
+Dates and numbers are set in the body font with tabular figures, so their digits line
+up down a column, and numbers align right.
 
 ## Where styles go
 
