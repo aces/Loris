@@ -7,6 +7,7 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 /**
  * Publication upload form component

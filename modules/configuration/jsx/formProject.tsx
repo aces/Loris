@@ -5,6 +5,7 @@ import {
   withTranslation,
   WithTranslation,
 } from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import {Errors} from 'jslib';
 import i18n from 'I18nSetup';
@@ -21,8 +22,6 @@ import * as StudyEntity from './studyEntities';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/configuration.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/configuration.json';
-
-declare const loris: {BaseURL: string};
 
 type Project = {
   Alias: string,

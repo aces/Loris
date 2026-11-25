@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import frStrings from '../locale/fr/LC_MESSAGES/publication.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/publication.json';

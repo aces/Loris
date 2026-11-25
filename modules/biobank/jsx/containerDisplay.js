@@ -2,6 +2,7 @@ import {useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import Swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 
 import {
   TextboxElement,

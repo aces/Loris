@@ -1,4 +1,5 @@
 import {createRoot} from 'react-dom/client';
+import {loris} from 'jslib/loris';
 import MediaEditForm from './editForm';
 const args = QueryString.get(document.currentScript.src);
 

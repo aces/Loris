@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import {CTA} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 /**
  * Searches for the filter keyword in the column cell

@@ -3,6 +3,7 @@ import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import 'I18nSetup';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';

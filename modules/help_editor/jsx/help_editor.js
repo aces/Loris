@@ -9,6 +9,7 @@ import jaStrings from '../locale/ja/LC_MESSAGES/help_editor.json';
 import frStrings from '../locale/fr/LC_MESSAGES/help_editor.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/help_editor.json';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 
 /**

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Markdown from 'jsx/Markdown';
 import {withTranslation, Trans} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 /**
  * React component used to display a button and a collapsible list

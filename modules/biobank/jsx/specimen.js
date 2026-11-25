@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 import SpecimenProcessForm from './processForm';
 
 import {

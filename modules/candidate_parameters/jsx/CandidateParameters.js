@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import CandidateInfo from './CandidateInfo';
 import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';
@@ -94,7 +95,7 @@ class CandidateParameters extends Component {
       },
     ];
 
-    if (loris.config('useProband') === 'true') {
+    if (loris.config.useProband === 'true') {
       tabList.push({
         id: 'probandInfo',
         label: 'Proband Information',
@@ -103,7 +104,7 @@ class CandidateParameters extends Component {
       });
     }
 
-    if (loris.config('useFamilyID') === 'true') {
+    if (loris.config.useFamilyID === 'true') {
       tabList.push({
         id: 'familyInfo',
         label: t('Family Information', {ns: 'candidate_parameters'}),
@@ -111,7 +112,7 @@ class CandidateParameters extends Component {
       });
     }
 
-    if (loris.config('useConsent') === 'true') {
+    if (loris.config.useConsent === 'true') {
       tabList.push({
         id: 'consentStatus',
         label: t('Consent Status', {ns: 'candidate_parameters'}),

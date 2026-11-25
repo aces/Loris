@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import {clone, mapFormOptions} from './helpers.js';
 import FilterableDataTable from 'FilterableDataTable';

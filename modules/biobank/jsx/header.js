@@ -11,6 +11,7 @@ import SpecimenForm from './specimenForm.js';
 import {clone} from './helpers.js';
 
 import Swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 
 /**
  * React component to display a header.

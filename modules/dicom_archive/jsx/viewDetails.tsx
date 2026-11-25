@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {withTranslation, WithTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
@@ -10,8 +11,6 @@ import frStrings from '../locale/fr/LC_MESSAGES/dicom_archive.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/dicom_archive.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dicom_archive.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/dicom_archive.json';
-
-declare const loris: {BaseURL: string};
 
 type NumericValue = number | string;
 

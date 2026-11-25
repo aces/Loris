@@ -10,6 +10,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 import SearchableDropdown from './components/searchabledropdown';
 
 /**

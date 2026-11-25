@@ -7,6 +7,7 @@ import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import '../css/configuration.css';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import {
   FormElement,
   ButtonElement,

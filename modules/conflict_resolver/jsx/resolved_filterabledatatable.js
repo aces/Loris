@@ -3,6 +3,7 @@ import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 
 /**
  * Filterable Datatable for resolved conflicts.

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
+import {loris} from 'jslib/loris';
 
 import {mapFormOptions} from './helpers.js';
 import ContainerDisplay from './containerDisplay';

@@ -7,6 +7,7 @@ import UploadViewer from './UploadViewer';
 import {createRoot} from 'react-dom/client';
 import i18n from 'I18nSetup';
 import {useTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import hiStrings from
   '../locale/hi/LC_MESSAGES/electrophysiology_uploader.json';

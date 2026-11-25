@@ -6,6 +6,7 @@ import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
 import {SelectElement} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/module_manager.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/module_manager.json';

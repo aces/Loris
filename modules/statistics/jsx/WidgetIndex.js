@@ -9,6 +9,7 @@ import Loader from 'Loader';
 import Panel from 'Panel';
 
 import {useTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import '../css/WidgetIndex.css';
 

@@ -5,6 +5,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 
 const ManageSavedQueryFilters = (props) => {
   const [content, setContent] = useState(null);

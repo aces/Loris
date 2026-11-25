@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import {TabPane, Tabs} from 'jsx/Tabs';
 import Profiles from './tabs_content/profiles';

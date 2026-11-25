@@ -8,6 +8,7 @@ import {withTranslation} from 'react-i18next';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import {
   FormElement,
   SelectElement,

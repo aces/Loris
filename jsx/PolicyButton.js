@@ -8,6 +8,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 
 /**
  * PolicyButton Component

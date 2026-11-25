@@ -72,6 +72,36 @@ class Profiles extends Component {
   }
 
   /**
+   * Build a click handler that posts filters to a genomic browser page.
+   *
+   * @param {string} module - Module path relative to the base URL.
+   * @param {object} filters - Filter values to submit.
+   * @returns {Function} A click handler for the filtered link.
+   */
+  loadFilteredMenuClickHandler(module, filters) {
+    return (event) => {
+      event.preventDefault();
+      const form = document.createElement('form');
+      form.action = this.props.baseURL + '/' + module;
+      form.method = 'post';
+      filters.reset = 'true';
+      filters.filter = 'Show Data';
+
+      for (const [name, value] of Object.entries(filters)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value == null ? '' : String(value);
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      // A filter named "submit" must not shadow the form's submit method.
+      HTMLFormElement.prototype.submit.call(form);
+    };
+  }
+
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
@@ -91,7 +121,7 @@ class Profiles extends Component {
     case 'File':
       if (cell === 'Y') {
         reactElement = <td>
-          <a href="#" onClick={loris.loadFilteredMenuClickHandler(
+          <a href="#" onClick={this.loadFilteredMenuClickHandler(
             'genomic_browser/viewGenomicFile/',
             {candID: rowData[1]}
           )}>{cell}</a>
@@ -107,7 +137,7 @@ class Profiles extends Component {
         reactElement = <td>
           <span
             style={{cursor: 'pointer'}}
-            onClick={loris.loadFilteredMenuClickHandler(
+            onClick={this.loadFilteredMenuClickHandler(
               'genomic_browser/' + column.toLowerCase() + '_browser/',
               {DCCID: rowData[1]}
             )}

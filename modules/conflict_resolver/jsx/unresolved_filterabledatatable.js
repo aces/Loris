@@ -4,6 +4,7 @@ import {withTranslation} from 'react-i18next';
 import FilterableDataTable from 'FilterableDataTable';
 import FixConflictForm from './fix_conflict_form';
 import PropTypes from 'prop-types';
+import {loris} from 'jslib/loris';
 
 /**
  * Filterable database for unresolved conflicts.

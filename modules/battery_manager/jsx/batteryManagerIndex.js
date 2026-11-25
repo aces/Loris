@@ -9,6 +9,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 import {CTA} from 'jsx/Form';
 
 import BatteryManagerForm from './batteryManagerForm';

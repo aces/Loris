@@ -8,6 +8,7 @@ import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
+import {loris} from 'jslib/loris';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/dictionary.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dictionary.json';

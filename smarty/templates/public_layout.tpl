@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
   <script>
-  const loris = { user: { langpref: "{$language}" }};
+  window.loris = { user: { langpref: "{$language}" }};
 
   const switchLanguage = (selectEl) => {
     const queryParams = new URLSearchParams(window.location.search);

@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
+import {loris} from 'jslib/loris';
 
 import FilterableDataTable from '../../../jsx/FilterableDataTable';
 import {UseShipment} from './Shipment';

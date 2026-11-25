@@ -7,6 +7,7 @@ import swal from 'sweetalert2';
 import {TextboxElement, TextareaElement} from 'jsx/Form';
 import {SelectElement} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/help_editor.json';

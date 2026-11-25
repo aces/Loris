@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {withTranslation, WithTranslation} from 'react-i18next';
+import {loris} from 'jslib/loris';
 
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
@@ -11,7 +12,6 @@ import hiStrings from '../locale/hi/LC_MESSAGES/timepoint_list.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/timepoint_list.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/timepoint_list.json';
 
-declare const loris: {BaseURL: string};
 declare const $: (selector: string) => {DynamicTable: () => void};
 
 declare global {

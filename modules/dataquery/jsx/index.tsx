@@ -24,6 +24,7 @@ import jaStrings from '../locale/ja/LC_MESSAGES/dataquery.json';
 import frStrings from '../locale/fr/LC_MESSAGES/dataquery.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/dataquery.json';
 import {TFunction} from 'i18next';
+import {loris} from 'jslib/loris';
 
 type ActiveCategoryType = {
     module: string,
@@ -250,7 +251,6 @@ function DataQueryApp(props: {
   </div>;
 }
 
-declare const loris: any;
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'dataquery', jaStrings);
   i18n.addResourceBundle('hi', 'dataquery', hiStrings);
