@@ -311,6 +311,7 @@ class CandidateListIndex extends Component {
         name: 'newProfile',
         label: t('New Profile', {ns: 'candidate_list'}),
         show: this.props.hasPermission('data_entry'),
+        primary: true,
         renderForm: (close) => (
           <NewProfileForm
             dataURL={`${baseURL}/new_profile/?format=json`}
