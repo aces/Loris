@@ -71,6 +71,7 @@ function FilterDrawer<R>(props: {
         value={value || {}}
         placeholder={t('Any date')}
         clearLabel={t('Clear {{label}}', {label: column.label})}
+        resetLabel={t('Clear')}
         onChange={(range) => setFilter(column, range)}
       />;
     case 'checkbox':
