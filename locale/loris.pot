@@ -662,3 +662,30 @@ msgstr ""
 
 msgid "Help"
 msgstr ""
+
+msgid "All ({{total}})"
+msgstr ""
+
+msgid "{{selected}} of {{total}}"
+msgstr ""
+
+msgid "+{{hidden}} more"
+msgstr ""
+
+msgid "Select {{marked}}"
+msgstr ""
+
+msgid "Deselect {{marked}}"
+msgstr ""
+
+msgid "Select all"
+msgstr ""
+
+msgid "Deselect all"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "{{selected}} of {{total}} selected"
+msgstr ""

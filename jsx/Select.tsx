@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 import useFloatingPanel from './useFloatingPanel';
 import Icon from './Icon';
 import './Select.css';
@@ -96,6 +97,7 @@ function Select(props: {
     icon?: React.ReactNode,
     iconOnly?: boolean,
 }): React.ReactElement {
+  const {t} = useTranslation();
   const [open, setOpen] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('');
   const [marked, setMarked] = useState<string[]>([]);
@@ -417,12 +419,14 @@ function Select(props: {
     }
     if (multiple && selected.size === all.length) {
       return <span className="loris-select-count">
-        {'All (' + all.length + ')'}
+        {t('All ({{total}})', {ns: 'loris', total: all.length})}
       </span>;
     }
     if (props.display === 'count') {
       return <span className="loris-select-count">
-        {selected.size + ' of ' + all.length}
+        {t('{{selected}} of {{total}}', {
+          ns: 'loris', selected: selected.size, total: all.length,
+        })}
       </span>;
     }
     const shown = props.value.slice(0, maxVisible);
@@ -441,7 +445,9 @@ function Select(props: {
     return <span className="loris-select-names">
       {names.join(', ')}
       {hidden > 0 ?
-        <span className="loris-select-count">{' +' + hidden + ' more'}</span> :
+        <span className="loris-select-count">
+          {' ' + t('+{{hidden}} more', {ns: 'loris', hidden})}
+        </span> :
         null}
     </span>;
   };
@@ -484,11 +490,11 @@ function Select(props: {
   // consumes it.
   const aimed = marked.length > 0 ? ' targeted' : '';
   const selectText = marked.length > 0 ?
-    'Select ' + marked.length :
-    (props.selectLabel || 'Select all');
+    t('Select {{marked}}', {ns: 'loris', marked: marked.length}) :
+    (props.selectLabel || t('Select all', {ns: 'loris'}));
   const deselectText = marked.length > 0 ?
-    'Deselect ' + marked.length :
-    (props.deselectLabel || 'Deselect all');
+    t('Deselect {{marked}}', {ns: 'loris', marked: marked.length}) :
+    (props.deselectLabel || t('Deselect all', {ns: 'loris'}));
 
   let panel = null;
   if (open) {
@@ -497,14 +503,14 @@ function Select(props: {
         <input ref={search}
           className="loris-select-search"
           type="text"
-          placeholder={props.searchPlaceholder || 'Search'}
+          placeholder={props.searchPlaceholder || t('Search', {ns: 'loris'})}
           value={filter}
           onChange={(e) => setFilter(e.target.value)} />
       </div> : null}
       <div className="loris-select-list" ref={list}>
         {grouped.length === 0 ?
           <div className="loris-select-empty">
-            {props.emptyMessage || 'No options'}
+            {props.emptyMessage || t('No options', {ns: 'loris'})}
           </div> :
           grouped.map((group) => (
             <div key={group.label}>
@@ -515,7 +521,11 @@ function Select(props: {
           ))}
       </div>
       {multiple ? <div className="loris-select-counts">
-        <span>{selected.size + ' of ' + all.length + ' selected'}</span>
+        <span>
+          {t('{{selected}} of {{total}} selected', {
+            ns: 'loris', selected: selected.size, total: all.length,
+          })}
+        </span>
         <span className="loris-select-bulk">
           <button type="button"
             className={'loris-select-link' + aimed}
@@ -604,8 +614,8 @@ function Select(props: {
       {canClear ?
         <button type="button"
           className="loris-field-clear"
-          aria-label={props.clearLabel || 'Clear'}
-          title={props.clearLabel || 'Clear'}
+          aria-label={props.clearLabel || t('Clear', {ns: 'loris'})}
+          title={props.clearLabel || t('Clear', {ns: 'loris'})}
           onClick={() => props.onChange([])}>
           <Icon name="close" />
         </button> :
