@@ -47,6 +47,7 @@ export type FormModalProps<T> = Omit<ModalProps, 'footer'> & {
   onSubmit: () => Promise<T>;
   onSuccess?: (data: T) => void;
   submitDisabled?: boolean;
+  submitLabel?: ReactNode;
 };
 
 /**
@@ -62,6 +63,7 @@ export function FormModal<T>({
   onSubmit,
   onSuccess,
   submitDisabled = false,
+  submitLabel,
   title,
   children,
   width,
@@ -101,7 +103,7 @@ export function FormModal<T>({
         className='btn btn-primary'
         disabled={submitDisabled}
       >
-        {t('Save')}
+        {submitLabel ?? t('Save')}
       </button>
     </div>
   );
