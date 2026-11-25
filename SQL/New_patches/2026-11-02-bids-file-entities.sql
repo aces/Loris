@@ -1,0 +1,13 @@
+ALTER TABLE `bids_file`
+  ADD COLUMN `Suffix` VARCHAR(50) NULL AFTER `Path`,
+  ADD COLUMN `Extension` VARCHAR(20) NULL AFTER `Suffix`;
+
+CREATE TABLE `bids_file_entity` (
+  `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `FileID` INT(10) UNSIGNED NOT NULL,
+  `Key` VARCHAR(20) NOT NULL,
+  `Value` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `bids_file_entity_file_id_fk`
+    FOREIGN KEY (`FileID`) REFERENCES `bids_file` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
