@@ -355,16 +355,22 @@ function Globals(props) {
     <div>
       <InlineField
         label={this.props.t('PSCID', {ns: 'loris'})}
-        value={options.candidates[specimen.candidateId].pscid}
-        link={loris.BaseURL+'/'+specimen.candidateId}
+        value={specimen.candidatePSCID}
+        link={
+          options.candidates[specimen.candidateId]
+            ? loris.BaseURL+'/'+specimen.candidateId
+            : null
+        }
       />
       <InlineField
         label={this.props.t('Visit Label', {ns: 'loris'})}
-        value={options.sessions[specimen.sessionId].label}
+        value={specimen.sessionLabel}
         link={
-          loris.BaseURL+'/instrument_list/?candID='+
-            specimen.candidateId+'&sessionID='+
-            specimen.sessionId
+          options.sessions[specimen.sessionId]
+            ? loris.BaseURL+'/instrument_list/?candID='+
+                specimen.candidateId+'&sessionID='+
+                specimen.sessionId
+            : null
         }
       />
     </div>
@@ -412,7 +418,9 @@ Globals.propTypes = {
       fTCycle: PropTypes.string,
       projectId: PropTypes.number,
       sessionId: PropTypes.number,
+      sessionLabel: PropTypes.string,
       candidateId: PropTypes.number,
+      candidatePSCID: PropTypes.string,
       quantity: PropTypes.number,
       unitId: PropTypes.number,
       parentSpecimenIds: PropTypes.arrayOf(PropTypes.number),
@@ -500,7 +508,9 @@ Globals.propTypes = {
     fTCycle: PropTypes.string,
     projectId: PropTypes.number,
     sessionId: PropTypes.number,
+    sessionLabel: PropTypes.string,
     candidateId: PropTypes.number,
+    candidatePSCID: PropTypes.string,
     quantity: PropTypes.number,
     unitId: PropTypes.number,
     parentSpecimenIds: PropTypes.arrayOf(PropTypes.number),
@@ -682,7 +692,7 @@ InlineField.propTypes = {
   pencil: PropTypes.node.isRequired,
   editValue: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  link: PropTypes.string.isRequired,
+  link: PropTypes.string,
   value: PropTypes.string.isRequired,
 };
 

@@ -118,6 +118,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                       s.CandidateID,
                       c.PSCID as CandidatePSCID,
                       bs.SessionID,
+                      s.Visit_Label as SessionLabel,
                       s.CenterID as SessionCenterID,
                       (
                         SELECT FLOOR(DATEDIFF(s.Date_visit, c.DoB)/365.25)
@@ -739,6 +740,9 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                     (string) $data['SessionCenterID']
                 )
             );
+        }
+        if (isset($data['SessionLabel'])) {
+            $specimen->setSessionLabel((string) $data['SessionLabel']);
         }
         if (isset($data['PoolID'])) {
             $specimen->setPoolId((int) $data['PoolID']);

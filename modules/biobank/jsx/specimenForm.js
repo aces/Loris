@@ -222,11 +222,11 @@ class SpecimenForm extends React.Component {
             />
             <StaticElement
               label={this.props.t('PSCID', {ns: 'loris'})}
-              text={options.candidates[candidateId].pscid}
+              text={parent[0].specimen.candidatePSCID}
             />
             <StaticElement
               label={this.props.t('Visit Label', {ns: 'loris'})}
-              text={options.sessions[sessionId].label}
+              text={parent[0].specimen.sessionLabel}
             />
           </>
         );
@@ -389,7 +389,9 @@ SpecimenForm.propTypes = {
     PropTypes.shape({
       specimen: PropTypes.shape({
         candidateId: PropTypes.number,
+        candidatePSCID: PropTypes.string,
         sessionId: PropTypes.number,
+        sessionLabel: PropTypes.string,
         typeId: PropTypes.number.isRequired,
       }).isRequired,
       container: PropTypes.shape({
