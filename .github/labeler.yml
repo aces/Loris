@@ -26,17 +26,9 @@
 - changed-files:
   - any-glob-to-any-file: modules/bvl_feedback/**
 
-"Module: candidate_list":
+"Module: candidates":
 - changed-files:
-  - any-glob-to-any-file: modules/candidate_list/**
-
-"Module: candidate_parameters":
-- changed-files:
-  - any-glob-to-any-file: modules/candidate_parameters/**
-
-"Module: candidate_profile":
-- changed-files:
-  - any-glob-to-any-file: modules/candidate_profile/**
+  - any-glob-to-any-file: modules/candidates/**
 
 "Module: configuration":
 - changed-files:
@@ -153,10 +145,6 @@
 "Module: my_preferences":
 - changed-files:
   - any-glob-to-any-file: modules/my_preferences/**
-
-"Module: new_profile":
-- changed-files:
-  - any-glob-to-any-file: modules/new_profile/**
 
 "Module: next_stage":
 - changed-files:

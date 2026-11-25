@@ -1,0 +1,153 @@
+import {createRoot} from 'react-dom/client';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
+import './translations';
+import CandidateInfo from './CandidateInfo';
+import ProbandInfo from './ProbandInfo';
+import FamilyInfo from './FamilyInfo';
+import ParticipantStatus from './ParticipantStatus';
+import ConsentStatus from './ConsentStatus';
+import CandidateDOB from './CandidateDOB';
+import CandidateDOD from './CandidateDOD';
+import DiagnosisEvolution from './DiagnosisEvolution';
+import {Tabs, TabPane} from 'Tabs';
+
+/**
+ * Candidate parameters component
+ */
+class CandidateParameters extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.getTabPanes = this.getTabPanes.bind(this);
+  }
+
+  /**
+   * Get tab panes
+   *
+   * @param {object} tabList
+   * @return {JSX} - React markup for the component
+   */
+  getTabPanes(tabList) {
+    const actionURL = loris.BaseURL
+                      + '/candidates/ajax/formHandler.php';
+    const dataURL = loris.BaseURL
+                    + '/candidates/ajax/getData.php'
+                    + '?candID='
+                    + this.props.candID;
+    const tabPanes = Object.keys(tabList).map((key) => {
+      const TabContent = tabList[key].component;
+      return (
+        <TabPane TabId={tabList[key].id} key={key}>
+          <TabContent
+            action={actionURL}
+            dataURL={`${dataURL}&data=${tabList[key].id}`}
+            candID={this.props.candID}
+            tabName={tabList[key].id}
+          />
+        </TabPane>
+      );
+    });
+    return tabPanes;
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const {t} = this.props;
+    let tabList = [
+      {
+        id: 'candidateInfo',
+        label: t('Candidate Information', {ns: 'candidates'}),
+        component: CandidateInfo,
+      },
+      {
+        id: 'participantStatus',
+        label: t('Participant Status', {ns: 'candidates'}),
+        component: ParticipantStatus,
+      },
+      {
+        id: 'candidateDOB',
+        label: t('DoB', {ns: 'loris'}),
+        component: CandidateDOB,
+      },
+      {
+        id: 'candidateDOD',
+        label: t('DoD', {ns: 'loris'}),
+        component: CandidateDOD,
+      },
+      {
+        id: 'diagnosisEvolution',
+        label: t('Diagnosis Evolution', {ns: 'candidates'}),
+        component: DiagnosisEvolution,
+      },
+    ];
+
+    if (loris.config('useProband') === 'true') {
+      tabList.push({
+        id: 'probandInfo',
+        label: 'Proband Information',
+        label: t('Proband Information', {ns: 'candidates'}),
+        component: ProbandInfo,
+      });
+    }
+
+    if (loris.config('useFamilyID') === 'true') {
+      tabList.push({
+        id: 'familyInfo',
+        label: t('Family Information', {ns: 'candidates'}),
+        component: FamilyInfo,
+      });
+    }
+
+    if (loris.config('useConsent') === 'true') {
+      tabList.push({
+        id: 'consentStatus',
+        label: t('Consent Status', {ns: 'candidates'}),
+        component: ConsentStatus,
+      });
+    }
+
+    return (
+      <div>
+        <Tabs tabs={tabList} defaultTab='candidateInfo' updateURL={true}>
+          {this.getTabPanes(tabList)}
+        </Tabs>
+      </div>
+    );
+  }
+}
+
+CandidateParameters.propTypes = {
+  candID: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
+};
+
+/**
+ * Render Candidate Parameters component on page load
+ */
+const args = QueryString.get(document.currentScript.src);
+
+window.addEventListener('load', () => {
+  const TranslatedCandidateParameters = withTranslation(
+    ['candidates', 'loris']
+  )(CandidateParameters);
+
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
+    <div className="page-candidate-parameters">
+      <TranslatedCandidateParameters
+        Module="candidates"
+        candID={args.candID}
+      />
+    </div>
+  );
+});

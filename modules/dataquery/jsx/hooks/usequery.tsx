@@ -48,7 +48,7 @@ type useQueryReturnType = [
  */
 function useQuery(): useQueryReturnType {
   const [fields, setFields] = useState<APIQueryField[]>([{
-    'module': 'candidate_parameters',
+    'module': 'candidates',
     'category': 'Identifiers',
     'field': 'PSCID',
   }]);

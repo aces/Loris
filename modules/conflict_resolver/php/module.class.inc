@@ -168,7 +168,7 @@ class Module extends \Module
                 $width = 2;
             }
             return [
-                new \LORIS\candidate_profile\CandidateWidget(
+                new \LORIS\candidates\CandidateWidget(
                     dgettext("conflict_resolver", "Unresolved Conflicts"),
                     $baseURL . "/conflict_resolver/js/CandidateConflictsWidget.js",
                     "lorisjs.conflict_resolver.CandidateConflictsWidget.default",

@@ -8,7 +8,7 @@ these permissions:
   [Automation Testing]
 2. Check that the 'Module' filter dropdown lists only the active modules that the
 logged-in user can access and that actually provide a dictionary (e.g. `instruments`,
-`imaging_browser`, `candidate_parameters`).
+`imaging_browser`, `candidates`).
   [Automation Testing]
 3. Check that the 'Category' filter dropdown is empty until a Module is selected, and
 that once a Module is selected it is populated only with the categories of that module.
@@ -41,7 +41,7 @@ download table as CSV works as well.
   [Automation Testing]
 11. Module enable/disable behaviour. Using the Module Manager (Admin > Modules),
 disable a module that provides a dictionary (e.g. `imaging_browser` or
-`candidate_parameters`). Reload the Data Dictionary and confirm:
+`candidates`). Reload the Data Dictionary and confirm:
  - The module's fields no longer appear in the table.
  - The module is no longer an option in the 'Module' filter.
  - Selecting any remaining module repopulates the 'Category' filter with only that

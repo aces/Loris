@@ -28,12 +28,12 @@ Widget types currently implemented by LORIS and its default modules are:
 
 # Candidate Profile
 
-- The 'candidate' type displays a widget on the `candidate_profile` page. The
+- The 'candidate' type displays a widget on the candidate profile page. The
   options passed include a 'candidate' key which is a `\Candidate` object.
-  The return value is expected to be an array of `LORIS\candidate_profile\CandidateWidget`;
+  The return value is expected to be an array of `LORIS\candidates\CandidateWidget`;
   which each get displayed in their own card of the page.
 - The 'candidateinfo' type displays extra information in the 'Candidate Info'
   card of the profile. The options passed are the same as for the 'candidate'.
-  The return value is expected to be an array of `LORIS\candidate_profile\CandidateInfo`
+  The return value is expected to be an array of `LORIS\candidates\CandidateInfo`
   elements consisting of terms to render into the existing card and the value of
   the term.

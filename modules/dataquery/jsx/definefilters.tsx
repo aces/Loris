@@ -276,10 +276,10 @@ function DefineFilters(props: {
                 onUserInput={(e: React.MouseEvent) => {
                   e.preventDefault();
                   // Need to be sure that we've loaded
-                  // candidate_parameters so it's in
+                  // candidates so it's in
                   // fulldictionary
                   props.getModuleFields(
-                    'candidate_parameters',
+                    'candidates',
                   );
                   setCSVModal(true);
                 }}

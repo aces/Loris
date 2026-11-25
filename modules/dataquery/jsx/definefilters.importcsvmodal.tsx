@@ -142,7 +142,7 @@ function ImportCSVModal(props: {
         const sessionGroup = new QueryGroup('and');
         sessionGroup.addTerm(
           new QueryTerm(
-            'candidate_parameters',
+            'candidates',
             'Identifiers',
             idType,
             'eq',
@@ -151,7 +151,7 @@ function ImportCSVModal(props: {
         );
         sessionGroup.addTerm(
           new QueryTerm(
-            'candidate_parameters',
+            'candidates',
             'Meta',
             'VisitLabel',
             'eq',
@@ -162,7 +162,7 @@ function ImportCSVModal(props: {
       } else {
         newQuery.addTerm(
           new QueryTerm(
-            'candidate_parameters',
+            'candidates',
             'Identifiers',
             idType,
             'eq',

@@ -295,7 +295,7 @@ components:
       properties:
         module:
           type: string
-          example: "candidate_parameters"
+          example: "candidates"
         category:
           type: string
           example: "Identifiers"
@@ -345,7 +345,7 @@ components:
       properties:
         module:
           type: string
-          example: "candidate_parameters"
+          example: "candidates"
         category:
           type: string
           example: "Identifiers"

@@ -186,9 +186,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // check that PSCID matches CandID when entered into the boxes
-        // on the candidate_list form (and is therefore trying to open
+        // on the candidate list form (and is therefore trying to open
         // the timepoint_list page, which is why the if statement checks
-        // for timepoint_list instead of candidate_list)
+        // for timepoint_list instead of the candidate list)
         //
         // Since other pages (ie. the filter in the conflicts_resolve page)
         // might include an element named PSCID, we also need to check that
@@ -461,7 +461,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Checks if candidate exist given a candidate ID and PSCID
      * Used to check that PSCID matches CandID when entered into the boxes
-     * on the candidate_list form
+     * on the candidate list form
      *
      * @param CandID $candID 6-10 digit Loris CandID
      * @param string $PSCID  project study center ID

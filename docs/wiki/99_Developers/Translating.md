@@ -29,8 +29,8 @@ plural an internet search is likely to provide better guidance than this
 documentation, which is aimed at contributing to LORIS.)
 
 Each translatable module in LORIS has a `locale` subdirectory for strings that
-are specific to that module (ie. `modules/candidate_list/locale` for the
-`candidate_list`) while LORIS has a `locale` directory on the top level
+are specific to that module (ie. `modules/candidates/locale` for the
+`candidates`) while LORIS has a `locale` directory on the top level
 for terms that are used throughout LORIS.
 
 Within the locale directories, there is a `.pot` (".po template") file with

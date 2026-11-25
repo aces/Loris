@@ -153,7 +153,7 @@ class Module extends \Module
             $baseurl = $factory->settings()->getBaseURL();
 
             return [
-                new \LORIS\candidate_profile\CandidateWidget(
+                new \LORIS\candidates\CandidateWidget(
                     dgettext("instruments", "Behavioural Data"),
                     $baseurl . "/instruments/js/CandidateInstrumentList.js",
                     'lorisjs.instruments.CandidateInstrumentList.default',

@@ -21,4 +21,4 @@ Future development includes the ability to edit one’s own comments after submi
 
 ## Interactions with LORIS
 
-The issue tracker registers widgets on the `dashboard` and `candidate_profile` dashboard.
+The issue tracker registers widgets on the `dashboard` and candidate profile dashboard.

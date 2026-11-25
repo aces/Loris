@@ -1,0 +1,386 @@
+import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
+import PropTypes from 'prop-types';
+import 'I18nSetup';
+import Loader from 'Loader';
+import swal from 'sweetalert2';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  ButtonElement,
+  DateElement,
+  TextareaElement,
+} from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
+
+/**
+ * Proband Info Component.
+ *
+ * Renders the contents of the ProbandInfo tab, consisting of the FormElement component
+ */
+class ProbandInfo extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sexOptions: {},
+      Data: [],
+      formData: {},
+      updateResult: null,
+      errorMessage: null,
+      isLoaded: false,
+      loadedData: 0,
+    };
+    this.client = new CandidateParametersClient();
+
+    /**
+     * Bind component instance to custom methods
+     */
+    this.fetchData = this.fetchData.bind(this);
+    this.setFormData = this.setFormData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  /**
+   * Retrieve data from the provided URL and save it in state
+   */
+  fetchData() {
+    const {t} = this.props;
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
+        const formData = {
+          ProbandSex: data.ProbandSex,
+          ProbandDoB: data.ProbandDoB,
+          ProbandDoB2: data.ProbandDoB,
+        };
+
+        // Add parameter values to formData
+        Object.assign(formData, data.parameter_values);
+
+        this.setState({
+          formData: formData,
+          Data: data,
+          isLoaded: true,
+          sexOptions: data.sexOptions,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: t('An error occurred when loading the form!',
+            {ns: 'candidates'}
+          ),
+        });
+      });
+  }
+
+  /**
+   * Store the value of the element in this.state.formData
+   *
+   * @param {string} formElement - name of the form element
+   * @param {string} value - value of the form element
+   */
+  setFormData(formElement, value) {
+    let formData = JSON.parse(JSON.stringify(this.state.formData));
+    formData[formElement] = value;
+    this.setState({
+      formData: formData,
+    });
+  }
+
+  /**
+   * Handles form submission
+   *
+   * @param {event} e - Form submission event
+   */
+  handleSubmit(e) {
+    const {t} = this.props;
+    e.preventDefault();
+    let myFormData = this.state.formData;
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1; // January is 0!
+    let yyyy = today.getFullYear();
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+    if (mm < 10) {
+      mm = '0' + mm;
+    }
+    today = yyyy + '-' + mm + '-' + dd;
+    let dob1 = myFormData.ProbandDoB ?
+      myFormData.ProbandDoB : null;
+    let dob2 = myFormData.ProbandDoB2 ?
+      myFormData.ProbandDoB2 : null;
+    if (dob1 !== dob2) {
+      swal.fire({
+        title: t('Error!', {ns: 'loris'}),
+        text: t('DOB do not match!', {ns: 'candidates'}),
+        type: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
+      return;
+    }
+
+    if (dob1 > today) {
+      swal.fire({
+        title: t('Error!', {ns: 'loris'}),
+        text:
+          t('Proband date of birth cannot be later than today!',
+            {ns: 'candidates'}
+          ),
+        type: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
+      return;
+    }
+
+    // Set form data
+    let formData = new FormData();
+    for (let key in myFormData) {
+      if (myFormData[key] !== '') {
+        formData.append(key, myFormData[key]);
+      }
+    }
+
+    formData.append('tab', this.props.tabName);
+    formData.append('candID', this.state.Data.candID);
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        this.setState({
+          updateResult: 'success',
+        });
+        this.showAlertMessage();
+        this.fetchData();
+      })
+      .catch((error) => {
+        if (error.lorisMessage !== undefined && error.lorisMessage !== '') {
+          this.setState({
+            updateResult: 'error',
+            errorMessage: error.lorisMessage,
+          });
+          this.showAlertMessage();
+        }
+      });
+  }
+
+  /**
+   * Display a success/error alert message after form submission
+   */
+  showAlertMessage() {
+    if (this.refs['alert-message'] === null) {
+      return;
+    }
+
+    let alertMsg = this.refs['alert-message'];
+    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
+      500,
+      () => {
+        this.setState({
+          updateResult: null,
+        });
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const {t} = this.props;
+    if (!this.state.isLoaded) {
+      return <Loader />;
+    }
+
+    let disabled = true;
+    let updateButton = null;
+    if (loris.userHasPermission('candidate_parameter_edit')) {
+      disabled = false;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
+    }
+
+    let dobRequired = false;
+    let dob2Required = false;
+    if (this.state.formData.ProbandSex !== null) {
+      dobRequired = true;
+    }
+    if (this.state.formData.ProbandDoB !== null) {
+      dob2Required = true;
+    }
+    let extraParameterFields = [];
+    let extraParameters = this.state.Data.extra_parameters;
+    for (let key2 in extraParameters) {
+      if (extraParameters.hasOwnProperty(key2)) {
+        let paramTypeID = extraParameters[key2].ParameterTypeID;
+        let name = paramTypeID;
+        let value = this.state.formData[paramTypeID];
+
+        switch (extraParameters[key2].Type.substring(0, 3)) {
+        case 'enu': {
+          let types = extraParameters[key2].Type.substring(5);
+          types = types.slice(0, -1);
+          types = types.replace(/'/g, '');
+          types = types.split(',');
+          let selectOptions = {};
+          for (let key3 in types) {
+            if (types.hasOwnProperty(key3)) {
+              selectOptions[types[key3]] = types[key3];
+            }
+          }
+
+          extraParameterFields.push(
+            <SelectElement
+              label={extraParameters[key2].Description}
+              name={name}
+              options={selectOptions}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              key={key2}
+            />
+          );
+          break;
+        }
+        case 'dat':
+          extraParameterFields.push(
+            <DateElement
+              label={extraParameters[key2].Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              key={key2}
+            />
+          );
+          break;
+        default:
+          extraParameterFields.push(
+            <TextareaElement
+              label={extraParameters[key2].Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              key={key2}
+            />
+          );
+        }
+      }
+    }
+
+    let alertMessage = '';
+    let alertClass = 'alert text-center hide';
+    if (this.state.updateResult) {
+      if (this.state.updateResult === 'success') {
+        alertClass = 'alert alert-success text-center';
+        alertMessage = t('Update Successful!', {ns: 'candidates'});
+      } else if (this.state.updateResult === 'error') {
+        let errorMessage = this.state.errorMessage;
+        alertClass = 'alert alert-danger text-center';
+        alertMessage = errorMessage ? errorMessage :
+          t('Failed to update!', {ns: 'candidates'});
+      }
+    }
+
+    return (
+      <div className="row">
+        <div className={alertClass} role="alert" ref="alert-message">
+          {alertMessage}
+        </div>
+        <FormElement
+          name="probandInfo"
+          onSubmit={this.handleSubmit}
+          ref="form"
+          class="col-md-6"
+        >
+          <StaticElement
+            label={t('PSCID', {ns: 'loris'})}
+            text={this.state.Data.pscid}
+          />
+          <StaticElement
+            label={t('DCCID', {ns: 'loris'})}
+            text={this.state.Data.candID}
+          />
+          <SelectElement
+            label={t('Proband Sex', {ns: 'candidates'})}
+            name="ProbandSex"
+            options={this.state.sexOptions}
+            value={this.state.formData.ProbandSex}
+            onUserInput={this.setFormData}
+            ref="ProbandSex"
+            disabled={disabled}
+            required={true}
+          />
+          <DateElement
+            label={t('DoB Proband', {ns: 'candidates'})}
+            name="ProbandDoB"
+            value={this.state.formData.ProbandDoB}
+            onUserInput={this.setFormData}
+            ref="ProbandDoB"
+            disabled={disabled}
+            required={dobRequired}
+          />
+          <DateElement
+            label={t('Confirm DoB Proband', {ns: 'candidates'})}
+            name="ProbandDoB2"
+            value={this.state.formData.ProbandDoB2}
+            onUserInput={this.setFormData}
+            ref="ProbandDoB2"
+            disabled={disabled}
+            required={dob2Required}
+          />
+          <StaticElement
+            label={t('Age Difference (months)', {ns: 'candidates'})}
+            text={this.state.Data.ageDifference.toString()}
+          />
+          {extraParameterFields}
+          {updateButton}
+        </FormElement>
+      </div>
+    );
+  }
+}
+
+ProbandInfo.propTypes = {
+  candID: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
+  tabName: PropTypes.string,
+  t: PropTypes.func.isRequired,
+};
+
+export default withTranslation(['candidates', 'loris'])(ProbandInfo);

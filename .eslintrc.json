@@ -204,7 +204,7 @@
     },
     {
       "files": [
-        "modules/candidate_parameters/**",
+        "modules/candidates/**",
         "modules/dqt/**",
         "modules/brainbrowser/js/brainbrowser.loris.js"
       ],

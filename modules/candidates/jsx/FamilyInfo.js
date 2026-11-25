@@ -1,0 +1,416 @@
+import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
+import PropTypes from 'prop-types';
+import 'I18nSetup';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  SelectElement,
+} from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
+
+/**
+ * Family info component
+ */
+class FamilyInfo extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      Data: [],
+      formData: {},
+      familyMembers: [],
+      updateResult: null,
+      errorMessage: null,
+      isLoaded: false,
+      loadedData: 0,
+    };
+    this.client = new CandidateParametersClient();
+    this.setFormData = this.setFormData.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
+    this.deleteFamilyMember = this.deleteFamilyMember.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+  }
+
+  /**
+   * Fetch data
+   */
+  fetchData() {
+    const {t} = this.props;
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
+        this.setState({
+          Data: data,
+          isLoaded: true,
+          familyMembers: data.existingFamilyMembers,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: t('An error occurred when loading the form!',
+            {ns: 'candidates'}
+          ),
+        });
+      });
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  /**
+   * Set form data
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
+  setFormData(formElement, value) {
+    let formData = this.state.formData;
+    formData[formElement] = value;
+    this.setState({
+      formData: formData,
+    });
+  }
+
+  /**
+   * On submit
+   *
+   * @param {object} e - Event object
+   */
+  onSubmit(e) {
+    e.preventDefault();
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const {t} = this.props;
+    if (!this.state.isLoaded) {
+      if (this.state.error !== undefined) {
+        return (
+          <div className="alert alert-danger text-center">
+            <strong>
+              {this.state.error}
+            </strong>
+          </div>
+        );
+      }
+
+      return (
+        <button className="btn-info has-spinner">
+          Loading
+          <span
+            className="glyphicon glyphicon-refresh glyphicon-refresh-animate"
+          >
+          </span>
+        </button>
+      );
+    }
+    let relationshipOptions = {
+      'full_sibling': t('Full Sibling', {ns: 'candidates'}),
+      'half_sibling': t('Half Sibling', {ns: 'candidates'}),
+      '1st_cousin': t('First Cousin', {ns: 'candidates'}),
+    };
+
+    let disabled = true;
+    let addButton = null;
+    if (loris.userHasPermission('candidate_parameter_edit')) {
+      disabled = false;
+      addButton =
+        <ButtonElement label={t('Add', {ns: 'candidates'})}/>;
+    }
+
+    let candidateList = this.state.Data.candidates;
+
+    let familyMembers = this.state.familyMembers;
+    let familyMembersHTML = [];
+
+    for (let key in familyMembers) {
+      if (familyMembers.hasOwnProperty(key)) {
+        let candID = familyMembers[key].FamilyCandID;
+        let relationship = familyMembers[key].Relationship_type;
+        let link = '?candID=' + candID + '&identifier=' + candID;
+
+        familyMembersHTML.push(
+          <div key={key}>
+            <StaticElement
+              label={
+                t('Family Member ID (DCCID)', {ns: 'candidates'})
+              }
+              text={<a href={link}>{candID}</a>}
+            />
+            <StaticElement
+              label={t('Relation Type', {ns: 'candidates'})}
+              text={relationshipOptions[relationship]}
+            />
+
+            <ButtonElement
+              label={t('Delete', {ns: 'candidates'})}
+              type="button"
+              onUserInput={this.deleteFamilyMember.bind(
+                null,
+                candID,
+                key,
+                candidateList
+              )}
+            />
+            <hr/>
+          </div>
+        );
+        // remove from list of candidates because it can only be added once
+        delete candidateList[candID];
+      }
+    }
+
+    let alertMessage = '';
+    let alertClass = 'alert text-center hide';
+    if (this.state.updateResult) {
+      if (this.state.updateResult === 'success') {
+        alertClass = 'alert alert-success text-center';
+        alertMessage = t('Update Successful!', {ns: 'candidates'});
+      } else if (this.state.updateResult === 'error') {
+        let errorMessage = this.state.errorMessage;
+        alertClass = 'alert alert-danger text-center';
+        alertMessage = errorMessage ? errorMessage :
+          t('Failed to update!', {ns: 'candidates'});
+      }
+    }
+
+    return (
+      <div className="row">
+        <div className={alertClass} role="alert" ref="alert-message">
+          {alertMessage}
+        </div>
+        <FormElement
+          name="familyInfo"
+          onSubmit={this.handleSubmit}
+          ref="form"
+          class="col-md-6"
+        >
+          <StaticElement
+            label={t('PSCID', {ns: 'loris'})}
+            text={this.state.Data.pscid}
+          />
+          <StaticElement
+            label={t('DCCID', {ns: 'loris'})}
+            text={this.state.Data.candID}
+          />
+          <hr/>
+          {familyMembersHTML}
+          <SelectElement
+            label={t('Family Member ID (DCCID)', {ns: 'candidates'})}
+            name="FamilyCandID"
+            options={candidateList}
+            onUserInput={this.setFormData}
+            ref="FamilyCandID"
+            disabled={disabled}
+            required={true}
+            value={this.state.formData.FamilyCandID}
+          />
+          <SelectElement
+            label={t('Relation Type', {ns: 'candidates'})}
+            name="Relationship_type"
+            options={relationshipOptions}
+            onUserInput={this.setFormData}
+            ref="Relationship_type"
+            disabled={disabled}
+            required={true}
+            value={this.state.formData.Relationship_type}
+          />
+          {addButton}
+        </FormElement>
+      </div>
+    );
+  }
+
+  /**
+   * Handles form submission
+   *
+   * @param {event} e - Form submission event
+   */
+  handleSubmit(e) {
+    e.preventDefault();
+    let myFormData = this.state.formData;
+    let self = this;
+    let formData = new FormData();
+    let formRefs = this.refs;
+
+    let familyMembers = this.state.familyMembers;
+    let familyMember = {};
+
+    for (let key in myFormData) {
+      if (myFormData.hasOwnProperty(key)) {
+        if (myFormData[key] !== '') {
+          familyMember[key] = myFormData[key];
+          formData.append(key, myFormData[key]);
+        }
+      }
+    }
+    formData.append('tab', this.props.tabName);
+    formData.append('candID', this.state.Data.candID);
+
+    familyMembers.push(familyMember);
+
+    this.setState({
+      familyMembers: familyMembers,
+    });
+
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        self.setState({
+          updateResult: 'success',
+          formData: {},
+        });
+        self.showAlertMessage();
+
+        // Iterates through child components and resets state
+        // to initial state in order to clear the form
+        Object.keys(formRefs).map(function(ref) {
+          if (formRefs[ref].state && formRefs[ref].state.value) {
+            formRefs[ref].state.value = '';
+          }
+        });
+        // rerender components
+        self.forceUpdate();
+      })
+      .catch((err) => {
+        let errorMessage = err.lorisMessage || '';
+        self.setState(
+          {
+            updateResult: 'error',
+            errorMessage: errorMessage,
+          }
+        );
+        self.showAlertMessage();
+      });
+  }
+
+  /**
+   * Display a success/error alert message after form submission
+   */
+  showAlertMessage() {
+    let self = this;
+    if (this.refs['alert-message'] === null) {
+      return;
+    }
+
+    let alertMsg = this.refs['alert-message'];
+    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
+      500,
+      function() {
+        self.setState(
+          {
+            updateResult: null,
+          }
+        );
+      }
+    );
+  }
+
+  /**
+   * Delete family member
+   *
+   * @param {*} candID
+   * @param {*} key
+   * @param {*} candidateList
+   */
+  deleteFamilyMember(candID, key, candidateList) {
+    let familyMembers = this.state.familyMembers;
+    delete familyMembers[key];
+
+    // readd to list of possible family members
+    candidateList[candID] = candID;
+
+    this.setState({
+      familyMembers: familyMembers,
+    });
+
+    let myFormData = this.state.formData;
+    let self = this;
+    let formData = new FormData();
+    for (let key in myFormData) {
+      if (myFormData.hasOwnProperty(key)) {
+        if (myFormData[key] !== '') {
+          formData.append(key, myFormData[key]);
+        }
+      }
+    }
+    formData.append('tab', 'deleteFamilyMember');
+    formData.append('candID', this.state.Data.candID);
+    formData.append('familyDCCID', candID);
+
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        self.setState(
+          {
+            updateResult: 'success',
+          });
+        self.showAlertMessage();
+      })
+      .catch((err) => {
+        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
+          self.setState(
+            {
+              updateResult: 'error',
+              errorMessage: err.lorisMessage,
+            });
+          self.showAlertMessage();
+        }
+      });
+  }
+}
+FamilyInfo.propTypes = {
+  tabName: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
+  action: PropTypes.string,
+  t: PropTypes.func.isRequired,
+};
+
+export default withTranslation(['candidates', 'loris'])(FamilyInfo);
