@@ -146,6 +146,7 @@
    above the others while a menu it holds is open, frozen columns included. */
 /* The menu sets its own text, apart from the identifier's monospace. */
 .rt-table .rt-lead-cell .rt-menu-anchor {
+    margin-left: auto;
     font-family: var(--font-family);
     font-size: var(--font-size);
     opacity: 0;
@@ -757,8 +758,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     border: none;
     border-radius: 50%;
     background: none;

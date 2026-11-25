@@ -14,7 +14,7 @@ const CELL_PADDING = 24;
 // The arrow a linked cell shows on hover
 const LINK_EXTRA = 32;
 // The row menu beside the record's identifier
-const MENU_EXTRA = 32;
+const MENU_EXTRA = 24;
 // The header's sort icon and its gap.
 const HEADER_EXTRA = 44;
 // Enough records to find each column's long values without reading them all.
