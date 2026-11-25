@@ -285,6 +285,7 @@ DROP TABLE IF EXISTS `candidate_identifier_types_project_rel`;
 DROP TABLE IF EXISTS `candidate_identifier_types`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
+DROP TABLE IF EXISTS `account_requests`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `sex`;
 DROP TABLE IF EXISTS `language`;
