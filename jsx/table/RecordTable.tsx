@@ -1,18 +1,22 @@
 import React, {
-  useState, useRef, useEffect, useLayoutEffect, useCallback, ReactNode,
+  useState, useRef, useEffect, useLayoutEffect, useCallback, useMemo,
+  ReactNode,
 } from 'react';
 import {useTranslation} from 'react-i18next';
 import Button from 'jsx/Button';
 import {Icon} from './icons';
 import {Filters} from './filterMatch';
 import {displayOf} from './tableState';
-import {useTableState} from './useTableState';
+import {useTableState, Row} from './useTableState';
+import {useRowWindow} from './useRowWindow';
 import FilterDrawer from './FilterDrawer';
 import TableToolbar from './TableToolbar';
 import SidePanel from './SidePanel';
 import {useDismiss} from './useDismiss';
 import TableFooter from './TableFooter';
 import './RecordTable.css';
+
+const CARD_BATCH = 60;
 
 export type ColumnType = 'text' | 'number' | 'date';
 
@@ -119,7 +123,6 @@ type Props<R> = {
   onSectionChange?: (section: string) => void,
   csv?: {filename: string} | false,
   defaultSort?: SortKey[],
-  pageSizes?: number[],
   emptyMessage?: string,
 };
 
@@ -135,7 +138,6 @@ function RecordTable<R>(props: Props<R>) {
     name, title, records, columns, recordKey,
     actions = [], rowActions = [],
     csv = {filename: name},
-    pageSizes = [50, 100, 500, 1000],
     emptyMessage,
   } = props;
 
@@ -187,24 +189,58 @@ function RecordTable<R>(props: Props<R>) {
     visibleColumns,
     moveColumn,
     nudgeColumn,
-    sorted,
+    filters,
+    keyword,
     groups,
-    groupOf,
-    pageable,
-    setPage,
-    size,
-    lastPage,
-    pageRecords,
+    shown,
+    rows,
     selected,
     setSelected,
     selectedRecords,
     toggleRecord,
-    pageKeys,
-    pageSelected,
-    pagePartly,
-    togglePage,
+    allSelected,
+    partlySelected,
+    toggleAll,
     downloadCSV,
   } = state;
+
+  // Only the rows in view are drawn: a window over the table's rows, or a
+  // batch of cards that grows as the last one comes into view.
+  const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
+  const [bodyEl, setBodyEl] = useState<HTMLTableSectionElement | null>(null);
+  const kinds = useMemo(() => rows.map((row) => row.kind), [rows]);
+  const view = useRowWindow(scrollEl, bodyEl, kinds);
+  const rowIndex = useMemo(() => {
+    const map = new Map<string | number, number>();
+    rows.forEach((row, i) => row.kind === 'record'
+      && map.set(recordKey(row.record), i));
+    return map;
+  }, [rows, recordKey]);
+
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const [cardLimit, setCardLimit] = useState(CARD_BATCH);
+  const [cardSentinel, setCardSentinel] = useState<HTMLDivElement | null>(
+    null
+  );
+  useEffect(() => {
+    if (!cardSentinel) {
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        setCardLimit((n) => n + CARD_BATCH);
+      }
+    }, {root: props.fill ? cardsRef.current : null, rootMargin: '600px'});
+    observer.observe(cardSentinel);
+    return () => observer.disconnect();
+  }, [cardSentinel, props.fill]);
+
+  // A new filter, search, sort or grouping starts again from the top.
+  useEffect(() => {
+    scrollEl?.scrollTo({top: 0});
+    cardsRef.current?.scrollTo({top: 0});
+    setCardLimit(CARD_BATCH);
+  }, [filters, keyword, sort, groupBy]);
 
   const toolbar = (
     <TableToolbar
@@ -217,6 +253,7 @@ function RecordTable<R>(props: Props<R>) {
       csv={csv !== false}
       actions={actions.filter((a) => a.show !== false)}
       onAction={(action) => setForm({action})}
+      captureFind={!!props.fill}
       state={state}
     />
   );
@@ -294,14 +331,6 @@ function RecordTable<R>(props: Props<R>) {
         </Button>
       )}
       <span className="rt-selection-end">
-        {pageSelected && selected.size < sorted.length && (
-          <Button
-            display="quiet"
-            onClick={() => setSelected(new Set(sorted.map(recordKey)))}
-          >
-            {t('Select all {{count}}', {count: sorted.length})}
-          </Button>
-        )}
         <Button display="quiet" onClick={() => setSelected(new Set())}>
           <Icon name="close" /> {t('Clear selection')}
         </Button>
@@ -313,18 +342,14 @@ function RecordTable<R>(props: Props<R>) {
    * Renders the header of a group
    *
    * @param key - the group's key
-   * @param wrap - wraps the header for the current layout
    */
-  const groupHeaderFor = (
-    key: string,
-    wrap: (content: ReactNode, key: string) => ReactNode,
-  ): ReactNode => {
+  const groupHeader = (key: string): ReactNode => {
     const group = groups.get(key);
     if (!group) {
       return null;
     }
     const isCollapsed = collapsed.has(key);
-    return wrap(
+    return (
       <button
         type="button"
         className="rt-group-toggle"
@@ -344,46 +369,9 @@ function RecordTable<R>(props: Props<R>) {
         </span>
         {group.label}
         <span className="rt-group-count">{group.count}</span>
-      </button>,
-      `group_${key}`
+      </button>
     );
   };
-
-  /**
-   * Renders the group header shown before a record, if it starts a group
-   *
-   * @param record - the record
-   * @param i - its position on the page
-   * @param wrap - wraps the header for the current layout
-   */
-  const groupHeader = (
-    record: R,
-    i: number,
-    wrap: (content: ReactNode, key: string) => ReactNode,
-  ): ReactNode => {
-    if (!groupBy) {
-      return null;
-    }
-    const {key} = groupOf(record);
-    if (i > 0 && groupOf(pageRecords[i - 1]).key === key) {
-      return null;
-    }
-    return groupHeaderFor(key, wrap);
-  };
-
-  /**
-   * Renders the headers of collapsed groups, which have no records on the
-   * page and are listed after the page's records
-   *
-   * @param wrap - wraps the header for the current layout
-   */
-  const collapsedHeaders = (
-    wrap: (content: ReactNode, key: string) => ReactNode,
-  ) => groupBy && collapsed.size > 0
-    ? Array.from(groups.keys())
-      .filter((key) => collapsed.has(key))
-      .map((key) => groupHeaderFor(key, wrap))
-    : null;
 
   const recordActions = props.recordActions || [];
   const hasRecordActions = recordActions.length > 0;
@@ -464,17 +452,161 @@ function RecordTable<R>(props: Props<R>) {
       </div>
     );
   };
-  const empty = pageRecords.length === 0 && collapsed.size === 0;
+  const empty = rows.length === 0;
+  const headerRows = hasGroups ? 2 : 1;
+  const drawn = rows.slice(view.start, view.end);
 
-  // One row is a tab stop: the open one, or else the first on the page.
-  const openOnPage = openKey !== null && pageKeys.includes(openKey);
+  // One drawn row is a tab stop: the last one focused, else the open one,
+  // else the first.
+  const [focusKey, setFocusKey] = useState<string | number | null>(null);
+  const drawnKeys = new Set(drawn.flatMap((row) => row.kind === 'record'
+    ? [recordKey(row.record)] : []));
+  const tabKey = [focusKey, openKey].find(
+    (key) => key !== null && drawnKeys.has(key)
+  ) ?? drawnKeys.values().next().value;
+
+  // A record moved to by key is focused once its row is drawn.
+  const pendingFocus = useRef<string | number | null>(null);
+  useLayoutEffect(() => {
+    if (pendingFocus.current === null || !bodyEl) {
+      return;
+    }
+    const row = bodyEl.querySelector<HTMLElement>(
+      `tr[data-key="${CSS.escape(String(pendingFocus.current))}"]`
+    );
+    row?.focus({preventScroll: true});
+    pendingFocus.current = null;
+  });
+
+  /**
+   * Scrolls a record's row into view
+   *
+   * @param key - the record's key
+   */
+  const scrollToRecord = (key: string | number) =>
+    view.scrollToItem(rowIndex.get(key) ?? -1);
+
+  /**
+   * Scrolls a record into view and focuses its row
+   *
+   * @param key - the record's key
+   */
+  const focusRecord = (key: string | number) => {
+    scrollToRecord(key);
+    pendingFocus.current = key;
+    setFocusKey(key);
+    if (openKey !== null) {
+      setOpenKey(key);
+    }
+  };
+
+  /**
+   * Draws a blank row standing in for rows out of view
+   *
+   * @param height - the height of the rows it stands for
+   * @param key - its React key
+   */
+  const spacer = (height: number, key: string) => height > 0 && (
+    <tr key={key} className="rt-spacer" aria-hidden="true">
+      <td colSpan={columnCount} style={{height}} />
+    </tr>
+  );
+
+  /**
+   * Renders one of the table's rows
+   *
+   * @param row - the row
+   * @param index - its position among the table's rows
+   */
+  const tableRow = (row: Row<R>, index: number): ReactNode => {
+    const rowIndexAttr = headerRows + index + 1;
+    if (row.kind === 'group') {
+      return (
+        <tr
+          key={`group_${row.key}`}
+          className="rt-group-row"
+          data-row-kind="group"
+          aria-rowindex={rowIndexAttr}
+        >
+          <td colSpan={columnCount}>{groupHeader(row.key)}</td>
+        </tr>
+      );
+    }
+    const {record} = row;
+    const key = recordKey(record);
+    const isSelected = selected.has(key);
+    return (
+      <tr
+        key={key}
+        className={(isSelected ? 'rt-selected' : '')
+          + (openKey === key ? ' rt-open' : '')}
+        data-record
+        data-row-kind="record"
+        data-key={key}
+        aria-rowindex={rowIndexAttr}
+        tabIndex={tabKey === key ? 0 : -1}
+        onFocus={(e) => e.target === e.currentTarget && setFocusKey(key)}
+        onClick={(e) => {
+          if ((e.target as HTMLElement)
+            .closest('a, button, input, label, select')) {
+            return;
+          }
+          setOpenKey(openKey === key ? null : key);
+        }}
+        onKeyDown={(e) => {
+          if (e.target !== e.currentTarget) {
+            return;
+          }
+          if (e.key === 'Enter') {
+            setOpenKey(key);
+          } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const next = shown[row.index + (e.key === 'ArrowDown' ? 1 : -1)];
+            if (next) {
+              focusRecord(recordKey(next));
+            }
+          }
+        }}
+      >
+        {selectable && (
+          <td className="rt-check-cell">
+            <input
+              type="checkbox"
+              aria-label={t('Select row')}
+              checked={isSelected}
+              onChange={() => toggleRecord(key)}
+            />
+          </td>
+        )}
+        {visibleColumns.map((column) => (
+          <td
+            key={column.name}
+            className={(column.type === 'number' ? 'rt-number' : '')
+              + (column.mono || column.type === 'date'
+                ? ' rt-mono' : '')
+              + (column.sticky ? ' rt-sticky' : '')}
+          >
+            {cellContent(column, record)}
+          </td>
+        ))}
+        {hasRecordActions && (
+          <td className="rt-actions-cell">
+            {recordActionCell(record)}
+          </td>
+        )}
+      </tr>
+    );
+  };
 
   const tableLayout = (
-    <div className="rt-scroll">
-      <table className="rt-table">
+    <div className="rt-scroll" ref={setScrollEl}>
+      <table
+        className="rt-table"
+        aria-rowcount={empty ? undefined : headerRows + rows.length}
+      >
         <thead>
           {hasGroups && (
-            <tr className="rt-band-row">
+            <tr className="rt-band-row" aria-rowindex={1}>
               {leadCells > 0 && <th colSpan={leadCells} />}
               {groupBands.map((band, i) => (
                 <th key={i} colSpan={band.span} className="rt-band">
@@ -484,19 +616,22 @@ function RecordTable<R>(props: Props<R>) {
               {hasRecordActions && <th />}
             </tr>
           )}
-          <tr className={hasGroups ? 'rt-under-band' : undefined}>
+          <tr
+            className={hasGroups ? 'rt-under-band' : undefined}
+            aria-rowindex={headerRows}
+          >
             {selectable && (
               <th className="rt-check-cell">
                 <input
                   type="checkbox"
-                  aria-label={t('Select all rows on this page')}
-                  checked={pageSelected}
+                  aria-label={t('Select all rows')}
+                  checked={allSelected}
                   ref={(el) => {
                     if (el) {
-                      el.indeterminate = pagePartly;
+                      el.indeterminate = partlySelected;
                     }
                   }}
-                  onChange={togglePage}
+                  onChange={toggleAll}
                 />
               </th>
             )}
@@ -564,7 +699,7 @@ function RecordTable<R>(props: Props<R>) {
             )}
           </tr>
         </thead>
-        <tbody>
+        <tbody ref={setBodyEl}>
           {props.loading && records.length === 0 && [0, 1, 2, 3, 4].map((i) => (
             <tr key={'skeleton' + i} className="rt-skeleton" aria-hidden="true">
               <td colSpan={columnCount}><span /></td>
@@ -577,146 +712,84 @@ function RecordTable<R>(props: Props<R>) {
               </td>
             </tr>
           )}
-          {pageRecords.map((record, i) => {
-            const key = recordKey(record);
-            const isSelected = selected.has(key);
-            return (
-              <React.Fragment key={key}>
-                {groupHeader(record, i, (content, k) => (
-                  <tr key={k} className="rt-group-row">
-                    <td colSpan={columnCount}>{content}</td>
-                  </tr>
-                ))}
-                <tr
-                  className={(isSelected ? 'rt-selected' : '')
-                    + (openKey === key ? ' rt-open' : '')}
-                  data-record
-                  tabIndex={(openOnPage ? openKey === key : i === 0)
-                    ? 0 : -1}
-                  onClick={(e) => {
-                    if ((e.target as HTMLElement)
-                      .closest('a, button, input, label, select')) {
-                      return;
-                    }
-                    setOpenKey(openKey === key ? null : key);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.target !== e.currentTarget) {
-                      return;
-                    }
-                    if (e.key === 'Enter') {
-                      setOpenKey(key);
-                    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-                      e.preventDefault();
-                      const rows = Array.from(e.currentTarget.parentElement
-                        ?.querySelectorAll<HTMLElement>('tr[data-record]')
-                        || []);
-                      const next = rows[rows.indexOf(e.currentTarget)
-                        + (e.key === 'ArrowDown' ? 1 : -1)];
-                      if (next) {
-                        next.focus();
-                        if (openKey !== null) {
-                          next.click();
-                        }
-                      }
-                    }
-                  }}
-                >
-                  {selectable && (
-                    <td className="rt-check-cell">
-                      <input
-                        type="checkbox"
-                        aria-label={t('Select row')}
-                        checked={isSelected}
-                        onChange={() => toggleRecord(key)}
-                      />
-                    </td>
-                  )}
-                  {visibleColumns.map((column) => (
-                    <td
-                      key={column.name}
-                      className={(column.type === 'number' ? 'rt-number' : '')
-                        + (column.mono || column.type === 'date'
-                          ? ' rt-mono' : '')
-                        + (column.sticky ? ' rt-sticky' : '')}
-                    >
-                      {cellContent(column, record)}
-                    </td>
-                  ))}
-                  {hasRecordActions && (
-                    <td className="rt-actions-cell">
-                      {recordActionCell(record)}
-                    </td>
-                  )}
-                </tr>
-              </React.Fragment>
-            );
-          })}
-          {collapsedHeaders((content, k) => (
-            <tr key={k} className="rt-group-row">
-              <td colSpan={columnCount}>{content}</td>
-            </tr>
-          ))}
+          {spacer(view.before, 'before')}
+          {drawn.map((row, i) => tableRow(row, view.start + i))}
+          {spacer(view.after, 'after')}
         </tbody>
       </table>
     </div>
   );
 
   const [titleColumn, ...detailColumns] = visibleColumns;
+  const cardRows = rows.slice(0, cardLimit);
   const cardLayout = (
-    <div className="rt-cards">
+    <div className="rt-cards" ref={cardsRef}>
       {empty && (
         <div className="rt-empty">{emptyMessage || t('No records match.')}</div>
       )}
-      {pageRecords.map((record, i) => {
+      {cardRows.map((row) => {
+        if (row.kind === 'group') {
+          return (
+            <div key={`group_${row.key}`} className="rt-card-group">
+              {groupHeader(row.key)}
+            </div>
+          );
+        }
+        const {record} = row;
         const key = recordKey(record);
         const isSelected = selected.has(key);
         return (
-          <React.Fragment key={key}>
-            {groupHeader(record, i, (content, k) => (
-              <div key={k} className="rt-card-group">{content}</div>
-            ))}
-            <div className={'rt-card' + (isSelected ? ' rt-selected' : '')}>
-              <div className="rt-card-title">
-                {selectable && (
-                  <input
-                    type="checkbox"
-                    aria-label={t('Select row')}
-                    checked={isSelected}
-                    onChange={() => toggleRecord(key)}
-                  />
-                )}
-                {titleColumn && cellContent(titleColumn, record)}
-              </div>
-              <dl className="rt-card-fields">
-                {detailColumns.map((column) => (
-                  <React.Fragment key={column.name}>
-                    <dt>{column.label}</dt>
-                    <dd>{cellContent(column, record)}</dd>
-                  </React.Fragment>
-                ))}
-              </dl>
+          <div
+            key={key}
+            className={'rt-card' + (isSelected ? ' rt-selected' : '')}
+          >
+            <div className="rt-card-title">
+              {selectable && (
+                <input
+                  type="checkbox"
+                  aria-label={t('Select row')}
+                  checked={isSelected}
+                  onChange={() => toggleRecord(key)}
+                />
+              )}
+              {titleColumn && cellContent(titleColumn, record)}
             </div>
-          </React.Fragment>
+            <dl className="rt-card-fields">
+              {detailColumns.map((column) => (
+                <React.Fragment key={column.name}>
+                  <dt>{column.label}</dt>
+                  <dd>{cellContent(column, record)}</dd>
+                </React.Fragment>
+              ))}
+            </dl>
+          </div>
         );
       })}
-      {collapsedHeaders((content, k) => (
-        <div key={k} className="rt-card-group">{content}</div>
-      ))}
+      {cardLimit < rows.length && (
+        <div key={cardLimit} ref={setCardSentinel} className="rt-cards-more" />
+      )}
     </div>
   );
+
+  // The footer counts the records in view.
+  const inView = (layout === 'table'
+    ? rows.slice(view.firstShown, view.lastShown + 1)
+    : cardRows
+  ).flatMap((row) => row.kind === 'record' ? [row.index + 1] : []);
 
   const footer = (
     <TableFooter
       state={state}
       total={records.length}
-      pageSizes={pageSizes}
+      first={inView[0] || 0}
+      last={inView[inView.length - 1] || 0}
     />
   );
 
-  const openIndex = openKey === null
-    ? -1 : pageable.findIndex((r) => recordKey(r) === openKey);
-  const openRecord = openIndex >= 0 ? pageable[openIndex] : null;
+  const openRow = openKey === null
+    ? undefined : rows[rowIndex.get(openKey) ?? -1];
+  const openIndex = openRow?.kind === 'record' ? openRow.index : -1;
+  const openRecord = openIndex >= 0 ? shown[openIndex] : null;
 
   /**
    * Opens the record before or after the open one
@@ -724,11 +797,11 @@ function RecordTable<R>(props: Props<R>) {
    * @param by - -1 for the one before, 1 for the one after
    */
   const stepRecord = (by: number) => {
-    const next = pageable[openIndex + by];
+    const next = shown[openIndex + by];
     if (next) {
-      setOpenKey(recordKey(next));
-      const index = openIndex + by;
-      setPage((p) => ({...p, number: Math.floor(index / size) + 1}));
+      const key = recordKey(next);
+      setOpenKey(key);
+      scrollToRecord(key);
     }
   };
 
@@ -777,7 +850,7 @@ function RecordTable<R>(props: Props<R>) {
         <Button
           display="quiet"
           title={t('Next record')}
-          disabled={openIndex >= pageable.length - 1}
+          disabled={openIndex >= shown.length - 1}
           onClick={() => stepRecord(1)}
         >
           <Icon name="chevronDown" />
@@ -871,7 +944,6 @@ function RecordTable<R>(props: Props<R>) {
             {layout === 'table' ? tableLayout : cardLayout}
             {panel}
           </div>
-          {lastPage > 1 && footer}
         </div>
       </div>
     );

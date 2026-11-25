@@ -411,6 +411,15 @@
     accent-color: var(--primary);
 }
 
+.rt-table tbody tr.rt-spacer td {
+    padding: 0;
+    border: none;
+}
+
+.rt-table tbody tr.rt-spacer:hover {
+    background: none;
+}
+
 .rt-group-row td {
     height: 36px;
     padding: 0 var(--space-md);
@@ -467,7 +476,8 @@
     background: var(--surface-sunken);
 }
 
-.rt-card-group {
+.rt-card-group,
+.rt-cards-more {
     grid-column: 1 / -1;
 }
 
@@ -529,12 +539,8 @@
     margin-right: auto;
 }
 
-.rt-pagesize {
-    width: 80px;
-}
-
 .rt-range {
-    margin: 0 var(--space-lg);
+    margin: 0 var(--space-sm);
     color: var(--text);
 }
 

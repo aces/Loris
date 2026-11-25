@@ -721,9 +721,6 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
-msgid "Next page"
-msgstr ""
-
 msgid "Next record"
 msgstr ""
 
@@ -733,16 +730,10 @@ msgstr ""
 msgid "No records match."
 msgstr ""
 
-msgid "Previous page"
-msgstr ""
-
 msgid "Previous record"
 msgstr ""
 
 msgid "Record"
-msgstr ""
-
-msgid "Rows per page"
 msgstr ""
 
 msgid "Save as new view…"
@@ -760,10 +751,7 @@ msgstr ""
 msgid "Search…"
 msgstr ""
 
-msgid "Select all rows on this page"
-msgstr ""
-
-msgid "Select all {{count}}"
+msgid "Select all rows"
 msgstr ""
 
 msgid "Select row"

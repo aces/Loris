@@ -10,9 +10,13 @@ import type {
 
 type Group = {key: string, label: string, count: number};
 
+export type Row<R> =
+  | {kind: 'group', key: string}
+  | {kind: 'record', record: R, index: number};
+
 /**
  * The state behind a RecordTable: filters, search, sorting, grouping, layout,
- * columns, paging, selection and views, with the records they produce.
+ * columns, selection and views, with the records and rows they produce.
  *
  * @param props - the table's props
  * @param props.name - the table's name, which keys its saved views
@@ -62,10 +66,6 @@ export function useTableState<R>(
   const [hidden, setHidden] = useState<string[]>(defaultState.hidden);
   const [order, setOrder] = useState<string[]>(defaultState.order);
   const [selected, setSelected] = useState<Set<string | number>>(new Set());
-  // Every row shows when there are few enough; 0 means all.
-  const [page, setPage] = useState({
-    number: 1, size: records.length <= 1000 ? 0 : 100,
-  });
   const [views, setViews] = useState<SavedView[]>(() => loadViews(name));
   const [activeView, setActiveView] = useState('');
 
@@ -116,7 +116,6 @@ export function useTableState<R>(
   const onFiltersChange = props.onFiltersChange;
   const setFilters = useCallback((next: Filters) => {
     setFiltersState(next);
-    setPage((p) => ({...p, number: 1}));
     filtersToURL(
       next,
       columns.filter((c) => c.filter).map((c) => c.name),
@@ -324,15 +323,32 @@ export function useTableState<R>(
     setCollapsed(new Set());
   }, [groupBy]);
 
-  // Collapsed groups drop out of paging so the pages stay full.
-  const pageable = groupBy && collapsed.size > 0
+  const shown = useMemo(() => groupBy && collapsed.size > 0
     ? sorted.filter((record) => !collapsed.has(groupOf(record).key))
-    : sorted;
-  const size = page.size || Math.max(pageable.length, 1);
-  const lastPage = Math.max(1, Math.ceil(pageable.length / size));
-  const pageNumber = Math.min(page.number, lastPage);
-  const start = (pageNumber - 1) * size;
-  const pageRecords = pageable.slice(start, start + size);
+    : sorted, [sorted, groupBy, collapsed, groupOf]);
+
+  // Each group's header comes before its records. Collapsed groups have no
+  // records shown, so their headers come last.
+  const rows = useMemo(() => {
+    const result: Row<R>[] = [];
+    let current: string | null = null;
+    shown.forEach((record, index) => {
+      if (groupBy) {
+        const {key} = groupOf(record);
+        if (key !== current) {
+          result.push({kind: 'group', key});
+          current = key;
+        }
+      }
+      result.push({kind: 'record', record, index});
+    });
+    if (groupBy) {
+      Array.from(groups.keys())
+        .filter((key) => collapsed.has(key))
+        .forEach((key) => result.push({kind: 'group', key}));
+    }
+    return result;
+  }, [shown, groupBy, groupOf, groups, collapsed]);
 
   /**
    * Sorts by a column. Shift adds it as a further sort key.
@@ -384,18 +400,22 @@ export function useTableState<R>(
     });
   };
 
-  const pageKeys = pageRecords.map(recordKey);
-  const pageSelected = pageKeys.length > 0 &&
-    pageKeys.every((key) => selected.has(key));
-  const pagePartly = !pageSelected && pageKeys.some((k) => selected.has(k));
+  const shownKeys = useMemo(() => shown.map(recordKey), [shown, recordKey]);
+  const {allSelected, partlySelected} = useMemo(() => {
+    const count = shownKeys.filter((key) => selected.has(key)).length;
+    return {
+      allSelected: count > 0 && count === shownKeys.length,
+      partlySelected: count > 0 && count < shownKeys.length,
+    };
+  }, [shownKeys, selected]);
 
   /**
-   * Selects or unselects every record on the page
+   * Selects or unselects every record shown
    */
-  const togglePage = () => {
+  const toggleAll = () => {
     setSelected((prev) => {
       const next = new Set(prev);
-      pageKeys.forEach((key) => pageSelected
+      shownKeys.forEach((key) => allSelected
         ? next.delete(key) : next.add(key));
       return next;
     });
@@ -466,22 +486,15 @@ export function useTableState<R>(
     sorted,
     groups,
     groupOf,
-    pageable,
-    page,
-    setPage,
-    size,
-    lastPage,
-    pageNumber,
-    start,
-    pageRecords,
+    shown,
+    rows,
     selected,
     setSelected,
     selectedRecords,
     toggleRecord,
-    pageKeys,
-    pageSelected,
-    pagePartly,
-    togglePage,
+    allSelected,
+    partlySelected,
+    toggleAll,
     downloadCSV,
   };
 }

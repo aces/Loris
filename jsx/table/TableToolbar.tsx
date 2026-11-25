@@ -22,6 +22,7 @@ import type {TableState} from './useTableState';
  * @param props.csv - whether the CSV download is offered
  * @param props.actions - the table's own actions
  * @param props.onAction - opens the form of an action that has one
+ * @param props.captureFind - whether Ctrl or Cmd and F opens Search
  * @param props.state - the table's state
  */
 function TableToolbar<R>(props: {
@@ -34,12 +35,13 @@ function TableToolbar<R>(props: {
   csv: boolean,
   actions: TableAction[],
   onAction: (name: string) => void,
+  captureFind?: boolean,
   state: TableState<R>,
 }) {
   const {t} = useTranslation(['loris']);
   const {title, columns, csv, state} = props;
   const {
-    keyword, setKeyword, setPage, layout, setLayout, groupBy, setGroupBy,
+    keyword, setKeyword, layout, setLayout, groupBy, setGroupBy,
     orderedColumns, visibleColumns, setHidden, sorted, downloadCSV,
   } = state;
   const [searchOpen, setSearchOpen] = useState(false);
@@ -50,6 +52,40 @@ function TableToolbar<R>(props: {
       searchRef.current?.querySelector('input')?.focus();
     }
   }, [searchOpen]);
+
+  // Only drawn rows are on the page, so the browser's find can't reach the
+  // rest. Find goes to Search first; pressed again there, it reaches the
+  // browser.
+  useEffect(() => {
+    if (!props.captureFind) {
+      return;
+    }
+    const apple = /Mac|iPhone|iPad/.test(navigator.platform);
+    /**
+     * Sends Find (Cmd+F on Apple, Ctrl+F elsewhere) to Search, unless
+     * Search has focus
+     *
+     * @param e - the key pressed
+     */
+    const onKey = (e: KeyboardEvent) => {
+      if (!(apple ? e.metaKey : e.ctrlKey) || e.altKey || e.shiftKey
+        || e.key.toLowerCase() !== 'f') {
+        return;
+      }
+      const input = searchRef.current?.querySelector('input');
+      if (input && document.activeElement === input) {
+        return;
+      }
+      e.preventDefault();
+      if (input) {
+        input.focus();
+      } else {
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [props.captureFind]);
 
   const groupOptions: {[value: string]: string} = {'': t('None')};
   columns.filter((c) => c.groupable).forEach((c) => {
@@ -107,10 +143,7 @@ function TableToolbar<R>(props: {
             placeholder={t('Search…')}
             clearLabel={t('Clear search')}
             onBlur={() => keyword === '' && setSearchOpen(false)}
-            onChange={(text) => {
-              setKeyword(text);
-              setPage((p) => ({...p, number: 1}));
-            }}
+            onChange={setKeyword}
           />
         </div>
       ) : (
@@ -137,10 +170,7 @@ function TableToolbar<R>(props: {
           multiple={false}
           options={groupOptions}
           value={[groupBy]}
-          onChange={(values) => {
-            setGroupBy(values[0] || '');
-            setPage((p) => ({...p, number: 1}));
-          }}
+          onChange={(values) => setGroupBy(values[0] || '')}
         />
         <Select
           appearance="button"
