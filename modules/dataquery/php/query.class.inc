@@ -770,7 +770,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 if (!is_array($matches)) {
                     $matches = iterator_to_array($matches);
                 }
-                if ($crit['op'] == 'notexists') {
+                if ($crit['op'] === 'notexists') {
                     // A candidate has no value when it doesn't have one at
                     // any of the visits
                     $matches = array_values(
