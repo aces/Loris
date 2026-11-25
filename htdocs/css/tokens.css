@@ -92,6 +92,12 @@
     --shadow-overlay: 0 6px 18px rgba(0, 0, 0, .18);
     --shadow-raised: 0 1px 2px rgba(0, 0, 0, .3);
 
+    /* Motion: how long a change takes and how it moves. */
+    --duration-fast: 120ms;
+    --duration-base: 200ms;
+    --duration-slow: 300ms;
+    --ease: cubic-bezier(.4, 0, .2, 1);
+
     /* Fields, so a control outside a form matches one inside it. The border
        meets 3:1 against white so the field can be found. */
     --field-bg: var(--surface);

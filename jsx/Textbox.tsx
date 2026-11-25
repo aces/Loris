@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Icon from './Icon';
 import './Textbox.css';
 
 /**
@@ -52,19 +53,19 @@ function Textbox(props: {
         disabled={props.disabled}
         aria-label={props.clearLabel || 'Clear'}
         onClick={() => props.onChange('')}>
-        <span className="glyphicon glyphicon-remove" aria-hidden="true" />
+        <Icon name="close" />
       </button>;
   } else if (props.search) {
     affordance = props.value === '' ?
       <span className="loris-textbox-icon" aria-hidden="true">
-        <span className="glyphicon glyphicon-search" />
+        <Icon name="search" />
       </span> :
       <button type="button"
         className="loris-textbox-clear"
         disabled={props.disabled}
         aria-label={props.clearLabel || 'Clear'}
         onClick={() => props.onChange('')}>
-        <span className="glyphicon glyphicon-remove" aria-hidden="true" />
+        <Icon name="close" />
       </button>;
   }
   return (

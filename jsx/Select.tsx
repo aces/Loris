@@ -1,11 +1,15 @@
 import React, {useState, useRef, useEffect} from 'react';
 import useFloatingPanel from './useFloatingPanel';
+import Icon from './Icon';
 import './Select.css';
 
 type OptionGroup = {
     label: string,
     options: string[],
 };
+
+// A list this short is read at a glance, so it has no search box.
+const SEARCH_MIN = 8;
 
 /**
  * A selection shown as a dropdown over a searchable list of checkboxes, with
@@ -56,6 +60,9 @@ type OptionGroup = {
  *                           selection, for toolbars
  * @param props.icon - Shown before the label in the
  *                     button appearance
+ * @param props.iconOnly - In the button appearance, shows the
+ *                         icon alone, with the label as its
+ *                         name and tooltip
  * @param props.clearable - Show a control inside the field
  *                          that clears it once it holds a
  *                          selection
@@ -87,6 +94,7 @@ function Select(props: {
     clearLabel?: string,
     appearance?: 'field' | 'button',
     icon?: React.ReactNode,
+    iconOnly?: boolean,
 }): React.ReactElement {
   const [open, setOpen] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('');
@@ -166,8 +174,8 @@ function Select(props: {
   }, [open]);
 
   useEffect(() => {
-    if (open && search.current) {
-      search.current.focus();
+    if (open) {
+      (search.current || panelBox.current?.querySelector('input'))?.focus();
     }
     if (!open) {
       setFilter('');
@@ -181,6 +189,7 @@ function Select(props: {
   const locked = new Set(props.disabledOptions || []);
   const maxVisible = props.maxVisible === undefined ? 5 : props.maxVisible;
   const multiple = props.multiple !== false;
+  const searchable = all.length > SEARCH_MIN;
 
   /**
    * Apply a new selection, leaving disabled values as they were
@@ -478,26 +487,14 @@ function Select(props: {
   let panel = null;
   if (open) {
     panel = <div ref={panelBox} className="loris-select-panel" style={place}>
-      <div className="loris-select-controls">
+      {searchable ? <div className="loris-select-controls">
         <input ref={search}
           className="loris-select-search"
           type="text"
           placeholder={props.searchPlaceholder || 'Search'}
           value={filter}
           onChange={(e) => setFilter(e.target.value)} />
-        {multiple ? <>
-          <button type="button"
-            className={'loris-button secondary' + aimed}
-            onClick={selectTarget}>
-            {selectText}
-          </button>
-          <button type="button"
-            className={'loris-button secondary' + aimed}
-            onClick={deselectTarget}>
-            {deselectText}
-          </button>
-        </> : null}
-      </div>
+      </div> : null}
       <div className="loris-select-list" ref={list}>
         {grouped.length === 0 ?
           <div className="loris-select-empty">
@@ -512,8 +509,19 @@ function Select(props: {
           ))}
       </div>
       {multiple ? <div className="loris-select-counts">
-        <span>{selected.size} selected</span>
-        <span>{all.length} available</span>
+        <span>{selected.size + ' of ' + all.length + ' selected'}</span>
+        <span className="loris-select-bulk">
+          <button type="button"
+            className={'loris-select-link' + aimed}
+            onClick={selectTarget}>
+            {selectText}
+          </button>
+          <button type="button"
+            className={'loris-select-link' + aimed}
+            onClick={deselectTarget}>
+            {deselectText}
+          </button>
+        </span>
       </div> : null}
       {props.footer ?
         <div className="loris-select-footer">{props.footer}</div> : null}
@@ -524,19 +532,26 @@ function Select(props: {
   if (props.appearance === 'button') {
     return (
       <div ref={wrapper}
-        className={'loris-select as-button' + (open ? ' open' : '')}>
+        className={'loris-select as-button'
+          + (props.iconOnly ? ' icon-only' : '')
+          + (open ? ' open' : '')}>
         <button type="button"
           className="loris-button quiet loris-select-button"
           disabled={props.disabled}
+          title={props.label}
           aria-expanded={open}
           aria-haspopup="true"
           onClick={() => setOpen(!open)}>
           {props.icon}
-          {props.label ? <span>{props.label}</span> : null}
-          <span className="loris-select-button-value">
-            {renderSelection()}
-          </span>
-          <span className="caret" />
+          {props.label ?
+            <span className="loris-select-button-label">{props.label}</span> :
+            null}
+          {props.iconOnly ? null : <>
+            <span className="loris-select-button-value">
+              {renderSelection()}
+            </span>
+            <Icon name="chevronDown" className="loris-select-caret" />
+          </>}
         </button>
         {panel}
       </div>
@@ -573,7 +588,7 @@ function Select(props: {
         </span>
         <span className="loris-select-indicators">
           {props.badge}
-          <span className="caret" />
+          <Icon name="chevronDown" className="loris-select-caret" />
         </span>
       </button>
       {canClear ?
@@ -582,7 +597,7 @@ function Select(props: {
           aria-label={props.clearLabel || 'Clear'}
           title={props.clearLabel || 'Clear'}
           onClick={() => props.onChange([])}>
-          ×
+          <Icon name="close" />
         </button> :
         null}
       {panel}

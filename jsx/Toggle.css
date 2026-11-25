@@ -41,7 +41,8 @@
     /* The inset ring gives the track an edge clearing 3:1 against the page in both
        states, drawn inside so switching moves nothing. */
     box-shadow: inset 0 0 0 1px var(--control-off-edge);
-    transition: background .15s ease, box-shadow .15s ease;
+    transition: background var(--duration-fast) var(--ease),
+        box-shadow var(--duration-fast) var(--ease);
 }
 
 .loris-toggle-thumb {
@@ -53,7 +54,7 @@
     border-radius: 50%;
     background: var(--surface);
     box-shadow: var(--shadow-raised);
-    transition: transform .15s ease;
+    transition: transform var(--duration-fast) var(--ease);
 }
 
 /* On takes the information colour rather than the secondary. The off track is a

@@ -70,10 +70,13 @@
     padding: 0 var(--space-sm);
 }
 
+/* An action, not a link: hovering tints it rather than underlining it. */
 .loris-button.quiet:hover:not(:disabled),
 .loris-button.quiet:focus-visible {
     color: var(--primary-strong);
-    text-decoration: underline;
+    text-decoration: none;
+    background: var(--state-hover);
+    border-radius: var(--radius);
 }
 
 .loris-button.danger {

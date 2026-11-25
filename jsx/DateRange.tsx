@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import useFloatingPanel from './useFloatingPanel';
+import Icon from './Icon';
 import './Select.css';
 import './DateRange.css';
 
@@ -99,14 +100,16 @@ function DateRange(props: {
     return () => document.removeEventListener('mousedown', close);
   }, [open]);
 
+  const dateFormat = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
+  }) as Intl.DateTimeFormat & {formatRange(a: Date, b: Date): string};
+
   /**
-   * Formats a YYYY-MM-DD date for the trigger
+   * Turns a YYYY-MM-DD date into a Date
    *
    * @param iso - the date
    */
-  const format = (iso: string) => new Intl.DateTimeFormat(undefined, {
-    year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
-  }).format(new Date(iso + 'T00:00:00Z'));
+  const asDate = (iso: string) => new Date(iso + 'T00:00:00Z');
 
   /**
    * Sets one end of the range from a clicked day
@@ -150,6 +153,7 @@ function DateRange(props: {
     const day = isoDate(year, month, d);
     const isEnd = day === start || day === end;
     const inRange = start && rangeEnd && day > start && day < rangeEnd;
+    const joined = start && rangeEnd && start !== rangeEnd;
     cells.push(
       <button
         key={day}
@@ -157,12 +161,14 @@ function DateRange(props: {
         className={'loris-daterange-day'
           + (isEnd ? ' end' : '')
           + (inRange ? ' in-range' : '')
+          + (joined && day === start ? ' range-start' : '')
+          + (joined && day === rangeEnd ? ' range-end' : '')
           + (day === todayIso ? ' today' : '')}
         aria-pressed={isEnd}
         onMouseEnter={() => setHover(day)}
         onClick={() => pick(day)}
       >
-        {d}
+        <span>{d}</span>
       </button>
     );
   }
@@ -185,9 +191,12 @@ function DateRange(props: {
   let summary: React.ReactNode = props.label && !raised ? null :
     <span className="loris-select-placeholder">{props.placeholder}</span>;
   if (start || end) {
-    summary = <span className="loris-select-names">
-      {(start ? format(start) : '…') + ' – ' + (end ? format(end) : '…')}
-    </span>;
+    // A range names its shared month and year once: "Nov 9 – 19, 2026".
+    const text = start && end
+      ? dateFormat.formatRange(asDate(start), asDate(end))
+      : (start ? dateFormat.format(asDate(start)) : '…') + ' – '
+        + (end ? dateFormat.format(asDate(end)) : '…');
+    summary = <span className="loris-select-names">{text}</span>;
   }
 
   return (
@@ -215,7 +224,7 @@ function DateRange(props: {
           null}
         <span className="loris-select-value">{summary}</span>
         <span className="loris-select-indicators">
-          <span className="caret" />
+          <Icon name="chevronDown" className="loris-select-caret" />
         </span>
       </button>
       {props.name ? <>
@@ -228,7 +237,7 @@ function DateRange(props: {
           aria-label={props.clearLabel || 'Clear'}
           title={props.clearLabel || 'Clear'}
           onClick={() => props.onChange({min: '', max: ''})}>
-          ×
+          <Icon name="close" />
         </button> :
         null}
       {open ? <div ref={panelBox} style={place}
@@ -236,25 +245,33 @@ function DateRange(props: {
         <div className="loris-daterange-head">
           <button type="button" className="loris-daterange-step"
             aria-label={props.previousLabel || 'Previous month'}
-            onClick={() => shift(-1)}>‹</button>
-          <select
-            className="loris-daterange-pick"
-            value={month}
-            onChange={(e) => setMonth(Number(e.target.value))}
-          >
-            {monthNames.map((name, m) =>
-              <option key={m} value={m}>{name}</option>)}
-          </select>
-          <select
-            className="loris-daterange-pick"
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-          >
-            {years}
-          </select>
+            onClick={() => shift(-1)}>
+            <Icon name="chevronLeft" />
+          </button>
+          <span className="loris-daterange-pick">
+            <select
+              value={month}
+              onChange={(e) => setMonth(Number(e.target.value))}
+            >
+              {monthNames.map((name, m) =>
+                <option key={m} value={m}>{name}</option>)}
+            </select>
+            <Icon name="chevronDown" className="loris-select-caret" />
+          </span>
+          <span className="loris-daterange-pick">
+            <select
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value))}
+            >
+              {years}
+            </select>
+            <Icon name="chevronDown" className="loris-select-caret" />
+          </span>
           <button type="button" className="loris-daterange-step"
             aria-label={props.nextLabel || 'Next month'}
-            onClick={() => shift(1)}>›</button>
+            onClick={() => shift(1)}>
+            <Icon name="chevronRight" />
+          </button>
         </div>
         <div className="loris-daterange-grid"
           onMouseLeave={() => setHover('')}>

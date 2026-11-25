@@ -5,6 +5,7 @@
 
 .loris-daterange-panel {
     width: 300px;
+    padding: var(--space-md);
 }
 
 .loris-daterange-head {
@@ -14,25 +15,48 @@
     margin-bottom: var(--space-md);
 }
 
+/* Month and year: native selects for their keyboard and long lists, drawn
+   like the other fields with the same chevron. */
 .loris-daterange-pick {
-    flex: 1 1 auto;
+    position: relative;
+    flex: 3 1 0;
+    min-width: 0;
+}
+
+.loris-daterange-pick + .loris-daterange-pick {
+    flex: 2 1 0;
+}
+
+.loris-daterange-pick select {
+    width: 100%;
     height: var(--control-height-sm);
-    padding: 0 var(--space-sm);
+    padding: 0 var(--space-xl) 0 var(--space-sm);
     border: 1px solid var(--field-border);
     border-radius: var(--radius);
     background: var(--field-bg);
+    color: var(--text);
     font-size: var(--font-size);
+    appearance: none;
+    cursor: pointer;
+}
+
+.loris-daterange-pick .loris-select-caret {
+    position: absolute;
+    top: 50%;
+    right: var(--space-sm);
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
 .loris-daterange-step {
+    flex: none;
     width: var(--control-height-sm);
     height: var(--control-height-sm);
     border: none;
     border-radius: 50%;
     background: none;
-    font-size: 18px;
-    line-height: 1;
     color: var(--text-muted);
+    font-size: var(--font-size-xs);
     cursor: pointer;
 }
 
@@ -53,8 +77,14 @@
     text-align: center;
 }
 
+/* Each day fills its column, so the range reads as one band; the day itself
+   is a circle inside it. */
 .loris-daterange-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 34px;
+    padding: 0;
     border: none;
     background: none;
     font-size: var(--font-size-sm);
@@ -62,9 +92,17 @@
     cursor: pointer;
 }
 
-.loris-daterange-day:hover {
-    background: var(--state-hover);
+.loris-daterange-day span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
+}
+
+.loris-daterange-day:hover span {
+    background: var(--state-hover);
 }
 
 .loris-daterange-day.today {
@@ -74,13 +112,19 @@
 
 .loris-daterange-day.in-range {
     background: var(--state-selected);
-    border-radius: 0;
 }
 
-.loris-daterange-day.end {
+.loris-daterange-day.range-start {
+    background: linear-gradient(to right, transparent 50%, var(--state-selected) 50%);
+}
+
+.loris-daterange-day.range-end {
+    background: linear-gradient(to left, transparent 50%, var(--state-selected) 50%);
+}
+
+.loris-daterange-day.end span {
     background: var(--state-selected-solid);
     color: var(--surface);
-    border-radius: 50%;
 }
 
 .loris-daterange-inputs {

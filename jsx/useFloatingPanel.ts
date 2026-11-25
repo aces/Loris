@@ -6,7 +6,9 @@ const GAP = 4;
  * Places an open dropdown panel over the page, against the control that
  * opened it, so a scrolling or narrow container never clips it. The panel
  * opens below the control, or above it when only that side has room, and
- * stays inside the window. It follows the control as the page scrolls.
+ * stays inside the window. It follows the control as the page scrolls. The
+ * control's width is passed as --loris-field-width, for the panel's own
+ * minimum width to use.
  *
  * @param anchor - the control the panel belongs to
  * @param panel - the open panel
@@ -47,7 +49,9 @@ export default function useFloatingPanel(
         GAP,
         Math.min(wanted, window.innerWidth - box.width - GAP)
       );
-      setPlace({top, left, minWidth: field.width});
+      setPlace({
+        top, left, '--loris-field-width': field.width + 'px',
+      } as CSSProperties);
     };
     position();
     const resized = new ResizeObserver(position);
