@@ -38,7 +38,7 @@ export class QueryTerm {
     /**
      * Returns a copy of this term
      *
-     * @returns {QueryTerm} - the copy
+     * @returns - the copy
      */
     clone(): QueryTerm {
       return new QueryTerm(
@@ -106,7 +106,7 @@ export class QueryGroup {
     /**
      * Returns a copy of this group and everything under it
      *
-     * @returns {QueryGroup} - the copy
+     * @returns - the copy
      */
     clone(): QueryGroup {
       const copy = new QueryGroup(this.operator);
