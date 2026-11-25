@@ -332,6 +332,23 @@ class CandidateListIndex extends Component {
       },
     ];
 
+    const recordLayout = {
+      title: 'pscid',
+      key: ['dccid', 'site', 'cohort', 'participantStatus'],
+      sections: [
+        {
+          label: t('Participant', {ns: 'candidate_list'}),
+          fields: ['sex', 'DoB', 'entityType', 'project', 'feedback'],
+        },
+        {
+          label: t('Visits', {ns: 'candidate_list'}),
+          fields: [
+            'visitLabel', 'visitCount', 'scanDone', 'Date_registered', 'edc',
+          ],
+        },
+      ],
+    };
+
     const views = [
       {
         id: 'scanned',
@@ -345,7 +362,7 @@ class CandidateListIndex extends Component {
       },
     ];
 
-    return {columns, actions, recordActions, views};
+    return {columns, actions, recordActions, recordLayout, views};
   }
 
   /**
@@ -370,7 +387,9 @@ class CandidateListIndex extends Component {
       this.configOptions = options;
       this.config = this.tableConfig(options);
     }
-    const {columns, actions, recordActions, views} = this.config;
+    const {
+      columns, actions, recordActions, recordLayout, views,
+    } = this.config;
     const {t} = this.props;
 
     // Open profile modal window
@@ -398,6 +417,7 @@ class CandidateListIndex extends Component {
           recordKey={(c) => c.dccid}
           actions={actions}
           recordActions={recordActions}
+          recordLayout={recordLayout}
           views={views}
           selectable
           fill

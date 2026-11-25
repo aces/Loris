@@ -1,4 +1,5 @@
 import React, {ReactNode} from 'react';
+import Icon from 'jsx/Icon';
 import './FieldList.css';
 
 export type Field = {
@@ -61,6 +62,63 @@ function FieldList(props: {
         </div>
       ))}
     </dl>
+  );
+}
+
+export type FieldSection = {
+  // A key unique among the sections.
+  name: string,
+  // The section's heading. A section without one has no heading and cannot
+  // be folded.
+  label?: ReactNode,
+  fields: Field[],
+  // Whether the section starts folded.
+  collapsed?: boolean,
+};
+
+/**
+ * Field lists in sections, each under a heading that folds it away. A folded
+ * section stays folded from one record to the next.
+ *
+ * @param props - React props
+ * @param props.sections - the sections, in order
+ * @param props.layout - how each section's pairs are laid out
+ * @param props.size - "sm" for smaller text and tighter rows
+ * @returns - The sections
+ */
+export function FieldSections(props: {
+  sections: FieldSection[],
+  layout?: FieldLayout,
+  size?: 'md' | 'sm',
+}) {
+  return (
+    <div className="loris-field-sections">
+      {props.sections.map((section) => {
+        const list = (
+          <FieldList
+            fields={section.fields}
+            layout={props.layout}
+            size={props.size}
+          />
+        );
+        if (section.label === undefined) {
+          return <div key={section.name}>{list}</div>;
+        }
+        return (
+          <details
+            key={section.name}
+            className="loris-field-section"
+            open={!section.collapsed}
+          >
+            <summary>
+              <Icon name="chevronRight" />
+              <h4>{section.label}</h4>
+            </summary>
+            {list}
+          </details>
+        );
+      })}
+    </div>
   );
 }
 

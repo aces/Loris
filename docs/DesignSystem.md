@@ -250,8 +250,8 @@ their column cuts short.
 ### Field list
 
 `jsx/FieldList.tsx` shows label and value pairs, one pair per row, as on a
-record's card or in the record panel. Labels sit in one column in `--text-muted`
-and values in the next, with a faint rule between rows.
+record's card or in the record panel. Labels are in `--text-muted` and values in
+`--text`.
 
 ```tsx
 import FieldList from 'jsx/FieldList';
@@ -268,9 +268,10 @@ import FieldList from 'jsx/FieldList';
 | Prop | Values | Effect |
 |---|---|---|
 | `fields` | `{name, label, value}[]` | The rows, in order; `name` is the React key |
+| `layout` | `inline` (default), `inline-end`, `stacked`, `grid` | `inline` puts labels in one column and values in the next; `inline-end` aligns those labels against their values; `stacked` puts each label above its value; `grid` sets label-above-value pairs in as many columns of at least 150px as fit |
 | `size` | `md` (default), `sm` | `sm` sets `--font-size-sm` and tighter rows, for cards |
 
-The label column fits the longest label, up to 40% of the list's width. Lists
+In the inline layouts, the label column fits the longest label, up to 40% of the list's width. Lists
 that sit side by side, such as a grid of cards, set `--field-list-label-width`
 on a shared ancestor (the cards use `10em`), so every value starts at the same
 offset in every list.
@@ -279,6 +280,63 @@ Every row is at least a tag's height, so a row of text and a row of tags are the
 same height. Long values and several tags wrap inside the value column, and the
 label stays on the value's first line. An empty value (`null`, `undefined`,
 `false`, `''` or `[]`) shows a dash; `0` is a value and shows as `0`.
+
+`FieldSections`, from the same file, sets several field lists under headings, each
+one folding away from its heading. A section without a `label` has no heading and
+stays open. A folded section stays folded from one record to the next.
+
+```tsx
+import {FieldSections} from 'jsx/FieldList';
+
+<FieldSections
+  sections={[
+    {name: 'participant', label: t('Participant'), fields: participantFields},
+    {name: 'visits', label: t('Visits'), fields: visitFields, collapsed: true},
+  ]}
+/>
+```
+
+Lists that follow one another, as in sections, share their label column through
+`--field-list-label-width` (the record panel uses `min(40%, 12em)`), so values
+start on the same line all the way down.
+
+### Record panel
+
+Clicking a row in a RecordTable opens its record in a panel on the right. The
+panel's head holds the record's name, its actions and the controls that move
+between records and close the panel. The first action is a secondary button
+beside the name and any others are in the ⋯ menu next to it, as Ant Design's
+Descriptions puts its actions at the top right of its title and Salesforce and
+Jira put a record's actions on its name's line.
+
+A table says how its records read with `recordLayout`, naming its columns:
+
+```js
+recordLayout={{
+  title: 'pscid',
+  key: ['dccid', 'site', 'cohort', 'participantStatus'],
+  sections: [
+    {label: t('Participant'), fields: ['sex', 'DoB', 'project']},
+    {label: t('Visits'), fields: ['visitLabel', 'visitCount'], collapsed: true},
+  ],
+}}
+```
+
+| Key | Effect |
+|---|---|
+| `title` | The column whose value names the record in the panel's head; the first column otherwise |
+| `key` | The fields that matter most, in a band under the head |
+| `sections` | Groups of fields under headings that fold, in order |
+
+The key fields read as the record's summary, as in Salesforce's highlights panel:
+label-above-value pairs, two to a row, on `--surface-sunken` between two faint
+rules. A value of several tags takes the band's full width. The sections below set
+one label and value a row, with labels in one column all the way down.
+
+Every column the layout leaves out follows in a last section, More fields, in
+column order, so a new column always shows somewhere. A table without a
+`recordLayout` shows every column after the title in column order, with no
+headings. Hidden columns show in the panel too.
 
 ### Select menus
 

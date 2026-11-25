@@ -1,33 +1,78 @@
 import React, {ReactNode} from 'react';
-import FieldList from 'jsx/FieldList';
-import type {Column} from './RecordTable';
+import {useTranslation} from 'react-i18next';
+import FieldList, {FieldSections, FieldSection} from 'jsx/FieldList';
+import type {Column, RecordLayout} from './RecordTable';
 import './RecordFields.css';
 
 /**
- * A record's fields for the record panel, each label above its value, as in
- * a form
+ * A record's fields for the record panel: its key fields first, in a band
+ * of label-above-value pairs, then its sections, one label and value a row.
+ * Without a layout, every column after the title shows in column order.
+ * Columns a layout leaves out follow in a last section.
  *
  * @param props - React props
  * @param props.record - the record
- * @param props.columns - the columns shown, hidden ones included
+ * @param props.columns - the columns, in order, hidden ones included
+ * @param props.title - the name of the column in the panel's title
+ * @param props.layout - the table's record layout
  * @param props.cell - renders a column's value for the record
  */
 function RecordFields<R>(props: {
   record: R,
   columns: Column<R>[],
+  title?: string,
+  layout?: RecordLayout,
   cell: (column: Column<R>, record: R) => ReactNode,
 }) {
-  const {record, cell} = props;
+  const {t} = useTranslation(['loris']);
+  const {record, columns, layout, cell} = props;
+
+  const byName = new Map(columns.map((c) => [c.name, c]));
+  const placed = new Set([props.title]);
+  /**
+   * The fields for the named columns, skipping unknown and placed ones
+   *
+   * @param names - the columns' names
+   */
+  const fieldsOf = (names: string[]) => names
+    .map((name) => byName.get(name))
+    .filter((c): c is Column<R> => !!c && !placed.has(c.name))
+    .map((column) => {
+      placed.add(column.name);
+      return {
+        name: column.name,
+        label: column.label,
+        value: cell(column, record),
+      };
+    });
+
+  const key = fieldsOf(layout?.key || []);
+  const sections: FieldSection[] = (layout?.sections || []).map(
+    (section, i) => ({
+      name: 'section-' + i,
+      label: section.label,
+      collapsed: section.collapsed,
+      fields: fieldsOf(section.fields),
+    })
+  ).filter((section) => section.fields.length > 0);
+  const rest = fieldsOf(columns.map((c) => c.name));
+  if (rest.length > 0) {
+    sections.push({
+      name: 'rest',
+      label: layout?.sections ? t('More fields') : undefined,
+      collapsed: false,
+      fields: rest,
+    });
+  }
+
   return (
     <div className="rt-record-fields">
-      <FieldList
-        layout="stacked"
-        fields={props.columns.map((column) => ({
-          name: column.name,
-          label: column.label,
-          value: cell(column, record),
-        }))}
-      />
+      {key.length > 0 && (
+        <div className="rt-record-key">
+          <FieldList fields={key} layout="grid" />
+        </div>
+      )}
+      <FieldSections sections={sections} />
     </div>
   );
 }

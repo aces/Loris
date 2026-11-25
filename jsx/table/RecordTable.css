@@ -862,17 +862,28 @@ body:has(.rt-fill) #footer {
 }
 
 .rt-record-title {
+    min-width: 6ch;
     margin: 0 auto 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: var(--font-size-lg);
     font-weight: 600;
     line-height: 24px;
 }
 
-.rt-record-actions {
+/* The record's actions sit at the end of its title line, set apart from
+   the controls that move between records and close the panel. */
+.rt-record-head-actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    padding: var(--space-xs) var(--space-xl) var(--space-xl);
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-right: var(--space-md);
+}
+
+.rt-record-menu {
+    min-width: 180px;
 }
 
 .rt-record-detail {

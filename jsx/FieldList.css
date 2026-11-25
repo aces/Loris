@@ -95,3 +95,51 @@
     grid-column: auto;
     padding: 0;
 }
+
+/* Sections: each opens with a rule and a heading that folds it away. The
+   heading sits nearer its own fields than the section above. */
+.loris-field-section {
+    margin-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.loris-field-section > summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-lg) 0 var(--space-xs);
+    list-style: none;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.loris-field-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.loris-field-section > summary:focus-visible {
+    outline: 2px solid var(--field-border-focus);
+    outline-offset: 2px;
+}
+
+.loris-field-section > summary .loris-icon {
+    color: var(--text-muted);
+    transition: transform var(--duration-fast) var(--ease);
+}
+
+.loris-field-section[open] > summary .loris-icon {
+    transform: rotate(90deg);
+}
+
+.loris-field-section h4 {
+    margin: 0;
+    font-size: var(--font-size);
+    font-weight: 600;
+    line-height: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loris-field-section > summary .loris-icon {
+        transition: none;
+    }
+}

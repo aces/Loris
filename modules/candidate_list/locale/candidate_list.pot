@@ -65,3 +65,9 @@ msgstr ""
 
 msgid "View imaging"
 msgstr ""
+
+msgid "Participant"
+msgstr ""
+
+msgid "Visits"
+msgstr ""

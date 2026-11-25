@@ -90,6 +90,15 @@ export type RowAction<R> = {
   show?: boolean,
 };
 
+// How the record panel presents a record: the column in its title, the key
+// fields shown first, then sections of fields under headings. Columns left
+// out follow in a last section, in column order.
+export type RecordLayout = {
+  title?: string,
+  key?: string[],
+  sections?: {label: string, fields: string[], collapsed?: boolean}[],
+};
+
 export type SortKey = {name: string, ascending: boolean};
 
 export type Layout = 'table' | 'cards';
@@ -120,6 +129,7 @@ type Props<R> = {
   actions?: TableAction[],
   rowActions?: RowAction<R>[],
   recordActions?: RecordAction<R>[],
+  recordLayout?: RecordLayout,
   selectable?: boolean,
   views?: PresetView[],
   onFiltersChange?: (filters: Filters) => void,
@@ -187,6 +197,11 @@ function RecordTable<R>(props: Props<R>) {
     afterLeaving.current();
   };
   const menuRef = useRef<HTMLDivElement>(null);
+  // The open record's menu closes when the panel moves to another record or
+  // closes.
+  useEffect(() => {
+    setMenu((open) => open === 'record' ? null : open);
+  }, [openKey]);
   const pageRef = useRef<HTMLDivElement>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   useDismiss(menuRef, menu !== null, closeMenu);
@@ -522,8 +537,11 @@ function RecordTable<R>(props: Props<R>) {
 
 
   const detail = props.renderDetail;
+  // With every column hidden, an empty column takes the width, so the
+  // columns menu stays in its corner.
+  const filler = visibleColumns.length === 0;
   const columnCount = visibleColumns.length + (selectable ? 1 : 0)
-    + (hasRecordActions ? 1 : 0);
+    + (hasRecordActions ? 1 : 0) + (filler ? 1 : 0);
   const leadCells = selectable ? 1 : 0;
   const hasGroups = visibleColumns.some((c) => c.group);
   const groupBands: {label: string, span: number}[] = [];
@@ -769,6 +787,7 @@ function RecordTable<R>(props: Props<R>) {
                 ? {width: widths[column.name]} : undefined}
             />
           ))}
+          {filler && <col />}
           {hasRecordActions && <col style={{width: ACTIONS_WIDTH}} />}
         </colgroup>
         <thead>
@@ -859,6 +878,7 @@ function RecordTable<R>(props: Props<R>) {
                 </th>
               );
             })}
+            {filler && <th aria-hidden="true" />}
             {hasRecordActions && (
               <th className="rt-actions-cell">
                 <ColumnsMenu state={state} iconOnly />
@@ -990,7 +1010,9 @@ function RecordTable<R>(props: Props<R>) {
      */
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      if (target.closest?.('input, textarea, select, [role=dialog]')) {
+      if (target.closest?.(
+        'input, textarea, select, [role=dialog], [role=menu]'
+      )) {
         return;
       }
       if (e.key === 'Escape') {
@@ -1007,13 +1029,72 @@ function RecordTable<R>(props: Props<R>) {
     return () => document.removeEventListener('keydown', onKey);
   });
 
+  const recordLayout = props.recordLayout;
+  const titleCol = (recordLayout?.title
+    && orderedColumns.find((c) => c.name === recordLayout.title))
+    || visibleColumns[0];
+  const panelActions = openRecord === null ? []
+    : recordActions.filter((a) => !a.show || a.show(openRecord));
+  /**
+   * Runs one of the open record's actions, opening its form when it has one
+   *
+   * @param action - the action chosen
+   */
+  const runPanelAction = (action: RecordAction<R>) => {
+    setMenu(null);
+    if (action.renderForm) {
+      setForm({action: action.name, key: openKey as string});
+    } else if (openRecord !== null) {
+      action.onClick?.(openRecord);
+    }
+  };
+  const [firstAction, ...moreActions] = panelActions;
+
   const recordDrawer = openRecord !== null && (
     <SidePanel
       label={t('Record')}
-      title={visibleColumns[0] && cellContent(visibleColumns[0], openRecord)}
+      title={titleCol && cellContent(titleCol, openRecord)}
       leaving={leaving}
       onLeft={panelLeft}
       onClose={() => dismissPanel(() => setOpenKey(null))}
+      actions={firstAction && <>
+        <Button
+          display="secondary"
+          onClick={() => runPanelAction(firstAction)}
+        >
+          {firstAction.label}{firstAction.renderForm ? '…' : ''}
+        </Button>
+        {moreActions.length > 0 && (
+          <div
+            className="rt-menu-anchor"
+            ref={menu === 'record' ? menuRef : undefined}
+          >
+            <Button
+              display="quiet"
+              aria-label={t('More actions')}
+              aria-expanded={menu === 'record'}
+              onClick={() => setMenu(menu === 'record' ? null : 'record')}
+            >
+              <Icon name="actions" />
+            </Button>
+            {menu === 'record' && (
+              <div className="rt-menu rt-record-menu" role="menu">
+                {moreActions.map((action) => (
+                  <button
+                    key={action.name}
+                    type="button"
+                    role="menuitem"
+                    className="rt-menu-item"
+                    onClick={() => runPanelAction(action)}
+                  >
+                    {action.label}{action.renderForm ? '…' : ''}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </>}
       tools={<>
         <Button
           display="quiet"
@@ -1033,26 +1114,11 @@ function RecordTable<R>(props: Props<R>) {
         </Button>
       </>}
     >
-      {hasRecordActions && (
-        <div className="rt-record-actions">
-          {recordActions
-            .filter((a) => !a.show || a.show(openRecord))
-            .map((action) => (
-              <Button
-                key={action.name}
-                display="secondary"
-                onClick={() => action.renderForm
-                  ? setForm({action: action.name, key: openKey as string})
-                  : action.onClick?.(openRecord)}
-              >
-                {action.label}{action.renderForm ? '…' : ''}
-              </Button>
-            ))}
-        </div>
-      )}
       <RecordFields
         record={openRecord}
         columns={orderedColumns}
+        title={titleCol?.name}
+        layout={recordLayout}
         cell={(column, record) => cellContent(column, record, true)}
       />
       {detail && <div className="rt-record-detail">{detail(openRecord)}</div>}

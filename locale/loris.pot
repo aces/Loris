@@ -763,6 +763,12 @@ msgstr ""
 msgid "Previous record"
 msgstr ""
 
+msgid "More actions"
+msgstr ""
+
+msgid "More fields"
+msgstr ""
+
 msgid "Record"
 msgstr ""
 

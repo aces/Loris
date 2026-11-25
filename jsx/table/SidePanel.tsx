@@ -29,6 +29,7 @@ function savedWidth(key: string, fallback: number): number {
  * @param props - React props
  * @param props.label - names the panel for assistive technology
  * @param props.title - shown in the panel's head
+ * @param props.actions - the record's actions, shown beside its title
  * @param props.tools - controls shown before the close button
  * @param props.wide - whether the panel is wide, for a form
  * @param props.leaving - whether the panel is sliding out
@@ -39,6 +40,7 @@ function savedWidth(key: string, fallback: number): number {
 function SidePanel(props: {
   label: string,
   title: ReactNode,
+  actions?: ReactNode,
   tools?: ReactNode,
   wide?: boolean,
   leaving?: boolean,
@@ -140,6 +142,9 @@ function SidePanel(props: {
       <div className="rt-record-body">
         <div className="rt-record-head">
           <h3 className="rt-record-title">{props.title}</h3>
+          {props.actions && (
+            <div className="rt-record-head-actions">{props.actions}</div>
+          )}
           {props.tools}
           <Button display="quiet" title={t('Close')} onClick={props.onClose}>
             <Icon name="close" />
