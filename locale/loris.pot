@@ -776,6 +776,28 @@ msgid "Save as new view…"
 msgstr ""
 
 msgid "Saves the filters, sort, grouping, layout and columns for you, in this browser."
+msgid "Help"
+msgstr ""
+
+msgid "All ({{total}})"
+msgstr ""
+
+msgid "{{selected}} of {{total}}"
+msgstr ""
+
+msgid "+{{hidden}} more"
+msgstr ""
+
+msgid "Select {{marked}}"
+msgstr ""
+
+msgid "Deselect {{marked}}"
+msgstr ""
+
+msgid "Select all"
+msgstr ""
+
+msgid "Deselect all"
 msgstr ""
 
 msgid "Search"
@@ -824,4 +846,5 @@ msgid "{{first}}–{{last}} of {{total}}"
 msgstr ""
 
 msgid "↑ ↓ to move between records · Esc to close"
+msgid "{{selected}} of {{total}} selected"
 msgstr ""

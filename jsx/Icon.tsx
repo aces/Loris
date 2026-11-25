@@ -2,7 +2,7 @@ import React from 'react';
 import {
   ArrowUp, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft,
   Columns3, Download, EllipsisVertical, Funnel, Layers, LayoutGrid, Plus,
-  Save, Search, Table, X,
+  CircleHelp, Save, Search, Table, X,
 } from 'lucide-react';
 import './Icon.css';
 
@@ -22,6 +22,7 @@ const glyphs = {
   group: Layers,
   actions: EllipsisVertical,
   save: Save,
+  help: CircleHelp,
   search: Search,
   sort: ArrowUp,
   table: Table,
