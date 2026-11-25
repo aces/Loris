@@ -35,7 +35,10 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
         $this->safeGet($this->url . "/api_docs");
         try {
             $selectOptions = $this->safeFindElement(
-                WebDriverBy::cssSelector("select")
+                WebDriverBy::xpath(
+                    "//div[contains(concat(' ', normalize-space(@class), ' '),"
+                    ." ' servers ')]//label[@for='servers']/select[option]"
+                )
             );
             $this->assertNotEmpty($selectOptions);
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {

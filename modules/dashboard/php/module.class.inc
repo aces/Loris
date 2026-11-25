@@ -54,10 +54,12 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();
             $config  = $factory->config();
-            return [
-                $this->_getWelcomeWidget($DB, $config, $user),
-                $this->_getTasksWidget()
-            ];
+            $widgets = [$this->_getWelcomeWidget($DB, $config, $user)];
+            $tasks   = $this->_getTasksWidget();
+            if ($tasks !== null) {
+                $widgets[] = $tasks;
+            }
+            return $widgets;
         }
         return [];
 
@@ -104,13 +106,7 @@ class Module extends \Module
         if ($last_login === null) {
             $logindatestring = dgettext("dashboard", "...never. Welcome!");
         } else {
-            $formatter = new \IntlDateFormatter(
-                '',
-                \IntlDateFormatter::TRADITIONAL,
-                \IntlDateFormatter::SHORT
-            );
-
-            $logindatestring = $formatter->format($last_login);
+            $logindatestring = $last_login->format(\DateTimeInterface::ATOM);
         }
 
         return new Widget(
@@ -135,9 +131,9 @@ class Module extends \Module
      * in the sidebar. It further uses "usertask" type widgets to display a list
      * of tasks for the user.
      *
-     * @return \LORIS\GUI\Widget
+     * @return ?\LORIS\GUI\Widget
      */
-    private function _getTasksWidget()
+    private function _getTasksWidget() : ?\LORIS\GUI\Widget
     {
         $factory = \NDB_Factory::singleton();
         $modules = $this->loris->getActiveModules();
@@ -151,6 +147,16 @@ class Module extends \Module
                     $module->getWidgets('usertasks', $user, [])
                 );
             }
+        }
+        $widgets = array_filter(
+            $widgets,
+            function ($widget) {
+                return $widget instanceof TaskWidget
+                    && $widget->number() !== 0;
+            }
+        );
+        if (empty($widgets)) {
+            return null;
         }
         return new Widget(
             new WidgetContent(

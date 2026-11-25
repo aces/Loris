@@ -21,9 +21,9 @@ export type Action =
 /**
  * channelsReducer
  *
- * @param {Channel[]} state - The current state
- * @param {Action} action - The action
- * @returns {Channel[]} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 export const channelsReducer = (
   state: Channel[] = [],
@@ -59,23 +59,23 @@ export const channelsReducer = (
 /**
  * emptyChannels
  *
- * @param {number} channelsCount - The channels count
- * @param {number} tracesCount - The traces count
- * @returns {Function} - A Fn that returns channelsCount empty channels
+ * @param channelsCount - The channels count
+ * @param tracesCount - The traces count
+ * @returns - A Fn that returns channelsCount empty channels
  */
 export const emptyChannels = (channelsCount: number, tracesCount: number) => {
   /**
    * makeTrace
    *
-   * @returns {Trace} - An empty trace
+   * @returns - An empty trace
    */
   const makeTrace = () => ({chunks: [], type: 'line'});
 
   /**
    * makeChannel
    *
-   * @param {number} index - The channel index
-   * @returns {Channel} - An empty channel
+   * @param index - The channel index
+   * @returns - An empty channel
    */
   const makeChannel = (index) => ({
     index,

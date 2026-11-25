@@ -327,7 +327,7 @@ class UploadForm extends Component {
                 {ns: 'imaging_uploader'});
         }
         swal.fire({
-          title: t('Upload Successful!', {ns: 'imaging_uploader'}),
+          title: t('Upload successful!', {ns: 'loris'}),
           text: text,
           type: 'success',
           confirmButtonText: t('OK', {ns: 'loris'}),
@@ -363,14 +363,19 @@ class UploadForm extends Component {
 
     let errorMessage = Object.assign({}, this.state.errorMessage);
     let messageToPrint = '';
+    let resp = null;
     if (xhr.response) {
-      const resp = JSON.parse(xhr.response);
-      if (resp.errors) {
-        errorMessage = resp.errors;
+      try {
+        resp = JSON.parse(xhr.response);
+      } catch (e) {
+        console.warn('Failed upload response was not valid JSON', e);
       }
+    }
+    if (resp && resp.errors) {
+      errorMessage = resp.errors;
     } else if (xhr.status == 0) {
       errorMessage = {
-        'mriFile': [t('Upload failed: a network error occured',
+        'mriFile': [t('Upload failed: a network error occurred',
           {ns: 'imaging_uploader'})],
       };
     } else if (xhr.status == 413) {
@@ -507,7 +512,7 @@ class UploadForm extends Component {
             />
             <FileElement
               name='mriFile'
-              label={t('File to Upload', {ns: 'imaging_uploader'})}
+              label={t('File to upload', {ns: 'loris'})}
               onUserInput={this.onFormChange}
               required={true}
               errorMessage={this.state.errorMessage.mriFile}

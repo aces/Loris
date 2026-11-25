@@ -50,6 +50,8 @@ return [
         "vendor"
     ],
     "plugins" => [
+	"DollarDollarPlugin",
+	"UncoveredEnumCasesInMatchPlugin",
         "UnreachableCodePlugin",
     ]
 ];

@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Timepoint List"
 msgstr "Lista de Puntos en el Tiempo"
@@ -68,12 +69,6 @@ msgstr "Sexo Biológico"
 
 msgid "You do not have access to any timepoints registered for this candidate."
 msgstr "Usted no tiene ningún Punto de Tiempo registrado para este candidato."
-
-msgid " y / "
-msgstr " a / "
-
-msgid " m"
-msgstr " m"
 
 msgid "Not Done"
 msgstr "No Hecha"

@@ -1,9 +1,9 @@
 /**
  * fetchBlob
  *
- * @param {string} url - The url to fetch
- * @param {object} params - The request params
- * @returns {Promise} - The blob data
+ * @param url - The url to fetch
+ * @param params - The request params
+ * @returns - The blob data
  */
 export const fetchBlob = (url: string, params?: RequestInit) : Promise<Blob> =>
   fetch(url, params).then((response) => {
@@ -16,9 +16,9 @@ export const fetchBlob = (url: string, params?: RequestInit) : Promise<Blob> =>
 /**
  * fetchJSON
  *
- * @param {string} url - The url to fetch
- * @param {object} params - The request params
- * @returns {Promise} - The json data
+ * @param url - The url to fetch
+ * @param params - The request params
+ * @returns - The json data
  */
 export const fetchJSON = (url: string, params?: RequestInit) =>
   fetch(url, params).then((response) => {
@@ -31,9 +31,9 @@ export const fetchJSON = (url: string, params?: RequestInit) =>
 /**
  * fetchText
  *
- * @param {string} url - The url to fetch
- * @param {object} params - The request params
- * @returns {Promise} - The text data
+ * @param url - The url to fetch
+ * @param params - The request params
+ * @returns - The text data
  */
 export const fetchText = (url: string, params?: RequestInit) =>
   fetch(url, params).then((response) => {

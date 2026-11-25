@@ -195,7 +195,10 @@ class Login extends Component {
               if (data.error === 'password expired') {
                 // password expired
                 state.component.expiredPassword = {
-                  message: 'Password expired for user.',
+                  message: this.props.t(
+                    'Password expired for user.',
+                    {ns: 'login'}
+                  ),
                   username: state.form.value.username,
                 };
                 state.mode = 'expired';
@@ -336,7 +339,7 @@ class Login extends Component {
               </Panel>
               {partnerLogos.length > 0 ? (
                 <Panel
-                  title="Our Partners"
+                  title={this.props.t('Our Partners', {ns: 'login'})}
                   class="panel-default partner-container-desktop"
                   collapsing={false}
                   bold
@@ -364,7 +367,7 @@ class Login extends Component {
               </Panel>
               {partnerLogos.length > 0 ? (
                 <Panel
-                  title="Our Partners"
+                  title={this.props.t('Our Partners', {ns: 'login'})}
                   class="panel-default partner-container-mobile"
                   collapsing={false}
                   bold
@@ -423,7 +426,9 @@ class Login extends Component {
       {this.state.oidc.map((val) => {
         return <div>
           <a href={'/oidc/login?loginWith=' + val}>
-                    Login with {val}
+            {this.props.t('Login with {{provider}}', {
+              ns: 'login', provider: val,
+            })}
           </a>
         </div>;
       })}

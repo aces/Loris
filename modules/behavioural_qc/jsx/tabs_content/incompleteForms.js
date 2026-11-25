@@ -81,60 +81,61 @@ class IncompleteForms extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     let reactElement;
     switch (column) {
-    case 'Visit':
+    case t('Visit', {ns: 'loris'}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
               '/instrument_list/?candID=' +
-              rowData['DCCID'] +
+              rowData[t('DCCID', {ns: 'loris'})] +
               '&sessionID=' +
               rowData['sessionID']
           }>
-            {rowData['Visit']}
+            {rowData[t('Visit', {ns: 'loris'})]}
           </a>
         </td>
       );
       break;
-    case 'PSCID':
+    case t('PSCID', {ns: 'loris'}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
             '/' +
-            rowData['DCCID']
+            rowData[t('DCCID', {ns: 'loris'})]
           }>
-            {rowData['PSCID']}
+            {rowData[t('PSCID', {ns: 'loris'})]}
           </a>
         </td>
       );
       break;
-    case 'DCCID':
+    case t('DCCID', {ns: 'loris'}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
             '/' +
-            rowData['DCCID']
+            rowData[t('DCCID', {ns: 'loris'})]
           }>
-            {rowData['DCCID']}
+            {rowData[t('DCCID', {ns: 'loris'})]}
           </a>
         </td>
       );
       break;
-    case 'Instrument':
+    case t('Instrument', {ns: 'loris', count: 1}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
             '/instruments/' +
             rowData['test_name'] +
             '/?candID=' +
-            rowData['DCCID'] +
+            rowData[t('DCCID', {ns: 'loris'})] +
             '&sessionID=' +
             rowData['sessionID'] +
             '&commentID=' +
             rowData['commentID']
           }>
-            {rowData['Instrument']}
+            {rowData[t('Instrument', {ns: 'loris', count: 1})]}
           </a>
         </td>
       );
@@ -208,6 +209,7 @@ class IncompleteForms extends Component {
         filter: {
           name: 'Visit',
           type: 'select',
+          sortByValue: false,
           options: options.visits,
         },
       },

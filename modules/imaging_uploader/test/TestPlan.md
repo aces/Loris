@@ -56,12 +56,12 @@
 
     _e.g. SQL command to set session associated with CandID X and Visit Label Y as inactive:_
 
-    `UPDATE session SET Active = 'N' WHERE CandID = X AND Visit_label = 'Y';`
+    `UPDATE session s JOIN candidate c ON c.ID = s.CandidateID SET s.Active = 'N' WHERE c.CandID = X AND s.Visit_label = 'Y';`
 
     [Manual Testing]
 
-4. Test validations for 'File to Upload' in the 'Upload' tab and ensure that the appropriate
-    error messages are displayed under the 'File to Upload' element.
+4. Test validations for 'File to upload' in the 'Upload' tab and ensure that the appropriate
+    error messages are displayed under the 'File to upload' element.
 
     Set Phantom Scans to 'Yes' and try to upload a file for each scenario below:
     - A file that is not of type `.tgz` or `tar.gz` or `.zip` (e.g. a `.jpg` or `.txt`)

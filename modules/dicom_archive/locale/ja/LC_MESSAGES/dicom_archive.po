@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "DICOM Archive"
 msgstr "DICOMアーカイブ"
@@ -42,12 +43,6 @@ msgstr "MRIブラウザ"
 msgid "Series UID"
 msgstr "シリーズ固有識別子"
 
-msgid "TarchiveID"
-msgstr "TarchiveID"
-
-msgid "SessionID"
-msgstr "SessionID"
-
 msgid "CenterID"
 msgstr "CenterID"
 
@@ -57,8 +52,8 @@ msgstr "IsPhantom"
 msgid "Tarchive Metadata"
 msgstr "アーカイブメタデータ"
 
-msgid "Acquisition ID"
-msgstr "取得識別子"
+msgid "Study Instance UID"
+msgstr "スタディインスタンスUID"
 
 msgid "Patient Birthdate"
 msgstr "患者の生年月日"
@@ -78,8 +73,8 @@ msgstr "シリアルナンバー"
 msgid "Scanner Software Version"
 msgstr "スキャナーソフトウェアバージョン"
 
-msgid "Acquired at"
-msgstr "取得場所"
+msgid "Institution Name"
+msgstr "施設名"
 
 msgid "Number of Acquisitions"
 msgstr "買収件数"
@@ -93,14 +88,8 @@ msgstr "最終更新日"
 msgid "Never"
 msgstr "一度もない"
 
-msgid "Summary type version"
-msgstr "概要タイプバージョン"
-
 msgid "Source location"
 msgstr "ソースの場所"
-
-msgid "Archive type version"
-msgstr "アーカイブタイプバージョン"
 
 msgid "Archive location"
 msgstr "アーカイブタイプバージョン"
@@ -182,4 +171,3 @@ msgstr "詳細を表示"
 
 msgid "View Images"
 msgstr "画像を見る"
-

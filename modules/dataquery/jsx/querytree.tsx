@@ -9,8 +9,8 @@ import {useTranslation} from 'react-i18next';
 /**
  * Alternate background colour for a QueryTree
  *
- * @param {string} c - the current colour
- * @returns {string} - The next colour after c
+ * @param c - the current colour
+ * @returns - The next colour after c
  */
 function alternateColour(c: string): string {
   if (c == 'rgb(255, 255, 255)') {
@@ -23,25 +23,26 @@ function alternateColour(c: string): string {
  * Recursively render a tree of AND/OR
  * conditions
  *
- * @param {object} props - React props
- * @param {React.CSSProperties} props.buttonStyle - CSS to add to buttons
- * @param {React.CSSProperties} props.buttonGroupStyle - CSS to add to groups of buttons
- * @param {string} props.backgroundColour - The colour to use for the background of this QueryTree
- * @param {QueryGroup} props.items - The QueryGroup to render into a tree
- * @param {boolean} props.subtree - True if this is a sub-tree
- * @param {React.MouseEventHandler<HTMLElement>} props.onDeleteHover - Callback for when hovering over the delete icon
- * @param {React.MouseEventHandler<HTMLElement>} props.onDeleteLeave - Callback for when no longer hovering over the delete icon
- * @param {React.MouseEventHandler<HTMLElement>} props.deleteItem - Callback for when delete is clicked.
- * @param {QueryGroup} props.activeGroup - The active group that a modal is managing
- * @param {function} props.newGroup - Callback to create a new group at the end of props.items
- * @param {function} props.newItem - Callback to create a new item (term) at the end of props.items
- * @param {function} props.removeQueryGroupItem - Callback that should remove item i from props.items and return a new QueryGroup
- * @param {function} props.setModalGroup - Callback that should set the group that a modal (managed by the parent) is managing
- * @param {object} props.mapModuleName - Function to map the backend module name to a user friendly name
- * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
- * @param {object} props.fulldictionary - The dictionary of all modules that have been loaded
- * @param {function} props.setDeleteItemIndex - Callback to set or clear the index of the item marked for deletion
- * @returns {React.ReactElement} - the react element
+ * @param props - React props
+ * @param props.buttonStyle - CSS to add to buttons
+ * @param props.buttonGroupStyle - CSS to add to groups of buttons
+ * @param props.backgroundColour - The colour to use for the background of this QueryTree
+ * @param props.items - The QueryGroup to render into a tree
+ * @param props.subtree - True if this is a sub-tree
+ * @param props.onDeleteHover - Callback for when hovering over the delete icon
+ * @param props.onDeleteLeave - Callback for when no longer hovering over the delete icon
+ * @param props.deleteItem - Callback for when delete is clicked.
+ * @param props.activeGroup - The active group that a modal is managing
+ * @param props.newGroup - Callback to create a new group at the end of props.items
+ * @param props.newItem - Callback to create a new item (term) at the end of props.items
+ * @param props.removeQueryGroupItem - Callback that should remove item i from props.items and return a new QueryGroup
+ * @param props.setModalGroup - Callback that should set the group that a modal (managed by the parent) is managing
+ * @param props.mapModuleName - Function to map the backend module name to a user friendly name
+ * @param props.mapCategoryName - Function to map the backend category name to a user friendly name
+ * @param props.fulldictionary - The dictionary of all modules that have been loaded
+ * @param props.setDeleteItemIndex - Callback to set or clear the index of the item marked for deletion
+ * @param props.extraButton - Adds a button the far right on the row as the other two buttons
+ * @returns - the react element
  */
 function QueryTree(props: {
     buttonStyle?: React.CSSProperties,
@@ -61,6 +62,7 @@ function QueryTree(props: {
     fulldictionary: FullDictionary,
     mapModuleName: (module: string) => string,
     mapCategoryName: (module: string, category: string) => string,
+    extraButton?: React.ReactNode,
 }) {
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
   const {t} = useTranslation('dataquery');
@@ -73,9 +75,9 @@ function QueryTree(props: {
   /**
    * Render a single term of the QueryTree group.
    *
-   * @param {QueryGroup|QueryTerm} item - The item to render from a group
-   * @param {number} i - the index being rendered
-   * @returns {React.ReactElement} - The react element
+   * @param item - The item to render from a group
+   * @param i - the index being rendered
+   * @returns - The react element
    */
   const renderitem =
         (item: QueryGroup|QueryTerm, i: number): React.ReactElement<any> => {
@@ -97,8 +99,6 @@ function QueryTree(props: {
           /**
            * Deletes an item from the group and call the removeQueryGroupItem
            * callback.
-           *
-           * @returns {void}
            */
           const deleteItem = () => {
             if (props.removeQueryGroupItem) {
@@ -185,7 +185,7 @@ function QueryTree(props: {
   switch (props.items.group.length) {
   case 0:
     warning = <div className="alert alert-warning"
-      style={{display: 'flex'}}>
+      style={{display: 'flex', marginBottom: 0}}>
       <i className="fas fa-exclamation-triangle"
         style={{
           fontSize: '1.5em',
@@ -199,7 +199,7 @@ function QueryTree(props: {
     break;
   case 1:
     warning = <div className="alert alert-warning"
-      style={{display: 'flex'}}>
+      style={{display: 'flex', marginBottom: 0}}>
       <i className="fas fa-exclamation-triangle"
         style={{
           fontSize: '1.5em',
@@ -217,8 +217,7 @@ function QueryTree(props: {
   /**
    * Handler to calls newItem callback onClick
    *
-   * @param {React.MouseEvent} e - The event
-   * @returns {void}
+   * @param e - The event
    */
   const newItemClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -230,8 +229,7 @@ function QueryTree(props: {
   /**
    * Call newGroup callback onClick
    *
-   * @param {React.MouseEvent} e - The event
-   * @returns {void}
+   * @param e - The event
    */
   const newGroupClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -263,6 +261,14 @@ function QueryTree(props: {
     margin: 0,
     padding: 0,
   };
+
+  const emptyGroupStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '4px',
+    marginBottom: '20px',
+  };
+
   return (
     <div style={style}>
       <ul style={marginStyle}>
@@ -288,9 +294,17 @@ function QueryTree(props: {
                 columnSize='col-sm-12'
               />
             </div>
-            {warning}
-            {deleteGroupHTML}
-          </div></li>
+            <div style={emptyGroupStyle}>
+              {warning}
+              {deleteGroupHTML}
+            </div>
+            {props.extraButton ? (
+              <div style={{margin: '5px 0 0 auto'}}>
+                {props.extraButton}
+              </div>
+            ) : null}
+          </div>
+        </li>
       </ul>
     </div>
   );

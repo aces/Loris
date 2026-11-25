@@ -26,10 +26,8 @@ msgid "View Session"
 msgstr "セッションを見る"
 
 msgid "New and pending imaging session"
-msgstr "新規および保留中のMRI セッション"
-
-msgid "New and pending imaging sessions"
-msgstr "新規および保留中のMRI セッション"
+msgid_plural "New and pending imaging sessions"
+msgstr[0] "新規および保留中のMRI セッション"
 
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
@@ -77,17 +75,11 @@ msgstr "新しいデータ"
 msgid "Links"
 msgstr "リンク"
 
-msgid "SessionID"
-msgstr "SessionID"
-
 msgid "Sequence Type"
 msgstr "シーケンスタイプ"
 
 msgid "Pending New"
 msgstr "新規保留中"
-
-msgid "QC Status"
-msgstr "品質管理状況"
 
 msgid "Caveat"
 msgstr "警告"

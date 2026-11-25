@@ -165,10 +165,12 @@ class CandidateInfo extends Component {
 
     const renderTerm = (label, value, info) => {
       const cardStyle = {
-        width: info.width || '6em',
-        padding: '1em',
-        marginLeft: '1ex',
-        marginRight: '1ex',
+        width: info.width || 'unset',
+        padding: '1rem 0',
+        marginLeft: '0.5rem',
+        marginRight: '0.5rem',
+        wordBreak: 'break-word',
+        flexGrow: 1,
       };
       let valueStyle = {};
       if (info.valueWhitespace) {

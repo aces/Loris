@@ -548,7 +548,8 @@ class SinglePointLogin
         $DB    = \NDB_Factory::singleton()->database();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
                   FROM user_login_history
-                  WHERE UserID = :username";
+                  WHERE UserID = :username
+                  AND Success = 'Y'";
 
         $row = $DB->pselectRow($query, ['username' => $username]);
 

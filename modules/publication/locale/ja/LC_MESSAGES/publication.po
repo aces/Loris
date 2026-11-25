@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Publications"
 msgstr "出版物"
@@ -47,9 +48,6 @@ msgstr "提出前に残っているエラーを修正してください"
 
 msgid "Something went wrong!"
 msgstr "問題が発生しました。"
-
-msgid "Submission Successful!"
-msgstr "送信成功しました!"
 
 msgid "Propose a Project"
 msgstr "プロジェクトを提案する"

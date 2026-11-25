@@ -74,6 +74,9 @@ class SurveyAccountsProvisioner
     {
         $cid = \CenterID::singleton(intval($row['CenterID']));
         $pid = \ProjectID::singleton((intval($row['ProjectID'])));
+
+        // All status options already exist in the loris namespace.
+        $row['Status'] = dgettext('loris', $row['Status']);
         return new SurveyAccountsRow($row, $cid, $pid);
     }
 }

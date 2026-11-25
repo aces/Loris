@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "MRI Violated Scans"
 msgstr "MRI違反スキャン"
@@ -102,9 +103,6 @@ msgstr "研究プロトコル"
 msgid "Scan Problems"
 msgstr "スキャンの問題"
 
-msgid "Scan Type"
-msgstr "スキャンタイプ"
-
 msgid "Severity"
 msgstr "重大度"
 
@@ -171,9 +169,6 @@ msgstr "ハッシュ"
 msgid "JoinID"
 msgstr "参加ID"
 
-msgid "TarchiveID"
-msgstr "アーカイブID"
-
 msgid "Center Name"
 msgstr "センター名"
 
@@ -216,3 +211,5 @@ msgstr "時間範囲"
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "プロジェクトがないリソース タイプにフィルターを実装することはできません。"
 
+msgid "Series Description Regex:"
+msgstr "シリーズ説明の正規表現:"

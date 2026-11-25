@@ -120,7 +120,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 WHERE c.CandID=:cid AND Date_visit IS NOT NULL
                 ORDER BY Date_visit DESC LIMIT 1
             ";
-            $where  = ['cid' => $values['candID']];
+            $where  = ['cid' => $values['identifier']];
             $result = iterator_to_array($DB->pselect($query, $where));
 
             $values['defaultpsc'] = $result[0]['CenterID'];
@@ -186,15 +186,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             );
         }
 
-        //Visit - Get all visits to map ID back to label for session table
-        $visits     = \Utility::getVisitsForProjectCohort(
-            $project->getId(),
-            intval($values['cohort'])
-        );
-        $visitLabel = $visits[$values['visit']];
-        $visitName  = (new VisitController(
+        $visitName = (new VisitController(
             $this->loris->getDatabaseConnection()
-        ))->getVisitFromVisitLabel($visitLabel)->getName();
+        ))->getVisitFromVisitID(intval($values['visit']))->getName();
 
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
@@ -288,15 +282,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $cohortID  = intval($values['cohort']);
         $projectID = \ProjectID::singleton(intval($values['project']));
 
-        //Visit - Get all visits to map ID back to label for session table
-        $visits     = \Utility::getVisitsForProjectCohort(
-            $projectID,
-            intval($values['cohort'])
-        );
-        $visitLabel = $visits[$values['visit']];
-        $visitName  = (new VisitController(
+        $visitName = (new VisitController(
             $this->loris->getDatabaseConnection()
-        ))->getVisitFromVisitLabel($visitLabel)->getName();
+        ))->getVisitFromVisitID(intval($values['visit']))->getName();
 
         try {
             \TimePoint::isValidVisitLabel(

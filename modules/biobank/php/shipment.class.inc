@@ -66,12 +66,12 @@ class Shipment implements
         $this->id      = $data['id'] ?? null;
         $this->barcode = $data['barcode'] ?? null;
         $this->type    = $data['type'] ?? null;
-        $this->destinationCenterId = new \CenterID(
-            $data['destinationCenterId'] ?? null
-        );
+        $this->destinationCenterId = isset($data['destinationCenterId'])
+            ? new \CenterID((string)$data['destinationCenterId'])
+            : null;
         $this->containerIds        = $data['containerIds'] ?? null;
         $this->containerBarcodes   = $data['containerBarcodes'] ?? null;
-        $this->_setLogs($data['logs']) ?? null;
+        $this->_setLogs($data['logs']);
     }
 
     /**
@@ -131,9 +131,9 @@ class Shipment implements
     /**
      * Gets the destination center of the shipment
      *
-     * @return \CenterID
+     * @return ?\CenterID
      */
-    public function getDestinationCenterId() : \CenterID
+    public function getDestinationCenterId() : ?\CenterID
     {
         return $this->destinationCenterId;
     }

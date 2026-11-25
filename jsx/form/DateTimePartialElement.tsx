@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ReactNode, useState} from 'react';
+import React, {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import InputLabel from 'jsx/form/InputLabel';
 
 const format = 'YYYY-MM-DD hh:mm:ss';
@@ -101,6 +101,8 @@ type MaskProps = {
  * React component for an input datetime mask.
  *
  * @param props The props of the component
+ * @param props.value The value
+ * @param props.children The component children
  * @returns The corresponding React element
  */
 const Mask: React.FC<MaskProps> = ({value, children}) => (
@@ -133,7 +135,6 @@ type DateTimePartialElementProps = {
   label: string;
   value?: string;
   id?: string;
-  dateFormat: string;
   required?: boolean;
   disabled?: boolean;
   errorMessage?: string;
@@ -157,6 +158,10 @@ const DateTimePartialElement: React.FC<DateTimePartialElementProps> = (
     : () => console.warn('onUserInput() callback is not set');
 
   const [value, setValue] = useState(props.value ?? '');
+
+  useEffect(() => {
+    setValue(props.value ?? '');
+  }, [props.value]);
 
   /**
    * Handle a change in the input.

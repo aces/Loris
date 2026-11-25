@@ -28,6 +28,13 @@ namespace LORIS\configuration;
 class Project extends \NDB_Form
 {
     /**
+     * Render the project manager with React instead of Smarty.
+     *
+     * @var bool
+     */
+    public $skipTemplate = true;
+
+    /**
      * _has_access returns true
      * if the user has the specific permission
      *
@@ -56,22 +63,39 @@ class Project extends \NDB_Form
         $projects    = [];
         foreach (array_keys($projectList) as $ProjectID) {
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
-            $projects[$ProjectID]['projectCohorts']
-                = \Utility::getCohortsForProject(
-                    \ProjectID::singleton($ProjectID)
-                );
+            $projectCohorts       = \Utility::getCohortsForProject(
+                \ProjectID::singleton($ProjectID)
+            );
+            $projects[$ProjectID]['cohortIDs'] = array_map(
+                'strval',
+                array_keys($projectCohorts)
+            );
         }
         $this->tpl_data['projects'] = $projects;
         $this->tpl_data['cohorts']  = $cohortList;
     }
 
     /**
+     * Return the project manager data for the React page.
+     *
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    function toArray(): array
+    {
+        return [
+            'projects' => $this->tpl_data['projects'] ?? [],
+            'cohorts'  => $this->tpl_data['cohorts'] ?? [],
+        ];
+    }
+
+    /**
      * Include additional CSS files:
      *  1. configuration
      *
-     * @return array of CSS to be inserted
+     * @return array<string> CSS dependencies
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -79,6 +103,23 @@ class Project extends \NDB_Form
         return array_merge(
             $deps,
             [$baseURL . "/configuration/css/configuration.css"]
+        );
+    }
+
+    /**
+     * Add the React entry point for the project manager.
+     *
+     * @return array<string> JavaScript dependencies
+     */
+    #[\Override]
+    function getJSDependencies(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . '/configuration/js/formProject.js']
         );
     }
 }

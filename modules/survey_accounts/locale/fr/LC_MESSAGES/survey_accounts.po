@@ -1,0 +1,98 @@
+# Default LORIS strings to be translated (French Canadian).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Survey Accounts"
+msgstr "Comptes de sondage"
+
+msgid "Survey was added successfully."
+msgstr "Le sondage a été ajouté avec succès."
+
+msgid "Click here to go back to view the list of survey's created"
+msgstr "Cliquez ici pour revenir à la liste des sondages créés"
+
+msgid "Survey List"
+msgstr "Liste des sondages"
+
+msgid "Usage"
+msgstr "Utilisation"
+
+msgid "Use this form to create a link for a study participant to use in order to directly enter a form/data into Loris."
+msgstr "Utilisez ce formulaire pour créer un lien permettant à un participant à l'étude de saisir directement un formulaire/des données dans LORIS."
+
+msgid "Add Survey"
+msgstr "Ajouter un sondage"
+
+msgid "Create survey"
+msgstr "Créer un sondage"
+
+msgid "Email survey"
+msgstr "Envoyer le sondage par courriel"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Email to Study Participant"
+msgstr "Courriel au participant à l'étude"
+
+msgid "Optionally enter a customized message here. A default email will be sent if left blank."
+msgstr "Saisissez éventuellement un message personnalisé ici. Un courriel par défaut sera envoyé si ce champ est laissé vide."
+
+msgid "This is where your message goes."
+msgstr "Votre message s'inscrit ici."
+
+msgid "Email"
+msgstr "Adresse courriel"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "PSCID and DCCID do not match or candidate does not exist."
+msgstr "Le PSCID et le DCCID ne correspondent pas ou le candidat n'existe pas."
+
+msgid "does not exist for given candidate"
+msgstr "n'existe pas pour le candidat donné"
+
+msgid "Please choose an instrument."
+msgstr "Veuillez choisir un instrument."
+
+msgid "already exists for given candidate for visit"
+msgstr "existe déjà pour le candidat donné pour la visite"
+
+msgid "Email is not valid."
+msgstr "L'adresse courriel n'est pas valide."
+
+msgid "Please confirm the email address."
+msgstr "Veuillez confirmer l'adresse courriel."
+
+msgid "The email addresses do not match."
+msgstr "Les adresses courriel ne correspondent pas."
+
+msgid "You must specify a valid Visit Label."
+msgstr "Vous devez préciser un libellé de visite valide."
+
+msgid "You are not affiliated with this session's project"
+msgstr "Vous n'êtes pas affilié au projet de cette session"
+
+msgid "Confirm Email address"
+msgstr "Confirmer l'adresse courriel"

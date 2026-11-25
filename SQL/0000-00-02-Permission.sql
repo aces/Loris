@@ -131,6 +131,7 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('imaging_browser_phantom_allsites', 'Phantom Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),2),
     ('imaging_browser_phantom_ownsite', 'Phantom Scans - Own Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),2),
     ('data_release_view', 'Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
+    ('data_release_download_all', 'All Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_upload', 'Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_edit_file_access', 'Grant Other Users Access to Releases',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_hide', 'Hide data release files',(SELECT ID FROM modules WHERE Name='data_release'), 2),
@@ -168,17 +169,21 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
     ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
     ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2),
-    ('biobank_specimen_view','View Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_specimen_create','Create Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_specimen_update','Process Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_specimen_alter','Edit Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_container_view','View Container Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_container_create','Create Containers',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_container_update','Edit Container Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_pool_view','View Pool Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_pool_create','Create Pools',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_specimen_view','Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_specimen_create','Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_specimen_update','Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_specimen_alter','Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_container_view','Container Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_container_create','Containers',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_container_update','Container Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_pool_view','Pool Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_pool_create','Pools',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_fullsiteaccess','Full Site Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_fullprojectaccess','Full Project Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('view_policy_decisions', 'Policy Decisions',
+        (SELECT ID FROM modules WHERE Name='policy_tracker'), 2),
+    ('edit_policies', 'Policies',
+        (SELECT ID FROM modules WHERE Name='policy_tracker'), 2),
     ('dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
@@ -241,6 +246,8 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'imaging_browser_phantom_allsites'),1),
   ((SELECT permID FROM permissions WHERE code = 'imaging_browser_phantom_ownsite'),1),
   ((SELECT permID FROM permissions WHERE code = 'data_release_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'data_release_download_all'),1),
+  ((SELECT permID FROM permissions WHERE code = 'data_release_download_all'),8),
   ((SELECT permID FROM permissions WHERE code = 'data_release_upload'),9),
   ((SELECT permID FROM permissions WHERE code = 'instrument_manager_read'),1),
   ((SELECT permID FROM permissions WHERE code = 'publication_view'),1),
@@ -289,6 +296,9 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'biobank_pool_create'),2),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullsiteaccess'),1),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1),
+  ((SELECT permID FROM permissions WHERE code = 'view_policy_decisions'),1),
+  ((SELECT permID FROM permissions WHERE code = 'edit_policies'),2),
+  ((SELECT permID FROM permissions WHERE code = 'edit_policies'),3),
   ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8);
@@ -316,3 +326,63 @@ CREATE TABLE `testnames_permissions_rel` (
     CONSTRAINT `FK_testnames_permissions_rel_test` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`),
     CONSTRAINT `FK_testnames_permissions_rel_perm` FOREIGN KEY (`permID`) REFERENCES `permissions` (`permID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_identifier_types` (
+  `CandidateIdentifierTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100) NOT NULL,
+  `Format` varchar(255) NOT NULL,
+  `IsRequired` boolean NOT NULL,
+  `IsUnique` boolean NOT NULL,
+  `AutoGenerate` boolean NOT NULL,
+  `AllowMultiple` boolean NOT NULL,
+  `permID` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`CandidateIdentifierTypeID`),
+  UNIQUE KEY (`Name`),
+  CONSTRAINT `FK_candidate_identifier_type_permission`
+    FOREIGN KEY (`permID`)
+    REFERENCES `permissions` (`permID`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `candidate_identifier_types`
+    (`Name`, `Format`, `IsRequired`, `IsUnique`,
+     `AutoGenerate`, `AllowMultiple`)
+VALUES
+    (
+        'PSCID',
+        '{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric}',
+        1, 1, 1, 0
+    );
+
+CREATE TABLE `candidate_identifier_types_project_rel` (
+  `CandidateIdentifierTypeID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`CandidateIdentifierTypeID`, `ProjectID`),
+  CONSTRAINT `FK_candidate_identifier_type_project_type`
+    FOREIGN KEY (`CandidateIdentifierTypeID`)
+    REFERENCES `candidate_identifier_types` (`CandidateIdentifierTypeID`)
+    ON DELETE CASCADE,
+  CONSTRAINT `FK_candidate_identifier_type_project_project`
+    FOREIGN KEY (`ProjectID`)
+    REFERENCES `Project` (`ProjectID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `candidate_identifiers` (
+  `CandidateIdentifierID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandidateID` int(10) unsigned NOT NULL,
+  `CandidateIdentifierTypeID` int(10) unsigned NOT NULL,
+  `Value` varchar(255) NOT NULL,
+  `DateAdded` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `DateEdited` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`CandidateIdentifierID`),
+  CONSTRAINT `FK_candidate_identifier_candidate`
+    FOREIGN KEY (`CandidateID`)
+    REFERENCES `candidate` (`ID`)
+    ON DELETE CASCADE,
+  CONSTRAINT `FK_candidate_identifier_type`
+    FOREIGN KEY (`CandidateIdentifierTypeID`)
+    REFERENCES `candidate_identifier_types` (`CandidateIdentifierTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

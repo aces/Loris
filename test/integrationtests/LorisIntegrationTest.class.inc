@@ -654,7 +654,7 @@ abstract class LorisIntegrationTest extends TestCase
     private function _verifyPermission(
         string $needle,
         string $haystack,
-        string $jsError= "An error occured while loading the page."
+        string $jsError= "An error occurred while loading the page."
     ): void {
         $this->assertStringContainsString($needle, $haystack);
         $this->assertStringNotContainsString($jsError, $haystack);
@@ -705,9 +705,12 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
+
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("$row")
+            WebDriverBy::cssSelector("$row"),
+            15
         )->getText();
+
         // 4 means there are 4 records under this site.
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter

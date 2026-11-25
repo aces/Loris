@@ -78,3 +78,8 @@ msgstr ""
 msgid "Successfully registered multifactor authenticator"
 msgstr ""
 
+msgid "Invalid code provided. MFA not registered."
+msgstr ""
+
+msgid "Missing code or secret to validate"
+msgstr ""

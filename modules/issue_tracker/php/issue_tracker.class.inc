@@ -187,6 +187,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             'assigned'     => dgettext('issue_tracker', 'Assigned'),
             'resolved'     => dgettext('issue_tracker', 'Resolved'),
             'closed'       => dgettext('issue_tracker', 'Closed'),
+            'rejected'     => dgettext('issue_tracker', 'Rejected'),
         ];
 
         $unorgCategories = $db -> pselect(
@@ -199,7 +200,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
                 $categories[$categoryName] = dgettext(
-                    "issue_tracker",
+                    "issues_categories",
                     $categoryName,
                 );
             }

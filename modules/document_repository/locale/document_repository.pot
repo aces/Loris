@@ -51,9 +51,6 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Upload Incomplete"
 msgstr ""
 
@@ -64,9 +61,6 @@ msgid "Please report the issue or contact your administrator"
 msgstr ""
 
 msgid "File too large"
-msgstr ""
-
-msgid "Could not upload file"
 msgstr ""
 
 msgid "Something went wrong"
@@ -145,9 +139,6 @@ msgid "Upload"
 msgstr ""
 
 msgid "File Name"
-msgstr ""
-
-msgid "Uploaded By"
 msgstr ""
 
 msgid "For Site"

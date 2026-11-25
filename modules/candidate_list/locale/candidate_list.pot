@@ -29,3 +29,21 @@ msgstr ""
 
 msgid "New %s (Beta)"
 msgstr ""
+
+msgid "Scanner"
+msgstr ""
+
+msgid "Human"
+msgstr ""
+
+msgid "Opened"
+msgstr ""
+
+msgid "Answered"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Comment"
+msgstr ""

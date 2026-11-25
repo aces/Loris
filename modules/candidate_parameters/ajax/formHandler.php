@@ -81,6 +81,35 @@ default:
 }
 
 /**
+ * Ensures the targeted candidate can be accessed by the current user before
+ * performing any write operation.
+ *
+ * @param \User $user current user
+ *
+ * @return void
+ */
+function validateCandidateWriteAccess(\User $user): void
+{
+    $candIDParam = $_POST['candID'] ?? null;
+    if ($candIDParam === null || $candIDParam === 'null') {
+        header("HTTP/1.1 400 Bad Request");
+        exit(0);
+    }
+
+    try {
+        $candidate = \Candidate::singleton(new CandID((string) $candIDParam));
+    } catch (\Throwable $e) {
+        header("HTTP/1.1 400 Bad Request");
+        exit(0);
+    }
+
+    if (!$candidate->isAccessibleBy($user)) {
+        header("HTTP/1.1 403 Forbidden");
+        exit(0);
+    }
+}
+
+/**
  * Handles the updating of Candidate Info
  *
  * @param Database $db database object
@@ -91,6 +120,7 @@ default:
  */
 function editCandInfoFields(\Database $db)
 {
+    validateCandidateWriteAccess(\User::singleton());
 
     $candID = $_POST['candID'];
 
@@ -171,6 +201,8 @@ function editCandInfoFields(\Database $db)
  */
 function editProbandInfoFields(\Database $db)
 {
+    validateCandidateWriteAccess(\User::singleton());
+
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
     $candID   = $sanitize['candID'];
@@ -240,6 +272,8 @@ function editProbandInfoFields(\Database $db)
  */
 function editFamilyInfoFields(\Database $db)
 {
+    validateCandidateWriteAccess(\User::singleton());
+
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -293,7 +327,12 @@ function editFamilyInfoFields(\Database $db)
             $updateValues['FamilyID'] = $newFamilyID;
             $db->insert('family', $updateValues);
 
-            $updateValues['Candidate'] = $candID;
+            $candidateID = $db->pselectOne(
+                "SELECT ID FROM candidate WHERE CandID=:candID",
+                ['candID' => $candID]
+            );
+
+            $updateValues['CandidateID'] = $candidateID;
             $db->insert('family', $updateValues);
         }
     }
@@ -341,6 +380,8 @@ function editFamilyInfoFields(\Database $db)
  */
 function deleteFamilyMember(\Database $db)
 {
+    validateCandidateWriteAccess(\User::singleton());
+
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
 
@@ -354,9 +395,16 @@ function deleteFamilyMember(\Database $db)
         ['cid' => $candID]
     );
 
+    $familyMemberCandidateID = $db->pselectOne(
+        'SELECT ID
+        FROM candidate
+        WHERE CandID=:cid',
+        ['cid' => $familyMemberID]
+    );
+
     $where = [
-        'FamilyID'  => $familyID,
-        'Candidate' => $familyMemberID,
+        'FamilyID'    => $familyID,
+        'CandidateID' => $familyMemberCandidateID,
     ];
 
     $db->delete('family', $where);
@@ -374,6 +422,8 @@ function deleteFamilyMember(\Database $db)
  */
 function editParticipantStatusFields(\Database $db)
 {
+    validateCandidateWriteAccess(\User::singleton());
+
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -432,6 +482,8 @@ function editParticipantStatusFields(\Database $db)
  */
 function editConsentStatusFields(\Database $db)
 {
+    validateCandidateWriteAccess(\User::singleton());
+
     // Get CandID
     $candIDParam = $_POST['candID'];
     if (!isset($candIDParam) || $candIDParam === 'null') {
@@ -601,6 +653,8 @@ function editConsentStatusFields(\Database $db)
  */
 function editCandidateDOB(\Database $db): void
 {
+    validateCandidateWriteAccess(\User::singleton());
+
     $candID       = new CandID($_POST['candID']);
     $dob          = $_POST['dob'];
     $strippedDate = null;
@@ -629,15 +683,23 @@ function editCandidateDOB(\Database $db): void
  */
 function editCandidateDOD(\Database $db): void
 {
+    validateCandidateWriteAccess(\User::singleton());
+
     $candID       = new CandID($_POST['candID']);
-    $dod          = new DateTime($_POST['dod']);
+    $dod          = array_key_exists('dod', $_POST) ?
+        new DateTime($_POST['dod']) : null;
+    $precision    = $_POST['dod_precision'];
     $strippedDate = null;
     $dodString    = null;
 
-    if (!$dod) {
+    if (!$dod && $precision !== 'unknown') {
         throw new \LorisException('Date not valid.');
     }
+    if (!$precision) {
+        throw new \LorisException('Date of Death precision must be specified.');
+    }
 
+    $updateData = [];
     if (!empty($dod)) {
         $config    = \NDB_Config::singleton();
         $dodFormat = $config->getSetting('dodFormat');
@@ -646,10 +708,17 @@ function editCandidateDOD(\Database $db): void
         } else {
             $dodString = $dod->format('Y-m-d');
         }
+        $updateData['DoD'] = $strippedDate ?? $dodString;
+    } else {
+        $updateData['DoD'] = null;
+    }
+
+    if ($precision) {
+        $updateData['DoD_precision'] = $precision;
         $db->update(
             'candidate',
-            ['DoD' => $strippedDate ?? $dodString],
-            ['ID' => $candID->__toString()]
+            $updateData,
+            ['CandID' => $candID->__toString()]
         );
     }
 }

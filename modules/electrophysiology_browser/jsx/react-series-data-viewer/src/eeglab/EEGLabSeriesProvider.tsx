@@ -22,10 +22,13 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {
   setCoordinateSystem, setElectrodes,
 } from '../series/store/state/montage';
-import {EventMetadata, HEDSchemaElement} from '../series/store/types';
+import {
+  ChannelInfos, EventMetadata, HEDSchemaElement,
+} from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
 import {InfoIcon} from '../series/components/components';
+import {TFunction} from 'i18next';
 
 declare global {
   interface Window {
@@ -35,6 +38,7 @@ declare global {
 
 
 type CProps = {
+  channelsURL: string,
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
@@ -49,7 +53,7 @@ type CProps = {
   eegMontageName: string,
   recordingHasHED: boolean,
   children: React.ReactNode,
-  t: any,
+  t: TFunction,
 };
 
 const MenuOption = {
@@ -66,7 +70,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
 
   /**
    * @class
-   * @param {object} props - React Component properties
+   * @param props - React Component properties
    */
   constructor(props: CProps) {
     super(props);
@@ -159,10 +163,10 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
 
     /**
      *
-     * @param {Function} fetcher The fn to collect the type of data
-     * @param {string} url - The url
-     * @param {string} route - The route
-     * @returns {Promise} - The data
+     * @param fetcher The fn to collect the type of data
+     * @param url - The url
+     * @param route - The route
+     * @returns - The data
      */
     const racers = (fetcher, url, route = '') => {
       if (url) {
@@ -177,6 +181,12 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
         return [Promise.resolve()];
       }
     };
+
+    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
+      this.store.dispatch(setDatasetMetadata({
+        bidsChannels: json.Channels,
+      }));
+    });
 
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
@@ -366,7 +376,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
   /**
    * Renders the React component.
    *
-   * @returns {JSX} - React markup for the component
+   * @returns - React markup for the component
    */
   render() {
     const t = this.props.t;

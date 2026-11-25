@@ -73,7 +73,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
     }
@@ -99,7 +99,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
     }
@@ -146,7 +146,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->_assertDropdownSelectedText('project', 'Pumpernickel');
 
         // Check the "English" dropdown
-        $this->_assertDropdownSelectedText('languageID', 'English');
+        $this->_assertDropdownHasOptions(
+            'languageID',
+            ['English', 'Français', '日本語', 'हिनदी']
+        );
 
         // Check the "cohort" dropdown has "Fresh" and "Stale" as options
         $this->_assertDropdownHasOptions('cohort', ['Fresh', 'Stale']);

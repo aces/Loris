@@ -16,7 +16,6 @@ type CProps = {
   hidden: number[],
   coordinateSystem: CoordinateSystem,
   setHidden: (_: number[]) => void,
-  chunksURL: string,
   colorMap?: {
     color: string,
     mode: 'fill' | 'outline'
@@ -32,6 +31,7 @@ type CProps = {
   eventChannels?: string[],
   setChannelSelectorVisible?: Dispatch<SetStateAction<boolean>>,
   eegMontageName: string,
+  timeInterval: [number, number],
 };
 
 const EEGMontage = (
@@ -40,7 +40,6 @@ const EEGMontage = (
     hidden,
     coordinateSystem,
     setHidden,
-    chunksURL,
     colorMap,
     withPanel,
     contentHeight,
@@ -52,6 +51,7 @@ const EEGMontage = (
     eventChannels,
     setChannelSelectorVisible,
     eegMontageName,
+    timeInterval,
   }: CProps) => {
   // if (electrodes.length === 0 || coordinateSystem === null) return null;
   const {t} = useTranslation();
@@ -587,7 +587,6 @@ const EEGMontage = (
           mouseDown={dragStart}
           mouseUp={dragEnd}
           mouseLeave={dragEnd}
-          chunksURL={chunksURL}
           cssClass={
             holdingShift
               ? 'cursor-default'
@@ -595,15 +594,16 @@ const EEGMontage = (
                 ? 'cursor-grabbing'
                 : 'cursor-grab'
           }
+          domain={timeInterval}
         >
           <Montage3D />
         </ResponsiveViewer>
         :
         <ResponsiveViewer
           // @ts-ignore
-          chunksURL={chunksURL}
           parentHeight={withPanel ? 300 : 550}
           cssClass={''}
+          domain={timeInterval}
         >
           <Montage2D />
         </ResponsiveViewer>
@@ -858,7 +858,6 @@ EEGMontage.defaultProps = {
   montage: [],
   hidden: [],
   coordinateSystem: null,
-  chunksURL: '',
   withPanel: true,
   contentHeight: '300px',
   modifiable: false,
@@ -870,9 +869,9 @@ export default connect(
     hidden: state.montage.hidden,
     electrodes: state.montage.electrodes,
     coordinateSystem: state.montage.coordinateSystem,
-    chunksURL: state.dataset.chunksURL,
     channelDelimiter: state.dataset.channelDelimiter,
     eegMontageName: state.dataset.eegMontageName,
+    timeInterval:  state.dataset.timeInterval,
   }),
   (dispatch: (_: any) => void) => ({
     setHidden: R.compose(

@@ -8,6 +8,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from 'jsx/form/InputLabel';
+import Field from 'jsx/form/Field';
+import TextareaInput from 'jsx/form/TextareaInput';
+import NumberInput from 'jsx/form/NumberInput';
 import {withTranslation} from 'react-i18next';
 
 /**
@@ -551,7 +554,17 @@ export class SelectElement extends Component {
           newOptions[options[key]] = key;
         }
       }
-      optionList = Object.keys(newOptions).sort().map(function(option) {
+      let sortedOptions = Object.keys(newOptions).sort();
+      if (this.props.pinnedOption
+          && options.hasOwnProperty(this.props.pinnedOption)
+      ) {
+        const pinnedValue = options[this.props.pinnedOption];
+        sortedOptions = sortedOptions.filter(
+          (option) => option !== pinnedValue
+        );
+        sortedOptions.unshift(pinnedValue);
+      }
+      optionList = sortedOptions.map(function(option) {
         let isDisabled = (newOptions[option] in disabledOptions);
         return (
           <option
@@ -639,7 +652,7 @@ SelectElement.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.object.isRequired,
   disabledOptions: PropTypes.object,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.array,
@@ -655,6 +668,7 @@ SelectElement.propTypes = {
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
   sortByValue: PropTypes.bool,
+  pinnedOption: PropTypes.string,
   labelPlacementTop: PropTypes.bool,
 };
 
@@ -676,6 +690,7 @@ SelectElement.defaultProps = {
   },
   noMargins: false,
   placeholder: '',
+  pinnedOption: null,
   labelPlacementTop: false,
 };
 
@@ -982,55 +997,41 @@ TagsElement.defaultProps = {
  */
 export class TextareaElement extends Component {
   /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  /**
-   * Handle change
-   *
-   * @param {object} e - Event
-   */
-  handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
     return (
-      <div className="row form-group">
-        <InputLabel label={this.props.label} required={this.props.required} />
-        <div className="col-sm-9">
-          <textarea
-            cols={this.props.cols}
-            rows={this.props.rows}
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            value={this.props.value || ''}
-            placeholder={this.props.placeholder}
-            required={this.props.required}
-            disabled={this.props.disabled}
-            onChange={this.handleChange}
-          >
-          </textarea>
-        </div>
-      </div>
+      <Field
+        id={this.props.id}
+        label={this.props.label}
+        required={this.props.required}
+        disabled={this.props.disabled}
+        errorMessage={this.props.errorMessage}
+        noMargins={this.props.noMargins}
+      >
+        <TextareaInput
+          cols={this.props.cols}
+          rows={this.props.rows}
+          name={this.props.name}
+          value={this.props.value || ''}
+          placeholder={this.props.placeholder}
+          onChange={(value) => this.props.onUserInput(
+            this.props.name, value
+          )}
+          onBlur={(value) => this.props.onUserBlur(
+            this.props.name, value
+          )}
+        />
+      </Field>
     );
   }
 }
 
 TextareaElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.string,
   placeholder: PropTypes.string,
   id: PropTypes.string,
@@ -1038,7 +1039,10 @@ TextareaElement.propTypes = {
   required: PropTypes.bool,
   rows: PropTypes.number,
   cols: PropTypes.number,
+  noMargins: PropTypes.bool,
+  errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
 };
 
 TextareaElement.defaultProps = {
@@ -1051,9 +1055,11 @@ TextareaElement.defaultProps = {
   required: false,
   rows: 4,
   cols: 25,
+  noMargins: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  onUserBlur: function() {},
 };
 
 /**
@@ -1100,20 +1106,25 @@ export class TextboxElement extends Component {
    */
   render() {
     let errorMessage = null;
-    let elementClass = 'row form-group';
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
 
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = this.props.noMargins ?
+        'has-error' :
+        'row form-group has-error';
     }
 
     // Label prop needs to be provided to render label
     // (including empty label i.e. <TextboxElement label='' />)
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
-    let inputClass = this.props.class;
-    if (this.props.label || this.props.label == '') {
+    let inputClass = this.props.noMargins ? '' : this.props.class;
+    if (
+      !this.props.noMargins &&
+      (this.props.label || this.props.label == '')
+    ) {
       inputClass = `col-sm-${this.props.labelPlacementTop ? '12' : '9'}`;
     }
 
@@ -1125,13 +1136,14 @@ export class TextboxElement extends Component {
           flexDirection: 'column',
         } : {}}
       >
-        {(this.props.label || this.props.label == '') && (
-          <InputLabel
-            label={this.props.label}
-            required={this.props.required}
-            fullWidth={this.props.labelPlacementTop}
-          />
-        )}
+        {!this.props.noMargins && (this.props.label || this.props.label == '') ?
+          (
+            <InputLabel
+              label={this.props.label}
+              required={this.props.required}
+              fullWidth={this.props.labelPlacementTop}
+            />
+          ) : null}
         <div className={inputClass}>
           <input
             type="text"
@@ -1155,7 +1167,7 @@ export class TextboxElement extends Component {
 
 TextboxElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.string,
   id: PropTypes.string,
   class: PropTypes.string,
@@ -1166,6 +1178,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  noMargins: PropTypes.bool,
   labelPlacementTop: PropTypes.bool,
 };
 
@@ -1184,6 +1197,7 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  noMargins: false,
   labelPlacementTop: false,
 };
 
@@ -1231,31 +1245,37 @@ export class EmailElement extends Component {
    */
   render() {
     let errorMessage = null;
-    let elementClass = 'row form-group';
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
 
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = this.props.noMargins ?
+        'has-error' :
+        'row form-group has-error';
     }
 
     // Label prop needs to be provided to render label
     // (including empty label i.e. <TextboxElement label='' />)
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
-    let inputClass = this.props.class;
-    if (this.props.label || this.props.label == '') {
+    let inputClass = this.props.noMargins ? '' : this.props.class;
+    if (
+      !this.props.noMargins &&
+      (this.props.label || this.props.label == '')
+    ) {
       inputClass = 'col-sm-9';
     }
 
     return (
       <div className={elementClass}>
-        {(this.props.label || this.props.label == '') && (
-          <InputLabel
-            label={this.props.label}
-            required={this.props.required}
-          />
-        )}
+        {!this.props.noMargins && (this.props.label || this.props.label == '') ?
+          (
+            <InputLabel
+              label={this.props.label}
+              required={this.props.required}
+            />
+          ) : null}
         <div className={inputClass}>
           <input
             type="email"
@@ -1279,7 +1299,7 @@ export class EmailElement extends Component {
 }
 EmailElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.string,
   id: PropTypes.string,
   class: PropTypes.string,
@@ -1290,6 +1310,7 @@ EmailElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  noMargins: PropTypes.bool,
 };
 EmailElement.defaultProps = {
   name: '',
@@ -1306,6 +1327,7 @@ EmailElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  noMargins: false,
 };
 
 /**
@@ -1603,6 +1625,191 @@ DateElement.defaultProps = {
 };
 
 /**
+ * Date range component.
+ * React wrapper for filtering date values between two bounds.
+ */
+class DateRangeElementBase extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      {
+        ...this.props.value,
+        [e.target.dataset.rangeBound]: e.target.value,
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const value = this.props.value || {};
+    const minID = `${this.props.id || this.props.name}_min`;
+    const maxID = `${this.props.id || this.props.name}_max`;
+    const minRangeLabel = this.props.minLabel ?
+      this.props.minLabel :
+      this.props.t('Minimum', {ns: 'loris'});
+    const maxRangeLabel = this.props.maxLabel ?
+      this.props.maxLabel :
+      this.props.t('Maximum', {ns: 'loris'});
+    const minLabel = this.props.labelPlacementTop && this.props.label ?
+      this.props.t('{{label}} Minimum', {
+        ns: 'loris',
+        label: this.props.label,
+      }) : minRangeLabel;
+    const maxLabel = this.props.labelPlacementTop && this.props.label ?
+      this.props.t('{{label}} Maximum', {
+        ns: 'loris',
+        label: this.props.label,
+      }) : maxRangeLabel;
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
+
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
+    }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+
+    const currentDate = new Date();
+    const currentDay = `${currentDate.getDate()}`.padStart(2, '0');
+    const currentMonth = `${currentDate.getMonth() + 1}`.padStart(2, '0');
+
+    let inputType = 'date';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-' + currentMonth + '-' + currentDay;
+    if (!this.props.dateFormat.match(/d/i)) {
+      inputType = 'month';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-' + currentMonth;
+    }
+
+    return (
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
+        {this.props.label && !this.props.labelPlacementTop && (
+          <InputLabel
+            label={this.props.label}
+            required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
+          />
+        )}
+        <div className={wrapperClass}>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <div style={{flex: 1}}>
+              <label htmlFor={minID}>
+                {minLabel}
+              </label>
+              <input
+                type={inputType}
+                className="form-control"
+                name={`${this.props.name}Min`}
+                data-range-bound="min"
+                id={minID}
+                min={minFullDate}
+                max={maxFullDate}
+                value={value.min || ''}
+                placeholder={minLabel}
+                required={this.props.required}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label htmlFor={maxID}>
+                {maxLabel}
+              </label>
+              <input
+                type={inputType}
+                className="form-control"
+                name={`${this.props.name}Max`}
+                data-range-bound="max"
+                id={maxID}
+                min={minFullDate}
+                max={maxFullDate}
+                value={value.max || ''}
+                placeholder={maxLabel}
+                required={this.props.required}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+DateRangeElementBase.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.shape({
+    min: PropTypes.string,
+    max: PropTypes.string,
+  }),
+  id: PropTypes.string,
+  maxYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  minYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  dateFormat: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
+  minLabel: PropTypes.string,
+  maxLabel: PropTypes.string,
+  t: PropTypes.func,
+};
+
+DateRangeElementBase.defaultProps = {
+  name: '',
+  label: '',
+  value: {},
+  id: null,
+  maxYear: '9999',
+  minYear: '1000',
+  dateFormat: 'YMd',
+  disabled: false,
+  required: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  t: function(text) {
+    return text;
+  },
+  labelPlacementTop: false,
+  minLabel: '',
+  maxLabel: '',
+};
+
+export const DateRangeElement = withTranslation('loris')(DateRangeElementBase);
+
+/**
  * Time Component
  * React wrapper for a <input type="time"> element.
  */
@@ -1781,70 +1988,31 @@ DateTimeElement.defaultProps = {
  */
 export class NumericElement extends Component {
   /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  /**
-   * Handle change
-   *
-   * @param {object} e - Event
-   */
-  handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    let errorMessage = null;
-    let elementClass = 'row form-group';
-    const wrapperClass =
-      this.props.label && !this.props.labelPlacementTop ?
-        'col-sm-9' : 'col-sm-12';
-
-    // Add error message
-    if (this.props.errorMessage) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
-    }
-
     return (
-      <div
-        className={elementClass}
-        style={this.props.labelPlacementTop ?
-          {display: 'flex', flexDirection: 'column'} : {}}>
-        {this.props.label && (
-          <InputLabel
-            label={this.props.label}
-            required={this.props.required}
-            fullWidth={this.props.labelPlacementTop}
-          />
-        )}
-        <div className={wrapperClass}>
-          <input
-            type="number"
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            min={this.props.min}
-            max={this.props.max}
-            step={this.props.step}
-            value={this.props.value || ''}
-            disabled={this.props.disabled}
-            required={this.props.required}
-            onChange={this.handleChange}
-          />
-          {errorMessage}
-        </div>
-      </div>
+      <Field
+        id={this.props.id}
+        label={this.props.label || undefined}
+        required={this.props.required}
+        disabled={this.props.disabled}
+        errorMessage={this.props.errorMessage}
+        labelPlacementTop={this.props.labelPlacementTop}
+      >
+        <NumberInput
+          name={this.props.name}
+          min={this.props.min}
+          max={this.props.max}
+          step={this.props.step}
+          value={this.props.value || ''}
+          onChange={(value) => this.props.onUserInput(
+            this.props.name, value
+          )}
+        />
+      </Field>
     );
   }
 }
@@ -1879,6 +2047,159 @@ NumericElement.defaultProps = {
   },
   labelPlacementTop: false,
 };
+
+/**
+ * Numeric range component.
+ * React wrapper for filtering a numeric value between two bounds.
+ */
+class NumericRangeElementBase extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      {
+        ...this.props.value,
+        [e.target.dataset.rangeBound]: e.target.value,
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const value = this.props.value || {};
+    const minID = `${this.props.id || this.props.name}_min`;
+    const maxID = `${this.props.id || this.props.name}_max`;
+    const minLabel = this.props.minLabel ?
+      this.props.minLabel :
+      this.props.t('Minimum', {ns: 'loris'});
+    const maxLabel = this.props.maxLabel ?
+      this.props.maxLabel :
+      this.props.t('Maximum', {ns: 'loris'});
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
+
+    return (
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}
+      >
+        {this.props.label && (
+          <InputLabel
+            label={this.props.label}
+            required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
+          />
+        )}
+        <div className={wrapperClass}>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={minID}>
+                {minLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name={`${this.props.name}Min`}
+                data-range-bound="min"
+                id={minID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.min || ''}
+                placeholder={minLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={maxID}>
+                {maxLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name={`${this.props.name}Max`}
+                data-range-bound="max"
+                id={maxID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.max || ''}
+                placeholder={maxLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+NumericRangeElementBase.propTypes = {
+  name: PropTypes.string.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  step: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.shape({
+    min: PropTypes.string,
+    max: PropTypes.string,
+  }),
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
+  minLabel: PropTypes.string,
+  maxLabel: PropTypes.string,
+  t: PropTypes.func,
+};
+
+NumericRangeElementBase.defaultProps = {
+  name: '',
+  min: null,
+  max: null,
+  step: '1',
+  label: '',
+  value: {},
+  id: null,
+  required: false,
+  disabled: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  t: function(text) {
+    return text;
+  },
+  labelPlacementTop: false,
+  minLabel: '',
+  maxLabel: '',
+};
+
+export const NumericRangeElement = withTranslation('loris')(
+  NumericRangeElementBase
+);
 
 /**
  * File Component
@@ -2463,11 +2784,17 @@ export class LorisElement extends Component {
     case 'date':
       elementHtml = (<DateElement {...elementProps} />);
       break;
+    case 'date-range':
+      elementHtml = (<DateRangeElement {...elementProps} />);
+      break;
     case 'time':
       elementHtml = (<TimeElement {...elementProps} />);
       break;
     case 'numeric':
       elementHtml = (<NumericElement {...elementProps} />);
+      break;
+    case 'number-range':
+      elementHtml = (<NumericRangeElement {...elementProps} />);
       break;
     case 'textarea':
       elementHtml = (<TextareaElement {...elementProps} />);
@@ -2617,7 +2944,7 @@ export class RadioElement extends React.Component {
   render() {
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.elementClass;
+    let elementClass = this.props.noMargins ? '' : this.props.elementClass;
     let required = this.props.required ? 'required' : null;
 
     // Add required asterix
@@ -2627,19 +2954,23 @@ export class RadioElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.elementClass + ' has-error';
+      elementClass = this.props.noMargins ?
+        'has-error' :
+        this.props.elementClass + ' has-error';
     }
     // Generate layout
     const layout = this.generateLayout();
 
     return (
       <div className={elementClass}>
-        <label className={'col-sm-3 control-label'}>
-          {this.props.label}
-          {errorMessage}
-          {requiredHTML}
-        </label>
-        <div className={'col-sm-9'}>
+        {!this.props.noMargins && (
+          <label className={'col-sm-3 control-label'}>
+            {this.props.label}
+            {errorMessage}
+            {requiredHTML}
+          </label>
+        )}
+        <div className={this.props.noMargins ? '' : 'col-sm-9'}>
           {layout}
         </div>
       </div>
@@ -2648,7 +2979,7 @@ export class RadioElement extends React.Component {
 }
 RadioElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -2656,6 +2987,7 @@ RadioElement.propTypes = {
   checked: PropTypes.string.isRequired,
   errorMessage: PropTypes.string,
   elementClass: PropTypes.string,
+  noMargins: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 RadioElement.defaultProps = {
@@ -2664,6 +2996,7 @@ RadioElement.defaultProps = {
   vertical: false,
   errorMessage: null,
   elementClass: 'row form-group',
+  noMargins: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -2822,9 +3155,11 @@ export default {
   TextboxElement,
   PasswordElement,
   DateElement,
+  DateRangeElement,
   TimeElement,
   DateTimeElement,
   NumericElement,
+  NumericRangeElement,
   FileElement: FileElementWithTranslation,
   StaticElement,
   HeaderElement,

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Profiles Component.
@@ -128,6 +129,7 @@ class Profiles extends Component {
    * @return {DOMRect}
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -138,7 +140,7 @@ class Profiles extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
@@ -147,7 +149,7 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('DCCID', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'DCCID',
@@ -155,7 +157,7 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -163,7 +165,7 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'Sex',
+        label: t('Sex', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Sex',
@@ -172,7 +174,7 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Cohort',
@@ -181,7 +183,7 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'External ID',
+        label: t('External ID', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'External ID',
@@ -189,50 +191,50 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'File',
+        label: t('File', {ns: 'genomic_browser', count: 1}),
         show: true,
         filter: {
           name: 'File',
           type: 'select',
           options: {
-            Y: 'Yes',
-            N: 'No',
+            Y: t('Yes', {ns: 'loris'}),
+            N: t('No', {ns: 'loris'}),
           },
         },
       },
       {
-        label: 'SNPs found',
+        label: t('SNPs found', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'SNPs found',
           type: 'select',
           options: {
-            Y: 'Yes',
-            N: 'No',
+            Y: t('Yes', {ns: 'loris'}),
+            N: t('No', {ns: 'loris'}),
           },
         },
       },
       {
-        label: 'CNVs found',
+        label: t('CNVs found', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'CNVs found',
           type: 'select',
           options: {
-            Y: 'Yes',
-            N: 'No',
+            Y: t('Yes', {ns: 'loris'}),
+            N: t('No', {ns: 'loris'}),
           },
         },
       },
       {
-        label: 'CPGs found',
+        label: t('CPGs found', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'CPGs found',
           type: 'select',
           options: {
-            Y: 'Yes',
-            N: 'No',
+            Y: t('Yes', {ns: 'loris'}),
+            N: t('No', {ns: 'loris'}),
           },
         },
       },
@@ -257,6 +259,7 @@ Profiles.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default Profiles;
+export default withTranslation(['genomic_browser', 'loris'])(Profiles);

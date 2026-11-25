@@ -93,12 +93,12 @@ class DicomArchive extends Component {
     case t('Metadata', {ns: 'dicom_archive'}): {
       const metaURL = loris.BaseURL
           + '/dicom_archive/viewDetails/?tarchiveID='
-          + row[t('TarchiveID', {ns: 'dicom_archive'})];
+          + row[t('TarchiveID', {ns: 'loris'})];
       result=<td><a href={metaURL}>{t(cell, {ns: 'dicom_archive'})}</a></td>;
       break;
     }
     case t('MRI Browser', {ns: 'dicom_archive'}): {
-      const sessionID = row[t('SessionID', {ns: 'dicom_archive'})];
+      const sessionID = row[t('SessionID', {ns: 'loris'})];
       if (sessionID === null || sessionID === '') {
         result = <td>&nbsp;</td>;
       } else {
@@ -127,7 +127,7 @@ class DicomArchive extends Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -180,8 +180,8 @@ class DicomArchive extends Component {
         type: 'select',
         options: options.sites,
       }},
-      {label: t('TarchiveID', {ns: 'dicom_archive'}), show: false},
-      {label: t('SessionID', {ns: 'dicom_archive'}), show: false},
+      {label: t('TarchiveID', {ns: 'loris'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('CenterID', {ns: 'dicom_archive'}), show: false},
       {label: t('IsPhantom', {ns: 'dicom_archive'}), show: false},
     ];

@@ -42,57 +42,57 @@
     "google"
   ],
   "rules": {
+    "array-callback-return": "off",
+    "indent": ["error", 2],
+    "jsdoc/check-tag-names": "error",
+    "jsdoc/check-types": "error",
+    "jsdoc/no-undefined-types": "error",
+    "jsdoc/require-param-description": "off",
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-returns-description": "off",
+    "jsdoc/tag-lines": ["error", "any", {"startLines": 1}],
+    "jsdoc/valid-types": "error",
     "max-len": ["error", {
         "code": 80,
         "tabWidth": 2,
         "ignoreComments": true
     }],
-    "indent": ["error", 2],
-    "no-unexpected-multiline": "off",
-    "no-unused-vars": "error",
-    "no-useless-escape": "off",
-    "no-dupe-keys": "off",
-    "react/no-direct-mutation-state": "off",
-    "react/jsx-no-target-blank": "off",
-    "react/no-unknown-property": "error",
-    "react/no-find-dom-node": "error",
-    "no-empty": "off",
-    "no-redeclare": "off",
-    "no-inner-declarations": "off",
-    "react/no-unescaped-entities": "off",
-    "react/no-deprecated": "off",
-    "react/no-string-refs": "off",
-    "no-case-declarations": "off",
-    "no-fallthrough": "error",
-    "react/jsx-no-undef": "off",
-    "react/prop-types": "error",
-    "no-undef": "error",
-    "react/jsx-key": "off",
-    "no-extra-semi": "error",
-    "no-prototype-builtins": "off",
-    "react/jsx-uses-react": "error",
-    "react/jsx-uses-vars": "error",
-    "prefer-rest-params": "error",
-    "array-callback-return": "off",
-    "require-jsdoc": "off",
-    "valid-jsdoc": "off",
-    "no-implicit-globals": "off",
-    "no-invalid-this": "off",
-    "no-alert": "off",
     "new-cap": ["error", {
       "capIsNewExceptions": ["DynamicTable"]
     }],
+    "no-alert": "off",
+    "no-case-declarations": "off",
     "no-console": ["warn", {
       "allow": ["info", "warn", "error"]
     }],
-    "jsdoc/require-param-description": "off",
-    "jsdoc/require-returns": "off",
-    "jsdoc/require-returns-description": "off",
-    "jsdoc/check-tag-names": "error",
-    "jsdoc/check-types": "error",
-    "jsdoc/valid-types": "error",
-    "jsdoc/no-undefined-types": "error",
-    "jsdoc/tag-lines": ["error", "any", {"startLines": 1}]
+    "no-dupe-keys": "off",
+    "no-empty": "off",
+    "no-extra-semi": "error",
+    "no-fallthrough": "error",
+    "no-implicit-globals": "off",
+    "no-inner-declarations": "off",
+    "no-invalid-this": "off",
+    "no-prototype-builtins": "off",
+    "no-redeclare": "off",
+    "no-undef": "error",
+    "no-unexpected-multiline": "off",
+    "no-unused-vars": "error",
+    "no-useless-escape": "off",
+    "prefer-rest-params": "error",
+    "react/jsx-key": "off",
+    "react/jsx-no-target-blank": "off",
+    "react/jsx-no-undef": "off",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "react/no-deprecated": "off",
+    "react/no-direct-mutation-state": "off",
+    "react/no-find-dom-node": "error",
+    "react/no-string-refs": "off",
+    "react/no-unescaped-entities": "off",
+    "react/no-unknown-property": "error",
+    "react/prop-types": "error",
+    "require-jsdoc": "off",
+    "valid-jsdoc": "off"
   },
   "overrides": [
     {
@@ -102,6 +102,9 @@
         "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "jsdoc/no-types": "error",
         "jsdoc/require-jsdoc": [
           "error",
           {"require": {
@@ -112,12 +115,10 @@
           }}
         ],
         "jsdoc/require-param-description": "error",
-        "jsdoc/require-returns-description": "error",
         "jsdoc/require-param-type": "off",
+        "jsdoc/require-returns-description": "error",
         "jsdoc/require-returns-type": "off",
-        "no-undef": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/no-explicit-any": "off"
+        "no-undef": "off"
       }
     },
     {
@@ -125,9 +126,9 @@
         "modules/**"
       ],
       "rules": {
+        "no-jquery/no-jquery-constructor": "warn",
         "no-jquery/no-other-methods": "warn",
         "no-jquery/no-other-utils": "error",
-        "no-jquery/no-jquery-constructor": "warn",
 
         // methods
         "no-jquery/no-animate": "error",
@@ -205,7 +206,6 @@
       "files": [
         "modules/candidate_parameters/**",
         "modules/dqt/**",
-        "modules/configuration/jsx/configuration_helper.js",
         "modules/brainbrowser/js/brainbrowser.loris.js"
       ],
       "rules": {

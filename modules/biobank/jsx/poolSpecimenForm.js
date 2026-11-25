@@ -1,4 +1,4 @@
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import {withTranslation} from 'react-i18next';
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
@@ -65,11 +65,6 @@ class PoolSpecimenForm extends React.Component {
    */
   setFilter(name, value) {
     const {filter} = clone(this.state);
-
-    if (name == 'candidateId') {
-      filter.sessionId = null;
-    }
-
     filter[name] = value;
     this.setState({filter});
   }
@@ -81,6 +76,7 @@ class PoolSpecimenForm extends React.Component {
    */
   setPoolList(containerId) {
     let {filter, list, pool, count} = clone(this.state);
+    const {options} = this.props;
 
     // Increase count
     count++;
@@ -92,7 +88,7 @@ class PoolSpecimenForm extends React.Component {
     // Set current global values
     if (isEmpty(list)) {
       filter.candidateId = specimen.candidateId;
-      filter.sessionId = specimen.sessionId;
+      filter.visitLabel = options.sessions[specimen.sessionId]?.label;
       filter.typeId = specimen.typeId;
       filter.centerId = container.centerId;
     }
@@ -141,6 +137,7 @@ class PoolSpecimenForm extends React.Component {
    * @return {Promise} - a resolved or rejected promise
    */
   validateListItem(containerId) {
+    const {t, options} = this.props;
     const {list, filter} = clone(this.state);
     const container = this.props.data.containers[containerId];
     const specimen = this.props.data.specimens[container.specimenId];
@@ -148,15 +145,15 @@ class PoolSpecimenForm extends React.Component {
     // Throw error if new list item does not meet requirements.
     if (!isEmpty(list)
       && (specimen.candidateId != filter.candidateId
-      || specimen.sessionId != filter.sessionId
+      || options.sessions[specimen.sessionId]?.label != filter.visitLabel
       || specimen.typeId != filter.typeId
       || container.centerId !== filter.centerId)
     ) {
       Swal.fire(
         {
-          title: this.props.t('Oops!', {ns: 'biobank'}),
-          text: this.props.t(`Specimens must be of the same PSCID,
-                    Visit Label, Type and Center`),
+          title: t('Oops!', {ns: 'biobank'}),
+          text: t('Specimens must be of the same PSCID,' +
+                    ' Visit Label, Type and Site', {ns: 'biobank'}),
           type: 'warning',
         }
       );
@@ -171,7 +168,7 @@ class PoolSpecimenForm extends React.Component {
    * @return {JSX}
    */
   render() {
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const {pool, list, filter, containerId, errors} = this.state;
 
     // generate barcode list from list object.
@@ -204,17 +201,19 @@ class PoolSpecimenForm extends React.Component {
       <div className='row'>
         <div className='col-sm-10 col-sm-offset-1'>
           <StaticElement
-            label={this.props.t('Pooling Note', {ns: 'biobank'})}
-            text={this.props.t(`Select or Scan the specimens to be pooled.
-                  Specimens must have a Status of 'Available', have a Quantity
-                  of greater than 0, and share the same Type, PSCID, Visit
-                  Label and Current Site. Pooled specimens cannot already
-                  belong to a pool. Once pooled, the Status of specimen will be
-                  changed to 'Dispensed' and there Quantity set to '0'`)}
+            label={t('Pooling Note', {ns: 'biobank'})}
+            text={t('Select or Scan the specimens to be pooled.' +
+              ' Specimens must have a Status of \'Available\', have a' +
+              ' Quantity of greater than 0, and share the same Type,' +
+              ' PSCID, Visit Label and Current Site. Pooled specimens' +
+              ' cannot already belong to a pool. Once pooled,' +
+              ' the Status of specimen will be changed to \'Dispensed\'' +
+              ' and their Quantity set to \'0\'.'
+            , {ns: 'biobank'})}
           />
           <SearchableDropdown
             name='typeId'
-            label={this.props.t('Specimen Type', {ns: 'biobank'})}
+            label={t('Specimen Type', {ns: 'biobank'})}
             onUserInput={this.setFilter}
             disabled={!isEmpty(list)}
             value={filter.typeId}
@@ -222,28 +221,26 @@ class PoolSpecimenForm extends React.Component {
           />
           <SearchableDropdown
             name='candidateId'
-            label={this.props.t('PSCID', {ns: 'loris'})}
+            label={t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFilter}
             disabled={!isEmpty(list)}
             value={filter.candidateId}
             options={mapFormOptions(options.candidates, 'pscid')}
           />
           <SearchableDropdown
-            name='sessionId'
-            label={this.props.t('Visit Label', {ns: 'loris'})}
+            name='visitLabel'
+            label={t('Visit Label', {ns: 'loris'})}
             onUserInput={this.setFilter}
-            disabled={!isEmpty(list) || !filter.candidateId}
-            value={filter.sessionId}
-            options={mapFormOptions(
-              (options?.candidates?.[filter.candidateId] || {}),
-              'label'
-            )}
+            disabled={!isEmpty(list)}
+            value={filter.visitLabel}
+            options={options.visitLabels}
           />
           <div className='row'>
             <div className='col-xs-6'>
-              <h4>Barcode Input</h4>
+              <h4>{t('Barcode Input', {ns: 'biobank'})}</h4>
               <div className='form-top'/>
               <BarcodeInput
+                t={t}
                 list={list}
                 data={data}
                 filter={filter}
@@ -255,7 +252,7 @@ class PoolSpecimenForm extends React.Component {
               />
             </div>
             <div className='col-xs-6'>
-              <h4>Barcode List</h4>
+              <h4>{t('Barcode List', {ns: 'biobank'})}</h4>
               <div className='form-top'/>
               <div className='preparation-list'>
                 {barcodeList}
@@ -265,7 +262,7 @@ class PoolSpecimenForm extends React.Component {
           <div className='form-top'/>
           <TextboxElement
             name='label'
-            label={this.props.t('Label', {ns: 'biobank'})}
+            label={t('Label', {ns: 'biobank'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.label}
@@ -273,7 +270,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <TextboxElement
             name='quantity'
-            label={this.props.t('Quantity', {ns: 'biobank'})}
+            label={t('Quantity', {ns: 'biobank'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.quantity}
@@ -281,7 +278,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <SelectElement
             name='unitId'
-            label={this.props.t('Unit', {ns: 'biobank'})}
+            label={t('Unit', {ns: 'biobank'})}
             options={specimenUnits}
             onUserInput={this.setPool}
             required={true}
@@ -290,7 +287,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <DateElement
             name='date'
-            label={this.props.t('Date', {ns: 'loris'})}
+            label={t('Date', {ns: 'loris'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.date}
@@ -298,7 +295,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <TimeElement
             name='time'
-            label={this.props.t('Time', {ns: 'loris'})}
+            label={t('Time', {ns: 'loris'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.time}
@@ -320,15 +317,15 @@ class PoolSpecimenForm extends React.Component {
       );
     };
     return (
-      <Modal
-        title={this.props.t('Pool Specimens', {ns: 'biobank'})}
+      <FormModal
+        title={t('Pool Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
         onSubmit={handleSubmit}
         throwWarning={true}
       >
         {form}
-      </Modal>
+      </FormModal>
     );
   }
 }
@@ -356,6 +353,7 @@ PoolSpecimenForm.propTypes = {
     }).isRequired,
     candidates: PropTypes.arrayOf(PropTypes.string),
     sessions: PropTypes.arrayOf(PropTypes.string),
+    visitLabels: PropTypes.object,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
@@ -372,7 +370,7 @@ class BarcodeInput extends PureComponent {
    * @return {JSX}
    */
   render() {
-    const {list, data, filter, options, errors, containerId} = this.props;
+    const {t, list, data, filter, options, errors, containerId} = this.props;
 
     // Restrict list of barcodes to only those that would be valid.
     const barcodesPrimary = Object.values(data.containers)
@@ -388,8 +386,9 @@ class BarcodeInput extends PureComponent {
 
             const candidateMatch = !filter.candidateId
               || specimen.candidateId == filter.candidateId;
-            const sessionMatch = !filter.sessionId
-              || specimen.sessionId == filter.sessionId;
+            const visitLabelMatch = !filter.visitLabel
+              || options.sessions[specimen.sessionId]?.label
+                == filter.visitLabel;
             const typeMatch = !filter.typeId
               || specimen.typeId == filter.typeId;
 
@@ -398,7 +397,7 @@ class BarcodeInput extends PureComponent {
                 && specimen.poolId == null
                 && !inList
                 && candidateMatch
-                && sessionMatch
+                && visitLabelMatch
                 && typeMatch
             ) {
               result[container.id] = container.barcode;
@@ -415,7 +414,7 @@ class BarcodeInput extends PureComponent {
     return (
       <SearchableDropdown
         name={'containerId'}
-        label={this.props.t('Specimen', {ns: 'biobank'})}
+        label={t('Specimen', {ns: 'biobank', count: 1})}
         onUserInput={handleInput}
         options={barcodesPrimary}
         value={containerId}
@@ -443,7 +442,7 @@ BarcodeInput.propTypes = {
   }).isRequired,
   filter: PropTypes.shape({
     candidateId: PropTypes.string,
-    sessionId: PropTypes.string,
+    visitLabel: PropTypes.string,
     typeId: PropTypes.string,
   }).isRequired,
   options: PropTypes.shape({
@@ -459,6 +458,7 @@ BarcodeInput.propTypes = {
         })
       ).isRequired,
     }).isRequired,
+    sessions: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   errors: PropTypes.shape({
     total: PropTypes.string,

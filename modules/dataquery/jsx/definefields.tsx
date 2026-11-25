@@ -11,18 +11,18 @@ import {useTranslation} from 'react-i18next';
 /**
  * Displays a single field to be selected for querying
  *
- * @param {object} props - react props
- * @param {APIQueryField?} props.selected - the selected field
- * @param {boolean} props.scrollTo - If true, scroll to this element on load.
- * @param {function} props.resetScrollTo - reset the scrollTo effect
- * @param {FieldDictionary} props.value - The dictionary for this field
- * @param {string} props.module - the module containing this field
- * @param {string} props.category - The category of this field
- * @param {string} props.item - The field name
- * @param {function} props.onFieldToggle - callback when the item is clicked
- * @param {function} props.onChangeVisitList - callback when the selected visits are changed for this item.
- * @param {string[]} props.defaultVisits - The default visits when the field is added
- * @returns {React.ReactElement} - A single field
+ * @param props - react props
+ * @param props.selected - the selected field
+ * @param props.scrollTo - If true, scroll to this element on load.
+ * @param props.resetScrollTo - reset the scrollTo effect
+ * @param props.value - The dictionary for this field
+ * @param props.module - the module containing this field
+ * @param props.category - The category of this field
+ * @param props.item - The field name
+ * @param props.onFieldToggle - callback when the item is clicked
+ * @param props.onChangeVisitList - callback when the selected visits are changed for this item.
+ * @param props.defaultVisits - The default visits when the field is added
+ * @returns - A single field
  */
 function QueryField(props: {
     selected: APIQueryField|undefined,
@@ -70,8 +70,7 @@ function QueryField(props: {
      * Callback for React Select to handle selected option
      * change
      *
-     * @param {VisitOption[]} newvisits - The newly selected visits
-     * @returns {void}
+     * @param newvisits - The newly selected visits
      */
     const selected = (newvisits: readonly VisitOption[]) => {
       props.onChangeVisitList(
@@ -113,8 +112,8 @@ function QueryField(props: {
                         /**
                          * Adds appropriate zIndex to the react select's base CSS
                          *
-                         * @param {object} base - The current CSS
-                         * @returns {object} New CSS with z-index added
+                         * @param base - The current CSS
+                         * @returns New CSS with z-index added
                          */
                         (base) => ({...base, zIndex: 9999}),
             }
@@ -151,25 +150,25 @@ function QueryField(props: {
 /**
  * Render the define fields tab
  *
- * @param {object} props - React props
- * @param {APIQueryField[]} props.selected - The currently selected fields
- * @param {function} props.setSelected - Function to set the currently selected fields
- * @param {function} props.onCategoryChange - Callback when the selected category changes
- * @param {function} props.onFieldToggle - Callback when an item is clicked in the field list
- * @param {function} props.onChangeVisitList - Callback when the visits are changed for a field
- * @param {function} props.onChangeDefaultVisits - Callback when the default visits are changed
- * @param {function} props.onAddAll - Callback when the "Add All" button is clicked
- * @param {function} props.onRemoveAll - Callback when the "Remove All" button is clicked
- * @param {function} props.onClearAll - Callback when the "Clear All" button is clicked
- * @param {string} props.module - The module of the currently selected category
- * @param {string} props.category - The currently selected category
- * @param {FullDictionary} props.fulldictionary - The dictionary of all elements
- * @param {function} props.removeField - callback to remove a single field
- * @param {string[]} props.defaultVisits - The default visits
- * @param {DictionaryCategory} props.displayedFields - The category currently selected to display
- * @param {CategoriesAPIReturn} props.allCategories - all categories that exist
- * @param {string[]} props.allVisits - All (non-phantom) visits for this LORIS instance
- * @returns {React.ReactElement} - The Define Fields page
+ * @param props - React props
+ * @param props.selected - The currently selected fields
+ * @param props.setSelected - Function to set the currently selected fields
+ * @param props.onCategoryChange - Callback when the selected category changes
+ * @param props.onFieldToggle - Callback when an item is clicked in the field list
+ * @param props.onChangeVisitList - Callback when the visits are changed for a field
+ * @param props.onChangeDefaultVisits - Callback when the default visits are changed
+ * @param props.onAddAll - Callback when the "Add All" button is clicked
+ * @param props.onRemoveAll - Callback when the "Remove All" button is clicked
+ * @param props.onClearAll - Callback when the "Clear All" button is clicked
+ * @param props.module - The module of the currently selected category
+ * @param props.category - The currently selected category
+ * @param props.fulldictionary - The dictionary of all elements
+ * @param props.removeField - callback to remove a single field
+ * @param props.defaultVisits - The default visits
+ * @param props.displayedFields - The category currently selected to display
+ * @param props.allCategories - all categories that exist
+ * @param props.allVisits - All (non-phantom) visits for this LORIS instance
+ * @returns - The Define Fields page
  */
 function DefineFields(props: {
     selected: APIQueryField[],
@@ -250,8 +249,8 @@ function DefineFields(props: {
      * Return true if this element equals
      * the selected.
      *
-     * @param {APIQueryField} element - The element
-     * @returns {boolean} - true if equal
+     * @param element - The element
+     * @returns - true if equal
      */
     const equalField = (element: APIQueryField) => {
       return (element.module == props.module
@@ -277,7 +276,7 @@ function DefineFields(props: {
   /**
    * Set the filter that is being applied to displayed fields
    *
-   * @param {React.ChangeEventHandler<HTMLInputElement>} e - The mouse event
+   * @param e - The mouse event
    */
   const setFilter = (e: React.FormEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -286,8 +285,6 @@ function DefineFields(props: {
 
   /**
    * Add all items from the selected category to selected fields
-   *
-   * @returns {void}
    */
   const addAll = () => {
     const toAdd = displayed.map((item) => {
@@ -311,8 +308,6 @@ function DefineFields(props: {
   };
   /**
    * Removes all items from the currently selected category
-   *
-   * @returns {void}
    */
   const removeAll = () => {
     const toRemove = displayed.map((item) => {
@@ -340,12 +335,25 @@ function DefineFields(props: {
       const selectedVisits = props.defaultVisits.map((el) => {
         return {value: el, label: el};
       });
+      const selectAllOption = {
+        value: 'ALL',
+        label: t('Select All', {ns: 'dataquery'}),
+      };
+      const visitOptions = selectedVisits.length < allVisits.length ?
+        [selectAllOption, ...allVisits] :
+        allVisits;
       defaultVisits = <div style={{paddingBottom: '1em', display: 'flex'}}>
         <h4 style={{paddingRight: '1ex'}}>{t('Default Visits',
           {ns: 'dataquery'})}</h4>
-        <Select options={allVisits}
+        <Select options={visitOptions}
           isMulti
-          onChange={props.onChangeDefaultVisits}
+          onChange={(newVisits) => {
+            if (newVisits.some((visit) => visit.value === 'ALL')) {
+              props.onChangeDefaultVisits(allVisits);
+              return;
+            }
+            props.onChangeDefaultVisits(newVisits);
+          }}
           placeholder={t('Select Visits', {ns: 'dataquery'})}
           noOptionsMessage={() => t('No options', {ns: 'loris'})}
           menuPortalTarget={document.body}
@@ -354,8 +362,8 @@ function DefineFields(props: {
                             /**
                              * Adds appropriate zIndex to the react select's base CSS
                              *
-                             * @param {object} base - The current CSS
-                             * @returns {object} New CSS with z-index added
+                             * @param base - The current CSS
+                             * @returns New CSS with z-index added
                              */
                             (base) => ({...base, zIndex: 9999}),
             }
@@ -474,13 +482,13 @@ function DefineFields(props: {
 /**
  * Render the selected fields
  *
- * @param {object} props - React props
- * @param {FullDictionary} props.fulldictionary - The fully loaded data dictionary for known modules
- * @param {function} props.snapToView - Function which will snap the item to the viewport, changing pages if necessary
- * @param {function} props.removeField - Remove a field from selected fields
- * @param {APIQueryField[]} props.selected - The currently selected fields
- * @param {function} props.setSelected - Function to set the currently selected fields
- * @returns {React.ReactElement} - The selected field list
+ * @param props - React props
+ * @param props.fulldictionary - The fully loaded data dictionary for known modules
+ * @param props.snapToView - Function which will snap the item to the viewport, changing pages if necessary
+ * @param props.removeField - Remove a field from selected fields
+ * @param props.selected - The currently selected fields
+ * @param props.setSelected - Function to set the currently selected fields
+ * @returns - The selected field list
  */
 function SelectedFieldList(props: {
     fulldictionary: FullDictionary,
@@ -496,8 +504,6 @@ function SelectedFieldList(props: {
   /**
    * Move the currently selected item from draggingIdx to
    * droppingIdx.
-   *
-   * @returns {void}
    */
   const moveSelected = () => {
     if (draggingIdx=== null || droppingIdx === null) {
@@ -527,8 +533,7 @@ function SelectedFieldList(props: {
     /**
      * Removes an item from the selected
      *
-     * @param {APIQueryField} item - The field to remove
-     * @returns {void}
+     * @param item - The field to remove
      */
     const removeField = (item: APIQueryField) => {
       props.removeField(item.module, item.category, item.field);

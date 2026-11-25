@@ -21,9 +21,9 @@ export type Filter = {
 /**
  * filtersReducer
  *
- * @param {object} state - The current state
- * @param {Action} action - The action
- * @returns {object} - The updated state
+ * @param state - The current state
+ * @param action - The action
+ * @returns - The updated state
  */
 export const filtersReducer = (
   state: {[key: string]: Filter} = {},

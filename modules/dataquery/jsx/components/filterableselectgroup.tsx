@@ -15,12 +15,12 @@ type SelectGroup = {
  * Render a select with option groups that can be
  * filtered
  *
- * @param {object} props - react props
- * @param {function} props.onChange - Callback on selection change
- * @param {string?} props.placeholder - An optional placeholder value when no elements are selected
- * @param {object} props.groups - Groups to select the dropdown into
- * @param {function} props.mapGroupName - A mapper from backend to frontend name for groups
- * @returns {React.ReactElement} - The element
+ * @param props - react props
+ * @param props.onChange - Callback on selection change
+ * @param props.placeholder - An optional placeholder value when no elements are selected
+ * @param props.groups - Groups to select the dropdown into
+ * @param props.mapGroupName - A mapper from backend to frontend name for groups
+ * @returns - The element
  */
 function FilterableSelectGroup(props: {
     onChange: (module: string, value: string) => void,
@@ -57,10 +57,9 @@ function FilterableSelectGroup(props: {
   /**
    * Callback to call when the selection changes.
    *
-   * @param {object} e - The click event callback
-   * @param {string} e.module - The module
-   * @param {string} e.value - The value
-   * @returns {void}
+   * @param e - The click event callback
+   * @param e.module - The module
+   * @param e.value - The value
    */
   const selected = (e: SingleValue<SelectGroup>) => {
     // The callback should be (e: SelectOption) but typescript
@@ -80,8 +79,8 @@ function FilterableSelectGroup(props: {
                     /**
                      * Add a z-index to ensure the element stays visible
                      *
-                     * @param {object} base - the base CSS
-                     * @returns {object} - the new CSS with z-index added
+                     * @param base - the base CSS
+                     * @returns - the new CSS with z-index added
                      */
                     (base) => ({...base, zIndex: 9999})}
         }

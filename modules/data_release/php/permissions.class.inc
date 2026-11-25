@@ -84,7 +84,12 @@ class Permissions extends \NDB_Page
     {
         $action = $request->getQueryParams()['action'];
         if (empty($action)) {
-            return new \LORIS\Http\Response\JSON\BadRequest("Missing action");
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext(
+                    "data_release",
+                    "Missing action"
+                )
+            );
         }
         switch ($action) {
         case 'add':
@@ -94,7 +99,12 @@ class Permissions extends \NDB_Page
         case 'remove':
             return $this->_removePermissions($request);
         default:
-            return new \LORIS\Http\Response\JSON\BadRequest("Invalid action");
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext(
+                    "data_release",
+                    "Invalid action"
+                )
+            );
         }
     }
 
@@ -112,12 +122,12 @@ class Permissions extends \NDB_Page
         $posted = $request->getParsedBody();
         if (empty($posted)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "No data was sent in the POST request"
+                dgettext("data_release", "No data was sent in the POST request")
             );
         }
         if (empty($posted['userid'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Missing user to grant access to"
+                dgettext("data_release", "Missing user to grant access to")
             );
         }
         $releaseid = $posted['data_release_id'];
@@ -173,7 +183,10 @@ class Permissions extends \NDB_Page
             }
         } else {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Must select either specific file OR version to grant access to",
+                dgettext(
+                    "data_release",
+                    "Must select either specific file OR version to grant access to"
+                )
             );
         }
 
@@ -201,7 +214,7 @@ class Permissions extends \NDB_Page
         $body = $request->getParsedBody();
         if ($body === null || !is_array($body)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "No valid data was sent in the request"
+                dgettext("data_release", "No valid data was sent in the request")
             );
         }
 
@@ -286,12 +299,12 @@ class Permissions extends \NDB_Page
 
         if (empty($posted)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "No data was sent in the POST request"
+                dgettext("data_release", "No data was sent in the POST request")
             );
         }
         if (empty($posted['userid'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Missing user to remove access from"
+                dgettext("data_release", "Missing user to remove access from")
             );
         }
 
@@ -312,7 +325,7 @@ class Permissions extends \NDB_Page
             );
         } else {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Must select a specific file",
+                dgettext("data_release", "Must select a specific file"),
             );
         }
 

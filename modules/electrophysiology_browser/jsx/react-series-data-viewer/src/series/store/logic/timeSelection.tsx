@@ -21,9 +21,9 @@ export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 /**
  * roundTime
  *
- * @param {number} value - The initial time value
- * @param {number} decimals - The desired decimal precision
- * @returns {number} - The value rounded to 'decimal' decimal places
+ * @param value - The initial time value
+ * @param decimals - The desired decimal precision
+ * @returns - The value rounded to 'decimal' decimal places
  */
 export const roundTime = (value, decimals = 3) => {
   return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
@@ -32,8 +32,8 @@ export const roundTime = (value, decimals = 3) => {
 /**
  * createTimeSelectionEpic
  *
- * @param {Function} fromState - A function to parse the current state
- * @returns {Observable<Action>} - A stream of actions
+ * @param fromState - A function to parse the current state
+ * @returns - A stream of actions
  */
 export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
@@ -52,10 +52,10 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
   /**
    * initInterval
    *
-   * @param {Array} root - An array
-   * @param {number} root."0" - The mouse position
-   * @param {object} root."1" - The state
-   * @returns {Function} - Action creator for dispatching actions
+   * @param root - An array
+   * @param root."0" - The mouse position
+   * @param root."1" - The state
+   * @returns - Action creator for dispatching actions
    */
   const initInterval = ([position, state]) => {
     const {interval} = R.clone(fromState(state));
@@ -66,10 +66,10 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
   /**
    * updateInterval
    *
-   * @param {Array} root - An array
-   * @param {number} root."0" - The mouse position
-   * @param {object} root."1" - The state
-   * @returns {Function} - Action creator for dispatching actions
+   * @param root - An array
+   * @param root."0" - The mouse position
+   * @param root."1" - The state
+   * @returns - Action creator for dispatching actions
    */
   const updateInterval = ([position, state]) => {
     const {interval, timeSelection} = R.clone(fromState(state));

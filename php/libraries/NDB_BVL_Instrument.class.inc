@@ -25,6 +25,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
+     * Whether the instrument was imported from REDCap.
+     *
+     * REDCap field names are not subject to LORIS's special handling of
+     * fields whose names end in "_status".
+     */
+    protected bool $isRedcap = false;
+
+    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -278,10 +286,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         } else {
             $obj->commentID = $commentID;
-            $timepoint      = \TimePoint::singleton($obj->getSessionID());
-            $ilang          = $timepoint->getLanguage();
-            \putenv("LANG=" . $ilang->code . ".utf8");
-            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
 
         // Set page name to testName
@@ -291,7 +295,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
+
+            $timepoint = \TimePoint::singleton($obj->getSessionID());
+            $ilang     = $timepoint->getLanguage();
+            \putenv("LANG=" . $ilang->code . ".utf8");
+            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
+
         if (file_exists($base."project/instruments/$instrument.meta")) {
             $obj->loadInstrumentMetadata(
                 $base . "project/instruments/$instrument.meta"
@@ -337,6 +347,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public function isAccessibleBy(\User $user) : bool
     {
         $DB = $this->loris->getDatabaseConnection();
+
+        //check if user has site's permission
+        $sessionID = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($sessionID);
+        if (!$timepoint->isAccessibleBy($user)) {
+            return false;
+        }
 
         $instrumentPermissions = $DB->pselectCol(
             "SELECT code FROM testnames_permissions_rel rel
@@ -390,28 +407,64 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->tpl_data['candidate'] = $candidate->getData();
         $this->tpl_data['timePoint'] = $timePoint->getData();
-        // convert DoB And EDC date to years and months
-        // DoB to Derived Age
-        $dob = $candidate->getCandidateDoB();
-        if (is_string($dob) && strtotime($dob) !== false) {
-            $dob_date     = new \DateTime($dob);
-            $current_date = new \DateTime();
-            $dob_year     = abs($current_date->diff($dob_date)->y);
-            $dob_month    = abs($current_date->diff($dob_date)->m);
-            $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
-                . $dob_month . dgettext("timepoint_list", " m");
-            $this->tpl_data['dob_age'] = $dob_age;
+
+        $this->tpl_data['display'] = $timePoint->getData();
+
+        // Ideally this would be handled by $this->timePoint->getDate but other code
+        // depends on Date_visit being a string
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE,
+        );
+        if (isset($this->tpl_data['display']['Date_screening'])) {
+            $this->tpl_data['display']['Date_screening'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_screening'])
+            );
         }
-        // EDC to EDC Age
-        $edc = $candidate->getCandidateEDC();
-        if (is_string($edc) && strtotime($edc) !== false) {
-            $edc_date     = new DateTime($edc);
-            $current_date = new DateTime();
-            $edc_year     = abs($current_date->diff($edc_date)->y);
-            $edc_month    = abs($current_date->diff($edc_date)->m);
-            $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
-                . $edc_month . dgettext("timepoint_list", " m");
-            $this->tpl_data['edc_age'] = $edc_age;
+        if (isset($this->tpl_data['display']['Date_visit'])) {
+            $this->tpl_data['display']['Date_visit'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_visit'])
+            );
+        }
+        if (isset($this->tpl_data['display']['Date_approval'])) {
+            $this->tpl_data['display']['Date_approval'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_approval'])
+            );
+        }
+
+        // convert DoB date to age and months and rename it to Derived Age
+        $dob = $candidate->getData();
+        if (isset($dob['DoB']) && is_string($dob['DoB'])) {
+            $dob_date = date_create_from_format('Y-m-d', $dob['DoB']);
+            if ($dob_date !== false) {
+                $current_date = new \DateTime();
+                $dob_year     = abs($current_date->diff($dob_date)->y);
+                $dob_month    = abs($current_date->diff($dob_date)->m);
+                $dob_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $dob_year,
+                    $dob_month,
+                );
+                $this->tpl_data['dob_age'] = $dob_age;
+            }
+
+        }
+        // convert EDC date to age and months and rename it to EDC Age
+        $edc = $candidate->getData();
+        if (isset($edc['EDC']) && is_string($edc['EDC'])) {
+            $edc_date = date_create_from_format('Y-m-d', $edc['EDC']);
+            if ($edc_date !== false) {
+                $current_date = new \DateTime();
+                $edc_year     = abs($current_date->diff($edc_date)->y);
+                $edc_month    = abs($current_date->diff($edc_date)->m);
+                $edc_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $edc_year,
+                    $edc_month,
+                );
+                $this->tpl_data['edc_age'] = $edc_age;
+            }
         }
     }
 
@@ -736,6 +789,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Determine whether a field is a LORIS response-status field.
+     *
+     * @param string $field The field name
+     *
+     * @return bool
+     */
+    protected function isStatusField(string $field): bool
+    {
+        return !$this->isRedcap && str_ends_with($field, '_status');
+    }
+
+    /**
      * This removes all the value of any field which has its accompagning
      * _status field set.
      *
@@ -748,7 +813,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         //Remove the values of all fields who have had statuses assigned
         foreach (array_keys($values) AS $field) {
-            if (substr($field, -7)=="_status") {
+            if ($this->isStatusField($field)) {
                 if (!empty($values[$field])) {
                     $baseField          = substr($field, 0, (strlen($field)-7));
                     $values[$baseField] = "";
@@ -1216,7 +1281,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     if (is_array($result)) {
                         $errors += $result;
                     }
-                } else if (substr($elname, -7) != "_status"
+                } else if (!$this->isStatusField($elname)
                     && !in_array($elname, ["page", "subtest"])
                 ) {
                     $errors[$elname] = "Required.";
@@ -2435,7 +2500,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 		    JOIN test_names tn ON (tn.ID=f.TestID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandidateID=c.ID)
-                     
+
 		    $where";
             \Profiler::checkpoint("Running query (table instrument): " . $query);
             $data = $db->pselect($query, $params);
@@ -2934,8 +2999,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $Responses = $this->getInstanceData();
 
         foreach ($tpl_data['questions'] as $key => &$row) {
-            $isStatusField = $row['SourceField']
-                === $tpl_data['questions'][$key-1]['SourceField']."_status";
+            $isStatusField = false;
+            if ($key > 0 && $this->isStatusField($row['SourceField'])) {
+                $previousQuestion    = $tpl_data['questions'][$key-1];
+                $previousSourceField = $previousQuestion['SourceField'];
+                $isStatusField       = $row['SourceField']
+                    === $previousSourceField . '_status';
+            }
+
             if (isset($Responses[$row['SourceField']])) {
                 // Consider status fields
                 if ($isStatusField) {
@@ -3083,7 +3154,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             unset($formArray['elements'][$name]);
         }
-        if (strpos($name, "_status") === false) {
+        if (!$this->isStatusField($name)) {
             $this->_toJSONParseSmarty($element);
         } else {
             unset($formArray['elements'][$name]);
@@ -3326,7 +3397,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $user      = $request->getAttribute("user");
         $sessionID = $this->getSessionID();
         if ($sessionID !== null) {
-            $timepoint = \Timepoint::singleton($sessionID);
+            $timepoint = \TimePoint::singleton($sessionID);
         }
 
         // create an instrument status object
@@ -3433,7 +3504,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $instrumentNames = [];
         foreach ($instrumentsList as $testName => $instrument) {
             $fullName = $instrument->getFullName();
-            $instrumentNames[$testName] =$fullName;
+            $instrumentNames[$testName] = dgettext(
+                'test_names',
+                $fullName
+            );
         }
 
         // sort array by instrument name for modules that rely on ordering

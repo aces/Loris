@@ -1,7 +1,5 @@
 <img src="./htdocs/images/LORIS_logo.svg" width="35%">
 
-[![Build Status](https://travis-ci.org/aces/Loris.svg?branch=main)](https://travis-ci.org/aces/Loris)
-[![Minimum PHP Version](https://img.shields.io/travis/php-v/aces/loris/main?color=787CB5)](https://php.net/)
 [![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
 
 # LORIS Neuroimaging Platform
@@ -10,25 +8,11 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 
 * Try the LORIS demo instance at https://demo.loris.ca.
 
-This Readme covers installation of LORIS version <b>28.0</b> on <b>Ubuntu</b>.
-
-([CentOS Readme also available](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md)).
-
-Please consult the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md) for more information. These installation instructions and more LORIS documentation for developers can also be found on the [LORIS ReadTheDocs website](https://acesloris.readthedocs.io/en/latest/).
-
-#### Heroku
-
-You can try LORIS on Heroku before installing it on your system. The project management and clinical data management functions of LORIS are available for experimenting with. Imaging functionality is not yet available.
-
-Deploy and log in with username *admin* and the password that's set up during deployment via ClearDB.
-
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/main)
-<br>
-
 ## Installation
 
 Consult the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md) for more information.
 
+These installation instructions and more LORIS documentation for developers can also be found on the [LORIS ReadTheDocs website](https://acesloris.readthedocs.io/en/latest/).
 
 ## Community
 

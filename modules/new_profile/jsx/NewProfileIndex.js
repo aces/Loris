@@ -11,7 +11,11 @@ import {
   FormElement,
   ButtonElement,
   FieldsetElement,
+  NumericElement,
+  TextareaElement,
 } from 'jsx/Form';
+
+import * as Candidate from './candidates';
 
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
@@ -122,12 +126,22 @@ class NewProfileIndex extends React.Component {
     const formData = this.state.formData;
     const configData = this.state.configData;
 
+    const parameters = {};
+    this.getVisibleExtraParameters().forEach((parameter) => {
+      const name = `PTID${parameter.ParameterTypeID}`;
+      const value = formData[name];
+      if (value !== undefined && value !== '') {
+        parameters[parameter.ParameterTypeID] = value;
+      }
+    });
+
     let candidateObject = {
       'Candidate': {
         'Project': formData.project,
         'DoB': formData.dobDate,
         'Sex': formData.sex,
         'Site': configData.site[formData.site],
+        'Parameters': parameters,
       },
     };
 
@@ -137,69 +151,42 @@ class NewProfileIndex extends React.Component {
     if (this.state.configData['pscidSet'] === 'true') {
       candidateObject.Candidate.PSCID = formData.pscid;
     }
+    if (this.state.configData.useRegistrationCohort) {
+      candidateObject.Candidate.RegistrationCohort =
+        this.state.configData.cohort[formData.project][formData.cohort];
+    }
 
     this.setState({submitDisabled: true});
 
-    fetch(this.props.submitURL, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      body: JSON.stringify(candidateObject),
-    })
-      .then((resp) => {
-        if (resp.ok && resp.status === 201) {
-          resp.json().then((data) => {
-            swal.fire({
-              icon: 'success',
-              title: this.props.t('New Candidate Created',
-                {ns: 'new_profile'}),
-              html: this.props.t('DCCID',
-                {ns: 'loris'}) + ': ' + data.CandID + ' '
-                  + this.props.t('PSCID',
-                    {ns: 'loris'}) + ': ' + data.PSCID + ' ',
-              confirmButtonText: this.props.t('Access Profile',
-                {ns: 'new_profile'}),
-              showCancelButton: true,
-              cancelButtonColor: '#3085d6',
-              cancelButtonText: this.props.t('Recruit another candidate',
-                {ns: 'new_profile'}),
-            }).then((result) => {
-              window.location.href = result.value === true
-                ? '/' + data.CandID
-                : window.location.href;
-            });
-          })
-            .catch((error) => {
-              swal.fire({
-                icon: 'error',
-                title: this.props.t('Error!', {ns: 'loris'}),
-                text: error,
-                confirmButtonText: t('OK', {ns: 'loris'}),
-              });
-              console.error(error);
-            });
-        } else {
-          resp.json().then((message) => {
-            // enable button for form resubmission.
-            this.setState({submitDisabled: false});
-            swal.fire(this.props.t('Error!',
-              {ns: 'loris'}), message.error, 'error');
-          }).catch((error) => {
-            swal.fire({
-              icon: 'error',
-              title: this.props.t('Error!', {ns: 'loris'}),
-              text: error,
-              confirmButtonText: t('OK', {ns: 'loris'}),
-            });
-            console.error(error);
-          });
-        }
+    Candidate.create(candidateObject)
+      .then((data) => {
+        swal.fire({
+          icon: 'success',
+          title: this.props.t('New Candidate Created',
+            {ns: 'new_profile'}),
+          html: this.props.t('DCCID',
+            {ns: 'loris'}) + ': ' + data.CandID + ' '
+              + this.props.t('PSCID',
+                {ns: 'loris'}) + ': ' + data.PSCID + ' ',
+          confirmButtonText: this.props.t('Access Profile',
+            {ns: 'new_profile'}),
+          showCancelButton: true,
+          cancelButtonColor: '#3085d6',
+          cancelButtonText: this.props.t('Recruit another candidate',
+            {ns: 'new_profile'}),
+        }).then((result) => {
+          window.location.href = result.value === true
+            ? loris.BaseURL + '/' + data.CandID
+            : window.location.href;
+        });
       })
       .catch((error) => {
+        // enable button for form resubmission.
+        this.setState({submitDisabled: false});
         swal.fire({
           icon: 'error',
           title: this.props.t('Error!', {ns: 'loris'}),
-          text: error,
+          text: error.message,
           confirmButtonText: t('OK', {ns: 'loris'}),
         });
         console.error(error);
@@ -213,10 +200,66 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    let formData = Object.assign({}, this.state.formData);
-    formData[formElement] = value;
+    this.setState((prevState) => {
+      const formData = Object.assign(
+        {},
+        prevState.formData,
+        {[formElement]: value}
+      );
+      if (formElement === 'project') {
+        delete formData.cohort;
+      }
+      return {formData};
+    });
+  }
 
-    this.setState({formData: formData});
+  /**
+   * Return the candidate parameters configured for the selected project.
+   *
+   * @return {Array}
+   */
+  getVisibleExtraParameters() {
+    const extraParameters = this.state.configData.extraParameters || [];
+    return extraParameters.filter(
+      (parameter) => parameter.Project === this.state.formData.project
+    );
+  }
+
+  /**
+   * Render a configured candidate parameter.
+   *
+   * @param {object} parameter Candidate parameter configuration
+   * @return {JSX}
+   */
+  renderExtraParameter(parameter) {
+    const name = `PTID${parameter.ParameterTypeID}`;
+    const props = {
+      label: parameter.Description,
+      name,
+      value: this.state.formData[name],
+      onUserInput: this.setFormData,
+      required: Number(parameter.Required) === 1,
+    };
+
+    if (parameter.Type.startsWith('enum')) {
+      const options = {};
+      const values = parameter.Type.match(/'[^']*'/g) || [];
+      values.forEach((value) => {
+        const option = value.slice(1, -1);
+        options[option] = option;
+      });
+      return <SelectElement key={name} {...props} options={options}/>;
+    }
+
+    if (parameter.Type.startsWith('date')) {
+      return <DateElement key={name} {...props}/>;
+    }
+
+    if (parameter.Type.startsWith('numeric')) {
+      return <NumericElement key={name} {...props}/>;
+    }
+
+    return <TextareaElement key={name} {...props}/>;
   }
 
   /**
@@ -227,7 +270,7 @@ class NewProfileIndex extends React.Component {
   render() {
     // If error occurs, return a message.
     if (this.state.error) {
-      return <h3>{this.props.t('An error occured while loading the page.',
+      return <h3>{this.props.t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -239,6 +282,7 @@ class NewProfileIndex extends React.Component {
     let edc = null;
     let pscid = null;
     let site = null;
+    let cohort = null;
     let minYear = this.state.configData.minYear;
     let thisYear = (new Date()).getFullYear();
     let dobMaxYear = this.state.configData.maxYear;
@@ -294,6 +338,22 @@ class NewProfileIndex extends React.Component {
           onUserInput = {this.setFormData}
           value = {this.state.formData.site}
           required = {true}
+          autoSelect = {true}
+        />;
+    }
+    if (this.state.configData.useRegistrationCohort) {
+      const cohorts = this.state.configData.cohort[
+        this.state.formData.project
+      ] || {};
+      cohort =
+        <SelectElement
+          name = "cohort"
+          label = {this.props.t('Registration Cohort', {ns: 'loris'})}
+          options = {cohorts}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.cohort}
+          required = {true}
+          disabled = {!this.state.formData.project}
         />;
     }
     const fields = [
@@ -364,8 +424,13 @@ class NewProfileIndex extends React.Component {
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
             required = {true}
+            autoSelect = {true}
           />
         ),
+      },
+      {
+        label: this.props.t('Registration Cohort', {ns: 'loris'}),
+        element: cohort,
       },
 
     ];
@@ -378,6 +443,9 @@ class NewProfileIndex extends React.Component {
           onSubmit = {this.handleSubmit}
         >
           {fields.map((field, idx) => field.element)}
+          {this.getVisibleExtraParameters().map(
+            (parameter) => this.renderExtraParameter(parameter)
+          )}
           <ButtonElement
             name = "fire_away"
             label = {this.props.t('Create', {ns: 'loris'})}
@@ -393,7 +461,6 @@ class NewProfileIndex extends React.Component {
 
 NewProfileIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
-  submitURL: PropTypes.string.isRequired,
   t: PropTypes.func,
 };
 
@@ -410,7 +477,6 @@ window.addEventListener('load', () => {
   ).render(
     <NPIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
       hasPermission = {loris.userHasPermission}
     />
   );

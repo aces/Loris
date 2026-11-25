@@ -70,7 +70,8 @@ class Media extends \DataFrameworkMenu
         $db   = $this->loris->getDatabaseConnection();
 
         $siteList  = [];
-        $visitList = \Utility::getVisitList();
+        $visits    = \Utility::getVisitList();
+        $visitList = array_combine($visits, $visits);
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
@@ -120,8 +121,8 @@ class Media extends \DataFrameworkMenu
         $hiddenOptions = [];
         if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = [
-                'visible' => 'Visible only',
-                'hidden'  => 'Hidden only',
+                'visible' => dgettext('media', 'Visible only'),
+                'hidden'  => dgettext('media', 'Hidden only'),
             ];
         }
 
