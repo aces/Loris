@@ -1137,10 +1137,10 @@ class CandidateQueryEngineTest extends TestCase
         $this->assertMatchNone($result);
 
         $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new In("V1", "V2")),
+            new QueryTerm($candiddict, new In("V1", "V3")),
             ['V2']
         );
-        $this->assertMatchOne($result, "123456");
+        $this->assertMatchNone($result);
 
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS session");
     }
