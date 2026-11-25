@@ -356,14 +356,16 @@ function Globals(props) {
       <InlineField
         label={t('PSCID', {ns: 'loris'})}
         value={options.candidates[specimen.candidateId].pscid}
-        link={loris.BaseURL+'/'+specimen.candidateId}
+        link={
+          loris.BaseURL+'/'+options.candidates[specimen.candidateId].candID
+        }
       />
       <InlineField
         label={t('Visit Label', {ns: 'loris'})}
         value={options.sessions[specimen.sessionId].label}
         link={
           loris.BaseURL+'/instrument_list/?candID='+
-            specimen.candidateId+'&sessionID='+
+            options.candidates[specimen.candidateId].candID+'&sessionID='+
             specimen.sessionId
         }
       />
