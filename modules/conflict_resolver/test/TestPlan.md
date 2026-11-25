@@ -113,7 +113,7 @@ The following permissions are required for the page to load:
 
 ## Candidate Profile
 
-- Go to the `candidate_profile` module through the "Candidate -> Access Profile (beta) or `/candidate_list/?betaprofile=1`
+- Go to the candidate profile through the "Candidate -> Access Profile (beta) or `/candidates/?betaprofile=1`
 - access a candidate with at least 1 conflict
 - With the `conflict_resolver` permission, ensure that there is a bar graph of the number
 of conflicts per instrument, grouped by visit

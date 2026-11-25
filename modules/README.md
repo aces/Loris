@@ -5,7 +5,7 @@ Modules should be entirely self-contained into a subdirectory with the following
     ModuleName/
 
         README.md     - This file should contain technical specifications for any module in LORIS.
-                        See any module (ie. modules/candidate_list/README.md) for a template.
+                        See any module (ie. modules/candidates/README.md) for a template.
 
         css/          - Any necessary new CSS classes/files should go here
 

@@ -613,14 +613,6 @@ h2.statsH2 {
     box-sizing: border-box;
 }
 
-#new_profile td.MenuWidth select {
-    width: 170px;
-}
-
-#new_profile td.MenuWidth input[type=text] {
-    width: 164px;
-}
-
 td.MenuWidth select {
     width:170px;
 }

@@ -40,7 +40,7 @@ None
 
 ## Interactions with LORIS
 
-- The `timepoint_list` links to the `candidate_parameters` module,
+- The `timepoint_list` links to the candidate parameters page of the `candidates` module,
   `create_timepoint` module, `imaging_browser` module, and `instrument_list`
   module to provide more specific data entry/browsing functionality
   about the candidate being accessed.

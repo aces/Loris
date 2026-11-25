@@ -31,6 +31,6 @@ is deprecated as text entry is unreliable.
 
 ## Interactions with LORIS
 
-Users primarily access this module from the `candidate_list`. Upon
+Users primarily access this module from the candidate list. Upon
 creating a timepoint, the module provides a link to the (empty)
 `instrument list` module for the new timepoint.

@@ -105,11 +105,8 @@ mri_violations: $(filter modules/mri_violations/%,$(MOFILES)) $(filter modules/m
 issue_tracker: $(filter modules/issue_tracker/%,$(MOFILES)) $(filter modules/issue_tracker/%,$(I18NJSONFILES))
 	target=issue_tracker npm run compile
 
-candidate_list: $(filter modules/candidate_list/%,$(MOFILES)) $(filter modules/candidate_list/%,$(I18NJSONFILES))
-	target=candidate_list npm run compile
-
-candidate_parameters: $(filter modules/candidate_parameters/%,$(MOFILES)) $(filter modules/candidate_parameters/%,$(I18NJSONFILES))
-	target=candidate_parameters npm run compile
+candidates: $(filter modules/candidates/%,$(MOFILES)) $(filter modules/candidates/%,$(I18NJSONFILES))
+	target=candidates npm run compile
 
 dashboard: $(filter modules/dashboard/%,$(MOFILES)) $(filter modules/dashboard/%,$(I18NJSONFILES))
 	target=dashboard npm run compile

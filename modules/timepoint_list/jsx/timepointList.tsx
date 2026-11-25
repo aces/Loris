@@ -200,7 +200,7 @@ function Actions({actions, candID, t}: ActionsProps
       {actions.hasCandidateParameterAccess && (
         <a
           className="btn btn-default"
-          href={`${loris.BaseURL}/candidate_parameters/?${candidateQuery}`}
+          href={`${loris.BaseURL}/candidates/parameters/?${candidateQuery}`}
           role="button"
         >
           {t('Candidate Info', {ns: 'timepoint_list'})}

@@ -2,8 +2,8 @@
 
 1. Verify that in order to access the module the user meets one of the following criteria:
    - User has permission `data_entry` (_"Access Profile: View/Create Candidates and Timepoints - Own Sites"_) and can access the instrument through the 
-     candidate_list module (Access Profile) 
-     - go to the candidate_list
+     candidates module (Access Profile) 
+     - go to the candidate list
      - click on a PSCID to get to the timepoint_list module
      - click on a timepoint to get to the instrument_list module
      - click on an instrument to access the instrument itself.  

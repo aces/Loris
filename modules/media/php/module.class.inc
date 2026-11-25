@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\media;
-use LORIS\candidate_profile\CandidateWidget;
+use LORIS\candidates\CandidateWidget;
 
 /**
  * {@inheritDoc}

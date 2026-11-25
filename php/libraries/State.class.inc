@@ -116,7 +116,7 @@ class State
         if (isset($_REQUEST['test_name'])
             && $_REQUEST['test_name'] == 'timepoint_list'
         ) {
-            return 'main.php?test_name=candidate_list';
+            return 'main.php?test_name=candidates';
         } elseif (!empty($_REQUEST['candID'])
             && in_array($_REQUEST['test_name'], $timepointSubMenus)
         ) {

@@ -68,4 +68,4 @@ can be used to re-compare single and double data entry values
 and repopulate the `conflicts_unresolved` table.
 
 The conflict resolver implements widgets for the `dashboard` and the
-`candidate_profile` dashboard.
+candidate profile dashboard.

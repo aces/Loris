@@ -3,7 +3,7 @@
 namespace LORIS\my_preferences;
 
 /**
- * A \LORIS\candidate_profile\UserPreferenceWidget is a type of \LORIS\GUI\Widget
+ * A \LORIS\candidates\UserPreferenceWidget is a type of \LORIS\GUI\Widget
  * used by the my preference page to register extra preference types.
  *
  * All UserPreferenceWidgets consist of React components which are loaded on the fly.

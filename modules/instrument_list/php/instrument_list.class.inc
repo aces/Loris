@@ -409,11 +409,11 @@ class Instrument_List extends \NDB_Menu_Filter
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                dgettext("candidate_list", 'Access Profile'),
-                '/candidate_list'
+                dgettext("candidates", 'Access Profile'),
+                '/candidates'
             ),
             new \LORIS\Breadcrumb(
-                dgettext("candidate_profile", "Candidate Profile")
+                dgettext("candidates", "Candidate Profile")
                 . " $candid / $pscid",
                 "/$candid"
             ),

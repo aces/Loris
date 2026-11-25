@@ -64,10 +64,10 @@ GitHub Actions is our continuous integration suite which runs on every PR in Git
     make checkstatic  # includes these 3 commands: 
                       # npm run lint:php, npm run lint:js, vendor/bin/phan
 
-    vendor/bin/phpcs --standard=test/LorisCS.xml modules/candidate_list/php/candidate_list.class.inc
+    vendor/bin/phpcs --standard=test/LorisCS.xml modules/candidates/php/candidates.class.inc
                       # phpcs allows you to specifically check the formatting of one file 
 
-    vendor/bin/phpcbf --standard=test/LorisCS.xml modules/candidate_list/php/candidate_list.class.inc
+    vendor/bin/phpcbf --standard=test/LorisCS.xml modules/candidates/php/candidates.class.inc
                       # phpcbf allows you to automatically fix the errors 
                       # found by phpcs marked with a check.
 

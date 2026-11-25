@@ -16,9 +16,7 @@
       <directory>../modules/battery_manager/test/</directory>
       <directory>../modules/brainbrowser/test/</directory>
       <directory>../modules/bvl_feedback/test/</directory>
-      <directory>../modules/candidate_list/test/</directory>
-      <directory>../modules/candidate_parameters/test/</directory>
-      <directory>../modules/candidate_profile/test/</directory>
+      <directory>../modules/candidates/test/</directory>
       <directory>../modules/configuration/test/</directory>
       <directory>../modules/conflict_resolver/test/</directory>
       <directory>../modules/create_timepoint/test/</directory>
@@ -44,7 +42,6 @@
       <directory>../modules/api_docs/test/</directory>
       <directory>../modules/mri_violations/test/</directory>
       <directory>../modules/my_preferences/test/</directory>
-      <directory>../modules/new_profile/test/</directory>
       <directory>../modules/next_stage/test/</directory>
       <directory>../modules/publication/test/</directory>
       <directory>../modules/schedule_module/test/</directory>

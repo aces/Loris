@@ -22,8 +22,8 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (25,'dicom_archive_view_allsites','DICOMs - All Sites',15,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (28,'instrument_builder','Instrument Forms',23,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (29,'data_dict_edit','Parameter Type Descriptions',46,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (31,'candidate_parameter_view','Candidate Information',7,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (32,'candidate_parameter_edit','Candidate Information',7,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (31,'candidate_parameter_view','Candidate Information',6,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (32,'candidate_parameter_edit','Candidate Information',6,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (33,'genomic_browser_view_site','Genomic Data - Own Sites',18,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (34,'genomic_browser_view_allsites','Genomic Data - All Sites',18,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (35,'document_repository_view','Documents',16,2);
@@ -48,14 +48,14 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (54,'publication_propose','Propose Publication Projects',33,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (55,'publication_approve','Accept/Reject Publication Projects',33,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (56,'data_release_view','Release Files',12,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (57,'candidate_dob_edit','Dates of Birth',7,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (57,'candidate_dob_edit','Dates of Birth',6,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (58,'battery_manager_view','Battery Entries',39,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (59,'battery_manager_edit','Battery Entries',39,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (60,'electrophysiology_browser_view_allsites','EEGs - All Sites',41,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (61,'electrophysiology_browser_view_site','EEGs - Own Sites',41,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (62,'module_manager_view','Installed Modules',40,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (63,'module_manager_edit','Installed Modules',40,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (64,'candidate_dod_edit','Dates of Death',7,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (64,'candidate_dod_edit','Dates of Death',6,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (65,'violated_scans_view_ownsite','Violated Scans - Own Sites',30,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (66,'document_repository_upload_edit','Documents',16,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (67,'survey_accounts_view','Candidate Surveys',36,2);
