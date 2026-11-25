@@ -171,6 +171,19 @@ above it are flat, divided from it by a border rather than a shadow, so the data
 sits under a heavy edge. Only what lies over the data casts a shadow, and only onto
 the data.
 
+## Page chrome
+
+The navbar is the darker navy, `--primary-strong`, so a filled primary button
+stands apart from the bar above it. A hovered or open menu item turns white and
+joins the menu that opens below it.
+
+| Token | Draws from | Used for |
+|---|---|---|
+| `--chrome-bg` | `--primary-strong` | The navbar's background |
+| `--chrome-text` | `--surface` | Its links and icons |
+| `--chrome-hover` | `--surface` | A hovered or open menu item |
+| `--chrome-hover-text` | `--primary-strong` | That item's text |
+
 ## Motion
 
 | Token | Value | Used for |

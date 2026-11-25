@@ -53,9 +53,19 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 }
 
 .navbar-default {
-    background-color: #064785;
+    background-color: var(--chrome-bg);
     border: none !important;
     box-shadow: 6px 8px 8px 1px rgba(0,0,0,0.175);
+}
+
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-toggle {
+    color: var(--chrome-text);
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: var(--chrome-text);
 }
 
 .navbar-default a {
@@ -76,8 +86,8 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 /* Loris logo */
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
-    color: white;
-    background-color: #246EB6;
+    color: var(--chrome-hover-text);
+    background-color: var(--chrome-hover);
 }
 
 /* Menu items */
@@ -96,21 +106,21 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 .navbar-default .navbar-nav > li.open > a,
 .navbar-default .navbar-nav > li.open > a:focus,
 .navbar-default .navbar-nav > li.open > a:active {
-    color: #064785;
-    background-color: white;
+    color: var(--chrome-hover-text);
+    background-color: var(--chrome-hover);
 }
 @media (hover: hover) {
   /* Styling for hovering over menu items - order matters */
   .navbar-default .navbar-nav > li.dropdown:hover > a,
   .navbar-default .navbar-nav > li.dropdown > a:hover {
-      color: #064785;
-      background-color: white;
+      color: var(--chrome-hover-text);
+      background-color: var(--chrome-hover);
   }
 }
 /* Styling for chevron icon to toggle collapsible navigation bar */
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
-    background-color: #064785;
+    background-color: var(--chrome-bg);
 }
 
 /* Submenu items */
@@ -162,13 +172,18 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 
 /* Styling for clicking on Question mark - order matters */
 .help-button {
-    color: white;
-    background-color: #246EB6;
+    color: var(--chrome-text);
+    background-color: transparent;
     border: none;
     margin-top: 4px;
     padding: 15px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+}
+
+.help-button .loris-icon {
+    width: 17px;
+    height: 17px;
 }
 
 .help-container.navbar-toggle {
@@ -178,9 +193,10 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 
 /* Styling for hovering over menu items - order matters */
 .navbar-default .navbar-right > li:hover > a,
-.navbar-default .navbar-right > li > a:hover {
-    color: white;
-    background-color: #246EB6;
+.navbar-default .navbar-right > li > a:hover,
+.help-button:hover {
+    color: var(--chrome-hover-text);
+    background-color: var(--chrome-hover);
 }
 
 /*

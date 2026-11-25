@@ -45,7 +45,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .navbar {
-    background-color: #064785;
+    background-color: var(--chrome-bg);
     border-width: 0 0 1px;
     border-radius: 0;
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import {
   ArrowUp, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft,
-  Columns3, Download, EllipsisVertical, Funnel, Layers, LayoutGrid, Plus,
-  Save, Search, Table, X,
+  CircleHelp, Columns3, Download, EllipsisVertical, Funnel, Layers,
+  LayoutGrid, Plus, Save, Search, Table, X,
 } from 'lucide-react';
 import './Icon.css';
 
@@ -20,6 +20,7 @@ const glyphs = {
   expand: ChevronDown,
   filter: Funnel,
   group: Layers,
+  help: CircleHelp,
   actions: EllipsisVertical,
   save: Save,
   search: Search,
