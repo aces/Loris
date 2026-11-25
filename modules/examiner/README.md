@@ -16,7 +16,7 @@ The primary type of users is:
 This module displays information about examiners as well as certifications and 
 sites to which the examiners are affiliated. It also allows adding examiners 
 to sites, to give or remove certifications for instruments and set them as 
-radiologists.
+radiologists or lab technicians.
 
 NOT in scope:
 
@@ -79,7 +79,8 @@ and have the appropriate certifications (if configured); failure to
 match these 3 criteria will result in the examiner not being displayed.
 
 - The user_accounts module allows for quick activation/deactivation of 
-an examiner as well as setting their sites and their radiologist status.
+an examiner as well as setting their sites and their radiologist and lab 
+technician status.
 When an examiner is added from the user_accounts module, the `userID` field of 
 the `examiners` table in the database is populated to associate the examiner 
 to the user.

@@ -93,6 +93,13 @@ class AddExaminer extends \NDB_Page
         ) {
             $radiologist = 1;
         }
+
+        $labTechnician = 0;
+        if (isset($values['addLabTechnician'])
+            && $values['addLabTechnician'] === 'true'
+        ) {
+            $labTechnician = 1;
+        }
             $DB = $this->loris->getDatabaseConnection();
 
         // Check if examiner is already in the database 'examiners', if not add them
@@ -111,14 +118,19 @@ class AddExaminer extends \NDB_Page
             $DB->insert(
                 'examiners',
                 [
-                    'full_name'   => $fullName,
-                    'radiologist' => $radiologist
+                    'full_name'     => $fullName,
+                    'radiologist'   => $radiologist,
+                    'LabTechnician' => $labTechnician,
                 ]
             );
         } else {
+            $examinerValues = ['radiologist' => $radiologist];
+            if ($labTechnician === 1) {
+                $examinerValues['LabTechnician'] = 1;
+            }
             $DB->update(
                 'examiners',
-                ['radiologist' => $radiologist],
+                $examinerValues,
                 ['examinerID' => $examinerID]
             );
         }
