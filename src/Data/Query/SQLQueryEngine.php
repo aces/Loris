@@ -509,8 +509,7 @@ abstract class SQLQueryEngine implements QueryEngine
                     throw new \Exception("Cardinality many for candidate variables not handled");
                 } else {
                     // It was a candidate variable that isn't cardinality::many.
-                    // Just store the value directly.
-                    $candval[$fname] = $row[$fname];
+                    $candval[$fname] = $this->displayValue($field, $row[$fname]);
                 }
             }
         }
