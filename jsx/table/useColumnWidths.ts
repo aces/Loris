@@ -119,7 +119,7 @@ export function useColumnWidths<R>(
         }
       )));
       const header = measure((el) => {
-        el.style.fontWeight = '600';
+        el.style.fontWeight = '500';
         el.textContent = column.label;
       }) + HEADER_EXTRA;
       widths[column.name] = Math.ceil(Math.min(

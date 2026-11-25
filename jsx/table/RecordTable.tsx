@@ -19,12 +19,12 @@ import {useDismiss} from './useDismiss';
 import TableFooter from './TableFooter';
 import RecordCard from './RecordCard';
 import RecordFields from './RecordFields';
+import FitTags from './FitTags';
 import './RecordTable.css';
 
 const CARD_BATCH = 60;
 const CHECK_WIDTH = 40;
 const ACTIONS_WIDTH = 40;
-const SHOWN_TAGS = 3;
 
 // An id is an identifier: set in the monospace and never cut short.
 export type ColumnType = 'text' | 'number' | 'date' | 'id';
@@ -385,9 +385,9 @@ function RecordTable<R>(props: Props<R>) {
     if (column.format) {
       return column.format(value, record);
     }
-    // In a row, tags show three at most: past that, a count stands for the
-    // rest, and the tooltip lists them all. In full, as in the record panel,
-    // every one shows and they wrap. An empty value shows nothing.
+    // In a row, the tags that fit show and a count stands for the rest; the
+    // tooltip lists them all. In full, as in the record panel, every one
+    // shows and they wrap. An empty value shows nothing.
     const options = column.filter?.options;
     // With a map of tones, only the values it names become tags.
     const untoned = typeof column.tag === 'object' && !Array.isArray(value)
@@ -401,22 +401,17 @@ function RecordTable<R>(props: Props<R>) {
       if (values.length === 0) {
         return null;
       }
-      const shown = !full && values.length > SHOWN_TAGS
-        ? values.slice(0, SHOWN_TAGS - 1) : values;
-      const more = values.length - shown.length;
       const tones = typeof column.tag === 'object' ? column.tag : {};
-      const tags = (
-        <span className={'rt-tags' + (full ? ' rt-tags-wrap' : '')}>
-          {shown.map((v) => (
-            <Tag key={String(v)} tone={tones[String(v)] || 'neutral'}>
-              {Array.isArray(value)
-                ? options?.[String(v)] ?? String(v)
-                : displayOf(column, v, record)}
-            </Tag>
-          ))}
-          {more > 0 && <span className="rt-tags-more">+{more}</span>}
-        </span>
-      );
+      const each = values.map((v) => (
+        <Tag key={String(v)} tone={tones[String(v)] || 'neutral'}>
+          {Array.isArray(value)
+            ? options?.[String(v)] ?? String(v)
+            : displayOf(column, v, record)}
+        </Tag>
+      ));
+      const tags = full
+        ? <span className="rt-tags rt-tags-wrap">{each}</span>
+        : <FitTags>{each}</FitTags>;
       return full || values.length < 2 ? tags : (
         <Tooltip content={displayOf(column, value, record)}>{tags}</Tooltip>
       );

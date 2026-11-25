@@ -1071,6 +1071,31 @@ body:has(.rt-fill) .navbar {
     white-space: nowrap;
 }
 
+.rt-tags.rt-tags-fit {
+    display: flex;
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* A tag too wide for its cell shortens, so the count after it stays in
+   view. */
+.rt-tags-fit > .loris-tag {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rt-tags-fit > .rt-tags-more {
+    flex-shrink: 0;
+}
+
+.rt-tag-hidden {
+    position: absolute;
+    visibility: hidden;
+}
+
 .rt-tags.rt-tags-wrap {
     display: flex;
     flex-wrap: wrap;
