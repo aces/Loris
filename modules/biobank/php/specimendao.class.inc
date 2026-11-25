@@ -734,15 +734,15 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         if (isset($data['SessionID'])) {
             $specimen->setSessionId((int) $data['SessionID']);
         }
-        if (isset($data['SessionLabel'])) {
-            $specimen->setSessionLabel((string) $data['SessionLabel']);
-        }
         if (isset($data['SessionID'])) {
             $specimen->setSessionCenterId(
                 new \CenterID(
                     (string) $data['SessionCenterID']
                 )
             );
+        }
+        if (isset($data['SessionLabel'])) {
+            $specimen->setSessionLabel((string) $data['SessionLabel']);
         }
         if (isset($data['PoolID'])) {
             $specimen->setPoolId((int) $data['PoolID']);

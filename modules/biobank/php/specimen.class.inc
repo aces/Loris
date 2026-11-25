@@ -56,7 +56,7 @@ class Specimen implements
      * @var string      $candidatePSCID
      * @var int         $candidateAge
      * @var int         $sessionId
-     * @var string      $sessionLabel
+     * @var ?string     $sessionLabel
      * @var \CenterID   $sessionCenterId
      * @var int         $poolId
      * @var Collection  $collection
