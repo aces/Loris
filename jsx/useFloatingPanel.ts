@@ -58,7 +58,25 @@ export default function useFloatingPanel(
     resized.observe(target);
     window.addEventListener('scroll', position, true);
     window.addEventListener('resize', position);
+    // The control can also move without a scroll or resize, as when the
+    // layout around it changes, so its place is checked every frame.
+    let frame = 0;
+    let last = '';
+    /**
+     * Repositions the panel when its control has moved
+     */
+    const follow = () => {
+      const box = anchor.current?.getBoundingClientRect();
+      const now = box ? `${box.left},${box.top},${box.width}` : '';
+      if (now !== last) {
+        last = now;
+        position();
+      }
+      frame = requestAnimationFrame(follow);
+    };
+    frame = requestAnimationFrame(follow);
     return () => {
+      cancelAnimationFrame(frame);
       resized.disconnect();
       window.removeEventListener('scroll', position, true);
       window.removeEventListener('resize', position);
