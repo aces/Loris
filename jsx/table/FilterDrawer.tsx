@@ -49,7 +49,8 @@ function FilterDrawer<R>(props: {
         clearLabel={t('Clear {{label}}', {label: column.label})}
         options={filter.options || {}}
         value={Array.isArray(value) ? value : []}
-        maxVisible={2}
+        display="tags"
+        maxVisible={1}
         onChange={(values) => setFilter(column, values)}
       />;
     case 'select':
