@@ -456,10 +456,6 @@
     opacity: 1;
 }
 
-.rt-cell-link:hover .rt-cell-text {
-    text-decoration: underline;
-}
-
 /* The record's identifier, with its row menu beside it on hover. The cell
    holds a menu that opens past its edges. */
 .rt-table tbody td.rt-lead-cell {
