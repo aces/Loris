@@ -654,9 +654,6 @@ msgstr ""
 msgid "Any date"
 msgstr ""
 
-msgid "Done"
-msgstr ""
-
 msgid "Next month"
 msgstr ""
 
