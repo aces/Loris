@@ -535,3 +535,6 @@ msgstr "अमान्य उत्तर"
 
 msgid "Invalid tab"
 msgstr "अमान्य टैब"
+
+msgid "Please select at least one field."
+msgstr "कृपया कम से कम एक फ़ील्ड चुनें।"

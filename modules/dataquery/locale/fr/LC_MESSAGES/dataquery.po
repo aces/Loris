@@ -667,3 +667,6 @@ msgstr "Onglet invalide"
 
 msgid "or"
 msgstr "ou"
+
+msgid "Please select at least one field."
+msgstr "Veuillez sélectionner au moins un champ."
