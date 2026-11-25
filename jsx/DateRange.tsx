@@ -19,6 +19,46 @@ function isoDate(year: number, month: number, day: number): string {
 }
 
 /**
+ * A date typed as YYYY-MM-DD. It is plain text rather than the browser's date
+ * input, which would open a second calendar inside the range's own. The range
+ * changes once the text is a whole date, or empty.
+ *
+ * @param props - React props
+ * @param props.label - names the field
+ * @param props.value - the date, as YYYY-MM-DD
+ * @param props.onChange - called with a whole date, or '' when cleared
+ * @returns - The field
+ */
+function DateText(props: {
+  label: string,
+  value: string,
+  onChange: (day: string) => void,
+}): React.ReactElement {
+  const [text, setText] = useState(props.value);
+  useEffect(() => setText(props.value), [props.value]);
+  return (
+    <label>
+      {props.label}
+      <input
+        type="text"
+        inputMode="numeric"
+        placeholder="YYYY-MM-DD"
+        maxLength={10}
+        value={text}
+        onChange={(e) => {
+          const next = e.target.value;
+          setText(next);
+          if (next === '' || (/^\d{4}-\d{2}-\d{2}$/.test(next)
+            && !Number.isNaN(Date.parse(next + 'T00:00:00Z')))) {
+            props.onChange(next);
+          }
+        }}
+      />
+    </label>
+  );
+}
+
+/**
  * A range of dates picked on one calendar: the first click sets the start and
  * the second the end, which closes the calendar. The month and year can be jumped to directly, and both
  * ends can be typed.
@@ -284,31 +324,27 @@ function DateRange(props: {
           {cells}
         </div>
         <div className="loris-daterange-inputs">
-          <label>
-            {props.fromLabel || 'From'}
-            <input type="date" value={start}
-              min={`${minYear}-01-01`} max={`${maxYear}-12-31`}
-              onChange={(e) => props.onChange({min: e.target.value, max: end})}
-            />
-          </label>
-          <label>
-            {props.toLabel || 'To'}
-            <input type="date" value={end}
-              min={`${minYear}-01-01`} max={`${maxYear}-12-31`}
-              onChange={(e) => props.onChange(
-                {min: start, max: e.target.value}
-              )}
-            />
-          </label>
+          <DateText
+            label={props.fromLabel || 'From'}
+            value={start}
+            onChange={(day) => props.onChange({min: day, max: end})}
+          />
+          <DateText
+            label={props.toLabel || 'To'}
+            value={end}
+            onChange={(day) => props.onChange({min: start, max: day})}
+          />
         </div>
-        <div className="loris-daterange-foot">
+        {/* A clearable field has its own control to clear it, so the
+            calendar only offers one when the field does not. */}
+        {props.clearable ? null : <div className="loris-daterange-foot">
           <button type="button" className="loris-button quiet"
             disabled={!start && !end}
             aria-label={props.clearLabel || 'Clear'}
             onClick={() => props.onChange({min: '', max: ''})}>
             {props.resetLabel || 'Clear'}
           </button>
-        </div>
+        </div>}
       </div> : null}
     </div>
   );

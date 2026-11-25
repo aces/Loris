@@ -136,6 +136,7 @@
     overflow: hidden;
     /* The panel can open from inside a header or a label, so it sets its own
        text rather than inheriting theirs. */
+    color: var(--text);
     font-weight: normal;
     line-height: normal;
     letter-spacing: normal;
@@ -231,6 +232,7 @@
    type to beat it on specificity. */
 .loris-select-option input[type="checkbox"] {
     margin: 0;
+    accent-color: var(--primary);
 }
 
 /* A single selection marks the chosen row instead of drawing a radio. */
