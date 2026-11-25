@@ -150,7 +150,7 @@ function TableToolbar<R>(props: {
       {props.actions.map((action) => (
         <span key={action.name} className={`action-${action.name}`}>
           <Button
-            display="secondary"
+            display={action.primary ? 'primary' : 'secondary'}
             onClick={() => action.renderForm
               ? props.onAction(action.name)
               : action.onClick?.()}

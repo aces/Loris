@@ -69,6 +69,7 @@ export type TableAction = {
   renderForm?: (close: () => void) => ReactNode,
   title?: string,
   show?: boolean,
+  primary?: boolean,
 };
 
 export type RecordAction<R> = {
