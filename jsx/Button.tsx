@@ -17,6 +17,9 @@ import './Button.css';
  * @param props.type - Button type, defaults to "button"
  * @param props.title - Tooltip text
  * @returns - The button
+ *
+ * Other button attributes, such as an aria-label or the handlers a Tooltip
+ * adds, pass through to the button.
  */
 function Button(props: {
     children: React.ReactNode,
@@ -25,14 +28,17 @@ function Button(props: {
     disabled?: boolean,
     type?: 'button' | 'submit',
     title?: string,
-}): React.ReactElement {
+} & Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'type' | 'className' | 'onClick'
+>): React.ReactElement {
+  const {children, display, type, onClick, ...rest} = props;
   return (
-    <button type={props.type || 'button'}
-      className={'loris-button ' + (props.display || 'primary')}
-      disabled={props.disabled}
-      title={props.title}
-      onClick={props.onClick}>
-      {props.children}
+    <button {...rest}
+      type={type || 'button'}
+      className={'loris-button ' + (display || 'primary')}
+      onClick={onClick ? () => onClick() : undefined}>
+      {children}
     </button>
   );
 }

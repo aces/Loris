@@ -99,7 +99,8 @@
     transform: translateY(-50%);
     color: var(--text-muted);
     pointer-events: none;
-    transition: top .12s ease, font-size .12s ease;
+    transition: top var(--duration-fast) var(--ease),
+        font-size var(--duration-fast) var(--ease);
     z-index: 1;
 }
 

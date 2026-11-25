@@ -153,6 +153,23 @@ selected or active row shows against white.
 Buttons do not have a selected state. On hover, a button's border and label change
 colour and its background stays the same.
 
+## Motion
+
+| Token | Value | Used for |
+|---|---|---|
+| `--duration-fast` | 120ms | A small change in place: a caret turning, a label rising, a toggle's handle |
+| `--duration-base` | 200ms | A short move or a small change of size: a column's width |
+| `--duration-slow` | 300ms | A move across much of the screen: the filters, a side panel |
+| `--ease` | `cubic-bezier(.4, 0, .2, 1)` | Every animation: it eases in and out, so nothing starts or stops abruptly |
+
+Everything moves on the one curve, and the duration follows the distance: the further
+something travels, the longer it takes. A change in size or position animates, so the
+eye can follow what moved: a column eases to its new width, the filters grow from the
+edge and push the rows aside, and a side panel slides in and back out from its edge.
+Opening and closing move the same way. Colour and text changes do not animate, apart
+from a field's label as it rises. Under `prefers-reduced-motion: reduce` every
+transition and animation is turned off, and changes happen at once.
+
 ## Accessibility
 
 Every pairing in this document meets [WCAG 2.2](https://www.w3.org/TR/WCAG22/) level AA:

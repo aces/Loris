@@ -44,6 +44,34 @@
     gap: var(--space-md);
 }
 
+/* An icon-only button keeps its label for assistive technology. */
+.loris-select.icon-only .loris-select-button-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.loris-select-caret {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--duration-fast) var(--ease);
+}
+
+.loris-select.open > .loris-select-trigger .loris-select-caret,
+.loris-select.open > .loris-select-button .loris-select-caret {
+    transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loris-select-caret {
+        transition: none;
+    }
+}
+
 .loris-select-trigger:disabled {
     cursor: not-allowed;
 }
@@ -93,19 +121,33 @@
 .loris-select-panel {
     position: fixed;
     z-index: 1000;
-    width: var(--loris-select-panel-width, 320px);
-    max-width: 90vw;
+    /* As wide as its options need, never narrower than its field or a
+       comfortable minimum. */
+    width: var(--loris-select-panel-width, max-content);
+    min-width: max(180px, var(--loris-field-width, 0px));
+    max-width: min(360px, 90vw);
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-overlay);
-    padding: var(--space-md);
+    /* Options run edge to edge, as in a menu; the search, the counts and a
+       footer carry their own padding. */
+    padding: 0;
+    overflow: hidden;
+    /* The panel can open from inside a header or a label, so it sets its own
+       text rather than inheriting theirs. */
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    text-transform: none;
+    white-space: normal;
 }
 
 .loris-select-controls {
     display: flex;
     gap: var(--space-sm);
-    margin-bottom: var(--space-sm);
+    padding: var(--space-md) var(--space-md) var(--space-xs);
     align-items: center;
 }
 
@@ -154,8 +196,9 @@
 .loris-select-list {
     max-height: 220px;
     overflow-y: auto;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius);
+    /* Options run edge to edge, so the selected bar sits on the menu's
+       border. */
+    padding: 0;
 }
 
 .loris-select-group {
@@ -174,7 +217,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-md);
-    padding: var(--space-xs) var(--space-lg);
+    padding: var(--space-xs) var(--space-md);
     margin: 0;
     font-weight: normal;
     cursor: pointer;
@@ -227,22 +270,44 @@
 
 .loris-select-counts {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
-    padding: var(--space-sm) 2px 0;
+    padding: var(--space-xs) var(--space-md);
+    border-top: 1px solid var(--border-subtle);
     font-size: var(--font-size-sm);
     color: var(--text-muted);
+}
+
+/* Bulk choices sit in the counts line as quiet text actions. */
+.loris-select-bulk {
+    display: inline-flex;
+    gap: var(--space-xs);
+}
+
+.loris-select-link {
+    padding: 2px var(--space-xs);
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--primary);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.loris-select-link:hover,
+.loris-select-link:focus-visible {
+    background: var(--state-hover);
+    color: var(--primary-strong);
 }
 
 /* A caller's footer runs the full width on its own ground, so it reads as a
    footer rather than as more of the list. */
 .loris-select-footer {
-    margin: var(--space-md) calc(-1 * var(--space-md))
-            calc(-1 * var(--space-md));
     padding: var(--space-md);
     border-top: 1px solid var(--border);
     background: var(--surface-sunken);
-    border-radius: 0 0 var(--radius) var(--radius);
 }
 
 /* The run a drag is sweeping over. Drawn in the secondary: these rows are not
@@ -299,7 +364,9 @@
     transform: translateY(-50%);
     color: var(--text-muted);
     pointer-events: none;
-    transition: top .12s ease, font-size .12s ease, color .12s ease;
+    transition: top var(--duration-fast) var(--ease),
+        font-size var(--duration-fast) var(--ease),
+        color var(--duration-fast) var(--ease);
 }
 
 
@@ -382,20 +449,21 @@
 .loris-field-clear {
     position: absolute;
     top: 50%;
-    right: 22px;
+    /* Clear of the caret: the field's right padding, the caret and a gap. */
+    right: 30px;
     z-index: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    margin-top: -12px;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
     padding: 0;
     border: none;
     border-radius: 50%;
     background: none;
     color: var(--text-muted);
-    font-size: 18px;
+    font-size: 14px;
     line-height: 1;
     cursor: pointer;
 }
@@ -408,7 +476,7 @@
 /* Room left of the caret for the clear control, so the selection never runs
    under it. */
 .loris-select.has-clear .loris-select-indicators {
-    padding-left: 28px;
+    padding-left: 24px;
 }
 
 /* The button appearance: a quiet button for a toolbar, naming the label and
@@ -426,7 +494,6 @@
 
 .loris-select-button-value {
     color: var(--text);
-    font-weight: 600;
 }
 
 .loris-select-button-value .loris-select-names,
