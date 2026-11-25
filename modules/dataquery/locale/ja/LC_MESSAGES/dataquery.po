@@ -533,3 +533,6 @@ msgstr "無効なタブ"
 
 msgid "or"
 msgstr "または"
+
+msgid "Please select at least one field."
+msgstr ""
