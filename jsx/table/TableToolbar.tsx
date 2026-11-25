@@ -21,22 +21,23 @@ export function ColumnsMenu<R>(props: {
   iconOnly?: boolean,
 }) {
   const {t} = useTranslation(['loris']);
-  const {orderedColumns, visibleColumns, setHidden} = props.state;
+  const {orderedColumns, visibleColumns, setHidden, lead} = props.state;
+  // The record's identifier is always shown, so it isn't listed.
+  const listed = orderedColumns.filter((c) => c.name !== lead);
   const options: {[name: string]: string} = {};
-  orderedColumns.forEach((c) => options[c.name] = c.label);
+  listed.forEach((c) => options[c.name] = c.label);
   return (
     <Select
       appearance="button"
       icon={<Icon name="columns" />}
       iconOnly={props.iconOnly}
-      disabledOptions={props.state.lead ? [props.state.lead] : []}
       label={t('Columns')}
       options={options}
-      value={visibleColumns.map((c) => c.name)}
+      value={visibleColumns.map((c) => c.name).filter((n) => n !== lead)}
       display="label"
       searchPlaceholder={t('Find a column…')}
       onChange={(values) => setHidden(
-        orderedColumns.map((c) => c.name).filter((n) => !values.includes(n))
+        listed.map((c) => c.name).filter((n) => !values.includes(n))
       )}
     />
   );

@@ -585,10 +585,7 @@ function RecordTable<R>(props: Props<R>) {
 
 
   const detail = props.renderDetail;
-  // With every column hidden, an empty column keeps the header row's width.
-  const filler = visibleColumns.length === 0;
-  const columnCount = visibleColumns.length + (selectable ? 1 : 0)
-    + 1 + (filler ? 1 : 0);
+  const columnCount = visibleColumns.length + (selectable ? 1 : 0) + 1;
   const leadCells = selectable ? 1 : 0;
   const hasGroups = visibleColumns.some((c) => c.group);
   const groupBands: {label: string, span: number}[] = [];
@@ -798,7 +795,7 @@ function RecordTable<R>(props: Props<R>) {
             key={column.name}
             className={(column.type === 'number' ? 'rt-number' : '')
               + (column.type === 'id' ? ' rt-mono' : '')
-              + (column.sticky ? ' rt-sticky' : '')
+              + (column.name === state.lead ? ' rt-sticky' : '')
               + (column.name === state.lead ? ' rt-lead-cell' : '')}
           >
             {column.name === state.lead && hasRecordActions ? (
@@ -835,7 +832,6 @@ function RecordTable<R>(props: Props<R>) {
                 ? {width: widths[column.name]} : undefined}
             />
           ))}
-          {filler && <col />}
           <col style={{width: 0}} />
         </colgroup>
         <thead>
@@ -878,7 +874,7 @@ function RecordTable<R>(props: Props<R>) {
                 <th
                   key={column.name}
                   className={(column.type === 'number' ? 'rt-number' : '')
-                    + (column.sticky ? ' rt-sticky' : '')
+                    + (column.name === state.lead ? ' rt-sticky' : '')
                     + (dropTarget === column.name ? ' rt-drop' : '')}
                   aria-sort={key
                     ? (key.ascending ? 'ascending' : 'descending')
@@ -931,7 +927,6 @@ function RecordTable<R>(props: Props<R>) {
                 </th>
               );
             })}
-            {filler && <th aria-hidden="true" />}
             <th className="rt-edge-cell" aria-hidden="true" />
           </tr>
         </thead>
@@ -941,31 +936,16 @@ function RecordTable<R>(props: Props<R>) {
               <td colSpan={columnCount}><span /></td>
             </tr>
           ))}
-          {/* With every column hidden, the header stays, and the note sits
-              where an empty table's does. */}
-          {visibleColumns.length === 0 ? (
+          {empty && !(props.loading && records.length === 0) && (
             <tr>
               <td colSpan={columnCount} className="rt-empty">
-                <span>
-                  {t('Every column is hidden.')}{' '}
-                  <Button display="quiet" onClick={() => setHidden([])}>
-                    {t('Show all columns')}
-                  </Button>
-                </span>
+                <span>{emptyMessage || t('No records match.')}</span>
               </td>
             </tr>
-          ) : <>
-            {empty && !(props.loading && records.length === 0) && (
-              <tr>
-                <td colSpan={columnCount} className="rt-empty">
-                  <span>{emptyMessage || t('No records match.')}</span>
-                </td>
-              </tr>
-            )}
-            {spacer(view.before, 'before')}
-            {drawn.map((row, i) => tableRow(row, view.start + i))}
-            {spacer(view.after, 'after')}
-          </>}
+          )}
+          {spacer(view.before, 'before')}
+          {drawn.map((row, i) => tableRow(row, view.start + i))}
+          {spacer(view.after, 'after')}
         </tbody>
       </table>
     </div>
@@ -1251,8 +1231,7 @@ function RecordTable<R>(props: Props<R>) {
           <div className="rt-main">
             {progressBar}
             <div className="rt-content">
-              {layout === 'table' || visibleColumns.length === 0
-                ? tableLayout : cardLayout}
+              {layout === 'table' ? tableLayout : cardLayout}
               {layout === 'table' && (
                 <div
                   className={'rt-more-right'

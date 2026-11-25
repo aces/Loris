@@ -739,9 +739,6 @@ msgstr ""
 msgid "EDC"
 msgstr ""
 
-msgid "Every column is hidden."
-msgstr ""
-
 msgid "Filtered from {{count}}"
 msgstr ""
 
@@ -821,9 +818,6 @@ msgid "Select row"
 msgstr ""
 
 msgid "Selection"
-msgstr ""
-
-msgid "Show all columns"
 msgstr ""
 
 msgid "Show filters"

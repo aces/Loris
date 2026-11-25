@@ -89,8 +89,9 @@ export function useTableState<R>(
     return map;
   }, [columns]);
 
-  // The record's own identifier: always the first column, always shown
-  const lead = columns.find((c) => c.sticky)?.name;
+  // The record's own identifier, the frozen column or else the first: always
+  // the first column, always shown
+  const lead = (columns.find((c) => c.sticky) || columns[0])?.name;
   const orderedColumns = [
     ...(lead ? [byName[lead]] : []),
     ...order.filter((n) => byName[n] && n !== lead).map((n) => byName[n]),

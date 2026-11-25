@@ -874,7 +874,7 @@ body:has(.rt-fill) #footer {
     top: 0;
     bottom: 0;
     z-index: 3;
-    width: var(--space-sm);
+    width: 12px;
     pointer-events: none;
 }
 
