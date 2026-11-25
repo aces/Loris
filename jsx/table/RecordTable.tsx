@@ -239,7 +239,6 @@ function RecordTable<R>(props: Props<R>) {
     collapsed,
     setCollapsed,
     layout,
-    setHidden,
     orderedColumns,
     visibleColumns,
     moveColumn,
@@ -347,28 +346,6 @@ function RecordTable<R>(props: Props<R>) {
 
   const shownRowActions = rowActions.filter((a) => a.show !== false);
   const selectable = shownRowActions.length > 0 || !!props.selectable;
-
-  const toolbar = (
-    <TableToolbar
-      title={title}
-      sections={props.sections}
-      section={props.section}
-      onSectionChange={props.onSectionChange}
-      controls={props.controls}
-      columns={columns}
-      filters={columns.some((c) => c.filter) && (
-        <FiltersButton
-          state={state}
-          open={drawerOpen}
-          onToggle={() => setDrawerOpen(!drawerOpen)}
-        />
-      )}
-      actions={actions.filter((a) => a.show !== false)}
-      onAction={(action) => setForm({action})}
-      captureFind={!!props.fill}
-      state={state}
-    />
-  );
 
 
   /**
@@ -511,7 +488,8 @@ function RecordTable<R>(props: Props<R>) {
     return {action, reason};
   });
 
-  // A selection takes over the footer's start, as data grids show it: the
+  // A selection takes over the toolbar's controls, as GitHub's and Gmail's
+  // lists show it: the
   // count, a way to clear it, what can be done to it and its download.
   const selection = selectable && selected.size > 0 ? (
     <div className="rt-selection" role="region" aria-label={t('Selection')}>
@@ -547,6 +525,29 @@ function RecordTable<R>(props: Props<R>) {
       )}
     </div>
   ) : undefined;
+
+  const toolbar = (
+    <TableToolbar
+      title={title}
+      sections={props.sections}
+      section={props.section}
+      onSectionChange={props.onSectionChange}
+      controls={props.controls}
+      columns={columns}
+      filters={columns.some((c) => c.filter) && (
+        <FiltersButton
+          state={state}
+          open={drawerOpen}
+          onToggle={() => setDrawerOpen(!drawerOpen)}
+        />
+      )}
+      actions={actions.filter((a) => a.show !== false)}
+      onAction={(action) => setForm({action})}
+      captureFind={!!props.fill}
+      selection={selection}
+      state={state}
+    />
+  );
 
   /**
    * Renders the header of a group
@@ -1000,7 +1001,6 @@ function RecordTable<R>(props: Props<R>) {
       last={inView[inView.length - 1] || 0}
       onDownload={csv !== false
         ? () => downloadCSV(state.sorted) : undefined}
-      start={selection}
     />
   );
 
