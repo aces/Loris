@@ -250,7 +250,10 @@ and `-strong` shades: `neutral` (the default), `primary`, `info`, `success`,
 `warning` and `danger`. The label always says what the colour means.
 
 In a RecordTable, a column shows its values as tags with `tag: true`, or with a map
-from value to tone, such as `tag: {'1': 'danger', '3': 'success'}`. A list of values
+from value to tone, such as `tag: {'1': 'danger', '3': 'success'}`; with a map, only
+the values it names become tags and the rest stay plain text. Colour suits values from
+a short fixed set, such as a status; a set that keeps growing, such as cohorts, stays
+neutral. A list of values
 from a filter's options shows as neutral tags without being asked. A row shows three
 tags at most, with a count for the rest; the record panel shows them all.
 

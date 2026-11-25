@@ -398,7 +398,7 @@
        under it do. */
     padding: 0 var(--space-xs);
     border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: var(--surface-sunken);
 }
 
 .rt-table tbody tr:hover {
@@ -418,9 +418,14 @@
     border: none;
     border-radius: var(--radius);
     background: none;
-    color: var(--text);
-    font-weight: 600;
+    color: var(--text-muted);
+    font-weight: 500;
     cursor: pointer;
+}
+
+.rt-sort:hover,
+.rt-sorted .rt-sort {
+    color: var(--text);
 }
 
 .rt-sort:hover {
@@ -477,7 +482,7 @@
 
 .rt-table .rt-check-cell {
     width: 40px;
-    padding: 0 0 0 var(--space-xl);
+    padding: 0;
 }
 
 .rt-check-cell input {
@@ -641,6 +646,11 @@
 
 .rt-table thead .rt-sticky {
     z-index: 2;
+}
+
+.rt-table thead .rt-sticky,
+.rt-table thead .rt-actions-cell {
+    background: var(--surface-sunken);
 }
 
 .rt-table tbody tr:hover .rt-sticky {
@@ -1309,4 +1319,65 @@ body:has(.rt-fill) .navbar {
 
 .rt-record-form {
     padding: var(--space-xl);
+}
+
+/* A checkbox's whole cell is its click area, so a near miss still ticks it. */
+.rt-check-hit {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    padding-left: var(--space-xl);
+    cursor: pointer;
+}
+
+/* When columns run past the right edge, a soft shadow and a small arrow say
+   so; the arrow scrolls them into view. */
+.rt-more-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 3;
+    width: 24px;
+    background: linear-gradient(
+        to left, color-mix(in srgb, var(--text) 5%, transparent), transparent
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-more-right.rt-more-right-on {
+    opacity: 1;
+}
+
+.rt-more-right button {
+    position: absolute;
+    top: 50%;
+    right: var(--space-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    box-shadow: var(--shadow-raised);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.rt-more-right.rt-more-right-on button {
+    pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-more-right {
+        transition: none;
+    }
 }

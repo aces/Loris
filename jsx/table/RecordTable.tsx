@@ -23,9 +23,8 @@ import './RecordTable.css';
 
 const CARD_BATCH = 60;
 const CHECK_WIDTH = 40;
-const ACTIONS_WIDTH = 56;
+const ACTIONS_WIDTH = 40;
 const SHOWN_TAGS = 3;
-const FIT_PAUSE = 200;
 
 // An id is an identifier: set in the monospace and never cut short.
 export type ColumnType = 'text' | 'number' | 'date' | 'id';
@@ -268,45 +267,38 @@ function RecordTable<R>(props: Props<R>) {
     return map;
   }, [rows, recordKey]);
 
-  // Columns fit the rows in view, refitted once scrolling pauses rather than
-  // while it moves, and at once for a new filter, search or sort.
-  const [settled, setSettled] = useState(
-    () => ({start: view.start, end: view.end, rows})
+  // Columns take their width from the rows the filters, search and sort
+  // leave, and keep it while those rows scroll.
+  const {widths, clipped} = useColumnWidths(
+    shown, state.visibleColumns, scrollEl
   );
+
+  // A shadow and an arrow at the right edge show there are more columns to
+  // scroll to.
+  const [moreRight, setMoreRight] = useState(false);
   useEffect(() => {
-    const next = {start: view.start, end: view.end, rows};
-    if (rows !== settled.rows) {
-      setSettled(next);
+    if (!scrollEl) {
       return;
     }
-    const timer = window.setTimeout(() => setSettled(next), FIT_PAUSE);
-    return () => window.clearTimeout(timer);
-  }, [view.start, view.end, rows]);
-  const recordsInView = useMemo(
-    () => settled.rows.slice(settled.start, settled.end)
-      .flatMap((row) => row.kind === 'record' ? [row.record] : []),
-    [settled]
-  );
-  const fitted = useColumnWidths(
-    recordsInView, state.visibleColumns, scrollEl
-  );
-  // While the rows stay the same, columns only widen: a column that fitted a
-  // long value keeps that room when the rows in view are shorter, so scrolling
-  // back never finds it cut short. A new filter, search or sort starts again.
-  const grown = useRef<{rows: unknown, widths: {[name: string]: number}}>(
-    {rows: null, widths: {}}
-  );
-  if (grown.current.rows !== settled.rows) {
-    grown.current = {rows: settled.rows, widths: {}};
-  }
-  const widths: {[name: string]: number} = {};
-  Object.keys(fitted.widths).forEach((name) => {
-    widths[name] = Math.max(
-      fitted.widths[name], grown.current.widths[name] || 0
+    /**
+     * Checks whether the table runs past the right edge
+     */
+    const check = () => setMoreRight(
+      scrollEl.scrollLeft + scrollEl.clientWidth < scrollEl.scrollWidth - 1
     );
-  });
-  grown.current.widths = widths;
-  const {clipped} = fitted;
+    check();
+    scrollEl.addEventListener('scroll', check, {passive: true});
+    const observer = new ResizeObserver(check);
+    observer.observe(scrollEl);
+    const table = scrollEl.querySelector('table');
+    if (table) {
+      observer.observe(table);
+    }
+    return () => {
+      scrollEl.removeEventListener('scroll', check);
+      observer.disconnect();
+    };
+  }, [scrollEl]);
 
   const cardsRef = useRef<HTMLDivElement>(null);
   const [cardLimit, setCardLimit] = useState(CARD_BATCH);
@@ -397,7 +389,10 @@ function RecordTable<R>(props: Props<R>) {
     // rest, and the tooltip lists them all. In full, as in the record panel,
     // every one shows and they wrap. An empty value shows nothing.
     const options = column.filter?.options;
-    if (column.tag || (Array.isArray(value) && options)) {
+    // With a map of tones, only the values it names become tags.
+    const untoned = typeof column.tag === 'object' && !Array.isArray(value)
+      && !column.tag[String(value)];
+    if (!untoned && (column.tag || (Array.isArray(value) && options))) {
       const values = (Array.isArray(value) ? value : [value]).filter(
         (v) => (Array.isArray(value)
           ? options?.[String(v)] ?? String(v)
@@ -744,12 +739,14 @@ function RecordTable<R>(props: Props<R>) {
       >
         {selectable && (
           <td className="rt-check-cell">
-            <input
-              type="checkbox"
-              aria-label={t('Select row')}
-              checked={isSelected}
-              onChange={() => toggleRecord(key)}
-            />
+            <label className="rt-check-hit">
+              <input
+                type="checkbox"
+                aria-label={t('Select row')}
+                checked={isSelected}
+                onChange={() => toggleRecord(key)}
+              />
+            </label>
           </td>
         )}
         {visibleColumns.map((column) => (
@@ -809,17 +806,19 @@ function RecordTable<R>(props: Props<R>) {
           >
             {selectable && (
               <th className="rt-check-cell">
-                <input
-                  type="checkbox"
-                  aria-label={t('Select all rows')}
-                  checked={allSelected}
-                  ref={(el) => {
-                    if (el) {
-                      el.indeterminate = partlySelected;
-                    }
-                  }}
-                  onChange={toggleAll}
-                />
+                <label className="rt-check-hit">
+                  <input
+                    type="checkbox"
+                    aria-label={t('Select all rows')}
+                    checked={allSelected}
+                    ref={(el) => {
+                      if (el) {
+                        el.indeterminate = partlySelected;
+                      }
+                    }}
+                    onChange={toggleAll}
+                  />
+                </label>
               </th>
             )}
             {visibleColumns.map((column) => {
@@ -1205,6 +1204,24 @@ function RecordTable<R>(props: Props<R>) {
           <div className="rt-content">
             {layout === 'table' || visibleColumns.length === 0
               ? tableLayout : cardLayout}
+            {layout === 'table' && (
+              <div
+                className={'rt-more-right'
+                  + (moreRight ? ' rt-more-right-on' : '')}
+                style={{right: hasRecordActions ? ACTIONS_WIDTH : 0}}
+                aria-hidden="true"
+              >
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => scrollEl?.scrollBy({
+                    left: scrollEl.clientWidth * 0.6, behavior: 'smooth',
+                  })}
+                >
+                  <Icon name="chevronRight" />
+                </button>
+              </div>
+            )}
             {panel}
           </div>
           {footer}

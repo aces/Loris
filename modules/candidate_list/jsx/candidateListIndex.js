@@ -144,6 +144,14 @@ class CandidateListIndex extends Component {
     const {t, baseURL, betaProfileLink} = this.props;
     const formatDate = (value) => value
       ? this.dateFormatter.format(new Date(value)) : '';
+    const participantTones = {
+      'Active': 'success',
+      'Complete': 'info',
+      'Incomplete': 'warning',
+      'Unsure': 'warning',
+      'Requiring Further Investigation': 'warning',
+      'Not Responding': 'warning',
+    };
     const feedbackTones = {
       '1': 'danger', '2': 'warning', '3': 'success', '4': 'info',
     };
@@ -203,6 +211,7 @@ class CandidateListIndex extends Component {
         name: 'entityType',
         label: t('Entity Type', {ns: 'loris'}),
         value: (c) => c.entityType,
+        tag: {Scanner: 'info'},
         groupable: true,
         filter: {type: 'select', options: options.entitytype},
       },
@@ -225,6 +234,7 @@ class CandidateListIndex extends Component {
         name: 'participantStatus',
         label: t('Participant Status', {ns: 'loris'}),
         value: (c) => c.participantStatus,
+        tag: participantTones,
         groupable: true,
         filter: {type: 'select', options: options.participantstatus},
       },

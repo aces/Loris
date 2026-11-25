@@ -116,9 +116,11 @@ function FilterDrawer<R>(props: {
             {activeCount > 0 && <span className="rt-badge">{activeCount}</span>}
           </h3>
           {activeCount > 0 && (
-            <Button display="quiet" onClick={() => setFilters({})}>
-              {t('Clear all')}
-            </Button>
+            <span className="rt-clear-all">
+              <Button display="quiet" onClick={() => setFilters({})}>
+                {t('Clear all')}
+              </Button>
+            </span>
           )}
           <Tooltip content={t('Hide filters')} placement="bottom">
             <Button
