@@ -848,7 +848,7 @@ body:has(.rt-fill) #footer {
 
 .rt-page.rt-fill {
     box-sizing: border-box;
-    padding: 0 calc(2 * var(--space-xl));
+    padding: 0 var(--space-xl);
 }
 
 .rt-fill .rt {
@@ -863,23 +863,27 @@ body:has(.rt-fill) #footer {
     border-radius: 0;
 }
 
-.rt-fill .rt-content::before,
-.rt-fill .rt-content::after {
+.rt-fill .rt {
+    position: relative;
+}
+
+.rt-fill .rt::before,
+.rt-fill .rt::after {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
     z-index: 3;
-    width: var(--space-xl);
+    width: var(--space-sm);
     pointer-events: none;
 }
 
-.rt-fill .rt-content::before {
+.rt-fill .rt::before {
     left: 0;
     background: linear-gradient(to right, var(--surface), transparent);
 }
 
-.rt-fill .rt-content::after {
+.rt-fill .rt::after {
     right: 0;
     background: linear-gradient(to left, var(--surface), transparent);
 }
@@ -1337,11 +1341,12 @@ body:has(.rt-fill) .navbar {
     padding: var(--space-xl) var(--space-xl) var(--space-xs);
 }
 
+/* Larger type takes a lighter weight. */
 .rt-titlebar .rt-title,
 .rt-section {
     margin: 0;
     font-size: var(--font-size-lg);
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.3;
 }
 
