@@ -55,6 +55,7 @@ The module's functionality is supported by multiple configuration tables, each s
 | `biobank_specimen_attribute_datatype` | Specimen Attribute Datatypes            | **Defines data types for specimen attributes to ensure consistent data entry and validation.**                                                            |
 | `biobank_specimen_protocol`           | Specimen Protocols                      | **Associates specimens with specific collection and preparation protocols, ensuring standardized handling procedures.**                                    |
 | `biobank_specimen_protocol_attribute_rel` | Specimen Protocol Attribute Relations | **Links specimen protocols to their attributes, maintaining data consistency and integrity.**                                                              |
+| `biobank_specimen_protocol_type_rel` | Specimen Protocol Type Relations | **Links specimen protocols to the specimen types they apply to; a protocol can apply to several types.**                                                    |
 | `biobank_specimen_type_container_type_rel` | Specimen Type Container Type Relations | **Links specimen types to container types, ensuring appropriate container usage for each specimen type.**                                                  |
 | `biobank_specimen_type_parent`        | Specimen Type Parent Relations          | **Manages parent-child relationships between specimen types, allowing for hierarchical classification and organization.**                                    |
 | `biobank_specimen_type_unit_rel`      | Specimen Type Unit Relations            | **Links specimen types to measurement units, ensuring consistent data entry for specimen measurements.**                                                   |
@@ -72,7 +73,7 @@ The module's functionality is supported by multiple configuration tables, each s
 
 - **Measurement Units (`biobank_unit` & `biobank_specimen_type_unit_rel`):** Defines measurement units (e.g., µL, mL) and associates them with specimen types to ensure consistent data entry.
 
-- **Protocols (`biobank_specimen_protocol`):** Links specimens and pools to specific collection and preparation protocols, ensuring standardized handling procedures.
+- **Protocols (`biobank_specimen_protocol` & `biobank_specimen_protocol_type_rel`):** Links specimens and pools to specific collection and preparation protocols, ensuring standardized handling procedures. Each protocol applies to one or more specimen types, listed in `biobank_specimen_protocol_type_rel`.
 
 - **Pools (`biobank_pool`):** Manages pools created from multiple specimens, allowing for efficient processing and aliquoting.
 

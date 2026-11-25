@@ -393,7 +393,9 @@ class BarcodeInput extends PureComponent {
               (key) => options.container.stati[key].label == 'Available'
             );
             const protocolExists = Object.values(options.specimen.protocols)
-              .find((protocol) => protocol.typeId == specimen.typeId);
+              .find((protocol) => protocol.typeIds.some(
+                (id) => id == specimen.typeId
+              ));
             const inList = Object.values(list)
               .find((i) => i.container.id == container.id);
 
