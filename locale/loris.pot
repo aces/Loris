@@ -776,6 +776,7 @@ msgid "Save as new view…"
 msgstr ""
 
 msgid "Saves the filters, sort, grouping, layout and columns for you, in this browser."
+msgstr ""
 
 msgid "Help"
 msgstr ""
@@ -847,6 +848,7 @@ msgid "{{first}}–{{last}} of {{total}}"
 msgstr ""
 
 msgid "↑ ↓ to move between records · Esc to close"
+msgstr ""
 
 msgid "{{selected}} of {{total}} selected"
 msgstr ""
