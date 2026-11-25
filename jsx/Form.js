@@ -1767,7 +1767,7 @@ class DateRangeElementBase extends Component {
               fromLabel={minRangeLabel}
               toLabel={maxRangeLabel}
               clearLabel={this.props.t('Clear', {ns: 'loris'})}
-              doneLabel={this.props.t('Done', {ns: 'loris'})}
+              resetLabel={this.props.t('Clear', {ns: 'loris'})}
               previousLabel={this.props.t('Previous month', {ns: 'loris'})}
               nextLabel={this.props.t('Next month', {ns: 'loris'})}
               disabled={this.props.disabled}

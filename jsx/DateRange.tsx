@@ -20,7 +20,7 @@ function isoDate(year: number, month: number, day: number): string {
 
 /**
  * A range of dates picked on one calendar: the first click sets the start and
- * the second the end. The month and year can be jumped to directly, and both
+ * the second the end, which closes the calendar. The month and year can be jumped to directly, and both
  * ends can be typed.
  *
  * This is the unwrapped control, with no label or form row around it.
@@ -39,7 +39,9 @@ function isoDate(year: number, month: number, day: number): string {
  * @param props.clearLabel - Label for the clear button
  * @param props.name - Names hidden inputs <name>Min and
  *                     <name>Max holding the range
- * @param props.doneLabel - Label for the done button
+ * @param props.resetLabel - Text on the calendar's own clear button,
+ *                           shorter than clearLabel since the field
+ *                           already names what it clears
  * @param props.previousLabel - Accessible name for the
  *                              previous month control
  * @param props.nextLabel - Accessible name for the next
@@ -63,7 +65,7 @@ function DateRange(props: {
     disabled?: boolean,
     clearable?: boolean,
     name?: string,
-    doneLabel?: string,
+    resetLabel?: string,
     previousLabel?: string,
     nextLabel?: string,
 }): React.ReactElement {
@@ -121,8 +123,10 @@ function DateRange(props: {
       props.onChange({min: day, max: ''});
     } else if (day < start) {
       props.onChange({min: day, max: start});
+      setOpen(false);
     } else {
       props.onChange({min: start, max: day});
+      setOpen(false);
     }
   };
 
@@ -300,12 +304,9 @@ function DateRange(props: {
         <div className="loris-daterange-foot">
           <button type="button" className="loris-button quiet"
             disabled={!start && !end}
+            aria-label={props.clearLabel || 'Clear'}
             onClick={() => props.onChange({min: '', max: ''})}>
-            {props.clearLabel || 'Clear'}
-          </button>
-          <button type="button" className="loris-button primary"
-            onClick={() => setOpen(false)}>
-            {props.doneLabel || 'Done'}
+            {props.resetLabel || 'Clear'}
           </button>
         </div>
       </div> : null}

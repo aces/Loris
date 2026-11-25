@@ -157,7 +157,12 @@
 
 .loris-daterange-foot {
     display: flex;
-    justify-content: flex-end;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
+    margin-top: var(--space-sm);
+}
+
+/* One quiet action under the calendar; picking the end date closes it. */
+.loris-daterange-foot .loris-button {
+    height: 26px;
+    padding: 0 var(--space-xs);
+    font-size: var(--font-size-sm);
 }
