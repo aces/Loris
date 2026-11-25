@@ -137,6 +137,7 @@
 
 .loris-daterange-inputs label {
     flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -147,6 +148,9 @@
 }
 
 .loris-daterange-inputs input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
     height: var(--control-height-sm);
     padding: 0 var(--space-xs);
     border: 1px solid var(--field-border);
