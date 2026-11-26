@@ -493,7 +493,7 @@
 }
 
 .rt-table tbody tr.rt-selected {
-    background: var(--state-selected);
+    background: var(--state-active);
 }
 
 .rt-sort {
@@ -742,7 +742,7 @@
 }
 
 .rt-table tbody tr.rt-selected .rt-sticky {
-    background: var(--state-selected);
+    background: var(--state-active);
 }
 
 /* The table's right edge: a cell with no width, held at the edge, that
@@ -940,16 +940,16 @@ body:has(.rt-fill) #footer {
         inset 0 -2px 0 var(--field-border-focus);
 }
 
-/* The open row takes the palest navy and a navy bar; a selected row is a
-   stronger blue. */
+/* The open row is the one chosen, in blue with a navy bar. A ticked row
+   waits for an action, in the active orange, and keeps it while open. */
 .rt-table tbody tr.rt-open,
 .rt-table tbody tr.rt-open .rt-sticky {
-    background: var(--primary-fill);
+    background: var(--state-selected);
 }
 
 .rt-table tbody tr.rt-open.rt-selected,
 .rt-table tbody tr.rt-open.rt-selected .rt-sticky {
-    background: var(--state-selected);
+    background: var(--state-active);
 }
 
 /* One bar marks the open row, on its first cell only. */
