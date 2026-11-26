@@ -266,7 +266,9 @@ has two or three values worth telling apart at a glance, such as entity type, ea
 `primary` or `info`, never a state colour. Sex stays neutral, since a colour per sex
 reads as a stereotype.
 
-A yes-or-no value shows as a check for yes and stays empty for no.
+A yes-or-no value shows as a check for yes and stays empty for no in a table, where the
+column gives the empty cell its meaning. The record panel writes out Yes and No. In a
+RecordTable this is a column of `type: 'yes-no'`.
 
 In a RecordTable, a column shows its values as tags with `tag: true`, or with a map
 from value to tone, such as `tag: {'1': 'danger', '3': 'success'}`, where a value the

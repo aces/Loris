@@ -220,6 +220,7 @@ class CandidateListIndex extends Component {
       {
         name: 'scanDone',
         label: t('Scan Done', {ns: 'loris'}),
+        type: 'yes-no',
         value: (c) => c.scanDone,
         groupable: true,
         format: (scanDone) => scanDone === 'Y' && (

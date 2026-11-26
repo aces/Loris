@@ -27,8 +27,10 @@ const CHECK_WIDTH = 40;
 // How long scrolling rests before the columns fit the rows in view, in ms
 const SETTLE_PAUSE = 400;
 
-// An id is an identifier: set in the monospace and never cut short.
-export type ColumnType = 'text' | 'number' | 'date' | 'id';
+// An id is an identifier: set in the monospace and never cut short. A
+// yes-no value is drawn by its column's format in a row, and written out in
+// the record panel.
+export type ColumnType = 'text' | 'number' | 'date' | 'id' | 'yes-no';
 
 export type ColumnFilter = {
   type: 'text' | 'numeric' | 'select' | 'multiselect' | 'date-range'
@@ -401,6 +403,9 @@ function RecordTable<R>(props: Props<R>) {
     full = false,
   ): ReactNode => {
     const value = column.value(record);
+    if (full && column.type === 'yes-no') {
+      return displayOf(column, value, record);
+    }
     if (column.format) {
       return column.format(value, record);
     }
