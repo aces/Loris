@@ -1,0 +1,12 @@
+/**
+ * Icon styles: an icon is as tall as the text it sits in and takes its
+ * colour.
+ */
+
+.loris-icon {
+    flex: none;
+    width: 1em;
+    height: 1em;
+    stroke-width: 2;
+    vertical-align: -0.125em;
+}

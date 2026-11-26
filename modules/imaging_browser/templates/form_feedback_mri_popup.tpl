@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="{$css}" type="text/css" />
+<link rel="stylesheet" href="{$baseurl|default}/css/tokens.css" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="{$baseurl|default}/images/mni_icon.ico" type="image/ico" />
 

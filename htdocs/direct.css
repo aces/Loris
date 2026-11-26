@@ -1,13 +1,12 @@
 body {
    	margin: 5px 10px 10px 5px;
 	background-color: ligthgrey; 
-	font-family: verdana, sans-serif;
 	font-size: 1.1em;
 }
 
 
 th, td, input, textarea, select {
-    font-family: verdana, sans-serif;
+    font-family: inherit;
     font-weight: normal;
 }
 
@@ -267,7 +266,6 @@ table.fancytableleft caption {
 .button
 {
    font-size:11px;
-   font-family:Verdana,sans-serif;
    color:white;
    background-color:#08245b;
    border-style:ridge;
@@ -287,7 +285,6 @@ table.fancytableleft caption {
 }
 
 input.text {
-  font-family:TrebuchetMS;
   font-size:9pt;
   font-weight:bold;
   background-color:336699;
