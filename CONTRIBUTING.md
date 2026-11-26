@@ -100,3 +100,44 @@ Friendly** are good ones to tackle if you are new to LORIS development.
 confusing or lacking.
 * You can track down bugs by browsing the application and reviewing the
 PHP error log.
+
+## AI Policy
+### Code
+Reviewing, testing and triaging pull requests takes a large amount of
+maintainers' time. Any use of generative AI tools used for any pull request
+must be explictly mentioned in pull request descriptions to help in triaging.
+
+Please include any prompts, the model used, and a summary of what you've done
+to validate that the change is correct, complies with LORIS standards, and
+that the changes are not a hallucination of the model.
+
+### Translations
+If translation software is used for submitting language translations to LORIS,
+the policy is roughly the same as for code. In the pull request description,
+include what software was used to perform the translation. If you are a new
+contributor to LORIS, mention your level of familiarity with the target
+language and what you've done to ensure it is correct if it is not your native
+tongue.
+
+### Discussions
+Any use of large language models or generative AI tools in areas intended for
+human communications or feedback can be highly disruptive to collaborative
+interaction with the community and is strongly discouraged.
+
+Examples include but are not limited to: comments on GitHub issues, replies to
+feedback on pull requests, or GitHub Discussion forum contributions.
+
+### Governance and Confidentiality
+Contributors must ensure that confidential data, credentials, protected health
+information (PHI), or unpublished datasets do not get entered into third-party
+AI systems or training sets.
+
+This includes data accessed by agentic AI systems.
+
+## Licensing
+When contributing content to LORIS, you give us permission to use
+it as-is and you must make sure you are allowed to distribute it to us. By
+submitting a change to us, you agree that the changes can and should be
+adopted by LORIS and get redistributed under the GPLv3 license. Authors should
+be explicitly aware that the burden is on them to ensure no unlicensed code is
+submitted to the project.

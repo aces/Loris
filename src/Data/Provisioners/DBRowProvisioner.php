@@ -4,7 +4,7 @@
  * File defines a DBRowProvisioner, which is a type of provisioner that
  * gets data from an SQL database
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main

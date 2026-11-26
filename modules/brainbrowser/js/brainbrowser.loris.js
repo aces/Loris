@@ -507,7 +507,8 @@ $(function() {
           // in a dialog box.
           img.onload = function() {
             $('<div></div>').append(img).dialog({
-              title: spaceNames[axisName] + ' Slices',
+              title: window.tStrings?.[spaceNames[axisName]] ??
+                 spaceNames[axisName],
               height: 600,
               width: img.width,
             });

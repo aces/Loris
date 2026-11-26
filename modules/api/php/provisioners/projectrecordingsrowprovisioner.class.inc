@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all electrophysiology recordings
  * of a project created since a given date.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  LORIS
@@ -20,7 +20,7 @@ use \LORIS\api\Models\ProjectRecordingsRow;
  * This file implements a data provisioner to get all electrophysiology recordings
  * of a project created since a given date.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  LORIS

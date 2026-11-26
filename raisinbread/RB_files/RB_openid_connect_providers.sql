@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `openid_connect_providers`;
+LOCK TABLES `openid_connect_providers` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

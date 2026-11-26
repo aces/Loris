@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 import Breadcrumbs from 'jsx/Breadcrumbs';
 
 // Declared in smarty main.tpl
@@ -8,23 +9,23 @@ declare const loris: any;
 /**
  * Update the DQT breadcrumbs based on the active tab
  *
- * @param {string} activeTab - The active tab
- * @param {function} setActiveTab - set the state on click
+ * @param activeTab - The active tab
+ * @param setActiveTab - set the state on click
  */
 function useBreadcrumbs(
   activeTab: string,
   setActiveTab: (newtab: string) => void
 ) {
+  const {t} = useTranslation('dataquery');
   // update breadcrumbs breadcrumbs
   useEffect(() => {
     const breadcrumbs = [
       {
-        text: 'Data Query Tool (Beta)',
+        text: t('Data Query Tool (Beta)', {ns: 'dataquery'}),
         /**
          * OnClick handler for the main breadcrumb
          *
-         * @param {React.MouseEvent<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e: React.MouseEvent) => {
           e.preventDefault();
@@ -36,12 +37,11 @@ function useBreadcrumbs(
                 || activeTab == 'DefineFilters'
                 || activeTab == 'ViewData') {
       breadcrumbs.push({
-        text: 'Define Fields',
+        text: t('Define Fields', {ns: 'dataquery'}),
         /**
          * OnClick handler for the define fields breadcrumb
          *
-         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e) => {
           e.preventDefault();
@@ -52,12 +52,11 @@ function useBreadcrumbs(
     if (activeTab == 'DefineFilters'
                 || activeTab == 'ViewData') {
       breadcrumbs.push({
-        text: 'Define Filters',
+        text: t('Define Filters', {ns: 'dataquery'}),
         /**
          * OnClick handler for the define filters breadcrumb
          *
-         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e) => {
           e.preventDefault();
@@ -68,12 +67,11 @@ function useBreadcrumbs(
 
     if (activeTab == 'ViewData') {
       breadcrumbs.push({
-        text: 'View Data',
+        text: t('View Data', {ns: 'dataquery'}),
         /**
          * OnClick handler for the View Data breadcrumb
          *
-         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e) => {
           e.preventDefault();
@@ -90,7 +88,7 @@ function useBreadcrumbs(
         />,
       );
     }
-  }, [activeTab]);
+  }, [activeTab, t]);
 }
 
 export default useBreadcrumbs;

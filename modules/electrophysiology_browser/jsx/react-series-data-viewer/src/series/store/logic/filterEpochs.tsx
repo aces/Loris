@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import * as Rx from 'rxjs/operators';
 import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
-import {setFilteredEpochs, setActiveEpoch} from '../state/dataset';
+import {setFilteredEpochs, setActiveEpoch, State} from '../state/dataset';
 import {MAX_RENDERED_EPOCHS} from '../../../vector';
 import {Epoch, HEDSchemaElement, HEDTag} from '../types';
 
@@ -21,8 +21,8 @@ export type Action = (_: (_: any) => void) => void;
 /**
  * createFilterEpochsEpic
  *
- * @param {Function} fromState - A function to parse the current state
- * @returns {Observable<Action>} - A stream of actions
+ * @param fromState - A function to parse the current state
+ * @returns - A stream of actions
  */
 export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
@@ -33,7 +33,7 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
     Rx.map(([, state]) => {
-      const {interval, epochs} = fromState(state);
+      const {interval, epochs, filteredEpochs} = fromState(state);
       let newFilteredEpochs = [...Array(epochs.length).keys()]
         .filter((index) =>
           epochs[index].onset + epochs[index].duration > interval[0]
@@ -45,7 +45,10 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
       }
 
       return (dispatch) => {
-        dispatch(setFilteredEpochs(newFilteredEpochs));
+        dispatch(setFilteredEpochs({
+          ...filteredEpochs,
+          plotVisibility: newFilteredEpochs,
+        }));
       };
     })
   );
@@ -54,8 +57,8 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
 /**
  * createToggleEpochEpic
  *
- * @param {Function} fromState - A function to parse the current state
- * @returns {Observable<Action>} - A stream of actions
+ * @param fromState - A function to parse the current state
+ * @returns - A stream of actions
  */
 export const createToggleEpochEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
@@ -65,15 +68,14 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
     ofType(TOGGLE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]: [any, any]) => {
+    Rx.map<[number, State], any>(([payload, state]) => {
       const {filteredEpochs, epochs} = fromState(state);
       const index = payload;
       let newFilteredEpochs;
 
       if (filteredEpochs.plotVisibility.includes(index)) {
-        newFilteredEpochs = filteredEpochs.plotVisibility.filter(
-          (i) => i !== index
-        );
+        newFilteredEpochs = filteredEpochs.plotVisibility
+          .filter((i) => i !== index);
       } else if (index >= 0 && index < epochs.length) {
         newFilteredEpochs = filteredEpochs.plotVisibility.slice();
         newFilteredEpochs.push(index);
@@ -84,8 +86,8 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
 
       return (dispatch) => {
         dispatch(setFilteredEpochs({
+          ...filteredEpochs,
           plotVisibility: newFilteredEpochs,
-          columnVisibility: filteredEpochs.columnVisibility,
         }));
       };
     })
@@ -95,8 +97,8 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
 /**
  * createActiveEpochEpic
  *
- * @param {Function} fromState - A function to parse the current state
- * @returns {Observable<Action>} - A stream of actions
+ * @param fromState - A function to parse the current state
+ * @returns - A stream of actions
  */
 export const createActiveEpochEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
@@ -106,7 +108,7 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
     ofType(UPDATE_ACTIVE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]: [any, any]) => {
+    Rx.map<[number, State], any>(([payload, state]) => {
       const {epochs} = fromState(state);
       const index = payload;
 
@@ -124,9 +126,9 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
 /**
  * getEpochsInRange
  *
- * @param {Epoch[]} epochs - Array of epoch
- * @param {[number, number]} interval - Time interval to search
- * @returns {Epoch[]} - Epoch[] in interval with epochType
+ * @param epochs - Array of epoch
+ * @param interval - Time interval to search
+ * @returns - Epoch[] in interval with epochType
  */
 export const getEpochsInRange = (epochs, interval) => {
   return [...Array(epochs.length).keys()].filter((index) =>
@@ -141,27 +143,25 @@ export const getEpochsInRange = (epochs, interval) => {
   );
 };
 
-
 /**
  * getTagsForEpoch
  *
- * @param {Epoch} epoch - An epoch
- * @param {any[]} datasetTags - HED tags in the dataset
- * @param {HEDSchemaElement[]} hedSchema - HED schema to search
- * @returns {HEDTag[]} - List of HED tags within dataset associated with the epoch
+ * @param epoch - An epoch
+ * @param datasetTags - HED tags in the dataset
+ * @param hedSchema - HED schema to search
+ * @returns - List of HED tags within dataset associated with the epoch
  */
 export const getTagsForEpoch = (
-  epoch: Epoch, datasetTags: any,
-  hedSchema: HEDSchemaElement[]
+  epoch: Epoch, datasetTags: any, hedSchema: HEDSchemaElement[]
 ) => {
   const hedTags = [];
 
-  if (datasetTags['EventValue'].hasOwnProperty(epoch.label)) {
-    hedTags.push(...datasetTags['EventValue'][epoch.label]);
-  }
+  // if (datasetTags['EventValue'].hasOwnProperty(epoch.label)) {
+  //   hedTags.push(...datasetTags['EventValue'][epoch.label])
+  // }
 
-  if (datasetTags['TrialType'].hasOwnProperty(epoch.trialType)) {
-    hedTags.push(...datasetTags['TrialType'][epoch.trialType]);
+  if (datasetTags['trial_type'].hasOwnProperty(epoch.trialType)) {
+    hedTags.push(...datasetTags['trial_type'][epoch.trialType]);
   }
 
   epoch.properties.forEach((prop) => {
@@ -185,6 +185,9 @@ export const getTagsForEpoch = (
       PropertyName: tag.PropertyName,
       PropertyValue: tag.PropertyValue,
       AdditionalMembers: tag.AdditionalMembers,
+      TaggedBy: tag.TaggedBy,
+      TaggerName: tag.TaggerName,
+      Endorsements: [],
     };
   }).filter((tag) => {
     return tag.HEDTagID !== null || tag.PairRelID !== null;
@@ -194,9 +197,9 @@ export const getTagsForEpoch = (
 /**
  * getNthMemberTrailingCommaIndex
  *
- * @param {string} tagString - HED string
- * @param {number} n - Nth member to encapsulate. Members, (can), (be, groups)
- * @returns {number} - Returns index of comma expected after nth member
+ * @param tagString - HED string
+ * @param n - Nth member to encapsulate. Members, (can), (be, groups)
+ * @returns - Returns index of comma expected after nth member
  */
 const getNthMemberTrailingCommaIndex = (tagString: string, n: number) => {
   if (n < 1) {
@@ -225,9 +228,9 @@ const getNthMemberTrailingCommaIndex = (tagString: string, n: number) => {
 /**
  * buildHEDString
  *
- * @param {HEDTag[]} hedTags - List of HED tags
- * @param {boolean} longFormHED - Shows long form of HED tag if true
- * @returns {string[]} - String array representing the assembled HED tags
+ * @param hedTags - List of HED tags
+ * @param longFormHED - Shows long form of HED tag if true
+ * @returns - String array representing the assembled HED tags
  */
 export const buildHEDString = (hedTags: HEDTag[], longFormHED = false) => {
   const rootTags = hedTags.filter((tag) => {
@@ -255,7 +258,7 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED = false) => {
           ? groupTag.schemaElement.longName
           : groupTag.schemaElement.name;
       } else {
-        if (groupTag.HasPairing === '1') {
+        if (groupTag.HasPairing == '1') {
           if (groupTag.AdditionalMembers > 0 || subGroupString.length === 0) {
             const commaIndex = getNthMemberTrailingCommaIndex(
               tagString,
@@ -317,13 +320,12 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED = false) => {
 /**
  * getNthMemberTrailingCommaIndex
  *
- * @param {any[]} tagBadgeGroup - HED badge list
- * @param {number} n - Nth member to encapsulate. Members, (can), (be, groups)
- * @returns {number} - Returns index of comma expected after nth member
+ * @param tagBadgeGroup - HED badge list
+ * @param n - Nth member to encapsulate. Members, (can), (be, groups)
+ * @returns - Returns index of comma expected after nth member
  */
 export const getNthMemberTrailingBadgeIndex = (
-  tagBadgeGroup: any[],
-  n: number
+  tagBadgeGroup: any[], n: number
 ) => {
   if (n === 0) {
     return tagBadgeGroup.length;
@@ -355,3 +357,19 @@ export const getNthMemberTrailingBadgeIndex = (
   }
   return commaIndex + 1;
 };
+
+/**
+ * getRootTags
+ *
+ * @param tags - HEDTag list
+ * @returns - Returns the root tags
+ */
+export const getRootTags = (tags: HEDTag[]) => {
+  return tags.filter((tag) => {
+    return tag.ID &&
+      !tags.some((t) => {
+        return tag.ID === t.PairRelID;
+      });
+  });
+};
+

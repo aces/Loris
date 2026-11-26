@@ -116,7 +116,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $this->addWhereClause("c.Active='Y'");
         $prepbindings = [];
 
-        $this->buildQueryFromCriteria($term, $prepbindings);
+        $this->buildQueryFromCriteria($term, $prepbindings, $visitlist);
 
         $query = 'SELECT DISTINCT c.CandID FROM';
 
@@ -167,14 +167,17 @@ abstract class SQLQueryEngine implements QueryEngine
         $sessionVariables = false;
         $keyFields        = [];
         foreach ($items as $dict) {
+            // Quote the question marks otherwise PDO will interpret
+            // these as positional placeholders
+            $dictName = str_replace('?', '??', $dict->getName());
             $fields[] = $this->getFieldNameFromDict($dict)
                 . ' as '
-                . "`{$dict->getName()}`";
+                . "`$dictName`";
             if ($dict->getScope() == 'session') {
                 $sessionVariables = true;
             }
             if ($dict->getCardinality()->__toString() === "many") {
-                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `{$dict->getName()}:key`";
+                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `$dictName:key`";
             }
         }
 
@@ -474,8 +477,15 @@ abstract class SQLQueryEngine implements QueryEngine
                                                          ];
                             } else {
                                 // It is many, so use an array
-                                $key = $row[$field->getName() . ':key'];
-                                $val = $this->displayValue($field, $row[$fname]);
+
+                                // The question marks in the field names were quoted (i.e doubled, see
+                                // function getCandidateData) in order for PDO *not* to interpret
+                                // them as SQL parameter placeholders so we have to perform the
+                                // quoting here also (see https://www.php.net/manual/en/pdo.prepare.php).
+                                $quotedFieldName = str_replace('?', '??', $field->getName());
+                                $key = $row[$quotedFieldName . ':key'];
+                                $val = $this->displayValue($field, $row[$quotedFieldName]);
+
                                 // A null val in a cardinality many column means the row came from a left join
                                 // and shouldn't be included (as opposed to a cardinality:optional where it
                                 // means that the value was the value null)
@@ -531,7 +541,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS $tablename");
         $DB->run(
             "CREATE TEMPORARY TABLE $tablename (
-            CandID int(10)
+            CandID int(10) unsigned
         );"
         );
 

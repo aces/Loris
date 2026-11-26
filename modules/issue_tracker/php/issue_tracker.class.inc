@@ -4,7 +4,7 @@
  * This class features the code for the menu portion of the Loris issue
  * tracker.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -37,7 +37,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -105,7 +106,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $user    = $factory->user();
         $db      = $factory->database();
 
-        $hasPartialAcess = !$user->hasAnyPermission(
+        $hasPartialAccess = !$user->hasAnyPermission(
             [
                 'issue_tracker_all_issue',
                 'issue_tracker_site_issue',
@@ -130,7 +131,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                ON(i.reporter=u.UserID)",
             []
         );
-        if ($hasPartialAcess) {
+        if ($hasPartialAccess) {
             $reporter_expanded = $db->pselect(
                 "SELECT DISTINCT u.UserID,
                         u.Real_name
@@ -172,20 +173,21 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => dgettext('issue_tracker', 'Low'),
+            'normal'    => dgettext('issue_tracker', 'Normal'),
+            'high'      => dgettext('issue_tracker', 'High'),
+            'urgent'    => dgettext('issue_tracker', 'Urgent'),
+            'immediate' => dgettext('issue_tracker', 'Immediate'),
         ];
 
         $statuses = [
-            'new'          => 'New',
-            'acknowledged' => 'Acknowledged',
-            'feedback'     => 'Feedback',
-            'assigned'     => 'Assigned',
-            'resolved'     => 'Resolved',
-            'closed'       => 'Closed',
+            'new'          => dgettext('issue_tracker', 'New'),
+            'acknowledged' => dgettext('issue_tracker', 'Acknowledged'),
+            'feedback'     => dgettext('issue_tracker', 'Feedback'),
+            'assigned'     => dgettext('issue_tracker', 'Assigned'),
+            'resolved'     => dgettext('issue_tracker', 'Resolved'),
+            'closed'       => dgettext('issue_tracker', 'Closed'),
+            'rejected'     => dgettext('issue_tracker', 'Rejected'),
         ];
 
         $unorgCategories = $db -> pselect(
@@ -197,7 +199,10 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
-                $categories[$categoryName] = $categoryName;
+                $categories[$categoryName] = dgettext(
+                    "issues_categories",
+                    $categoryName,
+                );
             }
         }
 

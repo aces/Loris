@@ -8,7 +8,7 @@
  * To use the script: php Cleanup_Special_Chars_Document_Repository.php
  *
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

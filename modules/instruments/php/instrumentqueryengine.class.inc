@@ -21,7 +21,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      */
     private $visitcache = [];
 
-
     /**
      * Constructor
      *
@@ -44,6 +43,17 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $rows = $DB->pselectCol("SELECT Test_name FROM test_names", []);
 
+        // Instruments in the excluded_instruments config setting should
+        // not be queryable through the data dictionary or DQT.
+        $excluded = [];
+        $config   = $this->loris->getConfiguration();
+        $setting  = $config->getSetting('excluded_instruments');
+        foreach ($setting as $instruments) {
+            foreach (\Utility::asArray($instruments) as $instrument) {
+                $excluded[$instrument] = $instrument;
+            }
+        }
+
         $dict = [];
 
         // Use the same option enums for all instruments
@@ -55,6 +65,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $scope       = new Scope(Scope::SESSION);
 
         foreach ($rows as $testname) {
+            if (isset($excluded[$testname])) {
+                continue;
+            }
             try {
                 $inst = \NDB_BVL_Instrument::factory(
                     $this->loris,
@@ -98,7 +111,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 $fields = array_merge($fields, $inst->getDataDictionary());
                 $dict[] = $cat->withItems($fields);
             } catch (\LorisException $e) {
-                error_log($e);
+                error_log($e->getMessage());
             }
         }
         return $dict;
@@ -146,14 +159,18 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             throw new \DomainException("Field for unknown instrument");
         }
 
-        $inst   = \NDB_BVL_Instrument::factory($this->loris, $testname);
+        $inst = \NDB_BVL_Instrument::factory($this->loris, $testname);
+        \Profiler::checkpoint("After NDB_BVL_Instrument::factory for $testname");
         $values = $inst->bulkLoadInstanceData(
             null,
             $term,
+            $visitlist,
         );
+
         foreach ($values as $match) {
             yield $match->getCandID();
         }
+        \Profiler::checkpoint("Finished bulk load for $testname");
         return;
     }
 
@@ -179,6 +196,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         if (isset($this->visitcache[$inst->getName()])) {
             return $this->visitcache[$inst->getName()];
         }
+        $user        = \NDB_Factory::singleton()->user();
+        $user_visits = "('" . join("','", $user->getVisits()) . "')";
 
         $DB     = \NDB_Factory::singleton()->database();
         $visits = $DB->pselectCol(
@@ -188,6 +207,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                    JOIN session s ON (f.SessionID=s.ID)
                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Active='Y' AND c.Active='Y' and tn.Test_name=:tn
+                AND s.Visit_Label IN $user_visits
             ORDER BY s.Visit_label",
             ['tn' => $inst->getName()]
         );
@@ -241,7 +261,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS querycandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE querycandidates (
-                 CandID int(10),
+                 CandID int(10) UNSIGNED,
                  PRIMARY KEY (CandID)
             );"
         );
@@ -250,10 +270,10 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
          * @phan-suppress-next-line PhanParamSpecial1 */
             . join('),(', $candidates)
             . ')';
-
-        $q = $DB->prepare($insertstmt);
-        $q->execute([]);
-
+        if (is_array($candidates) && !empty($candidates)) {
+            $q = $DB->prepare($insertstmt);
+            $q->execute([]);
+        }
         $rows = $DB->pselect(
             "SELECT c.CandID, CommentID FROM flag f
 		JOIN test_names tn ON (f.TestID=tn.ID)
@@ -276,7 +296,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($instruments as $instrument) {
             $inst   = \NDB_BVL_Instrument::factory($this->loris, $instrument);
             $values = $inst->bulkLoadInstanceData(
-                array_keys($commentID2CandID)
+                array_keys($commentID2CandID),
+                null,
+                null
             );
 
             $instrumentIterators[$instrument] = $this->_dataToIterator(
@@ -371,6 +393,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         $candData[$dict->getName()] = [];
                     }
                     $sid = $loadedInstrument->getSessionID();
+
                     switch ($dict->fieldname) {
                     case 'Administration':
                     case 'Data_entry':
@@ -383,12 +406,35 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         ];
                         break;
                     default:
-                        $candData[$dict->getName()][$sid->__toString()] = [
-                            'VisitLabel' => $loadedInstrument->getVisitLabel(),
-                            'SessionID'  => $sid->__toString(),
-                            'value'      => $loadedInstrument
-                        ->getDictionaryValue($dict),
-                        ];
+                        if ($dict->getCardinality()->__toString() == "many") {
+                            $candData[$dict->getName()][$sid->__toString()] = [
+                                'keytype'    => $dict->getName() . " response",
+                                'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                                'SessionID'  => $sid->__toString(),
+                                'values'     => [],
+                            ];
+                            $i = 1;
+
+                            // Line length work-arounds
+                            $candData =& $candData[$dict->getName()];
+                            $vals     =& $candData[$sid->__toString()]['values'];
+
+                            $values = explode(
+                                '{@}',
+                                $loadedInstrument->getDictionaryValue($dict)
+                            );
+                            foreach ($values as $value) {
+                                $vals["Response $i"] = $value;
+                                $i++;
+                            }
+                        } else {
+                            $candData[$dict->getName()][$sid->__toString()] = [
+                                'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                                'SessionID'  => $sid->__toString(),
+                                'value'      =>
+                            $loadedInstrument->getDictionaryValue($dict),
+                            ];
+                        }
                     }
                 }
             }

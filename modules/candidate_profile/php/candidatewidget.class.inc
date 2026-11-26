@@ -24,18 +24,20 @@ class CandidateWidget implements \LORIS\GUI\Widget
     private ?int $_width;
     private ?int $_height;
     private ?int $_order;
+    private ?string $_maxheight;
 
     /**
      * Construct a dashboard widget with the specified properties.
      *
-     * @param string $title         The title of the card to display.
-     * @param string $jsurl         The URL containing the React component.
-     * @param string $componentname The React component name for this widget.
-     * @param array  $props         Additional React props to pass to the React
-     *                              component.
-     * @param ?int   $width         The width in the CSS grid.
-     * @param ?int   $height        The height in the CSS grid.
-     * @param ?int   $order         The order in the CSS grid.
+     * @param string  $title         The title of the card to display.
+     * @param string  $jsurl         The URL containing the React component.
+     * @param string  $componentname The React component name for this widget.
+     * @param array   $props         Additional React props to pass to the React
+     *                               component.
+     * @param ?int    $width         The width in the CSS grid.
+     * @param ?int    $height        The height in the CSS grid.
+     * @param ?int    $order         The order in the CSS grid.
+     * @param ?string $maxheight     The max-height of the panel
      */
     public function __construct(
         string $title,
@@ -44,7 +46,8 @@ class CandidateWidget implements \LORIS\GUI\Widget
         array $props,
         ?int $width = null,
         ?int $height = null,
-        ?int $order = null
+        ?int $order = null,
+        ?string $maxheight = null
     ) {
         $this->_title         = $title;
         $this->_url           = $jsurl;
@@ -53,6 +56,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
         $this->_componentname = $componentname;
         $this->_props         = $props;
         $this->_order         = $order;
+        $this->_maxheight     = $maxheight;
     }
 
     /**
@@ -137,5 +141,15 @@ class CandidateWidget implements \LORIS\GUI\Widget
     public function getComponentProps() : array
     {
         return $this->_props;
+    }
+
+    /**
+     * Return the Card max-height.
+     *
+     * @return ?string
+     */
+    public function getMaxHeight() : ?string
+    {
+        return $this->_maxheight;
     }
 }

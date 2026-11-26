@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It handles the basic routing for the module.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   API
  * @package    Main
@@ -29,7 +29,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
-
     /**
      * The API module is a module which is "public" so that the login endpoint
      * is accessible. Each endpoint must do its own validation of access levels
@@ -54,7 +53,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($this->hasPrefix('/static/', $request->getURI())) {
+        if ($this->hasPrefix('api/static/', $request->getURI())) {
             /*
              * Bypass for statically served files. If the request url
              * is /api/static/... this will call the handle  function
@@ -69,7 +68,7 @@ class Module extends \Module
         }
 
         // Requests sent to this module must start with /api/$version
-        $url    = $request->getURI()->getPath();
+        $url    = $request->getAttribute("unhandledURI")->getPath();
         $pieces = [];
         if (preg_match(
             "/^\/?(v[0-9]+\.[0-9]+\.[0-9]+[^\/]*)\/(.*)/",
@@ -131,7 +130,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "API";
+        return dgettext("api", "API");
     }
 
     /**

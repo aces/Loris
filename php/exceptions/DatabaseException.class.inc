@@ -4,7 +4,7 @@
  * This class is a wrapper around Database exceptions thrown from the Loris
  * database.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

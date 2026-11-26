@@ -10,6 +10,8 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
+import swal from 'sweetalert2';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Genomic Upload Form
@@ -81,6 +83,7 @@ class GenomicUploadForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -100,7 +103,7 @@ class GenomicUploadForm extends Component {
     ) ? (
         <CheckboxElement
           name='pscidColumn'
-          label='Use PSCID in column headers'
+          label={t('Use PSCID in column headers', {ns: 'genomic_browser'})}
           id='pscidColumn'
           value={this.state.pscidColumn}
           onUserInput={this.setFileUploadFormData}
@@ -116,13 +119,13 @@ class GenomicUploadForm extends Component {
             id='mediaUploadEl'
             onUserInput={this.setFileUploadFormData}
             ref='file'
-            label='File to upload'
+            label={t('File to upload', {ns: 'loris'})}
             required={true}
             value={this.state.formData.file}
           />
           <TextareaElement
             name='fileDescription'
-            label='Description'
+            label={t('Description', {ns: 'genomic_browser'})}
             value={this.state.formData.fileDescription}
             required={false}
             onUserInput={this.setFileUploadFormData}
@@ -133,7 +136,7 @@ class GenomicUploadForm extends Component {
               <ProgressBar value={this.state.uploadProgress}/>
             </div>
           </div>
-          <ButtonElement label='Upload File'/>
+          <ButtonElement label={t('Upload File', {ns: 'genomic_browser'})}/>
         </React.Fragment>
       ) : null;
 
@@ -148,7 +151,7 @@ class GenomicUploadForm extends Component {
           >
             <SelectElement
               name='fileType'
-              label='File type'
+              label={t('File type', {ns: 'genomic_browser'})}
               options={this.state.options.fileTypes}
               onUserInput={this.setFileUploadFormData}
               ref='fileType'
@@ -176,6 +179,7 @@ class GenomicUploadForm extends Component {
    * Uploads the file to the server
    */
   uploadFile() {
+    const {t} = this.props;
     // Set form data and upload the media file
     const state = Object.assign({}, this.state);
     let formObj = new FormData();
@@ -200,18 +204,19 @@ class GenomicUploadForm extends Component {
           }, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal('Upload Successful!', '', 'success');
+        swal.fire(t('Upload successful!', {ns: 'loris'}), '', 'success');
+        this.props.closeFileUploadModal();
       }
       ).catch((error) => {
         console.error(error);
         const msg = error.responseJSON ?
           error.responseJSON.message
-          : 'Upload error!';
+          : t('Upload error!', {ns: 'genomic_browser'});
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,
         });
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
       });
   }
 }
@@ -219,6 +224,8 @@ GenomicUploadForm.propTypes = {
   action: PropTypes.string,
   permissions: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  closeFileUploadModal: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default GenomicUploadForm;
+export default withTranslation('genomic_browser', 'loris')(GenomicUploadForm);

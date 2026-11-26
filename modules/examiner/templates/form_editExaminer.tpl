@@ -3,7 +3,7 @@
         <form method="post" name="edit_examiner" id="edit_examiner">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    Edit Certification for {$examiner_name}
+                    {dgettext("examiner", "Edit Certification for")} {$examiner_name}
                 </div>
                 <div class="panel-body" id="panel-body">
                     {foreach from=$form.errors item=error}
@@ -13,16 +13,16 @@
                     {/foreach}
                     <div class="row hidden-xs hidden-sm">
                         <div class="col-md-3">
-                            <label>Instrument</label>
+                            <label>{dgettext("loris", "Instrument")}</label>
                         </div>
                         <div class="col-md-2">
-                            <label>Certification Status</label>
+                            <label>{dgettext("examiner", "Certification Status")}</label>
                         </div>
                         <div class="col-md-2 col-md-offset-1">
-                            <label>Certification Date</label>
+                            <label>{dgettext("examiner", "Certification Date")}</label>
                         </div>
                         <div class="col-md-2 col-md-offset-1">
-                            <label>Comments</label>
+                            <label>{dgettext("examiner", "Comments")}</label>
                         </div>
                     </div>
                     <hr class="row hidden-xs hidden-sm">
@@ -39,10 +39,10 @@
                         {if not $success|default}
                         <div class="col-xs-12">
                             <div class="col-sm-6 col-md-2 col-xs-12 col-md-offset-8">
-                                <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit">
+                                <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="{dgettext("loris", "Save")}" type="submit">
                             </div>
                             <div class="col-sm-6 col-md-2 col-xs-12">
-                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='{$baseurl|default}/examiner/editExaminer/?reset=true&identifier={$identifier}'">
+                                <input class="btn btn-sm btn-primary col-xs-12" value="{dgettext("loris", "Reset")}" type="reset" onclick="location.href='{$baseurl|default}/examiner/editExaminer/?reset=true&identifier={$identifier}'">
                             </div>
                         </div>
                         {/if}
@@ -55,18 +55,18 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <h3>Change Log</h3>
+        <h3>{dgettext("examiner", "Change Log")}</h3>
     </div>
 </div>
 <table class="table table-hover table-primary table-bordered dynamictable">
     <tr class="info">
-        <th>Time</th>
-        <th>User</th>
-        <th>Measure</th>
-        <th>Old Value</th>
-        <th>Old Date</th>
-        <th>New Value</th>
-        <th>New Date</th>
+        <th>{dgettext("loris", "Time")}</th>
+        <th>{dgettext("examiner", "User")}</th>
+        <th>{dgettext("examiner", "Measure")}</th>
+        <th>{dgettext("examiner", "Old Value")}</th>
+        <th>{dgettext("examiner", "Old Date")}</th>
+        <th>{dgettext("examiner", "New Value")}</th>
+        <th>{dgettext("examiner", "New Date")}</th>
     </tr>
     {section name=history_row loop=$certification_history}
     <tr>
@@ -81,7 +81,7 @@
     {sectionelse}
     <tr>
         <td colspan="7">
-            No changes have been made
+            {dgettext("examiner", "No changes have been made")}
         </td>
     </tr>
     {/section}

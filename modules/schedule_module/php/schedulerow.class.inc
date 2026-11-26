@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * row in the candidate list menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -47,6 +47,7 @@ class ScheduleRow implements \LORIS\Data\DataInstance,
     protected $AppointmentTypeName;
     protected $site;
     protected $ProjectID;
+
     /**
      * Create a new CandidateListRow
      *
@@ -88,17 +89,17 @@ class ScheduleRow implements \LORIS\Data\DataInstance,
             [
                 'DCCID'               => $this->DCCID,
                 'PSCID'               => $this->PSCID,
-                'site'                => $this->site,
-                'VisitLabel'          => $this->Visit_label,
-                'Project'             => $this->Project,
-                'Subproject'          => $this->Subproject,
-                'AppointmentTypeID'   =>$this->AppointmentTypeID,
+                'site'                => dgettext('psc', $this->site),
+                'VisitLabel'          => dgettext('visit', $this->Visit_label),
+                'Project'             => dgettext('Project', $this->Project),
+                'Subproject'          => dgettext('cohort', $this->Subproject),
+                'AppointmentTypeID'   => $this->AppointmentTypeID,
+                'AppointmentTypeName' => $this->AppointmentTypeName,
                 'Day'                 => $this->Day,
                 'Time'                => $this->Time,
-                'StartsAt'            =>$this->StartsAt,
-                'SessionID'           =>$this->SessionID,
-                'AppointmentID'       =>$this->AppointmentID,
-                'AppointmentTypeName' => $this->AppointmentTypeName,
+                'StartsAt'            => $this->StartsAt,
+                'SessionID'           => $this->SessionID,
+                'AppointmentID'       => $this->AppointmentID,
                 'CenterID'            => $this->CenterID,
                 'SubprojectID'        => $this->SubprojectID,
             ];

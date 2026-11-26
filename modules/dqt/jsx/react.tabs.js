@@ -10,7 +10,7 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
-import StaticDataTable from '../../../jsx/StaticDataTable';
+import DataTable from '../../../jsx/DataTable';
 import swal from 'sweetalert2';
 import {
   RadioElement,
@@ -613,7 +613,7 @@ class ViewDataTabPane extends Component {
       }
     }
     const queryTable = this.state.runQueryClicked ? (
-      <StaticDataTable
+      <DataTable
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}

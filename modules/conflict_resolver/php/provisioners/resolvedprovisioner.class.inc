@@ -69,8 +69,6 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     ELSE conflicts_resolved.OldValue2
                 END AS correctanswer,
               conflicts_resolved.ResolutionTimestamp as resolutiontimestamp,
-              conflicts_resolved.User1 as user1,
-              conflicts_resolved.User2 as user2,
               conflicts_resolved.UserID as resolver,
               psc.name as site,
               session.CenterID as centerid,

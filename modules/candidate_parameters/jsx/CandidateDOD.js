@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {
@@ -7,6 +9,7 @@ import {
   StaticElement,
   DateElement,
   ButtonElement,
+  SelectElement,
 } from 'jsx/Form';
 
 /**
@@ -62,7 +65,13 @@ class CandidateDOD extends Component {
    * @param {*} value
    */
   setFormData(formElement, value) {
-    let formData = this.state.formData;
+    let formData = {...this.state.formData};
+
+    // Clear the DOD if indicated as unknown
+    if (formElement === 'dod_precision' && value === 'unknown') {
+      formData.dod = '';
+    }
+
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -75,20 +84,39 @@ class CandidateDOD extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return (
+        <h3>{t('An error occurred while loading the page.', {ns: 'loris'})}</h3>
+      );
     }
 
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
-    let dateFormat = this.state.data.dodFormat;
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dod_edit')) {
       disabled = false;
-      updateButton = <ButtonElement label="Update"/>;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
+    }
+
+    let precisionOptions = {
+      'known_year_month': t('I know the year and month of death'),
+      'known_year': t('I know the year of death'),
+      'unknown': t('I do not know the date of death'),
+    };
+
+    let required = this.state.formData.dod_precision != 'unknown';
+
+    let dateFormat = this.state.data.dodFormat;
+
+    let dodValue = this.state.formData.dod || '';
+    if (dateFormat == 'Ymd') {
+      precisionOptions['known_full'] = t('I know the full date of death');
+    } else if (dateFormat == 'Ym' && this.state.formData.dod) {
+      dodValue = dodValue.slice(0, 7);
     }
 
     return (
@@ -99,27 +127,40 @@ class CandidateDOD extends Component {
           ref='form'
           class='col-md-6'>
           <StaticElement
-            label='PSCID'
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.data.pscid}
           />
           <StaticElement
-            label='DCCID'
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.data.candID}
           />
           <StaticElement
-            label='Disclaimer:'
-            text='Any changes to the date of death requires an
-            administrator to run the fix_candidate_age script.'
+            label={t('Disclaimer:', {ns: 'candidate_parameters'})}
+            text={
+              t('Any changes to the date of death requires an administrator '
+                 + 'to run the fix_candidate_age script.',
+              {ns: 'candidate_parameters'}
+              )
+            }
             class='form-control-static text-danger bg-danger col-sm-10'
           />
-          <DateElement
-            label='Date Of Death:'
-            name='dod'
-            dateFormat={dateFormat}
-            value={this.state.formData.dod}
+          <SelectElement
+            label={t('Precision of date:')}
+            name='dod_precision'
+            options={precisionOptions}
+            value={this.state.formData.dod_precision}
             onUserInput={this.setFormData}
             disabled={disabled}
             required={true}
+          />
+          <DateElement
+            label={t('Date Of Death:', {ns: 'candidate_parameters'})}
+            name='dod'
+            dateFormat={dateFormat}
+            value={dodValue}
+            onUserInput={this.setFormData}
+            disabled={disabled || !required}
+            required={required}
           />
           {updateButton}
         </FormElement>
@@ -133,6 +174,7 @@ class CandidateDOD extends Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     let today = new Date();
@@ -148,20 +190,26 @@ class CandidateDOD extends Component {
 
     if (dod > today) {
       swal.fire({
-        title: 'Invalid date',
-        text: 'Date of death cannot be later than today!',
+        title: t('Invalid date', {ns: 'candidate_parameters'}),
+        text:
+          t('Date of death cannot be later than today!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
 
     if (dob > dod) {
       swal.fire({
-        title: 'Invalid date',
-        text: 'Date of death must be after date of birth!',
+        title: t('Invalid date', {ns: 'candidate_parameters'}),
+        text:
+          t('Date of death must be after date of birth!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
@@ -178,7 +226,6 @@ class CandidateDOD extends Component {
     }
 
     formObject.append('tab', this.props.tabName);
-
     fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
@@ -188,10 +235,10 @@ class CandidateDOD extends Component {
     ).then((resp) => resp.text()
     ).then((result) => {
       swal.fire({
-        title: 'Success!',
-        text: 'Date of death updated!',
+        title: t('Success!', {ns: 'loris'}),
+        text: t('Date of death updated!', {ns: 'candidate_parameters'}),
         type: 'success',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       if (result.value) {
         this.fetchData();
@@ -199,10 +246,10 @@ class CandidateDOD extends Component {
     }).catch((error) => {
       console.error(error);
       swal.fire({
-        title: 'Error!',
-        text: 'Something went wrong.',
+        title: t('Error!', {ns: 'loris'}),
+        text: t('Something went wrong.', {ns: 'candidate_parameters'}),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
     });
   }
@@ -211,5 +258,6 @@ CandidateDOD.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
-export default CandidateDOD;
+export default withTranslation(['candidate_parameters', 'loris'])(CandidateDOD);

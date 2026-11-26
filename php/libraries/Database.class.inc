@@ -145,7 +145,7 @@ class Database implements LoggerAwareInterface
 
         try {
             $this->_PDO = new PDO(
-                "mysql:host=$host;dbname=$database;charset=UTF8",
+                "mysql:host=$host;dbname=$database;charset=utf8mb4",
                 $username,
                 $password
             );
@@ -335,7 +335,13 @@ class Database implements LoggerAwareInterface
             // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
             // earlier versions, since the default flags changed in PHP 8.1.
             $retVal[$key] = is_string($val)
-                ? htmlspecialchars($val, ENT_COMPAT) : $val;
+                ? htmlspecialchars(
+                    $val,
+                    ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : $val;
         }
         return $retVal;
     }
@@ -416,10 +422,20 @@ class Database implements LoggerAwareInterface
             );
         }
 
+        $operation = 'I'; // Default to an insert
+
+        // If it was an 'ON DUPLICATE KEY UPDATE' query, check the PDO rowCount()
+        if ($onDuplicateUpdate) {
+            $rowsAffected = $prep->rowCount();
+            if ($rowsAffected !== 2) {
+                $operation = 'U'; // It was an update
+            }
+        }
+
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $this->trackChanges($table, $set, '2=1', 'I');
+        $this->trackChanges($table, $set, '2=1', $operation);
         return true;
     }
 
@@ -725,6 +741,7 @@ class Database implements LoggerAwareInterface
         }
         return $rows;
     }
+
     /**
      * Runs an SQL select statement as a prepared query
      *
@@ -1040,10 +1057,10 @@ class Database implements LoggerAwareInterface
         foreach ($dataArray as $key => $item ) {
             if (is_null($item)) {
                 $output[] = $clause == 'where_'
-                ? "`$key` IS NULL" : "`$key` = NULL";
+                ? $this->escape($key) . " IS NULL" : $this->escape($key) . " = NULL";
             } else {
                 $item     = $this->quote((string) $item);
-                $output[] = "`$key`=$item";
+                $output[] = $this->escape($key) . "=$item";
             }
         }
         return implode($glue, $output);
@@ -1085,9 +1102,9 @@ class Database implements LoggerAwareInterface
             $varname = str_replace("%", "_percent_", $key);
             if (is_null($item)) {
                 $output[] = $prefix == 'where_'
-                ? "`$key` IS NULL" : "`$key` = NULL";
+                ? $this->escape($key) . " IS NULL" : $this->escape($key) . " = NULL";
             } else {
-                $output[] = "`$key`=:$prefix$varname";
+                $output[] = $this->escape($key) . "=:$prefix$varname";
                 if ($exec_vals !== null) {
                     $exec_vals["$prefix$varname"] = $item;
                 }
@@ -1606,7 +1623,7 @@ class Database implements LoggerAwareInterface
     public function setBuffering(bool $buffered): void
     {
         if ($this->_PDO->setAttribute(
-            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
+            \PDO\Mysql::ATTR_USE_BUFFERED_QUERY,
             $buffered
         ) == false
         ) {

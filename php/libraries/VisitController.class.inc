@@ -3,7 +3,7 @@
 /**
  * This file contains the VisitController class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Controller
  * @package  Visits
@@ -115,33 +115,33 @@ class VisitController
     }
 
     /**
-     * Instanciate a visit object using the visit label value
+     * Instantiate a visit object using the visit ID
      *
-     * @param string $visitLabel Label for which the Visit object s requested
+     * @param int $visitId ID for which the Visit object is requested
      *
      * @return Visit Visit associated with the supplied label
      *
      * @throws \NotFound
      */
-    public function getVisitFromVisitLabel(string $visitLabel) : \LORIS\Visit
+    public function getVisitFromVisitID(int $visitId) : \LORIS\Visit
     {
         $visitData = $this->database->pselectRow(
             'SELECT
-                 v.VisitID, v.VisitName
+                 v.VisitID, v.VisitName, v.VisitLabel
                 FROM
                  visit v
                 WHERE
-                 v.VisitLabel = :vl',
-            ['vl' => $visitLabel]
+                 v.VisitID = :vid',
+            ['vid' => $visitId]
         );
 
         if (empty($visitData)) {
             throw new \NotFound(
-                "No visits found in the database with label: $visitLabel"
+                "No visits found in the database with id: $visitId"
             );
         }
 
-        return new \LORIS\Visit($visitData['VisitName'], $visitLabel);
+        return new \LORIS\Visit($visitData['VisitName'], $visitData['VisitLabel']);
     }
 
     /**
@@ -155,7 +155,7 @@ class VisitController
         return array_map(
             function ($row) {
                 return [
-                    new \LORIS\Visit($row['name'], $row['ID']),
+                    new \LORIS\Visit($row['name'], $row['label']),
                     $row['project'],    // will be modified to object when
                     $row['cohort'], // available
                 ];
@@ -163,7 +163,7 @@ class VisitController
             iterator_to_array(
                 $this->database->pselect(
                     'SELECT
-                  v.VisitID as "ID",
+                  v.VisitLabel as "label",
                   v.VisitName as "name",
                   psr.ProjectID as "project",
                   psr.CohortID as "cohort"
@@ -175,12 +175,11 @@ class VisitController
                  JOIN
                   project_cohort_rel psr
                  ON vps.ProjectCohortRelID = psr.ProjectCohortRelID
-                ORDER BY ID, project, cohort
+                ORDER BY label, project, cohort
                 ',
                     []
                 )
             )
         );
     }
-
 }

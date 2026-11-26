@@ -18,7 +18,7 @@
  * allowing to dump data using only the database name. The functionality to input
  * credentials interactively should be added.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -87,15 +87,28 @@ if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
  */
 
 
+// Determine whether the installed mysqldump executable supports
+// the --column-statistics option.
+$mysqldumpHelp = shell_exec('mysqldump --help 2>/dev/null') ?? '';
+
+$columnStatisticsFlag = str_contains(
+    $mysqldumpHelp,
+    'column-statistics'
+) ? '--column-statistics=0 ' : '';
+
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
     $paths    = \NDB_Config::singleton()->getSetting('paths');
     $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
+    $setNamesSpecialChars = (
+            str_contains($tableName, 'I18n') || $tableName === 'language'
+        ) ? 'SET NAMES utf8mb4;\n'
+        : '';
     exec(
         'mysqldump -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         escapeshellarg($databaseInfo['database']).' '.
-        '--column-statistics=0 '.
+        $columnStatisticsFlag.
         '--complete-insert '.
         '--no-create-db '.
         '--no-create-info '.
@@ -105,8 +118,11 @@ foreach ($tableNames as $tableName) {
         '--verbose '.
         '--skip-tz-utc '.
         $tableName .
-        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'.
+        ' | sed -E '.
+        '\'1{/\/\*M!999999\\\\- enable the sandbox mode \*\//d}; '.
+        's/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'.
         'TRUNCATE TABLE \1;\n'.
+        $setNamesSpecialChars.
         'LOCK TABLES \1/g\''.
         ' > '. $filename .
         '&& echo "SET FOREIGN_KEY_CHECKS=1;" >> '. $filename

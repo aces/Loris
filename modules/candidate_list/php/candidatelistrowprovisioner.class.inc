@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all possible rows
  * for the candidate list menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\candidate_list;
  * This class implements a data provisioner to get all possible rows
  * for the candidate list menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -58,9 +58,26 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.CandID AS DCCID,
                 GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel,
                 psc.Name AS RegistrationSite,
-                GROUP_CONCAT(DISTINCT sp.title) AS Cohort,
+                CONCAT_WS(
+                    ',',
+                    rc.title,
+                    GROUP_CONCAT(
+                        DISTINCT CASE
+                            WHEN s.CohortID <> c.RegistrationCohortID
+                                OR c.RegistrationCohortID IS NULL
+                            THEN sp.title
+                        END
+                    )
+                ) AS Cohort,
                 c.Entity_type AS EntityType,
-                MAX(s.Scan_done) AS scanDone,
+                CASE
+                    WHEN COUNT(s.ID) = 0 THEN NULL
+                    WHEN COUNT(f.FileID) > 0
+                        OR COUNT(mu.UploadID) > 0
+                        OR COUNT(t.TarchiveID) > 0 
+                    THEN 'Y'
+                    ELSE 'N'
+                END AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
                 DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
                 DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
@@ -80,10 +97,17 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
+                    LEFT JOIN cohort rc
+                        ON (c.RegistrationCohortID=rc.CohortID)
                     LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
+                    LEFT JOIN files f ON f.SessionID=s.ID
+                    LEFT JOIN mri_upload mu ON mu.SessionID=s.ID
+                    LEFT JOIN tarchive t ON t.SessionID=s.ID
                 WHERE c.Active = 'Y'
                 AND c.RegistrationProjectID IS NOT NULL
-                GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
+                GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex, c.Entity_type,
+                    pso.Description, c.DOB, c.Date_registered, p.Name,
+                    c.RegistrationCenterID, c.RegistrationProjectID, rc.title
                 ORDER BY c.PSCID ASC
             ",
             []
@@ -120,6 +144,30 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 throw new \Exception("Unhandled DoB format: $this->dobFormat");
             }
         }
+        $row['RegistrationSite'] = dgettext("psc", $row['RegistrationSite']);
+
+        if (isset($row['Cohort'])) {
+            $cohorts    = explode(',', $row['Cohort']);
+            $translated = [];
+            foreach ($cohorts as $cohort) {
+                $translated[] = dgettext("cohort", $cohort);
+            }
+            $row['Cohort'] = implode(',', $translated);
+        }
+
+        $row['Sex'] = isset($row['Sex']) ? dgettext("sex", $row['Sex']) : '';
+
+        $row['EntityType'] = dgettext("candidate", $row['EntityType']);
+
+        $row['ParticipantStatus']   = dgettext(
+            "participant_status_options",
+            $row['ParticipantStatus'],
+        );
+        $row['RegistrationProject'] = dgettext(
+            "Project",
+            $row['RegistrationProject']
+        );
+
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new CandidateListRow($row, $cid, $pid);

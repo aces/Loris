@@ -4,7 +4,7 @@
  * This file contains a class which encapsulates the concept of a "Project"
  * in LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -87,7 +87,7 @@ class Project implements \JsonSerializable
             );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
-            $project->_recruitmentTarget = (integer) $projectData['recTarget'];
+            $project->_recruitmentTarget = (int) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
         }
@@ -211,7 +211,7 @@ class Project implements \JsonSerializable
      */
     public function getName(): string
     {
-        return $this->_projectName;
+        return dgettext('Project', $this->_projectName);
     }
 
     /**
@@ -389,13 +389,26 @@ class Project implements \JsonSerializable
     /**
      * Get that project's participants
      *
+     * @param array $centerIDs A list of center IDs that the candidate's
+     *                         registration center ID must be in.
+     *
      * @return array A list of object representation of a basic candidates
      */
-    public function getCandidateIds(): array
+    public function getCandidateIds(array $centerIDs = []): array
     {
         $factory = \NDB_Factory::singleton();
 
-        $p = [$this->_projectId];
+        $args['v_project_id'] = implode(',', [$this->_projectId]);
+
+        // Compute clause restricting the candidate's center ID (if any)
+        // and its associated argument.
+        if (!empty($centerIDs)) {
+            $args['v_center_id'] = implode(',', $centerIDs);
+        }
+        $centerIDClause = empty($centerIDs)
+            ? ''
+            : "AND FIND_IN_SET(IFNULL(RegistrationCenterID, '-1'), :v_center_id)";
+
         $candidatesData = $factory->database()->pselect(
             "
             SELECT
@@ -405,8 +418,9 @@ class Project implements \JsonSerializable
             WHERE
               active = 'Y' AND
               FIND_IN_SET(IFNULL(RegistrationProjectID, '-1'), :v_project_id)
+              $centerIDClause
             ",
-            ['v_project_id' => implode(',', $p)]
+            $args
         );
         return array_map(
             function ($row) {
@@ -520,7 +534,7 @@ class Project implements \JsonSerializable
             );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
-            $project->_recruitmentTarget = (integer)$projectData['recTarget'];
+            $project->_recruitmentTarget = (int)$projectData['recTarget'];
 
             self::$_instances[$projectData['name']] = $project;
             $projects[] = $project;

@@ -3,7 +3,7 @@
 /**
  * This file contains a definition of the Filter interface.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main

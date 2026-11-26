@@ -14,8 +14,6 @@
  */
 namespace LORIS\dicom_archive;
 
-use \Psr\Http\Message\ServerRequestInterface;
-
 /**
  * Implements the ViewDetails subpage of the dicom_archive module.
  *
@@ -28,6 +26,13 @@ use \Psr\Http\Message\ServerRequestInterface;
  */
 class ViewDetails extends \NDB_Form
 {
+    /**
+     * Render the page with React instead of Smarty.
+     *
+     * @var bool
+     */
+    public $skipTemplate = true;
+
     /**
      * ID of the tarchive for which the details should be displayed.
      */
@@ -46,71 +51,92 @@ class ViewDetails extends \NDB_Form
     public $protocols;
 
     /**
+     * Archive metadata displayed on the page.
+     *
+     * @var array<string, mixed>
+     */
+    private array $archive = [];
+
+    /**
+     * Series metadata displayed on the page.
+     *
+     * @var list<array<string, mixed>>
+     */
+    private array $archiveSeries = [];
+
+    /**
+     * File metadata displayed on the page.
+     *
+     * @var list<array<string, mixed>>
+     */
+    private array $archiveFiles = [];
+
+    /**
      * Determine whether the user has permission to view this page
      *
      * @param \User $user The user whose access is being checked
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        // remove the possibility to have no tarchive ID in this page
-        if (is_null($this->tarchiveID)) {
-            // defaults to permission denied
-            return false;
-        }
-
-        // get project ID from Tarchive ID.
-        $projectID = $this->_getProjectFromTarchiveID();
-        if (is_null($projectID)) {
-            return false;
-        }
-
-        // check permissions
-        return $user->hasPermission('dicom_archive_view_allsites')
-            && $user->hasProject($projectID);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param \User                  $user    The user this request is for
-     * @param ServerRequestInterface $request The PSR7 request
-     *
-     * @return void
-     */
-    public function loadResources(
-        \User $user, ServerRequestInterface $request
-    ) : void {
-        $gets = $request->getQueryParams();
-        if (is_null($gets['tarchiveID'])) {
-            $this->tarchiveID = null;
-        } else {
-            $this->tarchiveID = intval($gets['tarchiveID']);
-        }
-    }
-
-    /**
-     * Get the ProjectID attached to a given tarchive ID.
-     *
-     * @return \ProjectID|null a ProjectID if found, else null
-     */
-    private function _getProjectFromTarchiveID(): ?\ProjectID
-    {
-        $db  = $this->loris->getDatabaseConnection();
-        $pid = $db->pselectOne(
-            "SELECT p.ProjectID
-            FROM tarchive t
-                JOIN session s ON (t.SessionID = s.ID)
-                JOIN Project p ON (p.ProjectID = s.ProjectID)
-            WHERE t.TarchiveID = :tar",
-            ['tar' => $this->tarchiveID]
+        // Permission of access to this page needs to match the module's filters
+        $config           = \NDB_Factory::singleton()->config();
+        $siteprojectperms = $config->getSetting(
+            'useAdvancedPermissions'
         );
-        //
-        if (is_null($pid)) {
-            return null;
+        $DB  = $this->loris->getDatabaseConnection();
+        $row = $DB->pselectRow(
+            "SELECT CenterID, ProjectID, SessionID, CreatingUser
+            FROM tarchive t 
+                JOIN session s ON s.ID = t.SessionID 
+            WHERE TarchiveID = :ID",
+            ['ID' => $_REQUEST['tarchiveID']]
+        );
+
+        $hasCenterAccess    = false;
+        $hasNoSessionAccess = false;
+        $hasProjectAccess   = false;
+        $isCreator          = false;
+
+        if (isset($row['CenterID'])) {
+            $hasCenterAccess = $user->hasCenter(
+                \CenterID::singleton(intval($row['CenterID']))
+            );
         }
-        return \ProjectID::singleton(intval($pid));
+        if (!isset($row['SessionID'])) {
+            $hasNoSessionAccess = $user->hasPermission("dicom_archive_nosessionid");
+        }
+        if (isset($row['ProjectID'])) {
+            $hasProjectAccess = $user->hasProject(
+                \ProjectID::singleton(intval($row['ProjectID']))
+            );
+        }
+        if (isset($row['CreatingUser'])) {
+            $isCreator = $row['CreatingUser'] === $user->getUsername();
+        }
+
+        // Assume project match is turned off first (as module filter does)
+        // User site match
+        // OR resource has no session but user has the no session permission
+        // OR user has access to all sites data
+        $access = $hasCenterAccess || $hasNoSessionAccess
+            || ($user->hasPermission('dicom_archive_view_allsites'));
+
+        // If the site project permissions are enabled
+        if ($siteprojectperms === 'true') {
+            // User has basic center access
+            // AND
+            // Either User has the project
+            // OR resource has no session but user has the no session permission
+            $access = $access && ($hasProjectAccess || $hasNoSessionAccess);
+        }
+
+        // User is the creator of the data
+        $access = $access || $isCreator;
+
+        return $access;
     }
 
     /**
@@ -123,127 +149,186 @@ class ViewDetails extends \NDB_Form
         $this->DB = $this->loris->getDatabaseConnection();
 
         $user = \User::singleton();
-        if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
-            $this->tarchiveID          = intval($_REQUEST['tarchiveID']);
-            $this->tpl_data['archive'] = $this->_getTarchiveData(
-                $this->tarchiveID,
-                'tarchive',
-                'LastUpdate'
-            );
-            $this->tpl_data['archive_series'] = $this->_getTarchiveData(
-                $this->tarchiveID,
-                'tarchive_series',
-                'TarchiveSeriesID'
-            );
-            $this->tpl_data['archive_files']  = $this->_getTarchiveData(
-                $this->tarchiveID,
-                'tarchive_files',
-                'TarchiveFileID'
-            );
+        if ((!empty($_REQUEST['tarchiveID'])) && ($this->isAccessibleBy($user))) {
+            $this->tarchiveID    = intval($_REQUEST['tarchiveID']);
+            $this->archive       = $this->_getArchive($this->tarchiveID);
+            $this->archiveSeries = $this->_getArchiveSeries($this->tarchiveID);
+            $this->archiveFiles  = $this->_getArchiveFiles($this->tarchiveID);
 
             $this->_validateNamesIDs();
         }
     }
-    /**
-     * Retrieves data for the template from the database
-     *
-     * @param int    $tarchiveID tarchiveID
-     * @param string $table      name of the table to retrieve the data from
-     * @param string $order      column by which to order the query
-     *
-     * @return array $array contains all data
-     */
-    function _getTarchiveData($tarchiveID, $table, $order)
-    {
-        switch ($table) {
-        case "tarchive":
-            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID";
-            $tarchiveData = $this->DB->pselectRow(
-                $query,
-                ['ID' => $tarchiveID]
-            );
-            break;
-        case "tarchive_series":
-            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
-                ORDER BY :OField";
-            $tarchiveData = iterator_to_array(
-                $this->DB->pselect(
-                    $query,
-                    [
-                        'ID'     => $tarchiveID,
-                        "OField" => $order,
-                    ]
-                )
-            );
 
-            if ($this->_setProtocols()) {
-                $previousSeriesDescription = '';
-                $previousProtocolName      = '';
-                foreach ($tarchiveData as &$series) {
-                    $seriesDescription = $series['SeriesDescription'];
-                    // if the same series, do not compute the protocol name again,
-                    // use the previous one
-                    if ($previousSeriesDescription === $seriesDescription) {
-                        $series['ProtocolName'] = $previousProtocolName;
-                    } else {
-                        $protocolName           = $this->_getProtocolName($series);
-                        $series['ProtocolName'] = $protocolName;
-                        $previousSeriesDescription = $seriesDescription;
-                        $previousProtocolName      = $protocolName;
-                    }
-                }
-            }
-            break;
-        case "tarchive_files":
-            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
-                ORDER BY :OField";
-            $tarchiveData = iterator_to_array(
-                $this->DB->pselect(
-                    $query,
-                    [
-                        'ID'     => $tarchiveID,
-                        'OField' => $order,
-                    ]
-                )
-            );
-            break;
+    /**
+     * Return the metadata displayed by the React page.
+     *
+     * @return array{
+     *     archive: array<string, mixed>,
+     *     archiveSeries: list<array<string, mixed>>,
+     *     archiveFiles: list<array<string, mixed>>
+     * }
+     */
+    #[\Override]
+    function toArray(): array
+    {
+        return [
+            'archive'       => $this->archive,
+            'archiveSeries' => $this->archiveSeries,
+            'archiveFiles'  => $this->archiveFiles,
+        ];
+    }
+
+    /**
+     * Get the archive metadata displayed on the page.
+     *
+     * @param int $tarchiveID Archive identifier
+     *
+     * @return array<string, mixed>
+     */
+    private function _getArchive(int $tarchiveID): array
+    {
+        $archive = $this->DB->pselectRow(
+            "SELECT StudyInstanceUID, PatientID, PatientName, PatientDoB,
+                PatientSex, DateAcquired, ScannerManufacturer, ScannerModel,
+                ScannerSerialNumber, ScannerSoftwareVersion, InstitutionName,
+                AcquisitionCount, CreatingUser, LastUpdate, SourceLocation,
+                ArchiveLocation, CreateInfo,
+                md5sumArchive, md5sumDicomOnly
+            FROM tarchive
+            WHERE TarchiveID = :ID",
+            ['ID' => $tarchiveID]
+        );
+
+        return $archive ?? [];
+    }
+
+    /**
+     * Get the series metadata displayed on the page.
+     *
+     * @param int $tarchiveID Archive identifier
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function _getArchiveSeries(int $tarchiveID): array
+    {
+        /**
+         * Series rows returned by the database.
+         *
+         * @var list<array<string, mixed>> $seriesData
+         */
+        $seriesData = iterator_to_array(
+            $this->DB->pselect(
+                "SELECT SeriesNumber, SeriesDescription, SequenceName,
+                    EchoTime, RepetitionTime, InversionTime, SliceThickness,
+                    PhaseEncoding, NumberOfFiles, SeriesUID
+                FROM tarchive_series
+                WHERE TarchiveID = :ID
+                ORDER BY TarchiveSeriesID",
+                ['ID' => $tarchiveID]
+            ),
+            false
+        );
+
+        if (!$this->_setProtocols()) {
+            return $seriesData;
         }
 
-        return $tarchiveData ?? [];
+        $previousSeriesDescription = '';
+        $previousProtocolName      = '';
+        foreach ($seriesData as &$series) {
+            $seriesDescription = $series['SeriesDescription'];
+            // If the same series, reuse the previously computed protocol name.
+            if ($previousSeriesDescription === $seriesDescription) {
+                $series['ProtocolName'] = $previousProtocolName;
+            } else {
+                $protocolName           = $this->_getProtocolName($series);
+                $series['ProtocolName'] = $protocolName;
+                $previousSeriesDescription = $seriesDescription;
+                $previousProtocolName      = $protocolName;
+            }
+        }
+        unset($series);
+
+        return $seriesData;
     }
+
+    /**
+     * Get the file metadata displayed on the page.
+     *
+     * @param int $tarchiveID Archive identifier
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function _getArchiveFiles(int $tarchiveID): array
+    {
+        /**
+         * File rows returned by the database.
+         *
+         * @var list<array<string, mixed>> $fileData
+         */
+        $fileData = iterator_to_array(
+            $this->DB->pselect(
+                "SELECT SeriesNumber, FileNumber, EchoNumber,
+                    SeriesDescription, Md5Sum, FileName
+                FROM tarchive_files
+                WHERE TarchiveID = :ID
+                ORDER BY TarchiveFileID",
+                ['ID' => $tarchiveID]
+            ),
+            false
+        );
+
+        return $fileData;
+    }
+
     /**
      * Validates PatientName and PatientID,
-     * sets INVALID-HIDDEN if not validated.
+     * sets INVALID - HIDDEN if not validated.
      *
-     * @return null
+     * @return void
      */
-    function _validateNamesIds()
+    function _validateNamesIds(): void
     {
         $config =& \NDB_Config::singleton();
         $db     = $this->loris->getDatabaseConnection();
         $dicomArchiveSettings = $config->getSetting('imaging_modules');
+        assert(is_array($dicomArchiveSettings));
+
+        $patientNameRegex   = $dicomArchiveSettings['patientNameRegex'] ?? null;
+        $legoPhantomRegex   = $dicomArchiveSettings['LegoPhantomRegex'] ?? null;
+        $livingPhantomRegex
+            = $dicomArchiveSettings['LivingPhantomRegex'] ?? null;
+        $patientIDRegex     = $dicomArchiveSettings['patientIDRegex'] ?? null;
+        assert(is_string($patientNameRegex));
+        assert(is_string($legoPhantomRegex));
+        assert(is_string($livingPhantomRegex));
+        assert(is_string($patientIDRegex));
 
         // escape any forward slashes
         $pNameRegex      = preg_replace(
             '/\//',
             '\/',
-            $dicomArchiveSettings['patientNameRegex']
+            $patientNameRegex
         );
         $legoPhanRegex   = preg_replace(
             '/\//',
             '\/',
-            $dicomArchiveSettings['LegoPhantomRegex']
+            $legoPhantomRegex
         );
         $livingPhanRegex = preg_replace(
             '/\//',
             '\/',
-            $dicomArchiveSettings['LivingPhantomRegex']
+            $livingPhantomRegex
         );
         $pIDRegex        = preg_replace(
             '/\//',
             '\/',
-            $dicomArchiveSettings['patientIDRegex']
+            $patientIDRegex
         );
+        assert(is_string($pNameRegex));
+        assert(is_string($legoPhanRegex));
+        assert(is_string($livingPhanRegex));
+        assert(is_string($pIDRegex));
 
         $query     = "SELECT IsPhantom "
                    . "FROM mri_upload m "
@@ -256,54 +341,58 @@ class ViewDetails extends \NDB_Form
                    . ")";
         $isPhantom = $db->pselectRow(
             $query,
-            ['tid' => $this->tpl_data['archive']['TarchiveID']]
+            ['tid' => $this->tarchiveID]
         )['IsPhantom'] ?? null;
 
+        $patientName = $this->archive['PatientName'] ?? null;
+        assert(is_string($patientName));
         if ($isPhantom === 'Y') {
             $isValid = preg_match(
                 "/$legoPhanRegex/",
-                $this->tpl_data['archive']['PatientName']
+                $patientName
             ) || preg_match(
                 "/$livingPhanRegex/",
-                $this->tpl_data['archive']['PatientName']
+                $patientName
             );
         } else if ($isPhantom === 'N') {
             $isValid = preg_match(
                 "/$pNameRegex/",
-                $this->tpl_data['archive']['PatientName']
+                $patientName
             );
         } else {
             // if scan was uploaded via non-imaging uploader method
             // run patient name through all regex validations
             $isValid = (preg_match(
                 "/$pNameRegex/",
-                $this->tpl_data['archive']['PatientName']
+                $patientName
             )) || (preg_match(
                 "/$legoPhanRegex/",
-                $this->tpl_data['archive']['PatientName']
+                $patientName
             )) || (preg_match(
                 "/$livingPhanRegex/",
-                $this->tpl_data['archive']['PatientName']
+                $patientName
             ));
         }
 
-        $this->tpl_data['archive']['patientNameValid'] = $isValid ? 1 : 0;
+        $this->archive['patientNameValid'] = $isValid ? 1 : 0;
         if (!$isValid) {
-            $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
+            $this->archive['PatientName']
+                = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
 
-        if (isset($this->tpl_data['archive']['PatientID'])
-            && $this->tpl_data['archive']['PatientID'] !== null
-        ) {
+        $patientID = $this->archive['PatientID'] ?? null;
+        if (is_string($patientID)) {
             if (preg_match(
                 "/$pIDRegex/",
-                $this->tpl_data['archive']['PatientID']
+                $patientID
             )
             ) {
-                $this->tpl_data['archive']['patientIDValid'] = 1;
+                $this->archive['patientIDValid'] = 1;
             } else {
-                $this->tpl_data['archive']['patientIDValid'] = 0;
-                $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+                $this->archive['patientIDValid'] = 0;
+
+                $this->archive['PatientID']
+                    = dgettext('dicom_archive', 'INVALID - HIDDEN');
             }
         }
     }
@@ -326,6 +415,7 @@ class ViewDetails extends \NDB_Form
             return false;
         }
     }
+
     /**
      * Finds the protocol name by comparing parameters of a series.
      *
@@ -384,6 +474,7 @@ class ViewDetails extends \NDB_Form
             return $protocolMin <= $seriesRange && $seriesRange <= $protocolMax;
         }
     }
+
     /**
      * Retrieves the protocol name given the protocol ID
      * from mri_scan_table table
@@ -403,6 +494,23 @@ class ViewDetails extends \NDB_Form
         } catch (\LorisException $e) {
             return "Unknown";
         }
+    }
+
+    /**
+     * Add the React entry point for the view-details page.
+     *
+     * @return array of JavaScript dependencies
+     */
+    #[\Override]
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . '/dicom_archive/js/viewDetails.js']
+        );
     }
 
     /**
@@ -428,11 +536,13 @@ class ViewDetails extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'View Details',
+                dgettext('dicom_archive', "DICOM Archive"),
+                "/$this->name",
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext('dicom_archive', 'View Details'),
                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
             )
         );

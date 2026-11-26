@@ -5,9 +5,9 @@ export type Vector2 = typeof glMatrix.ARRAY_TYPE;
 /**
  * Apply transformation f on point p
  *
- * @param {Function[]} f - an array of functions
- * @param {vec2} p - a point
- * @returns {vec2} - a vector
+ * @param f - an array of functions
+ * @param p - a point
+ * @returns - a vector
  */
 export const ap = (
   f: [(_: number) => number, (_: number) => number],
@@ -35,3 +35,5 @@ export const SIGNAL_SCALE = Math.pow(10, 6);
 export const SIGNAL_UNIT = 'µV';
 
 export const MAX_RENDERED_EPOCHS = 500;
+
+export const DEFAULT_CHANNEL_DELIMITER = ',';

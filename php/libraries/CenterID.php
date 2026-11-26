@@ -24,7 +24,6 @@ class CenterID extends ValidatableIdentifier implements \JsonSerializable
         return $cache[$id];
     }
 
-
     /**
      * Returns this identifier type
      *

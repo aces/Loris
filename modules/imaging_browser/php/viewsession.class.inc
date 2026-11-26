@@ -54,7 +54,8 @@ class ViewSession extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
@@ -107,7 +108,7 @@ class ViewSession extends \NDB_Form
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
             $user = \User::singleton();
-            if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
+            if ($this->isAccessibleBy($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
@@ -129,8 +130,7 @@ class ViewSession extends \NDB_Form
                 'true'  => 'True',
                 'false' => 'False',
             ];
-            $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
-                                                 true : false;
+            $this->tpl_data['has_permission']    = $this->isAccessibleBy($user);
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
                                                     true : false;
             if ($this->_hasQCPerm()) {
@@ -447,6 +447,7 @@ class ViewSession extends \NDB_Form
             return $file->getParameter($parameter);
         }
     }
+
     /**
      * Gets the date according to the type
      *
@@ -476,6 +477,7 @@ class ViewSession extends \NDB_Form
             return "";
         }
     }
+
     /**
      * Updates QCStatus in the form
      *
@@ -543,6 +545,7 @@ class ViewSession extends \NDB_Form
                 new \SessionID(strval($this->sessionID))
             );
             $candid      = $timePoint->getCandID();
+            $candidateID = \Candidate::singleton($candid)->getID();
             $visit_label = $timePoint->getData('Visit_label');
 
             foreach ($values['caveat'] as $curFileID => $curCaveat) {
@@ -585,7 +588,7 @@ class ViewSession extends \NDB_Form
                     $insertSet['PatientName']   = $file->getParameter(
                         'patient_name'
                     );
-                    $insertSet['CandID']        = $candid;
+                    $insertSet['CandidateID']   = $candidateID;
                     $insertSet['Visit_label']   = $visit_label;
                     $insertSet['CheckID']       = null;
                     $insertSet['MriScanTypeID'] = $file->getParameter(
@@ -687,6 +690,7 @@ class ViewSession extends \NDB_Form
             }
         }
     }
+
     /**
      * Updates selections
      *
@@ -752,6 +756,7 @@ class ViewSession extends \NDB_Form
             }
         }
     }
+
     /**
      * Updates status
      *
@@ -910,6 +915,7 @@ class ViewSession extends \NDB_Form
         $html = $smarty->fetch("table_session_header.tpl");
         return $html;
     }
+
     /**
      * Populates data for the template
      *
@@ -975,6 +981,7 @@ class ViewSession extends \NDB_Form
         // Cache the data
         return $subjectData;
     }
+
     /**
      * Gets control panel
      *
@@ -987,6 +994,7 @@ class ViewSession extends \NDB_Form
         );
         return $controlPanel->display();
     }
+
     /**
      * Get js Dependencies
      *
@@ -1032,12 +1040,14 @@ class ViewSession extends \NDB_Form
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Imaging Browser', '/imaging_browser'),
             new \LORIS\Breadcrumb(
-                'View Session',
+                dgettext("imaging_browser", 'Imaging Browser'),
+                '/imaging_browser'
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("imaging_browser", 'View Session'),
                 "/imaging_browser/viewSession/?sessionID=$this->sessionID"
             )
         );
     }
-
 }

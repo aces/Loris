@@ -29,8 +29,22 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
+        );
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests the page loads with the permission to download all files.
+     *
+     * @return void
+     */
+    function testPageLoadsWithDownloadAllPermission(): void
+    {
+        $this->assertStringContainsString(
+            "Data Release",
+            $this->_loadWithPermission('data_release_download_all')
         );
         $this->resetPermissions();
     }
@@ -95,4 +109,3 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
         )->getText();
     }
 }
-

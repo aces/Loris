@@ -2,8 +2,18 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+
+import jaStrings
+  from '../locale/ja/LC_MESSAGES/server_processes_manager.json';
+import hiStrings
+  from '../locale/hi/LC_MESSAGES/server_processes_manager.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/server_processes_manager.json';
+import frStrings from '../locale/fr/LC_MESSAGES/server_processes_manager.json';
 
 /**
  * ServerProcessesManagerIndex is the main entry point of the
@@ -61,7 +71,13 @@ class ServerProcessesManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    return (<td>{cell}</td>);
+    const {t} = this.props;
+    switch (cell) {
+    case 'unknown':
+      return (<td>{t('unknown', {ns: 'loris'})}</td>);
+    default:
+      return (<td>{cell}</td>);
+    }
   }
 
   /**
@@ -70,10 +86,11 @@ class ServerProcessesManagerIndex extends Component {
    * @return {object} - Rendered React component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>An error occurred while loading the page.</h3>;
     }
 
     // Waiting for async data to load
@@ -86,25 +103,41 @@ class ServerProcessesManagerIndex extends Component {
      * queried columns in _setupVariables() in server_processes_manager.class.inc
      */
     const fields = [
-      {label: 'PID', show: true, filter: {
+      {label: t('PID', {ns: 'server_processes_manager'}), show: true, filter: {
         name: 'pid',
         type: 'text',
       }},
-      {label: 'Type', show: true, filter: {
+      {label: t('Type', {ns: 'loris'}), show: true, filter: {
         name: 'type',
         type: 'text',
       }},
-      {label: 'Stdout File', show: true},
-      {label: 'Stderr File', show: true},
-      {label: 'Exit Code File', show: true},
-      {label: 'Exit Code', show: true},
-      {label: 'User ID', show: true, filter: {
-        name: 'userid',
-        type: 'text',
-      }},
-      {label: 'Start Time', show: true},
-      {label: 'End Time', show: true},
-      {label: 'Exit Text', show: true},
+      {
+        label: t('Stdout File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Stderr File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Exit Code File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Exit Code', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('User ID', {ns: 'server_processes_manager'}),
+        show: true,
+        filter: {
+          name: 'userid',
+          type: 'text',
+        },
+      },
+      {label: t('Start Time', {ns: 'server_processes_manager'}), show: true},
+      {label: t('End Time', {ns: 'server_processes_manager'}), show: true},
+      {label: t('Exit Text', {ns: 'server_processes_manager'}), show: true},
     ];
 
     return (
@@ -120,13 +153,21 @@ class ServerProcessesManagerIndex extends Component {
 
 ServerProcessesManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'server_processes_manager', jaStrings);
+  i18n.addResourceBundle('hi', 'server_processes_manager', hiStrings);
+  i18n.addResourceBundle('zh', 'server_processes_manager', zhStrings);
+  i18n.addResourceBundle('fr', 'server_processes_manager', frStrings);
+  const SPMIndex = withTranslation(
+    ['server_processes_manager', 'loris']
+  )(ServerProcessesManagerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ServerProcessesManagerIndex
+    <SPMIndex
       dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
     />
   );

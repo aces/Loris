@@ -20,7 +20,8 @@ class New_Profile extends \NDB_Form
      *
      * @return bool true if they have access to this page
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         if ($user->hasStudySite() || $user->hasCenter(\CenterID::singleton(1))) {
             return $user->hasPermission('data_entry');
@@ -39,6 +40,7 @@ class New_Profile extends \NDB_Form
     function setup(): void
     {
         $factory   = \NDB_Factory::singleton();
+        $db        = $factory->database();
         $config    = $factory->config();
         $user      = $factory->user();
         $startYear = $config->getSetting('startYear');
@@ -49,6 +51,10 @@ class New_Profile extends \NDB_Form
         $edc       = $config->getSetting('useEDC');
         $sex       = \Utility::getSexList();
 
+        $useRegistrationCohort = $config->settingEnabled(
+            'useRegistrationCohort'
+        );
+
         $pscidSet = "false";
         $minYear  = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear  = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
@@ -58,10 +64,29 @@ class New_Profile extends \NDB_Form
         $site = \Utility::getSiteNameListByIDs($user_list_of_sites);
 
         // Get projects for the select dropdown
-        $projList = [];
-        foreach ($user->getProjects() as $project) {
-            $projList[$project->getName()] = $project->getName();
+        $projList = $user->getProjectNames();
+        $cohorts  = [];
+        if ($useRegistrationCohort) {
+            foreach ($user->getProjects() as $project) {
+                $cohorts[$project->getName()] = \Utility::getCohortsForProject(
+                    $project->getId()
+                );
+            }
         }
+
+        $extraParameters = $db->pselect(
+            "SELECT pt.ParameterTypeID, pt.Type, pt.Description,
+                pcr.Required, p.Name AS Project
+            FROM parameter_type pt
+            JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+            JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+            JOIN parameter_candidate_rules pcr USING (ParameterTypeID)
+            JOIN Project p USING (ProjectID)
+            WHERE ptc.Name = 'Candidate Parameters'
+                AND pcr.ShowOnRegistration = 1
+            ORDER BY pt.ParameterTypeID, pt.Name",
+            []
+        );
 
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
@@ -70,14 +95,17 @@ class New_Profile extends \NDB_Form
         }
 
         $this->fieldOptions = [
-            'minYear'   => $minYear,
-            'maxYear'   => $maxYear,
-            'dobFormat' => $dobFormat,
-            'edc'       => $edc,
-            'sex'       => $sex,
-            'pscidSet'  => $pscidSet,
-            'site'      => $site,
-            'project'   => $projList,
+            'minYear'               => $minYear,
+            'maxYear'               => $maxYear,
+            'dobFormat'             => $dobFormat,
+            'edc'                   => $edc,
+            'sex'                   => $sex,
+            'pscidSet'              => $pscidSet,
+            'site'                  => $site,
+            'project'               => $projList,
+            'useRegistrationCohort' => $useRegistrationCohort,
+            'cohort'                => $cohorts,
+            'extraParameters'       => iterator_to_array($extraParameters),
         ];
     }
 

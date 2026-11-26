@@ -48,8 +48,14 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         $this->item         = $item;
         $this->desc         = $desc;
         $this->status       = $descstatus;
-        $this->visits       = $visits;
-        $this->cohorts      = $cohorts;
+        $this->visits       = $visits != null ? array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $visits,
+        ) : null;
+        $this->cohorts      = $cohorts != null ? array_map(
+            fn($cohort) => dgettext("cohort", $cohort),
+            $cohorts,
+        ) : null;
     }
 
     /**
@@ -73,11 +79,11 @@ class DataDictRow implements \LORIS\Data\DataInstance,
 
         $itype = $this->item->getDataType();
         if ($itype instanceof \LORIS\Data\Types\Enumeration) {
-            $val['options'] = $itype->getOptions();
+            $val['type'] = "enum(".implode(",", $itype->getOptions()).")";
         }
         if ($scope->__toString() == "session") {
-            $val['visits']  = $this->visits;
-            $val['cohorts'] = $this->cohorts;
+            $val['visits']  = implode(",", $this->visits ?? []);
+            $val['cohorts'] = implode(",", $this->cohorts ?? []);
         }
 
         return $val;

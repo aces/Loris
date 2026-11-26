@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get the candidate information
  * of all active candidates accessible to a given user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -21,7 +21,7 @@ use \LORIS\api\Models\CandidatesRow;
  * This class implements a data provisioner to get the candidate information
  * of all active candidates accessible to a given user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -35,11 +35,13 @@ class CandidatesProvisioner extends DBRowProvisioner
      * Create a RowProvisioner, which gets rows for candidates/
      * endpoint.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
-     *                                    from.
+     * @param \LORIS\LorisInstance $loris         The LORIS instance to retrieve data
+     *                                            from.
+     * @param bool                 $includeCohort Include cohort metadata.
      */
     function __construct(
-        protected \LORIS\LorisInstance $loris
+        protected \LORIS\LorisInstance $loris,
+        private bool $includeCohort = false
     ) {
         parent::__construct(
             $this->loris,
@@ -48,6 +50,7 @@ class CandidatesProvisioner extends DBRowProvisioner
                c.CandID as CandID,
                p.Name as ProjectName,
                c.RegistrationProjectID as ProjectID,
+               rc.title as RegistrationCohort,
                c.PSCID as PSCID,
                c.RegistrationCenterID as CenterID,
                s.Name as SiteName,
@@ -60,6 +63,8 @@ class CandidatesProvisioner extends DBRowProvisioner
                ON (s.CenterID = c.RegistrationCenterID)
              LEFT JOIN Project p
                ON (c.RegistrationProjectID = p.ProjectID)
+             LEFT JOIN cohort rc
+               ON (c.RegistrationCohortID = rc.CohortID)
              WHERE c.Active=\'Y\'
              ORDER BY c.CandID
             ',
@@ -77,7 +82,6 @@ class CandidatesProvisioner extends DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new CandidatesRow($row);
+        return new CandidatesRow($row, $this->includeCohort);
     }
 }
-

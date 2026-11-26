@@ -4,7 +4,7 @@
 /**
  * This script allows recreation of conflicts
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -63,7 +63,7 @@ foreach ($allInstruments as $instrument => $Full_name) {
                                             AS DDECommentID
                                      FROM flag
                                      JOIN session s ON (s.ID=flag.SessionID)
-                                     JOIN candidate c ON (c.CandID=s.CandID)
+                                     JOIN candidate c ON (c.ID=s.CandidateID)
                                      JOIN test_names tn ON (tn.ID=flag.TestID)
                                      WHERE Test_name=:testname AND CommentID
                                            NOT LIKE 'DDE%' AND s.Active='Y'
@@ -82,7 +82,7 @@ foreach ($ddeInstruments as $test) {
             CommentID) AS DDECommentID
         FROM flag sde
         JOIN session s ON (s.ID=sde.SessionID)
-        JOIN candidate c ON (c.CandID=s.CandID)
+        JOIN candidate c ON (c.ID=s.CandidateID)
         JOIN test_names tn ON (tn.ID=sde.TestID)
         WHERE Test_name=:testname AND sde.CommentID
         NOT LIKE 'DDE%' AND sde.Data_entry='Complete'

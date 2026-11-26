@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 import swal from 'sweetalert2';
 
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 import {
   FormElement,
   StaticElement,
@@ -33,6 +37,7 @@ class ConsentStatus extends Component {
       submitDisabled: false,
       showHistory: false,
     };
+    this.client = new CandidateParametersClient();
 
     /**
      * Bind component instance to custom methods
@@ -53,13 +58,12 @@ class ConsentStatus extends Component {
   }
 
   /**
-   * Retrieve data from the provided URL and save it in state
+   * Retrieve data and save it in state.
    */
   fetchData() {
-    $.ajax(this.props.dataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    const {t} = this.props;
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
         let formData = {};
         let consents = data.consents;
         for (let cStatus in consents) {
@@ -78,14 +82,14 @@ class ConsentStatus extends Component {
                             data.consentStatuses[cStatus] === 'no'
             ) {
               formData[cOptions] = {
-                yes: 'Yes',
-                no: 'No',
+                yes: t('Yes', {ns: 'loris'}),
+                no: t('No', {ns: 'loris'}),
               };
             } else {
               formData[cOptions] = {
-                yes: 'Yes',
-                no: 'No',
-                not_applicable: 'Not applicable',
+                yes: t('Yes', {ns: 'loris'}),
+                no: t('No', {ns: 'loris'}),
+                not_applicable: t('N/A', {ns: 'loris'}),
               };
             }
           }
@@ -95,14 +99,13 @@ class ConsentStatus extends Component {
           formData: formData,
           isLoaded: true,
         });
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         console.error(error);
         this.setState({
           error: true,
         });
-      },
-    });
+      });
   }
 
   /**
@@ -150,6 +153,7 @@ class ConsentStatus extends Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
     let myFormData = this.state.formData;
     let today = new Date();
@@ -176,11 +180,27 @@ class ConsentStatus extends Component {
           myFormData[consentDate2] : null;
 
         if (date1 !== date2) {
-          alert(label + ' dates do not match!');
+          swal.fire({
+            title: t('Error!', {ns: 'loris'}),
+            text:
+              t('{{label}} dates do not match!',
+                {ns: 'candidate_parameters', label: label}
+              ),
+            type: 'error',
+            confirmButtonText: t('OK', {ns: 'loris'}),
+          });
           return;
         }
         if (date1 > today) {
-          alert(label + ' date cannot be later than today!');
+          swal.fire({
+            title: t('Error!', {ns: 'loris'}),
+            text:
+              t('{{label}} date cannot be later than today!',
+                {ns: 'candidate_parameters', label: label}
+              ),
+            type: 'error',
+            confirmButtonText: t('OK', {ns: 'loris'}),
+          });
           return;
         }
 
@@ -193,21 +213,40 @@ class ConsentStatus extends Component {
           myFormData[consentWithdrawal2] : null;
 
         if (withdrawDate1 !== withdrawDate2) {
-          alert(label + ' withdrawal dates do not match!');
+          swal.fire({
+            title: t('Error!', {ns: 'loris'}),
+            text:
+              t('{{label}} withdrawal dates do not match!',
+                {ns: 'candidate_parameters', label: label}
+              ),
+            type: 'error',
+            confirmButtonText: t('OK', {ns: 'loris'}),
+          });
           return;
         }
         if (withdrawDate1 > today) {
-          alert(
-            label
-                      + ' withdrawal date cannot be later than today!'
-          );
+          swal.fire({
+            title: t('Error!', {ns: 'loris'}),
+            text:
+              t('{{label}} withdrawal date cannot be later than today!',
+                {ns: 'candidate_parameters', label: label}
+              ),
+            type: 'error',
+            confirmButtonText: t('OK', {ns: 'loris'}),
+          });
           return;
         }
         if (withdrawDate1 < date1) {
-          alert(
-            label
-                      + ' withdrawal date cannot be earlier than response date!'
-          );
+          swal.fire({
+            title: t('Error!', {ns: 'loris'}),
+            text:
+              t('{{label}} withdrawal date cannot be earlier '
+                + 'than response date!',
+              {ns: 'candidate_parameters', label: label}
+              ),
+            type: 'error',
+            confirmButtonText: t('OK', {ns: 'loris'}),
+          });
           return;
         }
       }
@@ -226,15 +265,26 @@ class ConsentStatus extends Component {
     // Disable submit button to prevent form resubmission
     this.setState({submitDisabled: true});
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
-        swal.fire('Success!', 'Update successful.', 'success')
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = await response.text();
+          if (!errorMessage) {
+            errorMessage = t('Failed to update!', {ns: 'candidate_parameters'});
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        swal.fire({
+          title: t('Success!', {ns: 'loris'}),
+          text: t('Update successful.', {ns: 'candidate_parameters'}),
+          type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        })
           .then((result) => {
             if (result.value) {
               this.setState({submitDisabled: false});
@@ -243,15 +293,20 @@ class ConsentStatus extends Component {
           }
           );
         this.fetchData();
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         console.error(error);
         // Enable submit button for form resubmission
         this.setState({submitDisabled: false});
-        let errorMessage = error.responseText || 'Update failed.';
-        swal.fire('Error!', errorMessage, 'error');
-      },
-    });
+        let errorMessage = error.lorisMessage ||
+          t('Failed to update!', {ns: 'candidate_parameters'});
+        swal.fire({
+          title: t('Error!', {ns: 'loris'}),
+          text: errorMessage,
+          type: 'error',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        });
+      });
   }
 
   /**
@@ -267,9 +322,10 @@ class ConsentStatus extends Component {
    * @return {JSX} - React markup for the component
    */
   renderFormattedHistory() {
+    const {t} = this.props;
     const historyBtnLabel = this.state.showHistory ?
-      'Hide Consent History' : 'Show Consent History';
-
+      t('Hide Consent History', {ns: 'candidate_parameters'}) :
+      t('Show Consent History', {ns: 'candidate_parameters'});
     const formattedHistory = this.state.Data.history.map((info, key) => {
       const label = info.label;
       const dataEntry = info.data_entry_date;
@@ -279,23 +335,34 @@ class ConsentStatus extends Component {
       const withdrawal = info.withdrawal;
       const dateHistory = consentDate ? (
         <span>
-                   , <b>Date of Consent</b> to {consentDate}
+
+                   , {t('Date of Consent to {{consentDate}}',
+            {ns: 'candidate_parameters', consentDate: consentDate})
+          }
+
         </span>
       ) : null;
       const withdrawalHistory = withdrawal ? (
         <span>
-                    , <b>Date of Consent Withdrawal</b> to {withdrawal}
+                   , {t('Date of Consent Withdrawal to {{withdrawal}}',
+            {ns: 'candidate_parameters', withdrawal: withdrawal})
+          }
         </span>
       ) : null;
-
+      {t('Date of Consent to {{consentDate}}',
+        {ns: 'candidate_parameters', consentDate: consentDate});
+      }
       return (
         <div key={key}>
           <hr/>
           <p>
             <b>
               {dataEntry} - {user}
-            </b> updated for <i>{label}</i>:
-            <b> Status</b> to {' '}
+            </b>
+            {t('updated for {{label}}:',
+              {ns: 'candidate_parameters', label: label})
+            }
+            <b> {t('Status to ', {ns: 'candidate_parameters'})}</b>
             {consentStatus}
             {dateHistory}
             {withdrawalHistory}
@@ -329,6 +396,7 @@ class ConsentStatus extends Component {
    * @return {JSX} - React markup for the component
    */
   renderConsent(consentName) {
+    const {t} = this.props;
     // Allow editing if user has permission
     let disabled = loris.userHasPermission('candidate_parameter_edit')
       ? false : true;
@@ -366,16 +434,21 @@ class ConsentStatus extends Component {
     // Set up elements
     const label = this.state.Data.consents[consentName];
     const consentOptions = consentName + '_options';
-    const statusLabel = 'Response';
+    const statusLabel = t('Response', {ns: 'candidate_parameters'});
     const consentDate = consentName + '_date';
     const consentDate2 = consentName + '_date2';
-    const consentDateLabel = 'Date of Response';
-    const consentDateConfirmationLabel = 'Confirmation Date of Response';
+    const consentDateLabel =
+      t('Date of Response', {ns: 'candidate_parameters'});
+    const consentDateConfirmationLabel =
+      t('Confirmation Date of Response', {ns: 'candidate_parameters'});
     const consentWithdrawal = consentName + '_withdrawal';
     const consentWithdrawal2 = consentName + '_withdrawal2';
-    const consentWithdrawalLabel = 'Date of Withdrawal of Consent';
+    const consentWithdrawalLabel =
+      t('Date of Withdrawal of Consent', {ns: 'candidate_parameters'});
     const consentWithdrawalConfirmationLabel =
-            'Confirmation Date of Withdrawal of Consent';
+      t('Confirmation Date of Withdrawal of Consent',
+        {ns: 'candidate_parameters'}
+      );
 
     return (
       <div key={consentName}>
@@ -434,10 +507,13 @@ class ConsentStatus extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occurred while loading the page.</h3>;
+      return (
+        <h3>{t('An error occurred while loading the page.', {ns: 'loris'})}</h3>
+      );
     }
 
     if (!this.state.isLoaded) {
@@ -447,7 +523,7 @@ class ConsentStatus extends Component {
     // Allow editing if user has permission
     let updateButton = loris.userHasPermission('candidate_parameter_edit') ?
       (<ButtonElement
-        label='Update'
+        label={t('Update', {ns: 'loris'})}
         disabled={this.state.submitDisabled}
       />) : null;
 
@@ -468,11 +544,11 @@ class ConsentStatus extends Component {
                 class="col-md-9"
               >
                 <StaticElement
-                  label="PSCID"
+                  label={t('PSCID', {ns: 'loris'})}
                   text={this.state.Data.pscid}
                 />
                 <StaticElement
-                  label="DCCID"
+                  label={t('DCCID', {ns: 'loris'})}
                   text={this.state.Data.candID}
                 />
                 {this.state.Data.consentGroups[consentID].Children
@@ -503,9 +579,12 @@ class ConsentStatus extends Component {
 }
 
 ConsentStatus.propTypes = {
-  dataURL: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   tabName: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
-export default ConsentStatus;
+export default withTranslation(
+  ['candidate_parameters', 'loris']
+)(ConsentStatus);

@@ -3,7 +3,7 @@
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris
@@ -16,7 +16,7 @@ namespace LORIS\examiner;
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris
@@ -35,7 +35,8 @@ class EditExaminer extends \NDB_Form
      * @throws \LorisException
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         if (empty($_REQUEST['identifier'])) {
             throw new \LorisException(
@@ -294,22 +295,43 @@ class EditExaminer extends \NDB_Form
             ['EID' => $this->identifier]
         );
 
-        $this->tpl_data['certification_history'] = $certification_history;
+        $statusOptions = [
+            ''              => dgettext("loris", "N/A"),
+            'not_certified' => dgettext("examiner", "Not Certified"),
+            'in_training'   => dgettext("examiner", "In Training"),
+            'certified'     => dgettext("examiner", "Certified"),
+        ];
+
+        $certificationHistory = iterator_to_array($certification_history);
+
+        foreach ($certificationHistory as &$history) {
+            if (!empty($history['old'])) {
+                $history['old'] = $statusOptions[$history['old']]
+                    ?? mb_convert_case(
+                        str_replace('_', ' ', $history['old']),
+                        MB_CASE_TITLE
+                    );
+            }
+
+            if (!empty($history['new'])) {
+                $history['new'] = $statusOptions[$history['new']]
+                    ?? mb_convert_case(
+                        str_replace('_', ' ', $history['new']),
+                        MB_CASE_TITLE
+                    );
+            }
+        }
+        unset($history);
+        $this->tpl_data['certification_history'] = $certificationHistory;
 
         $config = \NDB_Config::singleton();
 
-        $dateOptions   = [
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $config->getSetting('startYear'),
             'maxYear'        => $config->getSetting('endYear'),
-        ];
-        $statusOptions = [
-            ''              => 'N/A',
-            'not_certified' => 'Not Certified',
-            'in_training'   => 'In Training',
-            'certified'     => 'Certified',
         ];
 
         // Get the list of certification instruments
@@ -359,7 +381,12 @@ class EditExaminer extends \NDB_Form
         if (is_null($row)) {
             throw new \LorisException(
                 'No full name found in Database for examiner with ID ' .
-                htmlspecialchars($this->identifier)
+                htmlspecialchars(
+                    $this->identifier,
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
             );
         }
         // Get identifier, to be added to the Reset button href
@@ -369,7 +396,6 @@ class EditExaminer extends \NDB_Form
 
         $this->form->addFormRule([&$this, '_validateEditExaminer']);
     }
-
 
     /**
      * Validates the certification form values.
@@ -447,6 +473,7 @@ class EditExaminer extends \NDB_Form
 
         return $instruments;
     }
+
     /**
      * Generate a breadcrumb trail for this page.
      *
@@ -454,11 +481,11 @@ class EditExaminer extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
+        $label = dgettext('examiner', ucwords(str_replace('_', ' ', $this->name)));
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Edit Examiner',
+                dgettext('examiner', 'Edit Examiner'),
                 "/examiner/editExaminer/?identifier=$this->identifier"
             )
         );

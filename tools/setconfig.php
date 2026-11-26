@@ -14,7 +14,7 @@
  * in a situation where describing what to type is
  * easier than describing where to click on the frontend.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tools
  * @package  Loris

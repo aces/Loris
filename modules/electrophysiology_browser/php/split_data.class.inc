@@ -8,7 +8,7 @@ use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 /**
  * Contains the Split_Data class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology

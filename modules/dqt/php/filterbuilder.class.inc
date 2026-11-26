@@ -5,7 +5,7 @@
  * returns data used for Define Filters
  * when user imports data by CSV.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  DQT
@@ -110,9 +110,9 @@ class Filterbuilder extends \NDB_Page
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        return $user->hasPermission('dataquery_view');
+        return $user->hasPermission('dqt_view');
     }
-
 }

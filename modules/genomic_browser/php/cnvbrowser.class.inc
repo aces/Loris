@@ -24,7 +24,6 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class CnvBrowser extends \DataFrameworkMenu implements ETagCalculator
 {
-
     /**
      * This function will return a json response.
      *
@@ -44,6 +43,7 @@ class CnvBrowser extends \DataFrameworkMenu implements ETagCalculator
             );
         }
     }
+
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)
@@ -122,7 +122,8 @@ class CnvBrowser extends \DataFrameworkMenu implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -173,5 +174,4 @@ class CnvBrowser extends \DataFrameworkMenu implements ETagCalculator
     {
         return true;
     }
-
 }

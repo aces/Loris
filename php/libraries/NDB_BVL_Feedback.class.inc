@@ -18,7 +18,7 @@
  *
  * need error trapping to prevent screen display in case of all failures
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris
@@ -255,7 +255,6 @@ class NDB_BVL_Feedback
         }
         return $list;
     }
-
 
     /**
      * Get feedback type id given the feedback type name
@@ -565,26 +564,23 @@ class NDB_BVL_Feedback
                          ON (c.ID=ft.CandidateID)
                      LEFT JOIN session as s
                          ON (s.ID = ft.SessionID)
-                     JOIN feedback_bvl_type as ftp
+                     LEFT JOIN feedback_bvl_type as ftp
                          ON (ftp.Feedback_type=ft.Feedback_type)";
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query .= ", flag as f LEFT JOIN test_names tn ON (tn.ID=f.TestID)";
         }
 
-        // FIXME: This clause is kept here so that the ANDs below don't
-        // cause SQL syntax errors on any code paths.
-        // This would make more sense to put in an array and then
-        // call "join($arrayname, ", ") at the end to construct the string.
-        $query .= " WHERE ftp.Feedback_type = ft.Feedback_type";
+        $where = [];
 
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query           .= " AND ft.SessionID = :SID";
-            $query           .= " AND ft.CommentID = :ComID
-                                  AND ft.CommentID = f.CommentID";
+            $where[]          = "ft.SessionID = :SID";
+            $where[]          = "ft.CommentID = :ComID";
+            $where[]          = "ft.CommentID = f.CommentID";
             $qparams['SID']   = $this->_feedbackCandidateProfileInfo['SessionID'];
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query            .= " AND ft.SessionID = :SID AND ft.CommentID is null";
+            $where[]           = "ft.SessionID = :SID";
+            $where[]           = "ft.CommentID is null";
             $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
             $timepoint         = TimePoint::singleton(
                 new SessionID(strval($qparams['SID']))
@@ -594,9 +590,9 @@ class NDB_BVL_Feedback
                 $timepoint->isAccessibleBy($user)
             );
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query            .= " AND c.CandID = :CaID
-                                 AND ft.SessionID IS NULL
-                                 AND ft.CommentID IS NULL";
+            $where[]           = "c.CandID = :CaID";
+            $where[]           = "ft.SessionID IS NULL";
+            $where[]           = "ft.CommentID IS NULL";
             $qparams['CaID']   = $this->_feedbackObjectInfo['CandID'];
             $candidate         = Candidate::singleton(
                 new CandID(strval($qparams['CaID']))
@@ -615,16 +611,16 @@ class NDB_BVL_Feedback
         // DCC users should be able to see THEIR OWN inactive threads,
         // other users should see only active threads
         if ($hasReadPermission) {
-            $query .= " AND (ft.Active='Y' OR
-                (ft.Active='N' AND ft.UserID=:Username)
-            )";
+            $where[] = "(ft.Active='Y' OR
+                (ft.Active='N' AND ft.UserID=:Username))";
             $qparams['Username'] = $this->_username;
         } else {
-            $query            .= " AND ft.Active ='Y'
-                                   AND FIND_IN_SET(s.CenterID, :CentID)";
+            $where[]           = "ft.Active ='Y'";
+            $where[]           = "FIND_IN_SET(s.CenterID, :CentID)";
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
+        $query .= " WHERE " . implode(" AND ", $where);
         $query .= " ORDER BY c.CandID,
                              ft.Feedback_level,
                              ft.Status,
@@ -654,12 +650,10 @@ class NDB_BVL_Feedback
                   fe.Comment,
                   fe.UserID as UserID,
                   DATE_FORMAT(fe.Testdate, '%Y-%m-%d %H:%i:%s') as Date
-             FROM feedback_bvl_thread as ft,
-                  feedback_bvl_entry as fe,
-                  feedback_bvl_type as ftp
+             FROM feedback_bvl_thread as ft
+                  JOIN feedback_bvl_entry as fe
+                      ON (ft.FeedbackID = fe.FeedbackID)
              WHERE ft.FeedbackID = :FID
-                   AND ft.FeedbackID = fe.FeedbackID
-                   AND ft.Feedback_type = ftp.Feedback_type
              ORDER BY ft.FeedbackID, fe.Testdate ASC";
 
         $result = $db->pselect($query, ['FID' => $feedbackID]);
@@ -713,6 +707,13 @@ class NDB_BVL_Feedback
             'Date_taken'    => $today,
             'UserID'        => $this->_username,
         ];
+
+        $candID      = $this->_feedbackCandidateProfileInfo['CandID'];
+        $candidateID = $DB->pselectOne(
+            "SELECT ID FROM candidate WHERE CandID=:candID",
+            ['candID' => $candID]
+        );
+
         if ($level == 'instrument' || $this->_feedbackLevel=='instrument') {
             $feedbackInfo =& $this->_feedbackCandidateProfileInfo;
 
@@ -721,19 +722,18 @@ class NDB_BVL_Feedback
                 [
                     "CommentID"      => $this->_feedbackObjectInfo['CommentID'],
                     "SessionID"      => $feedbackInfo['SessionID'],
-                    "CandID"         => $feedbackInfo['CandID'],
+                    "CandidateID"    => $candidateID,
                     "Feedback_level" => "instrument",
                     "FieldName"      => $fieldname,
                 ]
             );
 
         } elseif ($level == 'visit' || $this->_feedbackLevel=='visit') {
-            $candID   = $this->_feedbackCandidateProfileInfo['CandID'];
             $setArray = array_merge(
                 $setArray,
                 [
                     "SessionID"      => $this->_feedbackObjectInfo['SessionID'],
-                    "CandID"         => $candID,
+                    "CandidateID"    => $candidateID,
                     "Feedback_level" => "visit",
                 ]
             );
@@ -741,7 +741,7 @@ class NDB_BVL_Feedback
             $setArray = array_merge(
                 $setArray,
                 [
-                    "CandID"         => $this->_feedbackObjectInfo['CandID'],
+                    "CandidateID"    => $candidateID,
                     "Feedback_level" => "profile",
                 ]
             );

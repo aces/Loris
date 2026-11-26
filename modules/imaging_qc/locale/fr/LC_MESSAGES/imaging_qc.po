@@ -1,0 +1,56 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 29\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Imaging Quality Control"
+msgstr "Contrôle de la qualité de l'imagerie"
+
+msgid "MRI Parameter Form"
+msgstr "Formulaire des paramètres d'IRM"
+
+msgid "Scan Done in MRI Parameter Form"
+msgstr "Scan effectué dans le formulaire des paramètres d'IRM"
+
+msgid "Tarchive"
+msgstr "Tarchive"
+
+msgid "Scan Location"
+msgstr "Emplacement du scan"
+
+msgid "CommentID"
+msgstr "ID du commentaire"
+
+msgid "Found in Imaging Browser"
+msgstr "Trouvé dans le navigateur d'imagerie"
+
+msgid "Found in MRI Violated Scans"
+msgstr "Trouvé dans les scans IRM non conformes"
+
+msgid "Missing"
+msgstr "Manquant"
+
+msgid "Incomplete"
+msgstr "Incomplet"
+
+msgid "Complete"
+msgstr "Complet"
+
+msgid "In DICOM Archives"
+msgstr "Dans les archives DICOM"

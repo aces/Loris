@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Documentation
  * @package  Main
@@ -48,22 +48,16 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "API Documentation";
+        return dgettext("api_docs", "API Documentation");
     }
 
     /**
-     * Return a value which is used as the default menu category
-     * (dropdown) to add this module to in the LORIS frontend.
+     * {@inheritDoc}
      *
-     * Unless overridden, this defaults to the empty string (which
-     * results in the module not being added to the LORIS menu.)
-     *
-     * @return string The category (dropdown) of the LORIS menu to add
-     *                this module to.
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Tools";
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
-
 }

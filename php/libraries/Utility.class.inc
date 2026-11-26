@@ -14,7 +14,6 @@ use \Loris\StudyEntities\Candidate\CandID;
  */
 class Utility
 {
-
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -87,6 +86,7 @@ class Utility
 
         return $age;
     }
+
     /**
      * Returns list of consent groups in the database
      *
@@ -106,6 +106,7 @@ class Utility
 
         return $result;
     }
+
     /**
      * Returns list of consents in the database
      *
@@ -140,7 +141,11 @@ class Utility
 
         $result = $DB->pselectCol($query, []);
 
-        return array_combine($result, $result);
+        $translated = [];
+        foreach ($result as $val) {
+            $translated[$val] = dgettext("sex", $val);
+        }
+        return $translated;
     }
 
     /**
@@ -177,7 +182,7 @@ class Utility
         // fix the array
         $list = [];
         foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
+            $list[$row["CenterID"]] = dgettext("psc", $row["Name"]);
         }
         return $list;
     }
@@ -202,12 +207,18 @@ class Utility
             $values[$para] = $siteID;
         }
 
-        return $DB->pselectColWithIndexKey(
+        $sites = $DB->pselectColWithIndexKey(
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
             implode(', ', $params) . ")",
             $values,
             'ID'
         );
+
+        $translatedSites = [];
+        foreach ($sites as $siteID => $siteName) {
+            $translatedSites[$siteID] = dgettext("psc", $siteName);
+        }
+        return $translatedSites;
     }
 
     /**
@@ -269,11 +280,16 @@ class Utility
             AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
-        // The result has several columns; we only want the visit labels.
-        $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
+        $translatedVisitLabels = [];
+        foreach ($result as $row) {
+            $visitLabel = $row['Visit_label'];
+
+            $translatedVisitLabels[$visitLabel] = dgettext('visit', $visitLabel);
+        }
         // Generates an array where the keys are equal to the values.
-        $cache[$projStr] = array_combine($visitLabels, $visitLabels);
+        $cache[$projStr] = $translatedVisitLabels;
+
         return $cache[$projStr];
     }
 
@@ -293,7 +309,12 @@ class Utility
             [],
             'ProjectID'
         ) ?? [];
-        return $projects;
+        return array_map(
+            function ($name) {
+                return dgettext("Project", $name);
+            },
+            $projects
+        );
     }
 
     /**
@@ -322,7 +343,7 @@ class Utility
 
         $subprojs = [];
         foreach ($cohorts as $row) {
-            $subprojs[$row['CohortID']] = $row['title'];
+            $subprojs[$row['CohortID']] = dgettext('cohort', $row['title']);
         }
         return $subprojs;
     }
@@ -370,7 +391,10 @@ class Utility
             "VisitName"
         );
 
-        return $result;
+        return array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $result,
+        );
     }
 
     /**
@@ -403,10 +427,11 @@ class Utility
             "VisitID"
         );
 
-        return $result;
+        return array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $result,
+        );
     }
-
-
 
     /**
      * Returns a list of bvl instruments
@@ -560,7 +585,10 @@ class Utility
         $instruments   = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                $instruments[$row['Test_name']] =$row['Full_name'];
+                $instruments[$row['Test_name']] = dgettext(
+                    'test_names',
+                    $row['Full_name']
+                );
             }
         }
 
@@ -738,7 +766,6 @@ class Utility
         return iterator_to_array($sourcefields);
     }
 
-
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
@@ -885,6 +912,31 @@ class Utility
     }
 
     /**
+     * Get the list of language available in the database with the array key being
+     * the language code (ie. en_CA)
+     *
+     * @return array Array of language which exist in the database table 'language'
+     *               array is of the form
+     *               array($language_code => $language_label)
+     */
+    static function getLanguageListByCode(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        return array_column(
+            iterator_to_array(
+                $DB->pselect(
+                    "SELECT language_code, language_label FROM language",
+                    [],
+                ),
+            ),
+            "language_label",
+            "language_code",
+        );
+    }
+
+    /**
      * Generate a random string, using a cryptographically secure
      * pseudorandom number generator (random_int)
      *
@@ -971,7 +1023,8 @@ class Utility
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT MriScanTypeID, MriScanTypeName
-             FROM mri_scan_type JOIN files USING (MriScanTypeID)",
+             FROM mri_scan_type
+             JOIN files USING (MriScanTypeID)",
             []
         );
 

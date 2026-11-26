@@ -12,8 +12,9 @@ type CProps = {
   mouseUp?: (_: any) => void,
   mouseLeave?: (_: any) => void,
   children?: any,
+  domain?: [number, number],
   showOverflow?: boolean,
-  chunksURL: string,
+  cssClass: string,
 };
 
 /**
@@ -26,8 +27,9 @@ type CProps = {
  * @param root0.mouseUp
  * @param root0.mouseLeave
  * @param root0.children
+ * @param root0.domain
  * @param root0.showOverflow
- * @param root0.chunksURL
+ * @param root0.cssClass
  */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
   parentWidth,
@@ -37,8 +39,9 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseUp,
   mouseLeave,
   children,
+  domain,
   showOverflow,
-  chunksURL,
+  cssClass,
 }) => {
   /**
    *
@@ -52,7 +55,9 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 
   const layers = React.Children.toArray(children).map(provision);
 
-  const domain = window.EEGLabSeriesProviderStore[chunksURL]?.getState().bounds.domain;
+  // Data not loaded yet
+  if (!domain) return null;
+
   const amplitude = [0, 1];
   const eventScale = [
     scaleLinear()
@@ -97,6 +102,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
         parentHeight,
       ].join(' ')}
       style={{overflowY: showOverflow ? 'visible' : 'hidden'}}
+      className={cssClass}
       width={parentWidth}
       height={parentHeight}
       onMouseDown={R.compose(
@@ -124,6 +130,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 ResponsiveViewer.defaultProps = {
   parentWidth: 400,
   parentHeight: 300,
+  cssClass: '',
   /**
    *
    */

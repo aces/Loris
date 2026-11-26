@@ -3,7 +3,7 @@
 /**
  * File contains the LORIS\module_manager\Module class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -43,11 +43,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Admin";
+        return \LORIS\GUI\MenuCategory::singleton("Admin");
     }
 
     /**
@@ -57,6 +57,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Module Manager";
+        return dgettext("module_manager", "Module Manager");
     }
 }

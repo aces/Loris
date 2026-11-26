@@ -1,5 +1,3 @@
-/* global EEG_VIS_ENABLED */
-
 /**
  * This is the React class for the eeg_session.
  *
@@ -8,31 +6,17 @@
  */
 
 import {createRoot} from 'react-dom/client';
-import React, {Component} from 'react';
+import {createPortal} from 'react-dom';
+import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
-
-import StaticDataTable from 'jsx/StaticDataTable';
-import Panel from 'jsx/Panel';
-import {FilePanel} from './components/electrophysiology_session_panels';
-import {SummaryPanel} from './components/electrophysiology_session_summary';
-import {DownloadPanel} from './components/DownloadPanel';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import DataTable from 'jsx/DataTable';
+import RecordingSection from './components/RecordingSection';
 import Sidebar from './components/Sidebar';
-import SidebarContent from './components/SidebarContent';
-
-let EEGLabSeriesProvider;
-let SeriesRenderer;
-let EEGMontage;
-if (EEG_VIS_ENABLED) {
-  EEGLabSeriesProvider = require(
-    './react-series-data-viewer/src/eeglab/EEGLabSeriesProvider'
-  ).default;
-  SeriesRenderer = require(
-    './react-series-data-viewer/src/series/components/SeriesRenderer'
-  ).default;
-  EEGMontage = require(
-    './react-series-data-viewer/src/series/components/EEGMontage'
-  ).default;
-}
+import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
 
 /**
  * Electrophysiology Session View page
@@ -57,8 +41,6 @@ class ElectrophysiologySessionView extends Component {
           outputType: '',
         },
       },
-      prevSession: '',
-      nextSession: '',
       patient: {
         info: {
           pscid: '',
@@ -158,6 +140,7 @@ class ElectrophysiologySessionView extends Component {
     // Bind component instance to custom methods
     this.collectParams = this.collectParams.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.getSplitData = this.getSplitData.bind(this);
   }
 
   /**
@@ -241,6 +224,12 @@ class ElectrophysiologySessionView extends Component {
         datasetTags:
           dbEntry
           && dbEntry.file.datasetTags,
+        datasetTagEndorsements:
+          dbEntry
+          && dbEntry.file.datasetTagEndorsements,
+        eegMontage:
+          dbEntry
+          && dbEntry.file.eegMontage,
       }));
 
       this.setState({
@@ -252,18 +241,14 @@ class ElectrophysiologySessionView extends Component {
         },
       });
 
-      document.getElementById(
-        'nav_next'
-      ).href = dataURL + data.nextSession + outputTypeArg;
-      document.getElementById(
-        'nav_previous'
-      ).href = dataURL + data.prevSession + outputTypeArg;
-      if (data.prevSession !== '') {
-        document.getElementById('nav_previous').style.display = 'block';
-      }
-      if (data.nextSession !== '') {
-        document.getElementById('nav_next').style.display = 'block';
-      }
+      this.props.onSessionNavigationChange({
+        next: !data.nextSession
+          ? undefined
+          : dataURL + data.nextSession + outputTypeArg,
+        previous: !data.prevSession
+          ? undefined
+          : dataURL + data.prevSession + outputTypeArg,
+      });
     })
       .catch((error) => {
         this.setState({error: true});
@@ -322,10 +307,11 @@ class ElectrophysiologySessionView extends Component {
    * @return {JSX|void} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       return (
         <button className='btn-info has-spinner'>
-          Loading
+          {t('Loading...', {ns: 'loris'})}
           <span
             className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
@@ -334,154 +320,36 @@ class ElectrophysiologySessionView extends Component {
     }
 
     if (this.state.isLoaded) {
-      let database = [];
-      for (let i = 0; i < this.state.database.length; i++) {
-        const {
-          chunksURLs,
-          epochsURL,
-          events,
-          hedSchema,
-          datasetTags,
-          electrodesURL,
-          coordSystemURL,
-        } = this.state.database[i];
-        const file = this.state.database[i].file;
-        const splitPagination = [];
-        for (const j of Array(file.splitData?.splitCount).keys()) {
-          splitPagination.push(
-            <a
-              key={j}
-              className={
-                'btn btn-xs btn-primary split-nav'
-                  + (file.splitData?.splitIndex === j ? ' active' : '')
-              }
-              onClick={() => this.getSplitData(file.id, i, j)}
-            >{j+1}</a>
-          );
-        }
-        database.push(
-          <div key={i}>
-            <FilePanel
-              id={'filename_panel_' + i}
-              title={this.state.database[i].file.name}
-              data={this.state.database[i].file.details}
-            >
-              {EEG_VIS_ENABLED &&
-              <div className="react-series-data-viewer-scoped col-xs-12">
-                <EEGLabSeriesProvider
-                  chunksURL={
-                    chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
-                  }
-                  epochsURL={epochsURL}
-                  events={events}
-                  electrodesURL={electrodesURL}
-                  coordSystemURL={coordSystemURL}
-                  hedSchema={hedSchema}
-                  datasetTags={datasetTags}
-                  physioFileID={this.state.database[i].file.id}
-                  samplingFrequency={
-                    this.state.database[i].file.summary[0].value
-                  }
-                >
-                  <Panel
-                    id='channel-viewer'
-                    title={
-                      'Signal Viewer' + (file.splitData
-                        ? ' [split '+(file.splitData?.splitIndex+1)+']'
-                        : ''
-                      )
-                    }
-                  >
-                    {file.splitData &&
-                    <>
-                      <span
-                        style={{
-                          color: '#064785',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          paddingRight: '15px',
-                        }}
-                      >
-                      Viewing signal split file:
-                      </span>
-                      <a
-                        className={
-                          'btn btn-xs btn-default split-nav'
-                          + (file.splitData.splitIndex === 0
-                            ? ' disabled'
-                            : '')
-                        }
-                        onClick={() => this.getSplitData(
-                          file.id,
-                          i,
-                          file.splitData.splitIndex-1
-                        )}
-                      >
-                        {'<'}
-                      </a>
-                      {splitPagination}
-                      <a
-                        className={
-                          'btn btn-xs btn-default split-nav'
-                            + (file.splitData.splitIndex
-                            === (file.splitData.splitCount-1)
-                              ? ' disabled'
-                              : '')
-                        }
-                        onClick={
-                          () => this.getSplitData(
-                            file.id,
-                            i,
-                            file.splitData.splitIndex+1
-                          )
-                        }
-                      >
-                        {'>'}
-                      </a>
-                    </>
-                    }
-                    <SeriesRenderer
-                      physioFileID={this.state.database[i].file.id}
-                    />
-                  </Panel>
-                  <div className='row'>
-                    <div className='col-md-6 col-lg-4'>
-                      <SummaryPanel
-                        id={'filename_summary_' + i}
-                        data={this.state.database[i].file.summary}
-                      />
-                    </div>
-                    <EEGMontage />
-                    <div className='col-md-6 col-lg-4'>
-                      <DownloadPanel
-                        id={'file_download_' + i}
-                        downloads={this.state.database[i].file.downloads}
-                        physioFileID={this.state.database[i].file.id}
-                        outputType={this.state.database[i].file.output_type}
-                      />
-                    </div>
-                  </div>
-                </EEGLabSeriesProvider>
-              </div>}
-            </FilePanel>
-          </div>
+      const database = this.state.database.map((dbEntry, i) => {
+        return (
+          <RecordingSection
+            key={i}
+            dbEntry={dbEntry}
+            fileIndex={i}
+            getSplitData={this.getSplitData}
+            patient={this.state.patient.info}
+            t={t}
+          />
         );
-      }
+      });
 
       return (
         <div id='lorisworkspace'>
-          <StaticDataTable
-            Headers={[
-              'PSCID',
-              'DCCID',
-              'Visit Label',
-              'Site',
-              'DOB',
-              'Sex',
-              'Output Type',
-              'Cohort',
+          <DataTable
+            fields={[
+              {label: t('PSCID', {ns: 'loris'}), show: true},
+              {label: t('DCCID', {ns: 'loris'}), show: true},
+              {label: t('Visit Label', {ns: 'loris'}), show: true},
+              {label: t('Site', {ns: 'loris', count: 1}), show: true},
+              {label: t('DoB', {ns: 'loris'}), show: true},
+              {label: t('Sex', {ns: 'loris'}), show: true},
+              {
+                label: t('Output Type', {ns: 'electrophysiology_browser'}),
+                show: true,
+              },
+              {label: t('Cohort', {ns: 'loris', count: 1}), show: true},
             ]}
-            Data={[
+            data={[
               [
                 this.state.patient.info.pscid,
                 this.state.patient.info.dccid,
@@ -493,7 +361,7 @@ class ElectrophysiologySessionView extends Component {
                 this.state.patient.info.cohort,
               ],
             ]}
-            freezeColumn='PSCID'
+            freezeColumn={t('PSCID', {ns: 'loris'})}
             Hide={{rowsPerPage: true, downloadCSV: true, defaultColumn: true}}
           />
           {database}
@@ -505,9 +373,58 @@ class ElectrophysiologySessionView extends Component {
 
 ElectrophysiologySessionView.propTypes = {
   module: PropTypes.string.isRequired,
+  onSessionNavigationChange: PropTypes.func.isRequired,
   sessionid: PropTypes.string,
+  t: PropTypes.func,
 };
 ElectrophysiologySessionView.defaultProps = {
+  module: '',
+};
+
+/**
+ * Electrophysiology session page.
+ *
+ * Renders the session view and places the session navigation sidebar in its
+ * DOM container.
+ *
+ * @param {object} props - React Component properties
+ * @return {React.ReactNode} React markup for the component
+ */
+function ElectrophysiologySessionPage(props) {
+  const {sessionid, sidebarContainer, t} = props;
+  const [navigation, setNavigation] = useState({
+    next: undefined,
+    previous: undefined,
+  });
+
+  return (
+    <>
+      {createPortal(
+        <Sidebar
+          next={navigation.next}
+          previous={navigation.previous}
+          t={t}
+        />,
+        sidebarContainer
+      )}
+      <ElectrophysiologySessionView
+        module={props.module}
+        onSessionNavigationChange={setNavigation}
+        sessionid={sessionid}
+        t={t}
+      />
+    </>
+  );
+}
+
+ElectrophysiologySessionPage.propTypes = {
+  module: PropTypes.string.isRequired,
+  sidebarContainer: PropTypes.object.isRequired,
+  sessionid: PropTypes.string,
+  t: PropTypes.func,
+};
+
+ElectrophysiologySessionPage.defaultProps = {
   module: '',
 };
 
@@ -515,34 +432,21 @@ ElectrophysiologySessionView.defaultProps = {
  * Render EEGSession on page load.
  */
 window.onload = function() {
-  const sidebarContent = (
-    <SidebarContent previous={'previous'} next={'next'}/>
-  );
-
-  const eegSidebar = (
-    <Sidebar
-      content={sidebarContent}
-      open={true}
-      docked={true}>
-    </Sidebar>
-  );
-
-  const eegSidebarDOM = document.createElement('div');
-  eegSidebarDOM.id = 'eegSidebar';
+  i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
+  i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
+  const i18nNamespaces = ['electrophysiology_browser', 'loris'];
 
   const page = document.getElementById('page');
   page.classList.add('eegBrowser');
 
   const wrapDOM = document.getElementById('wrap');
-  wrapDOM.insertBefore(eegSidebarDOM, page);
 
   const pathparts = window.location.pathname.split('/');
-  const eegSessionView = (
-    <ElectrophysiologySessionView
-      module={'eegSessionView'}
-      sessionid={pathparts[pathparts.length - 1]}
-    />
-  );
+
+  const EegSessionPage =
+    withTranslation(i18nNamespaces)(ElectrophysiologySessionPage);
+
   // Create a wrapper div in which react component will be loaded.
   const EEGSessionViewAppDOM = document.createElement('div');
   EEGSessionViewAppDOM.id = 'eegSessionView';
@@ -552,11 +456,11 @@ window.onload = function() {
   rootDOM.appendChild(EEGSessionViewAppDOM);
 
   // Render the React Components.
-  createRoot(
-    document.getElementById('eegSessionView')
-  ).render(eegSessionView);
-
-  createRoot(
-    document.getElementById('eegSidebar')
-  ).render(eegSidebar);
+  createRoot(EEGSessionViewAppDOM).render(
+    <EegSessionPage
+      module={'eegSessionView'}
+      sidebarContainer={wrapDOM}
+      sessionid={pathparts[pathparts.length - 1]}
+    />
+  );
 };

@@ -17,9 +17,30 @@ Please see the [Data Query Tool Readme](http://github.com/aces/Data-Query-Tool) 
 ### Loading the Data Query Tool
 
 Custom php scripts are provided in the LORIS codebase for loading data into the Data Query Tool.  
-Before attempting to load data into the Data Query Tool, the [Data Dictionary](https://github.com/aces/Loris/wiki/LORIS-Modules#data-dictionary-tool) must be generated.  
 
-In your LORIS tools/ directory, run the CouchDB_Import_* scripts to import each type of data  : 
+First, generate the **Data Dictionary** by creating a special file `ip_output.txt` of all instrument fields, and then loading them into the `parameter_type` table: 
+
+1. For all [[PHP instruments|Instrument-Coding-Guide]]: run the [[lorisform_parser.php|Instrument-Coding-Guide#generate-the-mysql-table]] script to generate `ip_output.txt`
+```bash
+cd /var/www/loris/tools
+find ../project/instruments/NDB_BVL_Instrument_*.class.inc | php lorisform_parser.php 
+```
+
+2. Append (do not overwrite) to `ip_output.txt` all fields from all `linst` files: 
+```bash
+cat /var/www/loris/project/instruments/*.linst >> /var/www/loris/tools/ip_output.txt
+```
+
+3. Then run the `tools/exporters/data_dictionary_builder.php` script -- but before you do: 
+* Ensure the `parameter_type_category` table contains a record where `Type = 'Instrument'`
+* Back up your `parameter_type` table, since the script will delete and re-load all `Instrument` type fields
+Then run the script from the `tools` directory: 
+```bash
+php data_dictionary_builder.php 
+```
+
+Second, to **load data** into the DQT -- 
+In your LORIS tools/ directory, run the `CouchDB_Import_*` scripts to import each type of data  : 
 * Base candidate data : CouchDB_Import_Demographics.php : Run first to import base candidate data
 * Instrument data : CouchDB_Import_Instruments.php - omit if Behavioural data not used
 * Imaging (MRI) data : CouchDB_Import_MRI.php - omit if Imaging data not used

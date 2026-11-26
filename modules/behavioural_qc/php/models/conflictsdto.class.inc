@@ -137,7 +137,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
             'instrument'        => $this->_instrument,
             'candID'            => $this->_candID,
             'pscID'             => $this->_pscID,
-            'visit'             => $this->_visit,
+            'visit'             => dgettext('visit', $this->_visit),
             'project'           => $this->_project,
             'cohort'            => $this->_cohort,
             'site'              => $this->_site,
@@ -148,5 +148,4 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
             'commentID'         => $this->_commentID,
         ];
     }
-
 }

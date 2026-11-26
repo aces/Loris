@@ -25,6 +25,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
+     * Whether the instrument was imported from REDCap.
+     *
+     * REDCap field names are not subject to LORIS's special handling of
+     * fields whose names end in "_status".
+     */
+    protected bool $isRedcap = false;
+
+    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -233,6 +241,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ) {
             return null;
         }
+
+        \bind_textdomain_codeset($instrument, 'UTF-8');
+        \bindtextdomain($instrument, __DIR__ . "/../../project/locale");
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
@@ -268,9 +279,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
+        $origlang = \getenv("LANG");
+        $obj->form->textdomain = $instrument;
         // if a script is loading this form without a commentID, display all fields
-        if (!isset($commentID)) {
+        if (empty($commentID)) {
             $obj->displayAllFields = true;
+        } else {
+            $obj->commentID = $commentID;
         }
 
         // Set page name to testName
@@ -280,7 +295,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
+
+            $timepoint = \TimePoint::singleton($obj->getSessionID());
+            $ilang     = $timepoint->getLanguage();
+            \putenv("LANG=" . $ilang->code . ".utf8");
+            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
+
         if (file_exists($base."project/instruments/$instrument.meta")) {
             $obj->loadInstrumentMetadata(
                 $base . "project/instruments/$instrument.meta"
@@ -302,9 +323,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.rules"
         );
 
+        \putenv("LANG=$origlang");
+        \putenv("LANGUAGE=$origlang");
         return $obj;
     }
-
 
     /**
      * Checks if the user has permissions to view the instrument.
@@ -321,9 +343,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $DB = $this->loris->getDatabaseConnection();
+
+        //check if user has site's permission
+        $sessionID = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($sessionID);
+        if (!$timepoint->isAccessibleBy($user)) {
+            return false;
+        }
 
         $instrumentPermissions = $DB->pselectCol(
             "SELECT code FROM testnames_permissions_rel rel
@@ -377,26 +407,64 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->tpl_data['candidate'] = $candidate->getData();
         $this->tpl_data['timePoint'] = $timePoint->getData();
-        // convert DoB And EDC date to years and months
-        // DoB to Derived Age
-        $dob = $candidate->getCandidateDoB();
-        if (is_string($dob) && strtotime($dob) !== false) {
-            $dob_date     = new \DateTime($dob);
-            $current_date = new \DateTime();
-            $dob_year     = abs($current_date->diff($dob_date)->y);
-            $dob_month    = abs($current_date->diff($dob_date)->m);
-            $dob_age      = $dob_year . " y / " . $dob_month . " m";
-            $this->tpl_data['dob_age'] = $dob_age;
+
+        $this->tpl_data['display'] = $timePoint->getData();
+
+        // Ideally this would be handled by $this->timePoint->getDate but other code
+        // depends on Date_visit being a string
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE,
+        );
+        if (isset($this->tpl_data['display']['Date_screening'])) {
+            $this->tpl_data['display']['Date_screening'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_screening'])
+            );
         }
-        // EDC to EDC Age
-        $edc = $candidate->getCandidateEDC();
-        if (is_string($edc) && strtotime($edc) !== false) {
-            $edc_date     = new DateTime($edc);
-            $current_date = new DateTime();
-            $edc_year     = abs($current_date->diff($edc_date)->y);
-            $edc_month    = abs($current_date->diff($edc_date)->m);
-            $edc_age      = $edc_year . " y / " . $edc_month . " m";
-            $this->tpl_data['edc_age'] = $edc_age;
+        if (isset($this->tpl_data['display']['Date_visit'])) {
+            $this->tpl_data['display']['Date_visit'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_visit'])
+            );
+        }
+        if (isset($this->tpl_data['display']['Date_approval'])) {
+            $this->tpl_data['display']['Date_approval'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_approval'])
+            );
+        }
+
+        // convert DoB date to age and months and rename it to Derived Age
+        $dob = $candidate->getData();
+        if (isset($dob['DoB']) && is_string($dob['DoB'])) {
+            $dob_date = date_create_from_format('Y-m-d', $dob['DoB']);
+            if ($dob_date !== false) {
+                $current_date = new \DateTime();
+                $dob_year     = abs($current_date->diff($dob_date)->y);
+                $dob_month    = abs($current_date->diff($dob_date)->m);
+                $dob_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $dob_year,
+                    $dob_month,
+                );
+                $this->tpl_data['dob_age'] = $dob_age;
+            }
+
+        }
+        // convert EDC date to age and months and rename it to EDC Age
+        $edc = $candidate->getData();
+        if (isset($edc['EDC']) && is_string($edc['EDC'])) {
+            $edc_date = date_create_from_format('Y-m-d', $edc['EDC']);
+            if ($edc_date !== false) {
+                $current_date = new \DateTime();
+                $edc_year     = abs($current_date->diff($edc_date)->y);
+                $edc_month    = abs($current_date->diff($edc_date)->m);
+                $edc_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $edc_year,
+                    $edc_month,
+                );
+                $this->tpl_data['edc_age'] = $edc_age;
+            }
         }
     }
 
@@ -441,8 +509,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
     }
 
-
-
     /**
      * Method to display the form for an instrument
      *
@@ -478,7 +544,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $buttons[] = $this->form->createElement(
                 'submit',
                 'fire_away',
-                'Save Data',
+                dgettext('loris', 'Save'),
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
@@ -723,6 +789,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Determine whether a field is a LORIS response-status field.
+     *
+     * @param string $field The field name
+     *
+     * @return bool
+     */
+    protected function isStatusField(string $field): bool
+    {
+        return !$this->isRedcap && str_ends_with($field, '_status');
+    }
+
+    /**
      * This removes all the value of any field which has its accompagning
      * _status field set.
      *
@@ -735,7 +813,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         //Remove the values of all fields who have had statuses assigned
         foreach (array_keys($values) AS $field) {
-            if (substr($field, -7)=="_status") {
+            if ($this->isStatusField($field)) {
                 if (!empty($values[$field])) {
                     $baseField          = substr($field, 0, (strlen($field)-7));
                     $values[$baseField] = "";
@@ -796,7 +874,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->_save($values);
     }
 
-
     /**
      * Uses the array generated by _saveValues() and runs the
      * Database::update() call.
@@ -831,6 +908,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // don't overwrite data from other pages.
         $newData = array_merge($this->getInstanceData() ?? [], $values);
 
+        $userID = $db->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:uid",
+            ['uid' => $newData['UserID'] ?? ""]
+        );
+        if (($userID ?? "") != "") {
+            $db->insertOnDuplicateUpdate(
+                "flag_editors",
+                [
+                    'userID'    => $userID,
+                    'CommentID' => $this->getCommentID(),
+                ],
+            );
+        }
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
         $jsonencoded = json_encode($newData);
@@ -857,7 +947,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
-     * current form
+     * current form. Note that NDB_BVL_Instrument_LINST.class.inc mimics the logic
+     * of this function to build the data dictionary, so any changes here should
+     * be reflected there as well.
      *
      * @return void
      * @access private
@@ -878,27 +970,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate(
+            'Date_taken',
+            dgettext('instruments', 'Date of Administration'),
+            $dateOptions
+        );
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age (Months)'
+                    dgettext("instruments", 'Candidate Age (Months)')
                 );
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age at Death (Months)'
+                    dgettext("instruments", 'Candidate Age at Death (Months)')
                 );
             }
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)'
+                dgettext("instruments", 'Window Difference (+/- Days)')
             );
         }
         $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
+        $this->addSelect(
+            'Examiner',
+            dgettext("instruments", 'Examiner'),
+            array_merge(['' => ''], $examiners)
+        );
 
         $this->addRule(
             'Date_taken',
@@ -979,7 +1079,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ];
     }
 
-
     /**
      * Gets the list of examiners for the site of the current instrument
      *
@@ -987,11 +1086,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
-        if (empty($this->getCommentID())) {
-            return [];
-        }
+        $db = \NDB_Factory::singleton()->database();
 
-        $db = $this->loris->getDatabaseConnection();
+        if (empty($this->getCommentID())) {
+            $results =  $db->pselectWithIndexKey(
+                "SELECT DISTINCT e.examinerID, e.full_name, u.Email
+               FROM examiners e
+               JOIN users u ON u.ID=e.userID
+               WHERE u.Active = 'Y'
+               ORDER BY full_name",
+                [],
+                'examinerID'
+            );
+            return $this->_buildExaminers($results);
+        }
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -1015,7 +1123,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $curr_examinerID = $this->getFieldValue("Examiner");
+        $allValues       = $this->getInstanceData();
+        $curr_examinerID = $allValues['Examiner'];
 
         list(
             $CertificationEnabled,
@@ -1067,32 +1176,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         }
-        $examiners = [
-            '' => ''
-        ];
-        if (is_array($results) && !empty($results)) {
-            foreach ($results AS $eid => $row) {
-                $name = $row['full_name'];
-                if (in_array($name, $examiners)) {
-                    // If name already in examiners, set first case of name
-                    // with email (if exists)
-                    $duplicateID    = array_search($name, $examiners);
-                    $duplicateEmail = $results[$duplicateID]['Email'];
-                    $emailString    = empty($duplicateEmail) ? "" :
-                        " ({$duplicateEmail})";
-                    $examiners[$duplicateID] = $name . $emailString;
-                    // Set new case of name with email as well
-                    $emailString     = empty($row['Email']) ? "" :
-                        " ({$row['Email']})";
-                    $examiners[$eid] = $name . $emailString;
-                } else {
-                    $examiners[$eid] = $name;
-                }
-            }
-        }
-        return $examiners;
+        return $this->_buildExaminers($results);
     }
-
 
     /**
      * Return the full, human readable name for the
@@ -1113,7 +1198,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $this->commentID;
     }
 
-
     /**
      * Freezes the current form
      *
@@ -1128,7 +1212,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->form->freeze();
     }
 
-
     /**
      * Gets the date of administration of an instrument instance.
      * Caches to reduce DB hits
@@ -1142,7 +1225,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         return $this->dateOfAdministration;
     }
-
 
     /**
      * Returns a list of subtests of the current instrument.
@@ -1199,7 +1281,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     if (is_array($result)) {
                         $errors += $result;
                     }
-                } else if (substr($elname, -7) != "_status"
+                } else if (!$this->isStatusField($elname)
                     && !in_array($elname, ["page", "subtest"])
                 ) {
                     $errors[$elname] = "Required.";
@@ -1247,7 +1329,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $this->XINRules[$elname]['rules'][] = $rule;
         }
     }
-
 
     /**
      * Run XIN rules on element
@@ -1436,6 +1517,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     private ?SessionID $sessionID;
+
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
@@ -1460,6 +1542,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     private ?string $visitLabel = null;
+
     /**
      * Gets the VisitLabel for the timepoint for this instrument.
      *
@@ -1555,7 +1638,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return 'Y';
     }
 
-
     /**
      * Gets the data entry completion status for this instrument
      *
@@ -1575,7 +1657,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         return $status;
     }
-
 
     /**
      * Sets the data entry completion status
@@ -1625,9 +1706,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $label,
             [
                 ''             => '',
-                'yes'          => 'Yes',
-                'no'           => 'No',
-                'not_answered' => 'Not Answered',
+                'yes'          => dgettext('loris', 'Yes'),
+                'no'           => dgettext('loris', 'No'),
+                'not_answered' => dgettext('loris', 'Not Answered'),
             ]
         );
 
@@ -1815,7 +1896,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "dnk"          => "DNK",
                 "refusal"      => "Refusal",
                 'not_answered' => 'Not Answered',
-            ]
+            ],
+            ['class' => 'form-control input-sm not-answered']
         );
         $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
@@ -1844,9 +1926,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $options = []
     ): void {
 
-        if (empty($options)) {
-            $options = $this->dateOptions;
-        }
+        $options = ($options ?? []) + $this->dateOptions;
 
         $group   = [];
         $group[] = $this->createDate(
@@ -1907,7 +1987,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->form->addElement('date', $field, $label, $options);
     }
 
-
     /**
      * Wrapper with a user-created date group, a status box and appropriate rule
      *
@@ -1958,8 +2037,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
 
     }
-
-
 
     /**
      * Wrapper to create a field that only accepts a number, with an
@@ -2039,7 +2116,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
     }
 
-
     /**
      * Nulls all scores for the record identified by CommentID. This should
      * be done at the start of any scoring run to ensure that old data is
@@ -2090,32 +2166,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Load other instance data
         $otherData = $otherInstrument->getInstanceData();
 
+        $instrumentFields = array_keys($thisData + $otherData);
+
         // Create the return object data structure
         $diff = [];
 
         // Loop over this instance data
-        foreach ($thisData AS $key=>$value) {
-            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
-                if (($otherData[$key] ?? null) != $value) {
-                    $diff[] = [
-                        'TestName'       => $this->testName,
-                        'ExtraKeyColumn' => null,
-                        'ExtraKey1'      => ' ',
-                        'ExtraKey2'      => ' ',
-                        'FieldName'      => $key,
-                        'CommentId1'     => $this->getCommentID(),
-                        'Value1'         => $value,
-                        'CommentId2'     => $otherInstrument->getCommentID(),
-                        'Value2'         => $otherData[$key] ?? null,
-                    ];
-                }
+        foreach ($instrumentFields AS $key) {
+            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)
+                && ($otherData[$key] ?? null) != ($thisData[$key] ?? null)
+            ) {
+                $diff[] = [
+                    'TestName'       => $this->testName,
+                    'ExtraKeyColumn' => null,
+                    'ExtraKey1'      => ' ',
+                    'ExtraKey2'      => ' ',
+                    'FieldName'      => $key,
+                    'CommentId1'     => $this->getCommentID(),
+                    'Value1'         => $thisData[$key] ?? null,
+                    'CommentId2'     => $otherInstrument->getCommentID(),
+                    'Value2'         => $otherData[$key] ?? null,
+                ];
             }
         }
 
         // Return the diffs
         return $diff;
     }
-
 
     /**
      * Get the default instance data which consists of all field names
@@ -2223,12 +2300,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @param ?\LORIS\Data\Query\QueryTerm $condition  A single QueryTerm that
      *                                                 matched instances must
      *                                                 meet to be loaded
+     * @param ?array                       $v          The visits that must match
      *
      * @return Generator<\NDB_BVL_Instrument>
      */
     function bulkLoadInstanceData(
         ?iterable $commentIDs,
         ?\LORIS\Data\Query\QueryTerm $condition = null,
+        $v = null,
     ): iterable {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
@@ -2313,13 +2392,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     )
                     . ' ';
                 }
+
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
 		    	SessionID,
                         CommentID,
-                        session.Visit_Label as VisitLabel,
+                        session.Visit_label as VisitLabel,
 			flag.Administration,
 			flag.Data_entry as DataEntry,
 			flag.Validity,
@@ -2330,7 +2410,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         JOIN instrument_data ON (flag.DataID=instrument_data.ID)
 			JOIN test_names tn ON (tn.ID=flag.TestID)
 			$where";
-
+            \Profiler::checkpoint("Running query (JSON data): " . $query);
             $jsondata = $db->pselect($query, $params);
             foreach ($jsondata as $row) {
                     $newinst = clone $this;
@@ -2353,8 +2433,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     ) ?? $this->defaultInstanceData();
                     yield $newinst;
             }
+            \Profiler::checkpoint("Finished query");
             return;
         } else {
+
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
@@ -2390,11 +2472,25 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . ' ';
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
-            $where = 'WHERE ' . join(' AND ', $conditions);
+            if (is_array($v) && !empty($v)) {
+                    $vescaped = array_map(
+                        function ($visit) use ($db) {
+                            return $db->quote($visit);
+                        },
+                        $v
+                    );
+
+                    $visitString = '(' . implode(',', $vescaped) . ')';
+                    $where       = 'WHERE ' . join(' AND ', $conditions) .
+                                   ' AND s.Visit_label IN ' . $visitString;
+            } else {
+                $where = 'WHERE ' . join(' AND ', $conditions);
+            }
+
             $query = "SELECT
                 c.CandID as CandID,
                 t.CommentID as CommentID,
-                s.Visit_Label as VisitLabel,
+                s.Visit_label as VisitLabel,
                 f.Administration,
                 f.Data_entry,
                 f.Validity,
@@ -2405,8 +2501,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandidateID=c.ID)
 
-		 $where";
-            $data  = $db->pselect($query, $params);
+		    $where";
+            \Profiler::checkpoint("Running query (table instrument): " . $query);
+            $data = $db->pselect($query, $params);
             foreach ($data as $row) {
                     $newinst = clone $this;
 
@@ -2427,6 +2524,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     yield $newinst;
             }
+            \Profiler::checkpoint("Finished query");
             return;
         }
     }
@@ -2532,7 +2630,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
 
             $set = [
-                'CandID'        => $this->getCandID()->__toString(),
+                'CandidateID'   => $this->getCandidateID(),
                 'DxEvolutionID' => $dxEvolutionID,
                 'Diagnosis'     => json_encode($diagnosis),
                 'Confirmed'     => $confirmed
@@ -2640,7 +2738,28 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $pscid;
     }
 
+    /**
+     * Get the candidateID.
+     *
+     * @return string|null The candidate's ID.
+     */
+    function getCandidateID(): ?string
+    {
+        $db        = $this->loris->getDatabaseConnection();
+        $CommentID = $this->getCommentID();
+
+        $id = $db->pselectOne(
+            "SELECT c.ID FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE f.CommentID=:CID",
+            ['CID' => $CommentID]
+        );
+        return $id;
+    }
+
     protected ?CandID $candID = null;
+
     /**
      * Get the candidate's CandID
      *
@@ -2880,8 +2999,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $Responses = $this->getInstanceData();
 
         foreach ($tpl_data['questions'] as $key => &$row) {
-            $isStatusField = $row['SourceField']
-                === $tpl_data['questions'][$key-1]['SourceField']."_status";
+            $isStatusField = false;
+            if ($key > 0 && $this->isStatusField($row['SourceField'])) {
+                $previousQuestion    = $tpl_data['questions'][$key-1];
+                $previousSourceField = $previousQuestion['SourceField'];
+                $isStatusField       = $row['SourceField']
+                    === $previousSourceField . '_status';
+            }
+
             if (isset($Responses[$row['SourceField']])) {
                 // Consider status fields
                 if ($isStatusField) {
@@ -2902,7 +3027,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $smarty->assign($tpl_data);
         return $smarty->fetch("directentry_review.tpl");
     }
-
 
     /**
      * Parse the HTML generated by smarty for the current element to
@@ -3030,7 +3154,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             unset($formArray['elements'][$name]);
         }
-        if (strpos($name, "_status") === false) {
+        if (!$this->isStatusField($name)) {
             $this->_toJSONParseSmarty($element);
         } else {
             unset($formArray['elements'][$name]);
@@ -3065,6 +3189,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $formArray;
 
     }
+
     /**
      * Returns a JSON representation of the currently instantiated
      * instrument.
@@ -3130,6 +3255,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     private ?\InstrumentFlags $flags = null;
+
     /**
      * Gets the flags of that instrument
      *
@@ -3179,15 +3305,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                sprintf(dgettext("loris", "TimePoint %s Details"), $visitlabel),
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
@@ -3197,6 +3324,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             )
         );
     }
+
     /**
      * Returns true if this instrument saves its data in JSON format to
      * the flag column, rather than directly in MySQL tables.
@@ -3269,7 +3397,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $user      = $request->getAttribute("user");
         $sessionID = $this->getSessionID();
         if ($sessionID !== null) {
-            $timepoint = \Timepoint::singleton($sessionID);
+            $timepoint = \TimePoint::singleton($sessionID);
         }
 
         // create an instrument status object
@@ -3376,7 +3504,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $instrumentNames = [];
         foreach ($instrumentsList as $testName => $instrument) {
             $fullName = $instrument->getFullName();
-            $instrumentNames[$testName] =$fullName;
+            $instrumentNames[$testName] = dgettext(
+                'test_names',
+                $fullName
+            );
         }
 
         // sort array by instrument name for modules that rely on ordering
@@ -3479,5 +3610,38 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public function getSelectMultipleElements(): array
     {
         return $this->selectMultipleElements;
+    }
+
+    /**
+     * Builds examiner array from DB results
+     *
+     * @param array $results Results from DB
+     *
+     * @return string[]
+     */
+    function _buildExaminers(array $results): array
+    {
+        $examiners = [];
+        if (is_array($results) && !empty($results)) {
+            foreach ($results as $eid => $row) {
+                $name = $row['full_name'];
+                if (in_array($name, $examiners)) {
+                    // If name already in examiners, set first case of name
+                    // with email (if exists)
+                    $duplicateID    = array_search($name, $examiners);
+                    $duplicateEmail = $results[$duplicateID]['Email'];
+                    $emailString    = empty($duplicateEmail) ? "" :
+                    " ({$duplicateEmail})";
+                    $examiners[$duplicateID] = $name . $emailString;
+                    // Set new case of name with email as well
+                    $emailString     = empty($row['Email']) ? "" :
+                    " ({$row['Email']})";
+                    $examiners[$eid] = $name . $emailString;
+                } else {
+                    $examiners[$eid] = $name;
+                }
+            }
+        }
+        return $examiners;
     }
 }

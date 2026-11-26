@@ -4,7 +4,7 @@
  * This is used by the survey accounts module to validate inputs
  * before the email message popup appears
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Survey
  * @package  Loris
@@ -18,6 +18,7 @@ if (!$user->hasPermission('survey_accounts_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit(0);
 }
+header("Content-Type: application/json; charset=utf-8");
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
@@ -42,7 +43,10 @@ $numCandidates = $db->pselectOne(
         'v_CandID' => $_REQUEST['dccid'],
     ]
 );
-$error_msg     = "PSCID and DCC ID do not match or candidate does not exist.";
+$error_msg     = dgettext(
+    'survey_accounts',
+    'PSCID and DCCID do not match or candidate does not exist.'
+);
 if ($numCandidates != 1) {
     echo json_encode(
         ['error_msg' => $error_msg]
@@ -51,10 +55,11 @@ if ($numCandidates != 1) {
 }
 
 $numSessions = $db->pselectOne(
-    "SELECT COUNT(*) FROM session
-            WHERE CandID=:v_CandID
+    "SELECT COUNT(*) FROM session s
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            WHERE c.CandID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
-            AND Active='Y'",
+            AND s.Active='Y'",
     [
         'v_CandID' => $_REQUEST['dccid'],
         'v_VL'     => $_REQUEST['VL'],
@@ -64,8 +69,9 @@ $numSessions = $db->pselectOne(
 if ($numSessions != 1) {
     echo json_encode(
         [
-            'error_msg' => "Visit ". $_REQUEST['VL'].
-                             " does not exist for given candidate",
+            'error_msg' => dgettext('loris', 'Visit').' '.
+                  $_REQUEST['VL'].' '.
+                  dgettext('survey_accounts', 'does not exist for given candidate'),
         ]
     );
     exit(0);
@@ -73,7 +79,7 @@ if ($numSessions != 1) {
 
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
-        ['error_msg' => 'Please choose an instrument']
+        ['error_msg' => dgettext('survey_accounts', 'Please choose an instrument.')]
     );
     exit(0);
 }
@@ -81,7 +87,7 @@ if (empty($_REQUEST['TN'])) {
 $instrument_list = $db->pselect(
     "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             JOIN candidate ON c.ID = s.CandidateID
+             JOIN candidate c ON c.ID = s.CandidateID
              JOIN test_names tn ON tn.ID = f.TestID
              WHERE c.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
@@ -95,8 +101,16 @@ foreach ($instrument_list as $instrument) {
     if ($_REQUEST['TN'] == $instrument['Test_name']) {
         echo json_encode(
             [
-                'error_msg' => "Instrument ". $_REQUEST['TN'].
-                " already exists for given candidate for visit ". $_REQUEST['VL'],
+                'error_msg' => dcngettext(
+                    'loris',
+                    'Instrument',
+                    'Instruments',
+                    1,
+                    LC_MESSAGES
+                ).' '. $_REQUEST['TN'].' ' .dgettext(
+                    'survey_accounts',
+                    'already exists for given candidate for visit'
+                ).' '. $_REQUEST['VL'],
             ]
         );
         exit(0);
@@ -106,12 +120,13 @@ foreach ($instrument_list as $instrument) {
 if (!empty($_REQUEST['Email']) ) {
     if (!filter_var($_REQUEST['Email'], FILTER_VALIDATE_EMAIL) ) {
         echo json_encode(
-            ['error_msg' => 'The email address is not valid.']
+            ['error_msg' => dgettext(
+                'survey_accounts',
+                'Email is not valid.'
+            )
+            ]
         );
         exit(0);
     }
 }
-
-print "";
-
-
+echo json_encode(['valid' => true]);

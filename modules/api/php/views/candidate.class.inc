@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category ApiViews
  * @package  Loris
@@ -30,10 +30,13 @@ class Candidate
     /**
      * Constructor.
      *
-     * @param \Candidate $candidate The candidate to format
+     * @param \Candidate $candidate     The candidate to format
+     * @param bool       $includeCohort Include cohort metadata.
      */
-    public function __construct(\Candidate $candidate)
-    {
+    public function __construct(
+        \Candidate $candidate,
+        private bool $includeCohort = false
+    ) {
         $this->_candidate = $candidate;
     }
 
@@ -53,6 +56,11 @@ class Candidate
             'DoB'     => $this->_candidate->getCandidateDoB(),
             'Sex'     => $this->_candidate->getCandidateSex(),
         ];
+
+        if ($this->includeCohort) {
+            $meta['RegistrationCohort']
+                = $this->_candidate->getRegistrationCohortTitle();
+        }
 
         $visits = array_values($this->_candidate->getListOfVisitLabels());
 

@@ -3,7 +3,7 @@
 /**
  * Instrument_List
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Main
  * @package    Instrument_List
@@ -28,7 +28,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * Instrument_List
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Main
  * @package    Instrument_List
@@ -76,6 +76,7 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         $this->candidate = $candidate;
     }
+
     /**
      * Checking permissions
      *
@@ -83,7 +84,8 @@ class Instrument_List extends \NDB_Menu_Filter
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $timePoint = $this->timePoint;
         if ($timePoint === null) {
@@ -95,7 +97,9 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         //These variable are only for checking the permissions.
-        return $user->hasPermission('access_all_profiles')
+        return $user->hasAnyPermission(
+            ['access_all_profiles', 'view_instrument_data']
+        )
             || $this->timePoint->isAccessibleBy($user);
     }
 
@@ -194,12 +198,10 @@ class Instrument_List extends \NDB_Menu_Filter
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
         $listOfInstruments = $battery->getBatteryVerbose();
-
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user     =& \User::singleton();
             $username = $user->getUsername();
-
             $feedback_select_inactive = false;
             if ($user->hasPermission('bvl_feedback')) {
                 $feedback_select_inactive = true;
@@ -243,6 +245,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
                 $ins = \NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
                     $this->timePoint->getVisitLabel(),
+                    strval($this->timePoint->getCohortID()),
                     $instrument['Test_name']
                 );
 
@@ -300,6 +303,29 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $this->tpl_data['display']
             = array_merge($this->candidate->getData(), $this->timePoint->getData());
+
+        // Ideally this would be handled by $this->timePoint->getDate but other code
+        // depends on Date_visit being a string
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE,
+        );
+        if (isset($this->tpl_data['display']['Date_screening'])) {
+            $this->tpl_data['display']['Date_screening'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_screening'])
+            );
+        }
+        if (isset($this->tpl_data['display']['Date_visit'])) {
+            $this->tpl_data['display']['Date_visit'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_visit'])
+            );
+        }
+        if (isset($this->tpl_data['display']['Date_approval'])) {
+            $this->tpl_data['display']['Date_approval'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_approval'])
+            );
+        }
         // DoB to Derived Age
         $dob = $this->candidate->getCandidateDoB();
         if (is_string($dob) && strtotime($dob) !== false) {
@@ -307,7 +333,11 @@ class Instrument_List extends \NDB_Menu_Filter
             $current_date = new \DateTime();
             $dob_year     = abs($current_date->diff($dob_date)->y);
             $dob_month    = abs($current_date->diff($dob_date)->m);
-            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $dob_age      = sprintf(
+                dgettext("loris", "%d y / %d m"),
+                $dob_year,
+                $dob_month,
+            );
             $this->tpl_data['dob_age'] = $dob_age;
         }
         // EDC to EDC Age
@@ -317,7 +347,11 @@ class Instrument_List extends \NDB_Menu_Filter
             $current_date = new \DateTime();
             $edc_year     = abs($current_date->diff($edc_date)->y);
             $edc_month    = abs($current_date->diff($edc_date)->m);
-            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $edc_age      = sprintf(
+                dgettext("loris", "%d y / %d m"),
+                $edc_year,
+                $edc_month,
+            );
             $this->tpl_data['edc_age'] = $edc_age;
         }
     }
@@ -333,7 +367,11 @@ class Instrument_List extends \NDB_Menu_Filter
      */
     function getFeedbackPanel(CandID $candID, ?\SessionID $sessionID): string
     {
-        $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
+        $feedbackPanel = new \BVL_Feedback_Panel(
+            $candID,
+            $sessionID,
+            $this->commentID ?: null
+        );
         $html          =  $feedbackPanel->display();
         return $html;
     }
@@ -371,15 +409,16 @@ class Instrument_List extends \NDB_Menu_Filter
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                dgettext("loris", "TimePoint") . " $visitlabel",
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             )
         );
@@ -417,6 +456,4 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $this->candidate = $candidate;
     }
-
-
 }

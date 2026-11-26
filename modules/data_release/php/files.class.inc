@@ -17,6 +17,7 @@ class Files extends \NDB_Page
     public $skipTemplate = true;
 
     private $filesDir;
+
     /**
      * Check user permissions
      *
@@ -24,12 +25,14 @@ class Files extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         // check user permissions
         return $user->hasAnyPermission(
             [
                 'data_release_view',
+                'data_release_download_all',
                 'data_release_upload',
                 'data_release_edit_file_access'
             ]
@@ -57,13 +60,35 @@ class Files extends \NDB_Page
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
 
-        switch ($request->getMethod()) {
-        case 'GET':
-            return $this->_handleGet($request);
-        case 'POST':
-            return $this->_handleUpload($request);
-        default:
-            return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET', 'POST']);
+        $action = $request->getQueryParams()['action'];
+        if (!empty($action)
+            && ($action == 'deleteFile'
+            || $action == 'hideFile'
+            || $action == 'unhideFile')
+        ) {
+            switch ($action) {
+            case 'deleteFile':
+                return $this->_deleteFile($request);
+            case 'hideFile':
+                return $this->_changeHideFile($request, true);
+            case 'unhideFile':
+                return $this->_changeHideFile($request, false);
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    ['DELETE', 'HIDE']
+                );
+            }
+        } else {
+            switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGet($request);
+            case 'POST':
+                return $this->_handleUpload($request);
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    ['GET', 'POST']
+                );
+            }
         }
     }
 
@@ -98,17 +123,19 @@ class Files extends \NDB_Page
 
         $user = $request->getAttribute("user");
 
+        $posted = $request->getParsedBody();
+        assert(is_array($posted));
+
         $validateError = $this->_validateUserCanUpload(
             $user,
             $fileName,
+            $posted['project'],
             $overwrite
         );
         if ($validateError !== null) {
             return $validateError;
         }
 
-        $posted = $request->getParsedBody();
-        assert(is_array($posted));
         return $this->_moveFile(
             $uploadhandler,
             $user,
@@ -116,7 +143,7 @@ class Files extends \NDB_Page
             $request,
             $posted['version'],
             $overwrite,
-            $posted['project'],
+            $posted['project']
         );
     }
 
@@ -125,16 +152,18 @@ class Files extends \NDB_Page
      * if there are no errors, or an error response if something
      * is wrong.
      *
-     * @param \User  $user      The user attempting to upload
-     * @param string $fileName  The filename being uploaded
-     * @param bool   $overwrite Whether the overwrite flag is set
+     * @param \User  $user        The user attempting to upload
+     * @param string $fileName    The filename being uploaded
+     * @param string $projectName Name of the project
+     * @param bool   $overwrite   Whether the overwrite flag is set
      *
      * @return ?ResponseInterface
      */
     private function _validateUserCanUpload(
-        \User $user,
+        \User  $user,
         string $fileName,
-        bool $overwrite
+        string $projectName,
+        bool   $overwrite
     ) : ?ResponseInterface {
         // Check if file is duplicate
         $DB            = $this->loris->getDatabaseConnection();
@@ -143,37 +172,44 @@ class Files extends \NDB_Page
             ['f' => $fileName]
         );
 
-        if (!isset($duplicateFile)) {
-            // File doesn't exist, user can upload as long as they have
-            // permission.
-            if (!$user->hasPermission("data_release_upload")) {
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    "Permission denied."
-                );
+        $ProjectID = $DB->pselectOne(
+            "SELECT ProjectID FROM Project WHERE Name=:project",
+            ['project' => $projectName]
+        );
 
-            }
-            return null;
+        if (!$user->hasPermission("data_release_upload")
+            || !$user->hasProject(\ProjectID::singleton((int)$ProjectID))
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                dgettext("data_release", "Permission denied.")
+            );
         }
 
-        if ($overwrite) {
-            // File is duplicate and overwrite is set, verify permission
-            $userPermission = $DB->pselectRow(
-                "SELECT userid FROM data_release_permissions
+        if (isset($duplicateFile)) {
+            if ($overwrite) {
+                // File is duplicate and overwrite is set, verify permission
+                $userPermission = $DB->pselectRow(
+                    "SELECT userid FROM data_release_permissions
                     WHERE userid=:u AND data_release_id=:d",
-                ['u' => $user->getId(), 'd' => $duplicateFile['id']]
-            );
-            if (!isset($userPermission) && !$user->hasPermission('superuser')) {
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    "Overwrite failed. A file of this name already exists which "
-                    . " you do not have permission to overwrite."
+                    ['u' => $user->getId(), 'd' => $duplicateFile['id']]
+                );
+                if (!isset($userPermission) && !$user->hasPermission('superuser')) {
+                    return new \LORIS\Http\Response\JSON\Forbidden(
+                        dgettext(
+                            "data_release",
+                            "Overwrite failed. A file of this name already exists"
+                            . " which you do not have permission to overwrite."
+                        )
+                    );
+                }
+            } else {
+                // File is duplicate and overwrite not declared
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    dgettext("data_release", "Can not upload duplicate file.")
                 );
             }
-        } else {
-            // File is duplicate and overwrite not declared
-            return new \LORIS\Http\Response\JSON\Conflict(
-                'Can not upload duplicate file.'
-            );
         }
+
         return null;
     }
 
@@ -190,8 +226,7 @@ class Files extends \NDB_Page
      * @param ?string                   $version     The user submitted file version.
      * @param bool                      $overwrite   Flag to indicate if existing
      *                                               file should be overwritten.
-     * @param ?string                   $projectName The name of the project the file
-     *                                               belongs to
+     * @param ?string                   $projectName Name of the project
      *
      * @return ResponseInterface
      */
@@ -238,15 +273,15 @@ class Files extends \NDB_Page
             );
         } else {
             // insert the file into the data_release table
-                $DB->insert(
-                    'data_release',
-                    [
-                        'file_name'   => $fileName,
-                        'version'     => $version,
-                        'upload_date' => $upload_date,
-                        'ProjectID'   => $ProjectID,
-                    ]
-                );
+            $DB->insert(
+                'data_release',
+                [
+                    'file_name'   => $fileName,
+                    'version'     => $version,
+                    'upload_date' => $upload_date,
+                    'ProjectID'   => $ProjectID,
+                ]
+            );
 
         }
 
@@ -296,7 +331,12 @@ class Files extends \NDB_Page
         );
 
         if (!$regexmatch) {
-            return new \LORIS\Http\Response\JSON\NotFound("Not found");
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    "data_release",
+                    "Not found"
+                )
+            );
         }
 
         $DB = $this->loris->getDatabaseConnection();
@@ -307,23 +347,46 @@ class Files extends \NDB_Page
                 ['fileid' => $fileID]
             );
             if ($filename === null) {
-                return new \LORIS\Http\Response\JSON\NotFound("Not found");
+                return new \LORIS\Http\Response\JSON\NotFound(
+                    dgettext(
+                        "data_release",
+                        "Not found"
+                    )
+                );
             }
 
-            $user = $request->getAttribute("user");
-            if (!$user->hasPermission("data_release_view")) {
-                return new \LORIS\Http\Response\JSON\Forbidden("Permission denied");
-            }
-
-            $hasFilePerm = $DB->pselectOne(
-                "SELECT 'x' FROM data_release_permissions WHERE
-                    data_release_id=:fileid AND userid = :user",
-                ['fileid' => $fileID,
-                    'user'   => $user->getId()
-                ]
+            $user           = $request->getAttribute("user");
+            $canDownloadAll = $user->hasPermission(
+                "data_release_download_all"
             );
-            if ($hasFilePerm === null) {
-                return new \LORIS\Http\Response\JSON\Forbidden("Permission denied");
+            if (!$canDownloadAll
+                && !$user->hasPermission("data_release_view")
+            ) {
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    dgettext(
+                        "loris",
+                        "Permission denied"
+                    )
+                );
+            }
+
+            if (!$canDownloadAll) {
+                $hasFilePerm = $DB->pselectOne(
+                    "SELECT 'x' FROM data_release_permissions WHERE
+                        data_release_id=:fileid AND userid = :user",
+                    [
+                        'fileid' => $fileID,
+                        'user'   => $user->getId(),
+                    ]
+                );
+                if ($hasFilePerm === null) {
+                    return new \LORIS\Http\Response\JSON\Forbidden(
+                        dgettext(
+                            "loris",
+                            "Permission denied"
+                        )
+                    );
+                }
             }
 
             try {
@@ -341,18 +404,105 @@ class Files extends \NDB_Page
             }
         }
 
-        $filesList = $DB->pselect(
-            "SELECT id, file_name FROM data_release",
+        $filesList = $DB->pselectCol(
+            "SELECT file_name FROM data_release",
             []
         );
 
-        $dataReleaseFiles = array_column(iterator_to_array($filesList), 'file_name');
-
         $results = [
-            'files'         => $dataReleaseFiles,
+            'files'         => $filesList,
             'maxUploadSize' => \Utility::getMaxUploadSize(),
         ];
 
         return new \LORIS\Http\Response\JSON\OK($results);
+    }
+
+    /**
+     * Deletes a file from the database, returning an appropriate HTTP response.
+     *
+     * @param ServerRequestInterface $request The incoming request.
+     *
+     * @return ResponseInterface
+     */
+    private function _deleteFile(
+        ServerRequestInterface $request
+    ) : ResponseInterface {
+        // Get ID
+        $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
+        if (!$data_release_id) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    "data_release",
+                    "Not found"
+                )
+            );
+        }
+
+        $user = $request->getAttribute("user");
+
+        if (!$user->hasPermission('data_release_delete')) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                dgettext("data_release", "Permission denied.")
+            );
+        }
+
+        $DB = $this->loris->getDatabaseConnection();
+
+        $DB->delete(
+            'data_release_permissions',
+            ['data_release_id' => $data_release_id,]
+        );
+        $DB->delete(
+            'data_release',
+            ['id' => $data_release_id,]
+        );
+
+        return new \LORIS\Http\Response\JSON\OK();
+    }
+
+    /**
+     * Modifies the hidden_by_userid attribute of a file in the database.
+     *
+     * @param ServerRequestInterface $request The incoming request.
+     * @param bool                   $hide    Whether it is hiding or unhiding
+     *
+     * @return ResponseInterface
+     */
+    private function _changeHideFile(
+        ServerRequestInterface $request,
+        bool $hide
+    ) : ResponseInterface {
+        // Get ID
+        $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
+        if (!$data_release_id) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    "data_release",
+                    "Not found"
+                )
+            );
+        }
+
+        $user = $request->getAttribute("user");
+
+        if (!$user->hasPermission('data_release_hide')) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                dgettext("data_release", "Permission denied.")
+            );
+        }
+
+        $DB = $this->loris->getDatabaseConnection();
+
+        $DB->update(
+            'data_release',
+            [
+                'hidden_by_userid' => ($hide ? $user->getId() : null),
+            ],
+            [
+                'id' => $data_release_id,
+            ]
+        );
+
+        return new \LORIS\Http\Response\JSON\OK();
     }
 }

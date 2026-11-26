@@ -3,7 +3,7 @@
 /**
  * This file contains the Imaging_QC class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Imaging_QC
@@ -20,7 +20,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Main class for imaging quality control module corresponding to /imaging_qc/
  * endpoint.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Imaging_QC
@@ -41,7 +41,8 @@ class Imaging_QC extends \NDB_Menu_Filter
      * @return bool
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('imaging_quality_control_view');
     }
@@ -89,8 +90,6 @@ class Imaging_QC extends \NDB_Menu_Filter
         return $scan_types;
     }
 
-
-
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
      *
@@ -102,8 +101,10 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _buildQuery($scan_type, $scan_done, $acqID): string
     {
-
-        $select =  " SELECT DISTINCT
+        $user         = \User::singleton();
+        $userSites    = implode(',', array_keys($user->getStudySites()));
+        $userProjects = implode(',', array_values($user->getProjectIDs()));
+        $select       = " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
            c.CandID as cand_id,
@@ -160,7 +161,7 @@ class Imaging_QC extends \NDB_Menu_Filter
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
         fi.MriScanTypeID=".$acqID.")
         LEFT JOIN mri_violations_log mvl ON
-        (mvl.Candidate = s.CandidateID AND mvl.MriScanTypeID=".$acqID."
+        (mvl.CandidateID = s.CandidateID AND mvl.MriScanTypeID=".$acqID."
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
@@ -170,7 +171,8 @@ class Imaging_QC extends \NDB_Menu_Filter
           AND tn.Test_name='mri_parameter_form'
           AND c.Active='Y'
           AND s.Active='Y'
-          AND s.CenterID <> '1' ";
+          AND s.ProjectID IN ($userProjects)
+          AND s.CenterID IN ($userSites) ";
 
         $query = $select.$joins.$where;
         return $query;
@@ -211,10 +213,10 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList  = \Utility::getProjectList();
+        $userProjects = $user->getProjects();
         $projectList2 = [];
-        foreach (array_values($projectList) as $value) {
-            $projectList2[$value] = $value;
+        foreach ($userProjects as $project) {
+            $projectList2[$project->getName()] = $project->getName();
         }
         $cohortList  = \Utility::getCohortList();
         $cohortList2 = [];
@@ -232,40 +234,46 @@ class Imaging_QC extends \NDB_Menu_Filter
         }
 
         $scan_location = [
-            "In Imaging Browser"    => "Found in Imaging Browser",
-            "In MRI Violated Scans" => "Found in MRI Violated Scans",
-            "Missing"               => "Missing",
+            "In Imaging Browser"    => dgettext(
+                "imaging_qc",
+                "Found in Imaging Browser"
+            ),
+            "In MRI Violated Scans" => dgettext(
+                "imaging_qc",
+                "Found in MRI Violated Scans"
+            ),
+            "Missing"               => dgettext("imaging_qc", "Missing"),
         ];
 
         $this->fieldOptions
             = [
-                'site'             => $siteList,
-                'project'          => $projectList2,
-                'cohort'           => $cohortList2,
-                'scanType'         => $scan_types,
-                'mRIParameterForm' => [
-                    "Incomplete" => "Incomplete",
-                    "Complete"   => "Complete",
+                'site'                       => $siteList,
+                'project'                    => $projectList2,
+                'cohort'                     => $cohortList2,
+                'scanType'                   => $scan_types,
+                'mRIParameterForm'           => [
+                    "Incomplete" => dgettext("imaging_qc", "Incomplete"),
+                    "Complete"   => dgettext("imaging_qc", "Complete"),
                 ],
-                'scanDoneInMRIPF'  => [
-                    "Yes" => "Yes",
-                    "No"  => "No",
+                'scanDoneInMRIParameterForm' => [
+                    "Yes" => dgettext("loris", "Yes"),
+                    "No"  => dgettext("loris", "No"),
                 ],
-                'tarchive'         => [
-                    "In DICOM" => "In DICOM Archives",
-                    "Missing"  => "Missing",
+                'tarchive'                   => [
+                    "In DICOM" => dgettext("imaging_qc", "In DICOM Archives"),
+                    "Missing"  => dgettext("imaging_qc", "Missing"),
                 ],
-                'scanLocation'     => $scan_location,
-                'qCStatus'         => [
-                    "Pass" => "Pass",
-                    "Fail" => "Fail",
+                'scanLocation'               => $scan_location,
+                'qCStatus'                   => [
+                    "Pass" => dgettext("loris", "Pass"),
+                    "Fail" => dgettext("loris", "Fail"),
                 ],
-                'uploadedBy'       => $uploaderList,
-                'selected'         => [
-                    "True"  => "True",
-                    "False" => "False",
+                'uploadedBy'                 => $uploaderList,
+                'selected'                   => [
+                    "True"  => dgettext("loris", "True"),
+                    "False" => dgettext("loris", "False"),
                 ],
-                'visitLabel'       => $visitList,
+                'visitLabel'                 => $visitList,
             ];
 
         $scan_types = $this->_getScanTypes();
@@ -273,13 +281,13 @@ class Imaging_QC extends \NDB_Menu_Filter
         $acq_IDs    = [];
         foreach ($scan_types as $scan_type) {
             // Only include scan types that appear in the MRI Parameter Form
-            $scanTypeInMRIPF = $db->columnExists(
+            $scanTypeInMRIParameterForm = $db->columnExists(
                 'mri_parameter_form',
                 $scan_type .
                 "_Scan_done"
             );
 
-            if (!$scanTypeInMRIPF) {
+            if (!$scanTypeInMRIParameterForm) {
                 unset($scan_types[$scan_type]);
                 continue;
             }
@@ -375,21 +383,6 @@ class Imaging_QC extends \NDB_Menu_Filter
             [
                 $baseURL . "/imaging_qc/js/imagingQCIndex.js",
             ]
-        );
-    }
-
-    /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb(
-                'Imaging Quality Control',
-                '/imaging_qc'
-            )
         );
     }
 

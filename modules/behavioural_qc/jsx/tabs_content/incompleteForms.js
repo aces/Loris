@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Incomplete Forms Component.
@@ -80,60 +81,61 @@ class IncompleteForms extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     let reactElement;
     switch (column) {
-    case 'Visit':
+    case t('Visit', {ns: 'loris'}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
               '/instrument_list/?candID=' +
-              rowData['DCCID'] +
+              rowData[t('DCCID', {ns: 'loris'})] +
               '&sessionID=' +
               rowData['sessionID']
           }>
-            {rowData['Visit']}
+            {rowData[t('Visit', {ns: 'loris'})]}
           </a>
         </td>
       );
       break;
-    case 'PSCID':
+    case t('PSCID', {ns: 'loris'}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
             '/' +
-            rowData['DCCID']
+            rowData[t('DCCID', {ns: 'loris'})]
           }>
-            {rowData['PSCID']}
+            {rowData[t('PSCID', {ns: 'loris'})]}
           </a>
         </td>
       );
       break;
-    case 'DCCID':
+    case t('DCCID', {ns: 'loris'}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
             '/' +
-            rowData['DCCID']
+            rowData[t('DCCID', {ns: 'loris'})]
           }>
-            {rowData['DCCID']}
+            {rowData[t('DCCID', {ns: 'loris'})]}
           </a>
         </td>
       );
       break;
-    case 'Instrument':
+    case t('Instrument', {ns: 'loris', count: 1}):
       reactElement = (
         <td>
           <a href={this.props.baseURL +
             '/instruments/' +
             rowData['test_name'] +
             '/?candID=' +
-            rowData['DCCID'] +
+            rowData[t('DCCID', {ns: 'loris'})] +
             '&sessionID=' +
             rowData['sessionID'] +
             '&commentID=' +
             rowData['commentID']
           }>
-            {rowData['Instrument']}
+            {rowData[t('Instrument', {ns: 'loris', count: 1})]}
           </a>
         </td>
       );
@@ -150,6 +152,7 @@ class IncompleteForms extends Component {
    * @return {JSX} the incomplete form to render.
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -161,7 +164,7 @@ class IncompleteForms extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Instrument',
+        label: t('Instrument', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Instrument',
@@ -173,7 +176,19 @@ class IncompleteForms extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('Data Entry Type', {ns: 'behavioural_qc'}),
+        show: true,
+        filter: {
+          name: 'Data Entry Type',
+          type: 'select',
+          options: {
+            'IDE': t('Initial Data Entry (IDE)', {ns: 'behavioural_qc'}),
+            'DDE': t('Double Data Entry (DDE)', {ns: 'behavioural_qc'}),
+          },
+        },
+      },
+      {
+        label: t('DCCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'DCCID',
@@ -181,7 +196,7 @@ class IncompleteForms extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -189,16 +204,17 @@ class IncompleteForms extends Component {
         },
       },
       {
-        label: 'Visit',
+        label: t('Visit', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Visit',
           type: 'select',
+          sortByValue: false,
           options: options.visits,
         },
       },
       {
-        label: 'Project',
+        label: t('Project', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Project',
@@ -207,7 +223,7 @@ class IncompleteForms extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Cohort',
@@ -216,7 +232,7 @@ class IncompleteForms extends Component {
         },
       },
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
@@ -265,6 +281,7 @@ IncompleteForms.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
-export default IncompleteForms;
+export default withTranslation(['behavioural_qc', 'loris'])(IncompleteForms);

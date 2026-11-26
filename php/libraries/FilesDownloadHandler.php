@@ -76,7 +76,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         }
 
         assert(is_string($filename) || $filename instanceof \Stringable);
-        $filename = urldecode(\Utility::resolvePath(strval($filename)));
+        $filename = \Utility::resolvePath(urldecode(strval($filename)));
 
         $targetPath = \Utility::appendForwardSlash(
             $this->downloadDirectory->getPathname()
@@ -100,7 +100,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         return (new \LORIS\Http\Response\JSON\OK())
             ->withHeader(
                 'Content-Disposition',
-                'attachment; filename=' . urlencode($filename)
+                'attachment; filename=' . urlencode(basename($filename))
             )
             ->withHeader(
                 'Content-Type',

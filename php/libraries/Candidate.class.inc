@@ -52,6 +52,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         $this->data = $data;
     }
+
     /**
      * This returns a single Candidate object for the given
      * candID, and will only ever instantiate one object in
@@ -100,7 +101,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy,
-            c.UserID, c.RegistrationProjectID
+            c.UserID, c.RegistrationProjectID, c.RegistrationCohortID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -252,6 +253,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
      * @param ?ProjectID  $registrationProjectID The project ID, if available
+     * @param ?int        $registrationCohortID  The cohort ID, if available
      *
      * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
@@ -263,7 +265,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        ?ProjectID $registrationProjectID = null
+        ?ProjectID $registrationProjectID = null,
+        ?int $registrationCohortID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -272,7 +275,26 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $project = \Project::getProjectFromID($registrationProjectID);
 
-        $user = \User::singleton($_SESSION['State']->getUsername());
+        if ($registrationCohortID !== null
+            && !array_key_exists(
+                $registrationCohortID,
+                \Utility::getCohortsForProject($registrationProjectID)
+            )
+        ) {
+            throw new \InvalidArgumentException(
+                'Registration cohort is not associated with the selected project'
+            );
+        }
+
+        if (isset($_SESSION['State'])) {
+            $user = \User::singleton($_SESSION['State']->getUsername());
+        } elseif (!empty(getenv('USER'))) {
+            $user = \User::singleton(getenv('USER'));
+        } else {
+            throw new \LorisException(
+                "No username found to associate with the creation of this candidate"
+            );
+        }
 
         // figure out how to generate PSCID
         $config        = $factory->config();
@@ -390,6 +412,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             'EDC'                   => $edc,
             'Sex'                   => $sex,
             'RegistrationProjectID' => $registrationProjectID,
+            'RegistrationCohortID'  => $registrationCohortID,
             'Date_active'           => date('Y-m-d'),
             'Date_registered'       => date('Y-m-d'),
             'Entity_type'           => 'Human',
@@ -557,7 +580,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         return true;
     }
 
-
     /**
      * Returns the ProjectID for the current candidate
      *
@@ -581,6 +603,32 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
+     * Returns the registration cohort ID for the current candidate.
+     *
+     * @return int|null Registration cohort ID
+     */
+    function getRegistrationCohortID(): ?int
+    {
+        $cohortID = $this->candidateInfo['RegistrationCohortID'] ?? null;
+        return $cohortID === null ? null : (int) $cohortID;
+    }
+
+    /**
+     * Returns the title of the candidate's registration cohort.
+     *
+     * @return string Registration cohort title
+     */
+    function getRegistrationCohortTitle(): string
+    {
+        $cohortID = $this->getRegistrationCohortID();
+        if ($cohortID === null) {
+            return '';
+        }
+
+        return \Utility::getCohortList()[$cohortID] ?? '';
+    }
+
+    /**
      * Returns the CandID of this candidate
      *
      * @return CandID
@@ -589,6 +637,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->candidateInfo["CandID"];
     }
+
     /**
      * Returns the ID of this candidate
      *
@@ -618,7 +667,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->candidateInfo["PSC"];
     }
-
 
     /**
      * Returns the ID of this candidate's site
@@ -1013,7 +1061,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         );
         $option_array = [];
         foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
+            $option_array[$option['ID']] = dgettext(
+                'participant_status_options',
+                $option['Description'],
+            );
         }
         return $option_array;
     }
@@ -1286,14 +1337,19 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE accesscandidates(
-	    CandID int(10) NOT NULL,
+	    CandID int(10) unsigned NOT NULL,
 	    PRIMARY KEY(CandID)
         );"
         );
-        $insertstmt = "INSERT INTO accesscandidates VALUES"
-                . " (" . join('),(', $candIDs) . ')';
-        $q          = $DB->prepare($insertstmt);
-        $q->execute([]);
+
+        $DB->beginTransaction();
+        foreach (array_chunk($candIDs, 2000) as $chunk) {
+            $insertstmt = "INSERT INTO accesscandidates VALUES"
+            . " (" . join('),(', $chunk) . ')';
+            $q          = $DB->prepare($insertstmt);
+            $q->execute([]);
+        }
+        $DB->commit();
 
         // Get the data which affects accessibility in bulk.
         $rows      = $DB->pselect(

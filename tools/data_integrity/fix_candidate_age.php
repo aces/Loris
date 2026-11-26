@@ -9,7 +9,7 @@
  *  - php fix_candidate_age.php check;
  *  - php fix_candidate_age.php confirm;
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

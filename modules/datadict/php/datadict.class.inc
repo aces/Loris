@@ -34,7 +34,8 @@ class Datadict extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('data_dict_view') ||
                 $user->hasPermission('data_dict_edit'));
@@ -59,7 +60,7 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
-        $instruments     = \Utility::getAllInstruments();
+        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
         $dictInstruments = [];
         $user            = \User::singleton();
 
@@ -73,7 +74,7 @@ class Datadict extends \DataFrameworkMenu
                     '',
                     ''
                 );
-                if ($iObj->_hasAccess($user)) {
+                if ($iObj->isAccessibleBy($user)) {
                     $this->logger->debug(
                         "Skipping $instrument in field options"
                         . " because user does not have permission"
@@ -130,18 +131,6 @@ class Datadict extends \DataFrameworkMenu
             [
                 $baseURL . "/datadict/js/dataDictIndex.js",
             ]
-        );
-    }
-
-    /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
         );
     }
 

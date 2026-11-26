@@ -45,7 +45,6 @@ class Count extends \LORIS\Http\Endpoint
         }
     }
 
-
     /**
      * Return a count of the number of matches for the query with ID $queryID
      * if it is run by $user
@@ -58,12 +57,15 @@ class Count extends \LORIS\Http\Endpoint
     public function countResults(\User $user, int $queryID) : ResponseInterface
     {
         try {
+            \Profiler::checkpoint("Creating query");
             $query = new \LORIS\dataquery\Query($this->loris, $queryID);
 
-            $candidates = \iterator_to_array($query->matchCandidates($user));
+            \Profiler::checkpoint("Matching candidates");
+            $numCandidates = \iterator_count($query->matchCandidates($user));
+            \Profiler::checkpoint("Returning count");
             return new \LORIS\Http\Response\JSON\OK(
                 [
-                    'count' => count($candidates),
+                    'count' => $numCandidates,
                 ]
             );
         } catch (\LorisException $e) {

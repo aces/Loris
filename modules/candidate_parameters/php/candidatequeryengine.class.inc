@@ -29,31 +29,65 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $ids = new \LORIS\Data\Dictionary\Category(
             "Identifiers",
-            "Candidate Identifiers"
+            dgettext("candidate_parameters", "Candidate Identifiers")
         );
 
         $ids = $ids->withItems(
             [
                 new DictionaryItem(
                     "CandID",
-                    "LORIS Candidate Identifier",
+                    dgettext("candidate_parameters", "LORIS Candidate Identifier"),
                     $candscope,
                     new \LORIS\Data\Types\IntegerType(999999),
                     new Cardinality(Cardinality::UNIQUE),
                 ),
                 new DictionaryItem(
                     "PSCID",
-                    "Project Candidate Identifier",
+                    dgettext(
+                        "candidate_parameters",
+                        "Project Candidate Identifier"
+                    ),
                     $candscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::UNIQUE),
+                ),
+                new DictionaryItem(
+                    "flagged_caveatemptor",
+                    dgettext(
+                        "candidate_parameters",
+                        "Caveat Emptor Flag for Candidate"
+                    ),
+                    $candscope,
+                    new \LORIS\Data\Types\Enumeration("true", "false"),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "flagged_reason",
+                    dgettext(
+                        "candidate_parameters",
+                        "Reason for Caveat Emptor Flag Candidate"
+                    ),
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "flagged_other",
+                    dgettext(
+                        "candidate_parameters",
+                        "Other reason for Caveat Emptor Flag Candidate,"
+                        . " please specify"
+                    ),
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
                 ),
             ]
         );
 
         $demographics = new \LORIS\Data\Dictionary\Category(
             "Demographics",
-            "Candidate Demographics",
+            dgettext("candidate_parameters", "Candidate Demographics"),
         );
         $sexList      = array_keys(\Utility::getSexList());
         $t            = new Enumeration(...$sexList);
@@ -61,28 +95,28 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             [
                 new DictionaryItem(
                     "DoB",
-                    "Date of Birth",
+                    dgettext("loris", "Date of Birth"),
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "DoD",
-                    "Date of Death",
+                    dgettext("candidate_parameters", "Date of Death"),
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::OPTIONAL),
                 ),
                 new DictionaryItem(
                     "Sex",
-                    "Candidate's biological sex",
+                    dgettext("candidate_parameters", "Candidate's biological sex"),
                     $candscope,
                     $t,
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "EDC",
-                    "Expected Data of Confinement",
+                    dgettext("candidate_parameters", "Expected Date of Confinement"),
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::OPTIONAL),
@@ -90,7 +124,10 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             ]
         );
 
-        $meta = new \LORIS\Data\Dictionary\Category("Meta", "Other parameters");
+        $meta = new \LORIS\Data\Dictionary\Category(
+            "Meta",
+            dgettext("candidate_parameters", "Other parameters")
+        );
 
         $db = $this->loris->getDatabaseConnection();
         $participantstatus_options = $db->pselectCol(
@@ -101,56 +138,152 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             [
                 new DictionaryItem(
                     "VisitLabel",
-                    "The study visit label",
+                    dgettext("candidate_parameters", "The study visit label"),
                     $sesscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::UNIQUE),
                 ),
                 new DictionaryItem(
+                    "DateRegistered",
+                    dgettext(
+                        "candidate_parameters",
+                        "The date when the visit was registered"
+                    ),
+                    $sesscope,
+                    new \LORIS\Data\Types\DateType(),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "CurrentStage",
+                    dgettext(
+                        "candidate_parameters",
+                        "Visit's current stage"
+                    ),
+                    $sesscope,
+                    new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "SessionFeedback",
+                    dgettext(
+                        "candidate_parameters",
+                        "Behavioural feedback at the session level"
+                    ),
+                    $sesscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "SessionFailure",
+                    dgettext(
+                        "candidate_parameters",
+                        "Whether a session was failure or did the candidate"
+                        . " withdrawal"
+                    ),
+                    $sesscope,
+                    new \LORIS\Data\Types\Enumeration(
+                        'Failure',
+                        'Withdrawal',
+                        'Neither'
+                    ),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
                     "Project",
-                    "The LORIS project to categorize this session",
+                    dgettext(
+                        "candidate_parameters",
+                        "The LORIS project to categorize this session"
+                    ),
                     $sesscope,
                     new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "Cohort",
-                    "The LORIS cohort used for battery selection",
+                    dgettext(
+                        "candidate_parameters",
+                        "The LORIS cohort used for battery selection"
+                    ),
                     $sesscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "Site",
-                    "The Site at which a visit occurred",
+                    dgettext(
+                        "candidate_parameters",
+                        "The Site at which a visit occurred"
+                    ),
                     $sesscope,
                     new \LORIS\Data\Types\Enumeration(...\Utility::getSiteList()),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "EntityType",
-                    "The type of entity which this candidate represents",
+                    dgettext(
+                        "candidate_parameters",
+                        "The type of entity which this candidate represents"
+                    ),
                     $candscope,
                     new \LORIS\Data\Types\Enumeration('Human', 'Scanner'),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "ParticipantStatus",
-                    "The status of the participant within the study",
+                    dgettext(
+                        "candidate_parameters",
+                        "The status of the participant within the study"
+                    ),
                     $candscope,
                     new \LORIS\Data\Types\Enumeration(...$participantstatus_options),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
+                    "ParticipantStatusReason",
+                    dgettext(
+                        "candidate_parameters",
+                        "The reason of the status of the participant within the"
+                        . " study"
+                    ),
+                    $candscope,
+                    new \LORIS\Data\Types\Enumeration(...$participantstatus_options),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "ParticipantStatusComments",
+                    dgettext(
+                        "candidate_parameters",
+                        "Comments about the status of the participant within the"
+                        . " study"
+                    ),
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "CandidateComments",
+                    dgettext("candidate_parameters", "Candidate comments"),
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
                     "RegistrationSite",
-                    "The site at which this candidate was initially registered",
+                    dgettext(
+                        "candidate_parameters",
+                        "The site at which this candidate was initially registered"
+                    ),
                     $candscope,
                     new \LORIS\Data\Types\Enumeration(...\Utility::getSiteList()),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "RegistrationProject",
-                    "The project for which this candidate was initially registered",
+                    dgettext(
+                        "candidate_parameters",
+                        "The project for which this candidate was initially"
+                        . " registered"
+                    ),
                     $candscope,
                     new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
                     new Cardinality(Cardinality::SINGLE),
@@ -159,6 +292,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         );
         return [$ids, $demographics, $meta];
     }
+
     /**
      * {@inheritDoc}
      *
@@ -175,9 +309,10 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item->getScope()->__toString() !== 'session') {
             return [];
         }
+        $user = \NDB_Factory::singleton()->user();
 
         // Session scoped variables: VisitLabel, project, site, cohort
-        return array_keys(\Utility::getVisitList());
+        return array_keys($user->getVisits());
     }
 
     /**
@@ -195,6 +330,15 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'c.CandID';
         case 'PSCID':
             return 'c.PSCID';
+        case 'flagged_caveatemptor':
+            return 'c.flagged_caveatemptor';
+        case 'flagged_reason':
+            $this->addTable(
+                'LEFT JOIN caveat_options co ON co.ID=c.flagged_reason'
+            );
+            return 'co.Description';
+        case 'flagged_other':
+            return 'c.flagged_other';
         case 'Site':
             $this->addTable(
                 "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
@@ -207,6 +351,39 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 . ' ON (c.RegistrationCenterID=rsite.CenterID)'
             );
             return 'rsite.Name';
+        case 'DateRegistered':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            return 's.Date_registered';
+        case 'CurrentStage':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            return 's.Current_stage';
+        case 'SessionFeedback':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            $this->addTable(
+                "LEFT JOIN feedback_bvl_thread fbt ON (fbt.SessionID=s.ID)"
+            );
+            $this->addTable(
+                "LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)"
+            );
+            return 'fbe.Comment';
+        case 'SessionFailure':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            return
+            "CASE
+                WHEN s.Visit='Failure' THEN 'Failure'
+                WHEN s.Screening='Failure' THEN 'Failure'
+                WHEN s.Visit='Withdrawal' THEN 'Withdrawal'
+                WHEN s.Screening='Withdrawal' THEN 'Withdrawal'
+                ELSE 'Neither'
+             END";
         case 'Sex':
             return 'c.Sex';
         case 'DoB':
@@ -255,6 +432,30 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 'ON (ps.participant_status=pso.ID)'
             );
             return 'pso.Description';
+        case 'ParticipantStatusReason':
+            $this->addTable(
+                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)'
+            );
+            $this->addTable(
+                'LEFT JOIN participant_status_options pso1 ' .
+                'ON (ps.participant_suboptions=pso1.ID)'
+            );
+            return 'pso1.Description';
+        case 'ParticipantStatusComments':
+            $this->addTable(
+                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)'
+            );
+            return 'ps.reason_specify';
+        case 'CandidateComments':
+            $this->addTable(
+                "LEFT JOIN parameter_candidate pc_comment " .
+                "ON (pc_comment.CandidateID=c.ID) " .
+                "AND pc_comment.ParameterTypeID=( " .
+                    "SELECT ParameterTypeID " .
+                    "FROM parameter_type " .
+                    "WHERE Name='candidate_comment')"
+            );
+            return 'pc_comment.Value';
         default:
             throw new \DomainException("Invalid field " . $item->getName());
         }

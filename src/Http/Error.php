@@ -5,7 +5,7 @@
  * a html response using smarthy templates. It rely on the Diactoros implementation
  * of the Response object to provide the reason phrase according to the status code.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR7
  * @package  Http
@@ -45,8 +45,10 @@ class Error extends HtmlResponse
         int $status,
         string $message = ''
     ) {
-        $uri     = $request->getURI();
-        $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
+        $uri          = $request->getURI();
+        $serverParams = $request->getServerParams();
+        $redirectUrl  = $serverParams['REQUEST_URI'] ?? null;
+        $baseurl      = $uri->getScheme() .'://'. $uri->getAuthority();
 
         $tpl_data = [
                      'message' => $message,
@@ -59,7 +61,7 @@ class Error extends HtmlResponse
         //Variables used to suggest the user to login and later redirect them if they
         // are not authenticated in a 403.
         $tpl_data['anonymous'] = $user instanceof \LORIS\AnonymousUser;
-        $tpl_data['url']       = urlencode($uri->__toString());
+        $tpl_data['url']       = urlencode($baseurl.$redirectUrl);
 
         // Add a link to the issue tracker as long as a LORIS Instance object
         // is present in the request.

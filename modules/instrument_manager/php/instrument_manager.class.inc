@@ -35,6 +35,7 @@ class Instrument_Manager extends \DataFrameworkMenu
     const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
                                   'instrument needs to be installed manually.';
     private string $_path;
+
     /**
      * Checking permissions
      *
@@ -42,10 +43,12 @@ class Instrument_Manager extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
+
     /**
      * Handle a PSR7 Request for that endpoint.
      *
@@ -86,7 +89,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         // Ensure the server is properly configured.
         if (!$this->canWriteFiles()) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                self::CANNOT_WRITE_FILES
+                dgettext("instrument_manager", self::CANNOT_WRITE_FILES)
             );
         }
 
@@ -98,7 +101,12 @@ class Instrument_Manager extends \DataFrameworkMenu
         if ($this->instrumentExists($instrument)) {
             // An instrument with this name already exists in the test_names
             // table. Abort upload.
-            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
+            return new \LORIS\Http\Response\JSON\Conflict(
+                dgettext(
+                    "instrument_manager",
+                    self::ALREADY_INSTALLED
+                )
+            );
         }
 
         /* Although only .linst files should be uploaded to this module, and
@@ -121,7 +129,7 @@ class Instrument_Manager extends \DataFrameworkMenu
                  * installation is disabled (ie. has no adminUser).
                  */
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    self::FILE_ALREADY_EXISTS
+                    dgettext("instrument_manager", self::FILE_ALREADY_EXISTS)
                 );
             }
             return $response;
@@ -165,6 +173,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         }
         return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
     }
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -202,6 +211,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         ];
 
     }
+
     /**
      * {@inheritDoc}
      *

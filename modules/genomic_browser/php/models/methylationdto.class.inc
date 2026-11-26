@@ -72,13 +72,6 @@ class MethylationDTO implements DataInstance, SiteHaver
     private $_Cohort = "";
 
     /**
-     * The DoB
-     *
-     * @var string
-     */
-    private $_DoB = "";
-
-    /**
      * The Sample
      *
      * @var string
@@ -280,7 +273,6 @@ class MethylationDTO implements DataInstance, SiteHaver
             'PSCID'            => $this->_PSCID,
             'Sex'              => $this->_Sex,
             'Cohort'           => $this->_Cohort,
-            'DoB'              => $this->_DoB,
             'Sample'           => $this->_Sample,
             'cpg_name'         => $this->_cpg_name,
             'Beta_value'       => $this->_Beta_value,

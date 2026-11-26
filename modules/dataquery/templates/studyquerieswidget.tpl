@@ -1,6 +1,5 @@
 <script>
 function getMatchCount(QueryID, domEl) {
-    console.log('Getting count for', QueryID);
     fetch(
       loris.BaseURL + '/dataquery/queries/'
         + QueryID + '/count',
@@ -14,7 +13,6 @@ function getMatchCount(QueryID, domEl) {
          }
          return resp.json();
       }).then((result) => {
-          console.log(result, domEl);
           domEl.textContent = result.count;
       });
 }
@@ -23,7 +21,7 @@ function getMatchCount(QueryID, domEl) {
     {foreach from=$queries item=query}
         <a href="{$baseURL}/dataquery/?queryID={$query->queryID}" class="list-group-item">
             {$query->name}
-            <span class="pull-right text-muted small">Candidate matches:
+            <span class="pull-right text-muted small">{dgettext("dataquery", "Candidate matches:")}
                 <span id="studyquerymatch_{$query->queryID}"></span>
             </span>
             <script>
@@ -38,5 +36,5 @@ function getMatchCount(QueryID, domEl) {
     {/foreach}
 </div>
 <div style="padding-bottom: 1em; font-style: italic">
-Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions.
+{dgettext("dataquery", "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions.")}
 </div>

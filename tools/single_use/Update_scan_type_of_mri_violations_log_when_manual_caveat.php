@@ -10,7 +10,7 @@
  * affected table:
  * - mri_violations_log
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

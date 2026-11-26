@@ -1,0 +1,44 @@
+.browser-index-css-tooltip {
+  position: relative;
+}
+
+.browser-index-css-tooltip .browser-index-tooltip-text {
+  width: 220px;
+  bottom: 140%;
+  left: 50%;
+  margin-left: -110px;
+  margin-top: 8px;
+  visibility: hidden;
+  background-color: #E4EBF2;
+  color: #064785;
+  text-align: center;
+  padding: 5px;
+  position: absolute;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: normal;
+  border: 1px solid #C3D5DB;
+
+  opacity: 0;
+  /*transition: opacity 0.5s;*/
+}
+
+.browser-index-css-tooltip:hover .browser-index-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.browser-index-css-tooltip .browser-index-tooltip-text::after {
+  content: " ";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #C3D5DB transparent transparent transparent;
+}
+
+.dynamicContentWrapper.table-scroll {
+  overflow-x: unset !important;
+}

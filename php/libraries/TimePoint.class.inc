@@ -4,7 +4,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -119,7 +119,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return $timePointList["$sessionID"];
     }
 
-
     /**
      * Loads the data from the given sessionID into the current TimePoint class.
      *
@@ -145,14 +144,18 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion,
                          pr.Name as ProjectName, p.Alias as SiteAlias,
-                         s.ProjectID as ProjectID
+                         p.Name as SiteName,
+			 s.ProjectID as ProjectID,
+                         l.language_code as LanguageCode,
+                         l.language_label as LanguageLabel
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                         LEFT JOIN candidate AS c ON (s.CandidateID=c.ID)
+                        LEFT JOIN language l ON (s.languageID=l.language_id)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow(
             $query,
@@ -162,7 +165,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $this->data = new TimePointData(
             $sessionID,
             isset($row['ProjectID'])
-                ? ProjectID::singleton($row['ProjectID'])
+                ? ProjectID::singleton((int) $row['ProjectID'])
                 : null,
             isset($row['CenterID'])
                 ? \CenterID::singleton($row['CenterID'])
@@ -172,14 +175,25 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $cohortSettings       = $config->getCohortSettings(
+            if (isset($row['LanguageCode'])) {
+                $this->_timePointInfo['Language'] = new \Language(
+                    $row['LanguageLabel'],
+                    $row['LanguageCode']
+                );
+            }
+            unset($row['language_code'], $row['language_label']);
+            $cohortSettings = $config->getCohortSettings(
                 intval($row['CohortID'] ?? null)
             );
-            $title = $cohortSettings['title'] ?? '';
+            $title          = $cohortSettings['title'] ?? '';
             $this->_timePointInfo['CohortTitle'] = $title;
 
             $this->_timePointInfo['CandID']
                 = new CandID(strval($row['CandID']));
+
+            $this->_timePointInfo['scanDone']
+                = $this->isScanDone() ? 'Y' : 'N';
+
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -222,7 +236,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
     }
-
 
     /**
      * Registers a new timepoint into the session table
@@ -351,9 +364,32 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         //If the visitLabel is already in use then let the user pick another
         foreach ($timePointArray AS $used_name) {
             if (strcasecmp($visitName, $used_name) == 0) {
-                throw new \LorisException(
-                    'This visit label is not unique.'
+                // Get project name
+                $project     = \Project::getProjectFromID($projectID);
+                $projectName = $project->getName();
+
+                // Get cohort title
+                $factory        = \NDB_Factory::singleton();
+                $config         = $factory->config();
+                $cohortSettings = $config->getCohortSettings($cohortID);
+                $cohortTitle    = $cohortSettings['title'] ?? 'Unknown';
+
+                // Get participant PSCID
+                $pscid = $candidate->getPSCID();
+
+                $message = sprintf(
+                    dgettext(
+                        "create_timepoint",
+                        "A timepoint with these conditions (%s, %s, %s, %s) "
+                            . "already exists."
+                    ),
+                    $pscid,
+                    $projectName,
+                    $cohortTitle,
+                    $visitName
                 );
+
+                throw new \LorisException($message);
             }
         }
     }
@@ -582,15 +618,27 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return $this->_timePointInfo["Active"] == 'Y';
     }
 
-
     /**
-     * Gets whether or not a scan was done for this TimePoint
+     * Returns whether a scan has been done for this session
      *
-     * @return string 'Y' if a scan was done 'N' if not.
+     * @return bool
      */
-    function getScanDone(): string
+    public function isScanDone() : bool
     {
-        return $this->_timePointInfo["Scan_done"];
+        $db     = \NDB_Factory::singleton()->database();
+        $result = $db->pselectOne(
+            "SELECT DISTINCT 'Y' AS ScanDone
+            FROM session s
+            LEFT JOIN files       f  ON f.SessionID  = s.ID
+            LEFT JOIN mri_upload mu ON mu.SessionID = s.ID
+            LEFT JOIN tarchive    t  ON t.SessionID  = s.ID
+            WHERE s.ID = :v_sessionid
+              AND (f.FileID IS NOT NULL
+                   OR mu.UploadID IS NOT NULL
+                   OR t.TarchiveID IS NOT NULL)",
+            ['v_sessionid' => $this->getSessionID()]
+        );
+        return $result == 'Y';
     }
 
     /**
@@ -1106,7 +1154,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return new \LORIS\Recording($recordingdto->getFileid());
     }
 
-
     /**
      * Gets the DicomTars of that session.
      *
@@ -1156,6 +1203,145 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
+    }
+
+    /**
+     * Try to get an existing MRI upload ID for this session and a given file, or
+     * insert a new one if no corresponding MRI upload exists.
+     *
+     * @param \User        $user        The user inserting the file.
+     * @param \SplFileInfo $file        The file on the file system.
+     * @param string       $patientname The patient name
+     * @param bool         $isphantom   True if it's a phantom file
+     *
+     * @return int The UploadID from the mri_upload table sequence.
+     */
+    public function getOrAddMRIUpload(
+        \User $user,
+        \SplFileInfo $file,
+        string $patientname,
+        bool $isphantom
+    ): int {
+        // We try to re-use an existing MRI upload if there already is one for the
+        // file to insert. There may be several uploads per file, so we choose to
+        // re-use the last upload when that is the case.
+        $db         = \NDB_Factory::singleton()->database();
+        $mri_upload = $db->pselect(
+            '
+                SELECT UploadID
+                FROM mri_upload
+                WHERE
+                    UploadedBy     = :UploadedBy     AND
+                    UploadLocation = :UploadLocation AND
+                    SessionID      = :SessionID      AND
+                    PatientName    = :PatientName    AND
+                    IsPhantom      = :IsPhantom
+                ORDER BY UploadID DESC
+                LIMIT 1
+            ',
+            [
+                'UploadedBy'     => $user->getUsername(),
+                'UploadLocation' => $file->getPathname(),
+                'SessionID'      => $this->getSessionID(),
+                'PatientName'    => $patientname,
+                'IsPhantom'      => $isphantom ? 'Y' : 'N',
+            ],
+        );
+
+        if ($mri_upload->count() !== 0) {
+            return $mri_upload->getFirstRow()['UploadID'];
+        }
+
+        $db->insert(
+            'mri_upload',
+            [
+                'UploadedBy'     => $user->getUsername(),
+                'UploadDate'     => date('Y-m-d H:i:s'),
+                'UploadLocation' => $file->getPathname(),
+                'SessionID'      => $this->getSessionID(),
+                'PatientName'    => $patientname,
+                'IsPhantom'      => $isphantom ? 'Y' : 'N',
+            ],
+        );
+
+        return (int) $db->getLastInsertId();
+    }
+
+    /**
+     * This retrieves all MRIUpload with the given filename for that session.
+     *
+     * @param \LORIS\LorisInstance $loris    The LORIS instance.
+     * @param \User                $user     The requesting user.
+     * @param string               $filename The mri_upload file's basename.
+     *
+     * @return \LORIS\Data\Models\MRIUploadDTO[]
+     */
+    public function getMRIUploadsByFilename(
+        \LORIS\LorisInstance $loris,
+        \User $user,
+        string $filename,
+    ): array {
+        $provisioner = new \LORIS\Data\Provisioners\TimepointMRIUploadsProvisioner(
+            $loris,
+            $this,
+            $filename,
+        );
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * This retrieves a MRIUpload with the given id for that session.
+     *
+     * @param \User $user        The requesting user.
+     * @param int   $mriuploadid The mri_upload id.
+     *
+     * @throws \NotFound When the id can not be found for that session.
+     *
+     * @return \LORIS\Data\Models\MRIUploadDTO
+     */
+    public function getMRIUploadsById(
+        \User $user,
+        int $mriuploadid
+    ): \LORIS\Data\Models\MRIUploadDTO {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            '
+             SELECT
+               m.UploadID as mri_upload_id,
+               m.UploadedBy as uploaded_by,
+               m.UploadDate as upload_date,
+               m.UploadLocation as upload_location,
+               m.DecompressedLocation as decompress_location,
+               m.InsertionComplete as insertion_complete,
+               m.Inserting as inserting,
+               m.PatientName as patient_name,
+               m.number_of_mincInserted as inserted_minc_count,
+               m.number_of_mincCreated as created_minc_count,
+               m.TarchiveID as tarchive_id,
+               m.SessionID as session_id,
+               m.IsCandidateInfoValidated as is_candidate_info_validated,
+               m.IsTarchiveValidated as is_tarchive_validated,
+               m.IsPhantom as is_phantom
+             FROM
+               mri_upload m
+             WHERE
+               m.SessionID = :v_sessionid AND
+               m.UploadID = :v_mriuploadid
+            ',
+            [
+                'v_sessionid'   => $this->getSessionID(),
+                'v_mriuploadid' => $mriuploadid,
+            ]
+        );
+        if (empty($row)) {
+            throw new \NotFound('MRIUploadID not found.');
+        }
+
+        return \LORIS\Data\Models\MRIUploadDTO::fromDBRow($row);
     }
 
     /**
@@ -1250,6 +1436,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers);
         return $projMatch && $centerMatch;
+    }
+
+    /**
+     * Get the language for this timepoint.
+     *
+     * @return \Language
+     */
+    public function getLanguage() : \Language
+    {
+        $lang = $this->getData('Language');
+        if ($lang === null) {
+            return new \Language("Unknown", "en_CA");
+        }
+        return $lang;
     }
 }
 

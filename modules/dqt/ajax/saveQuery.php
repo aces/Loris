@@ -3,7 +3,7 @@
 /**
  * Data Querying Module
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Data_Querying_Module
  * @package  Loris
@@ -14,7 +14,7 @@
 
 ini_set("max_input_vars", '4000');
 $user =& User::singleton();
-if (!$user->hasPermission('dataquery_view')) {
+if (!$user->hasPermission('dqt_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit(0);
 }

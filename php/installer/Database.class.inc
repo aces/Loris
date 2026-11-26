@@ -6,7 +6,7 @@
  * connect using the connection info from there, so this class does the
  * minimal amount that's necessary to bootstrap the installation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Installer
  * @package  Installer
@@ -34,7 +34,7 @@ class Database
     public $PDO;
 
     /**
-     * The last error that occured, to display to the user
+     * The last error that occurred, to display to the user
      */
     public string $lastErr;
 

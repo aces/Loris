@@ -1,0 +1,217 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Data Release"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Upload Date"
+msgstr ""
+
+msgid "Project Name"
+msgstr ""
+
+msgid "Data Release ID"
+msgstr ""
+
+msgid "Upload File"
+msgstr ""
+
+msgid "Upload a New File"
+msgstr ""
+
+msgid "Add Permission"
+msgstr ""
+
+msgid "Manage Permissions"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Version names will be saved as lowercase."
+msgstr ""
+
+msgid "You must select a file to upload"
+msgstr ""
+
+msgid "You must select a project"
+msgstr ""
+
+msgid "File size exceeds the maximum allowed"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Upload error!"
+msgstr ""
+
+msgid "A file with this name already exists!"
+msgstr ""
+
+msgid "Would you like to overwrite existing file?"
+msgstr ""
+
+msgid "Note that the version associated with the file will also be overwritten."
+msgstr ""
+
+msgid "Choose a specific file or an entire release below"
+msgstr ""
+
+msgid "Data Release File"
+msgstr ""
+
+msgid "OR"
+msgstr ""
+
+msgid "Data Release Version"
+msgstr ""
+
+msgid "Permission Update Success!"
+msgstr ""
+
+msgid "Remove Permission"
+msgstr ""
+
+msgid "Modify Hidden File Status"
+msgstr ""
+
+msgid "Unhide Release File"
+msgstr ""
+
+msgid "Hide Release File"
+msgstr ""
+
+msgid "Delete File"
+msgstr ""
+
+msgid "Delete Release File"
+msgstr ""
+
+msgid "Submission Error!"
+msgstr ""
+
+msgid "You must select a user!"
+msgstr ""
+
+msgid "You must select a file OR a version to grant permission on!"
+msgstr ""
+
+msgid "Manage Versions a User has access to"
+msgstr ""
+
+msgid "Search for a User"
+msgstr ""
+
+msgid "Versions"
+msgstr ""
+
+msgid "Manage Users with access to a Version"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Search for a Version"
+msgstr ""
+
+msgid "An error occurred when loading the form!"
+msgstr ""
+
+msgid "Manage File"
+msgstr ""
+
+msgid "Unversioned"
+msgstr ""
+
+msgid "Hidden By ID"
+msgstr ""
+
+msgid "Missing action"
+msgstr ""
+
+msgid "Invalid action"
+msgstr ""
+
+msgid "No data was sent in the POST request"
+msgstr ""
+
+msgid "Missing user to grant access to"
+msgstr ""
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr ""
+
+msgid "No valid data was sent in the request"
+msgstr ""
+
+msgid "Missing user to remove access from"
+msgstr ""
+
+msgid "Must select a specific file"
+msgstr ""
+
+msgid "Can not upload duplicate file"
+msgstr ""
+
+msgid "Permission denied."
+msgstr ""
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr ""
+
+msgid "Can not upload duplicate file."
+msgstr ""
+
+msgid "Not found"
+msgstr ""
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr ""
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr ""
+
+msgid "This will permanently delete the file from the system!"
+msgstr ""
+
+msgid "File Successfully hidden"
+msgstr ""
+
+msgid "File Successfully unhidden"
+msgstr ""
+
+msgid "File Successfully deleted"
+msgstr ""
+
+msgid "Yes, hide it!"
+msgstr ""
+
+msgid "Yes, unhide it!"
+msgstr ""
+
+msgid "Yes, delete it!"
+msgstr ""

@@ -22,9 +22,9 @@ The most closely related module to the DQT is the Data Release module, which is 
 
 ## Permissions
 
-Users must have `dataquery_view` permission to use the DQT. 
+Users must have `dqt_view` permission to use the DQT. 
 
-It’s important to note that granular permissions do not exist for this module. Anyone with the `dataquery_view` permission has access to view, query and download data from the DQT, and therefore has access to all data loaded in the DQT from this LORIS instance. It is not possible to restrict user access to a subset of the data.
+It’s important to note that granular permissions do not exist for this module. Anyone with the `dqt_view` permission has access to view, query and download data from the DQT, and therefore has access to all data loaded in the DQT from this LORIS instance. It is not possible to restrict user access to a subset of the data.
 
 ## Interactions with LORIS
 

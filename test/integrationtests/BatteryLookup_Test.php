@@ -4,7 +4,7 @@
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_BVL_Battery_Test extends TestCase
+class BatteryLookup_Test extends TestCase
 {
     protected $DB;
 
@@ -351,6 +351,5 @@ class NDB_BVL_Battery_Test extends TestCase
             ]
         );
     }
-
 }
 

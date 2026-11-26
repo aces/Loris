@@ -1,17 +1,5 @@
 <?php declare(strict_types=1);
 
-/**
- * This file provides an implementation of the UserSiteMatch filter.
- *
- * PHP Version 7
- *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
 namespace LORIS\Data\Filters;
 
 /**
@@ -21,16 +9,24 @@ namespace LORIS\Data\Filters;
  * (or array) of CenterIDs that the data belongs to. The data will be filtered out
  * unless the User is a member of at least one site that the resource DataInstance
  * is a member of.
- *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
  */
 class UserSiteMatch implements \LORIS\Data\Filter
 {
+
+    /**
+     * Constructor
+     *
+     * @param ?bool     $defaultReturn The default return value to return instead of
+     *                                throwing an exception when an exception is
+     *                                indesirable.
+     *
+     */
+    public function __construct(protected ?bool $defaultReturn = null)
+    {
+    }
+
     /**
      * Implements the \LORIS\Data\Filter interface
      *
@@ -54,8 +50,12 @@ class UserSiteMatch implements \LORIS\Data\Filter
         } elseif ($resource instanceof \LORIS\StudyEntities\SiteHaver) {
             return $user->hasCenter($resource->getCenterID());
         }
-        throw new \LorisException(
-            "Can not implement UserSiteMatch on a resource type that has no sites."
-        );
+
+        if ($this->defaultReturn === null) {
+            throw new \LorisException(
+                "Can not implement UserSiteMatch on a resource type that has no sites."
+            );
+        }
+        return $this->defaultReturn;
     }
 }

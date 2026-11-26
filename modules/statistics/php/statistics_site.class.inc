@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -39,7 +39,8 @@ class Statistics_Site extends \NDB_Menu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         //TODO: Create a permission specific to statistics
         $hasAccessToAllProfiles = $user->hasAllPermissions(
@@ -175,6 +176,7 @@ class Statistics_Site extends \NDB_Menu
     {
         return $this->instruments[$instrument];
     }
+
     /**
      * CompleteCount function
      *
@@ -250,6 +252,7 @@ class Statistics_Site extends \NDB_Menu
         );
         return iterator_to_array($result);
     }
+
     /**
      * Setup function
      *

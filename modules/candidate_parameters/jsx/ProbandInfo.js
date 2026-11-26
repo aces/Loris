@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 import Loader from 'Loader';
+import swal from 'sweetalert2';
 import {
   FormElement,
   StaticElement,
@@ -9,6 +12,8 @@ import {
   DateElement,
   TextareaElement,
 } from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Proband Info Component.
@@ -32,6 +37,7 @@ class ProbandInfo extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
 
     /**
      * Bind component instance to custom methods
@@ -53,10 +59,9 @@ class ProbandInfo extends Component {
    * Retrieve data from the provided URL and save it in state
    */
   fetchData() {
-    $.ajax(this.props.dataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    const {t} = this.props;
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
         const formData = {
           ProbandSex: data.ProbandSex,
           ProbandDoB: data.ProbandDoB,
@@ -72,13 +77,14 @@ class ProbandInfo extends Component {
           isLoaded: true,
           sexOptions: data.sexOptions,
         });
-      },
-      error: (error) => {
+      })
+      .catch(() => {
         this.setState({
-          error: 'An error occurred when loading the form!',
+          error: t('An error occurred when loading the form!',
+            {ns: 'candidate_parameters'}
+          ),
         });
-      },
-    });
+      });
   }
 
   /**
@@ -101,6 +107,7 @@ class ProbandInfo extends Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
     let myFormData = this.state.formData;
     let today = new Date();
@@ -119,12 +126,25 @@ class ProbandInfo extends Component {
     let dob2 = myFormData.ProbandDoB2 ?
       myFormData.ProbandDoB2 : null;
     if (dob1 !== dob2) {
-      alert('DOB do not match!');
+      swal.fire({
+        title: t('Error!', {ns: 'loris'}),
+        text: t('DOB do not match!', {ns: 'candidate_parameters'}),
+        type: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
       return;
     }
 
     if (dob1 > today) {
-      alert('Proband date of birth cannot be later than today!');
+      swal.fire({
+        title: t('Error!', {ns: 'loris'}),
+        text:
+          t('Proband date of birth cannot be later than today!',
+            {ns: 'candidate_parameters'}
+          ),
+        type: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
       return;
     }
 
@@ -138,31 +158,40 @@ class ProbandInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         this.setState({
           updateResult: 'success',
         });
         this.showAlertMessage();
         this.fetchData();
-      },
-      error: (error) => {
-        if (error.responseText !== '') {
-          let errorMessage = JSON.parse(error.responseText).message;
+      })
+      .catch((error) => {
+        if (error.lorisMessage !== undefined && error.lorisMessage !== '') {
           this.setState({
             updateResult: 'error',
-            errorMessage: errorMessage,
+            errorMessage: error.lorisMessage,
           });
           this.showAlertMessage();
         }
-      },
-    });
+      });
   }
 
   /**
@@ -190,6 +219,7 @@ class ProbandInfo extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       return <Loader />;
     }
@@ -198,7 +228,7 @@ class ProbandInfo extends Component {
     let updateButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
-      updateButton = <ButtonElement label ="Update" />;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
 
     let dobRequired = false;
@@ -278,11 +308,12 @@ class ProbandInfo extends Component {
     if (this.state.updateResult) {
       if (this.state.updateResult === 'success') {
         alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
+        alertMessage = t('Update Successful!', {ns: 'candidate_parameters'});
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : 'Failed to update!';
+        alertMessage = errorMessage ? errorMessage :
+          t('Failed to update!', {ns: 'candidate_parameters'});
       }
     }
 
@@ -298,15 +329,15 @@ class ProbandInfo extends Component {
           class="col-md-6"
         >
           <StaticElement
-            label="PSCID"
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.Data.pscid}
           />
           <StaticElement
-            label="DCCID"
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.Data.candID}
           />
           <SelectElement
-            label="Proband Sex"
+            label={t('Proband Sex', {ns: 'candidate_parameters'})}
             name="ProbandSex"
             options={this.state.sexOptions}
             value={this.state.formData.ProbandSex}
@@ -316,7 +347,7 @@ class ProbandInfo extends Component {
             required={true}
           />
           <DateElement
-            label="DoB Proband"
+            label={t('DoB Proband', {ns: 'candidate_parameters'})}
             name="ProbandDoB"
             value={this.state.formData.ProbandDoB}
             onUserInput={this.setFormData}
@@ -325,7 +356,7 @@ class ProbandInfo extends Component {
             required={dobRequired}
           />
           <DateElement
-            label="Confirm DoB Proband"
+            label={t('Confirm DoB Proband', {ns: 'candidate_parameters'})}
             name="ProbandDoB2"
             value={this.state.formData.ProbandDoB2}
             onUserInput={this.setFormData}
@@ -334,7 +365,7 @@ class ProbandInfo extends Component {
             required={dob2Required}
           />
           <StaticElement
-            label="Age Difference (months)"
+            label={t('Age Difference (months)', {ns: 'candidate_parameters'})}
             text={this.state.Data.ageDifference.toString()}
           />
           {extraParameterFields}
@@ -346,9 +377,10 @@ class ProbandInfo extends Component {
 }
 
 ProbandInfo.propTypes = {
-  dataURL: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   tabName: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
-export default ProbandInfo;
+export default withTranslation(['candidate_parameters', 'loris'])(ProbandInfo);

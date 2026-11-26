@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import FilterableSelectGroup from './components/filterableselectgroup';
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import Select from 'react-select';
 import swal from 'sweetalert2';
 import {
@@ -18,21 +18,27 @@ import {
   VisitOption,
 } from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
+import {Trans} from 'react-i18next';
+import {TFunction} from 'i18next';
 
 /**
  * Renders a selectable list of visits
  *
- * @param {object} props - React props
- * @param {string[]} props.selected - The currently selected visits
- * @param {string[]} props.options - The valid options
- * @param {function} props.onChange - callback when the value selected changes
- * @returns {React.ReactElement} - The visit list dropdown
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.selected - The currently selected visits
+ * @param props.options - The valid options
+ * @param props.onChange - callback when the value selected changes
+ *
+ * @returns - The visit list dropdown
  */
 function VisitList(props: {
+    t: TFunction,
     selected: string[],
     options: string[],
     onChange: (newvals: string[]) => void,
 }) {
+  const {t} = props;
   const selectOptions: VisitOption[] = props.options.map(
     (vl) => {
       return {value: vl, label: vl};
@@ -50,15 +56,16 @@ function VisitList(props: {
         newvals.map((valobj) => valobj.value)
       );
     }}
-    placeholder='Select Visits'
+    placeholder={t('Select Visits', {ns: 'dataquery'})}
+    noOptionsMessage={() => t('No options', {ns: 'loris'})}
     value={selectedVisits}
     menuPortalTarget={document.body}
     styles={{menuPortal:
             /**
              * Required for rendering properly on top of window.
              *
-             * @param {object} base - The base from React Select
-             * @returns {object} - The new CSS object
+             * @param base - The base from React Select
+             * @returns - The new CSS object
              */
             (base) => ({...base, zIndex: 9999})}
     }
@@ -69,18 +76,20 @@ function VisitList(props: {
 /**
  * Render a modal window for adding a filter
  *
- * @param {object} props - React props
- * @param {QueryGroup} props.query - The current query
- * @param {function} props.closeModal - Callback to close the modal
- * @param {function} props.addQueryGroupItem - Callback to add criteria to a querygroup
- * @param {CategoriesAPIReturn} props.categories - List of categories
- * @param {function} props.onCategoryChange - Callback to change the current category
- * @param {DictionaryCategory} props.displayedFields - The fields from the current category to display
- * @param {string} props.module - The module of the currently selected category
- * @param {string} props.category - The currently selected category
- * @returns {React.ReactElement} - The modal window
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.query - The current query
+ * @param props.closeModal - Callback to close the modal
+ * @param props.addQueryGroupItem - Callback to add criteria to a querygroup
+ * @param props.categories - List of categories
+ * @param props.onCategoryChange - Callback to change the current category
+ * @param props.displayedFields - The fields from the current category to display
+ * @param props.module - The module of the currently selected category
+ * @param props.category - The currently selected category
+ * @returns - The modal window
  */
 function AddFilterModal(props: {
+    t: TFunction,
     query: QueryGroup,
     closeModal: () => void,
     addQueryGroupItem: (group: QueryGroup, condition: QueryTerm) => void,
@@ -92,61 +101,76 @@ function AddFilterModal(props: {
     module: string,
     category: string,
 }) {
+  const {t} = props;
   let fieldSelect;
   let criteriaSelect;
   let visitSelect;
   let cardinalityWarning;
   const [fieldDictionary, setFieldDictionary]
-        = useState<FieldDictionary|null>(null);
+    = useState<FieldDictionary|null>(null);
   const [fieldname, setFieldname] = useState<string|null>(null);
   const [op, setOp] = useState<Operators|null>(null);
   const [value, setValue] = useState<string|string[]>('');
   const [selectedVisits, setSelectedVisits] = useState<string[]|null>(null);
 
+  const dropdownTitle = t('Field', {ns: 'dataquery', count: 99});
   if (props.displayedFields) {
-    const options: { Fields: {[key: string]: string}} = {'Fields': {}};
+    const options: { [dropdown: string]: {[key: string]: string}}
+      = {[dropdownTitle]: {}};
     for (const [key, value] of Object.entries(props.displayedFields)) {
-      options['Fields'][key] = value.description;
+      options[dropdownTitle][key] = value.description;
     }
-    fieldSelect = <FilterableSelectGroup groups={options}
+
+    fieldSelect = <FilterableSelectGroup
+      key={props.category}
+      groups={options}
       onChange={(key, fieldname) => {
         const dict = props.displayedFields[fieldname];
         setFieldDictionary(dict);
         setFieldname(fieldname);
+        setOp(null);
+        setValue('');
         if (dict.visits) {
           setSelectedVisits(dict.visits);
+        } else {
+          setSelectedVisits(null);
         }
       }}
-      placeholder="Select a field" />;
+      placeholder={t('Select a field', {ns: 'dataquery'})} />;
   }
 
   if (fieldDictionary) {
     let valueSelect;
     if (op) {
-      valueSelect = valueInput(fieldDictionary, op, value, setValue);
+      valueSelect = valueInput(fieldDictionary, op, value, setValue, t);
     }
 
     criteriaSelect = <div>
-      <h3>Criteria</h3>
+      <h3>{t('Criteria', {ns: 'dataquery'})}</h3>
       <div style={{display: 'flex'}}>
-        <div style={{width: '20%'}}>
-          <FilterableSelectGroup groups={
-            {'Operators': getOperatorOptions(fieldDictionary)}
-          }
-          onChange={(value: string, operator: string) => {
-            setOp(operator as Operators);
-          }}
-          placeholder="Select an operator"
+        <div style={{width: '40%'}}>
+          <FilterableSelectGroup
+            key={fieldname}
+            groups={
+              {'Operators': getOperatorOptions(fieldDictionary, t)}
+            }
+            onChange={(value: string, operator: string) => {
+              setOp(operator as Operators);
+            }}
+            placeholder={t('Select an operator', {ns: 'dataquery'})}
           />
         </div>
-        <div style={{width: '80%'}}>{valueSelect}</div>
+        <div style={{width: '60%'}}>{valueSelect}</div>
       </div>
     </div>;
 
     if (fieldDictionary.scope == 'session' && fieldDictionary.visits) {
       visitSelect = <div onClick={(e) => e.stopPropagation()}>
-        <h3>for at least one of the following visits</h3>
-        <VisitList options={fieldDictionary.visits}
+        <h3>{t('for at least one of the following visits',
+          {ns: 'dataquery'})}</h3>
+        <VisitList
+          t={t}
+          options={fieldDictionary.visits}
           selected={selectedVisits || []}
           onChange={setSelectedVisits}
         />
@@ -167,10 +191,18 @@ function AddFilterModal(props: {
         <div style={{
           color: 'white',
           padding: '1em',
-        }}>This field may exist multiple times for a
-            single {fieldDictionary.scope}. Adding a criteria
-            based on it means that it must match for <i>at least
-            one</i> of the data points.</div>
+        }}>
+          <Trans
+            i18nKey={
+              'This field may exist multiple times for a single {{scope}}.' +
+              ' Adding a criteria based on it means that it must match for ' +
+              '<italic>at least one</italic> of the data points.'
+            }
+            ns="dataquery"
+            values={{scope: fieldDictionary.scope}}
+            components={{italic: <i/>}}
+          />
+        </div>
       </div>;
     }
   }
@@ -179,7 +211,7 @@ function AddFilterModal(props: {
    * Function that returns a promise on the modal's submission to check
    * if the input is valid.
    *
-   * @returns {Promise} - Promise that resolves if input is valid and rejects otherwise
+   * @returns - Promise that resolves if input is valid and rejects otherwise
    */
   const submitPromise = () =>
     new Promise((resolve, reject) => {
@@ -187,8 +219,9 @@ function AddFilterModal(props: {
       if (!fieldname) {
         swal.fire({
           type: 'error',
-          title: 'Invalid field',
-          text: 'You must select a field for the criteria.',
+          title: t('Invalid field', {ns: 'dataquery'}),
+          text: t('You must select a field for the criteria.',
+            {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -196,8 +229,9 @@ function AddFilterModal(props: {
       if (!op) {
         swal.fire({
           type: 'error',
-          title: 'Invalid operator',
-          text: 'You must select an operator for the criteria.',
+          title: t('Invalid operator', {ns: 'dataquery'}),
+          text: t('You must select an operator for the criteria.',
+            {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -208,9 +242,9 @@ function AddFilterModal(props: {
                    && op != 'exists' && op != 'notexists') {
           swal.fire({
             type: 'error',
-            title: 'Invalid value',
-            text: 'You must enter a value to compare the ' +
-                         'field against.',
+            title: t('Invalid value', {ns: 'dataquery'}),
+            text: t('You must enter a value to compare the field against.',
+              {ns: 'dataquery'}),
           });
           reject();
           return;
@@ -221,8 +255,8 @@ function AddFilterModal(props: {
         if (!selectedVisits || selectedVisits.length == 0) {
           swal.fire({
             type: 'error',
-            title: 'Invalid visits',
-            text: 'No visits selected for criteria.',
+            title: t('Invalid visits', {ns: 'dataquery'}),
+            text: t('No visits selected for criteria.', {ns: 'dataquery'}),
           });
           reject();
           return;
@@ -250,40 +284,51 @@ function AddFilterModal(props: {
       resolve(null);
     }
     );
-  return <Modal title="Add criteria"
-    show={true}
-    throwWarning={true}
-    onClose={props.closeModal}
-    onSubmit={submitPromise}>
-    <div style={{width: '100%', padding: '1em'}}>
-      <h3>Field</h3>
-      <div style={{display: 'flex', width: '100%'}}>
-        <div style={{width: '40%'}}>
-          <FilterableSelectGroup groups={props.categories.categories}
-            mapGroupName={(key) => props.categories.modules[key]}
-            onChange={props.onCategoryChange} />
+  return (
+    <FormModal title={t('Add Condition', {ns: 'dataquery'})}
+      show={true}
+      throwWarning={true}
+      onClose={props.closeModal}
+      onSubmit={submitPromise}>
+      <div style={{width: '100%', padding: '1em'}}>
+        <div style={{display: 'flex', width: '100%'}}>
+          <div style={{width: '40%'}}>
+            <FilterableSelectGroup
+              groups={props.categories.categories}
+              mapGroupName={(key) => props.categories.modules[key]}
+              onChange={(module: string, category: string) => {
+                setFieldname(null);
+                setFieldDictionary(null);
+                setOp(null);
+                setValue('');
+                setSelectedVisits(null);
+                props.onCategoryChange(module, category);
+              }}
+            />
+          </div>
+          <div style={{width: '60%'}}>
+            {fieldSelect}
+          </div>
         </div>
-        <div style={{width: '100%'}}>
-          {fieldSelect}
-        </div>
+        {cardinalityWarning}
+        {criteriaSelect}
+        {visitSelect}
       </div>
-      {cardinalityWarning}
-      {criteriaSelect}
-      {visitSelect}
-    </div>
-  </Modal>;
+    </FormModal>
+  );
 }
 
 
 /**
  * Get a list of possible query operators based on a field's dictionary
  *
- * @param {object} dict - the field dictionary
- * @returns {object} - list of options for this dictionary
+ * @param dict - the field dictionary
+ * @param t useTranslation
+ *
+ * @returns - list of options for this dictionary
  */
-function getOperatorOptions(dict: FieldDictionary) {
+function getOperatorOptions(dict: FieldDictionary, t: TFunction) {
   let options: {[operator: string]: string};
-
   if (dict.type == 'integer' || dict.type == 'date' ||
             dict.type == 'interval' || dict.type == 'time' ||
             dict.type == 'decimal') {
@@ -312,9 +357,9 @@ function getOperatorOptions(dict: FieldDictionary) {
     options = {
       'eq': '=',
       'neq': '≠',
-      'startsWith': 'starts with',
-      'contains': 'contains',
-      'endsWith': 'ends with',
+      'startsWith': t('starts with', {ns: 'dataquery'}),
+      'contains': t('contains', {ns: 'dataquery'}),
+      'endsWith': t('ends with', {ns: 'dataquery'}),
     };
   } else {
     // fall back to == and !=, valid for any type.
@@ -327,12 +372,12 @@ function getOperatorOptions(dict: FieldDictionary) {
   // 1-many cardinalities have a couple more
   // things you can check.
   if (dict.cardinality == 'optional') {
-    options['isnotnull'] = 'has data';
-    options['isnull'] = 'has no data';
+    options['isnotnull'] = t('has data', {ns: 'dataquery'});
+    options['isnull'] = t('has no data', {ns: 'dataquery'});
   } else if (dict.cardinality == 'many') {
-    options['exists'] = 'exists';
-    options['notexists'] = 'does not exist';
-    options['numberof'] = 'number of';
+    options['exists'] = t('exists', {ns: 'dataquery'});
+    options['notexists'] = t('does not exist', {ns: 'dataquery'});
+    options['numberof'] = t('number of', {ns: 'dataquery'});
   }
   return options;
 }
@@ -342,16 +387,18 @@ function getOperatorOptions(dict: FieldDictionary) {
  * Returns an input field for getting the value of a filter criteria
  * in a context-sensitive way
  *
- * @param {object} fielddict - The field dictionary
- * @param {string} op - The operator selected
- * @param {string|string[]} value - The current value
- * @param {string} setValue - a callback when a new value is selected
- * @returns {React.ReactElement} - the react element
+ * @param fielddict - The field dictionary
+ * @param op - The operator selected
+ * @param value - The current value
+ * @param setValue - a callback when a new value is selected
+ * @param t - Translation function from i18next
+ * @returns - the react element
  */
 function valueInput(fielddict: FieldDictionary,
   op: Operators,
   value: string|string[],
-  setValue: (val: string) => void
+  setValue: (val: string) => void,
+  t: TFunction,
 ) {
   const vs: string = value as string;
   switch (op) {
@@ -366,6 +413,8 @@ function valueInput(fielddict: FieldDictionary,
       name='numberof'
       onUserInput={(name: string, value: string) => setValue(value)} />;
   }
+
+  const dropdownTitle = t('Value', {ns: 'dataquery', count: 1});
 
   switch (fielddict.type) {
   case 'date':
@@ -397,15 +446,15 @@ function valueInput(fielddict: FieldDictionary,
       onUserInput={(name: string, value: string) => setValue(value)} />;
   case 'boolean':
     return <FilterableSelectGroup groups={
-      {'Value': {
-        'true': 'true',
-        'false': ' false',
+      {[dropdownTitle]: {
+        'true': t('True', {ns: 'loris'}).toLocaleString().toLowerCase(),
+        'false': t('False', {ns: 'loris'}).toLocaleString().toLowerCase(),
       },
       }}
     onChange={(_: string, value: string) => {
       setValue(value);
     }}
-    placeholder="Select a value"
+    placeholder={t('Select a value', {ns: 'dataquery'})}
     />;
   case 'enumeration':
     const opts: {[key: string]: string} = {};
@@ -432,11 +481,11 @@ function valueInput(fielddict: FieldDictionary,
       />;
     }
     return <FilterableSelectGroup
-      groups={{'Value': opts}}
+      groups={{[dropdownTitle]: opts}}
       onChange={(_: string, value: string) => {
         setValue(value);
       }}
-      placeholder="Select a value"
+      placeholder={t('Select a value', {ns: 'dataquery'})}
     />;
   default:
     return <TextboxElement

@@ -3,7 +3,7 @@
 /**
  * This file contains the base class for instruments in Loris
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural
@@ -63,7 +63,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->commentID = $commentID;
         $this->page      = $page;
 
-        $this->form = new \LorisForm();
+        //$this->form = new \LorisForm();
+        //$this->form->textdomain = $this->testName;
     }
 
     /**
@@ -225,7 +226,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $errors += $result;
                         }
                     }
-                } else if (substr($elname, -7) != "_status"
+                } else if (!$this->isStatusField($elname)
                     && !in_array($elname, ["page", "subtest"])
                 ) {
                     // Check if element part of a group.
@@ -399,7 +400,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                 $type      = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
-                if (strpos($fieldname, "_status") !== false) {
+                if ($fieldname && $this->isStatusField($fieldname)) {
                     continue;
                 }
                 if ($fieldname == 'Date_taken'
@@ -419,7 +420,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $pageName         = "page_$subtestCount";
                     $this->subtests[] = [
                         'Name'        => $pageName,
-                        'Description' => $pageDescription
+                        'Description' => dgettext($this->name, $pageDescription)
                     ];
 
                     if ($currentPage == $pageName) {
@@ -440,55 +441,85 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'title':
                     $this->fullName = trim($pieces[1]);
+
                     if ($addElements) {
                         $this->form->addElement(
                             'header',
                             'instrument_title',
-                            $pieces[1]
+                            dgettext($this->name, $this->fullName)
                         );
-                        if ($this->DataEntryType!=="DirectEntry") {
-                            $this->_addMetadataFields();
-                        }
                     }
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                $this->testName.'_Date_taken',
-                                'Date of Administration',
-                                $scope,
-                                new \LORIS\Data\Types\DateType(),
-                                new Cardinality(Cardinality::SINGLE),
-                                'Date_taken',
-                            ),
-                        ]
-                    );
-                    if (strrpos($this->testName ?? '', '_proband') === false) {
-                        if (!$this->postMortem) {
-                            $this->dictionary = array_merge(
-                                $this->dictionary,
-                                [
-                                    new DictionaryItem(
-                                        $this->testName.'_Candidate_Age',
-                                        'Candidate Age (Months)',
-                                        $scope,
-                                        new \LORIS\Data\Types\Duration(),
-                                        new Cardinality(Cardinality::SINGLE),
-                                        'Candidate_Age',
+                    // The sequence of if statements below building the data dict
+                    // mimics the same logic in the _addMetadataFields() function of
+                    // NDB_BVL_Instrument to keep the dictionary in sync with the
+                    // fields added to the form, make sure to modify it accordingly
+                    if ($this->DataEntryType!=="DirectEntry") {
+                        $this->dictionary = array_merge(
+                            $this->dictionary,
+                            [
+                                new DictionaryItem(
+                                    $this->testName.'_Date_taken',
+                                    dgettext(
+                                        "instruments",
+                                        'Date of Administration'
                                     ),
-                                ]
-                            );
-                        } else {
+                                    $scope,
+                                    new \LORIS\Data\Types\DateType(),
+                                    new Cardinality(Cardinality::SINGLE),
+                                    'Date_taken',
+                                ),
+                            ]
+                        );
+                        if (strrpos($this->testName ?? '', '_proband') === false) {
+                            if (!$this->postMortem) {
+                                $this->dictionary = array_merge(
+                                    $this->dictionary,
+                                    [
+                                        new DictionaryItem(
+                                            $this->testName.'_Candidate_Age',
+                                            dgettext(
+                                                "instruments",
+                                                'Candidate Age (Months)'
+                                            ),
+                                            $scope,
+                                            new \LORIS\Data\Types\Duration(),
+                                            new Cardinality(Cardinality::SINGLE),
+                                            'Candidate_Age',
+                                        ),
+                                    ]
+                                );
+                            } else {
+                                $this->dictionary = array_merge(
+                                    $this->dictionary,
+                                    [
+                                        new DictionaryItem(
+                                            $this->testName.'_Candidate_Age',
+                                            dgettext(
+                                                "instruments",
+                                                'Candidate Age at Death (Months)'
+                                            ),
+                                            $scope,
+                                            new \LORIS\Data\Types\Duration(),
+                                            new Cardinality(Cardinality::SINGLE),
+                                            'Candidate_Age',
+                                        ),
+                                    ]
+                                );
+                            }
                             $this->dictionary = array_merge(
                                 $this->dictionary,
                                 [
                                     new DictionaryItem(
-                                        $this->testName.'_Candidate_Age',
-                                        'Candidate Age at Death (Months)',
+                                        $this->testName.'_Window_Difference',
+                                        dgettext(
+                                            "instruments",
+                                            'Window difference from test " .
+					    "battery (days)'
+                                        ),
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
-                                        'Candidate_Age',
+                                        'Window_Difference',
                                     ),
                                 ]
                             );
@@ -497,32 +528,21 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $this->dictionary,
                             [
                                 new DictionaryItem(
-                                    $this->testName.'_Window_Difference',
-                                    'Window difference from test battery (days)',
+                                    $this->testName.'_Examiner',
+                                    dgettext("instruments", 'Examiner'),
                                     $scope,
-                                    new \LORIS\Data\Types\Duration(),
+                                    new Enumeration(
+                                        ...array_values($this->_getExaminerNames())
+                                    ),
                                     new Cardinality(Cardinality::SINGLE),
-                                    'Window_Difference',
+                                    'Examiner',
                                 ),
                             ]
                         );
+                        if ($addElements) {
+                            $this->_addMetadataFields();
+                        }
                     }
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                $this->testName.'_Examiner',
-                                'Examiner',
-                                $scope,
-                                // This should be an enum of examiners, but
-                                // getExaminerNames currently returns an empty
-                                // array if CommentID is not set.
-                                new StringType(255),
-                                new Cardinality(Cardinality::SINGLE),
-                                'Examiner',
-                            ),
-                        ]
-                    );
                     break;
                 case 'begingroup':
                     if ($addElements) {
@@ -576,10 +596,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new StringType(255),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -602,10 +622,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new StringType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -691,10 +711,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new DateType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -704,14 +724,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'numeric':
                     if ($addElements) {
-                        $this->addNumericElement($pieces[1], $pieces[2]);
+                        $this->addNumericElement($pieces[1], trim($pieces[2]));
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new IntegerType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -766,7 +786,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     = $this->form->createElement(
                                         'select',
                                         $pieces[1],
-                                        $pieces[2],
+                                        dgettext($this->name, trim($pieces[2])),
                                         $opt,
                                         [ "multiple" => "multiple" ]
                                     );
@@ -775,7 +795,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     = $this->form->createElement(
                                         'select',
                                         $pieces[1],
-                                        $pieces[2],
+                                        dgettext($this->name, trim($pieces[2])),
                                         $opt
                                     );
                             }
@@ -784,7 +804,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 $this->form->addElement(
                                     'select',
                                     $pieces[1],
-                                    $pieces[2],
+                                    dgettext($this->name, trim($pieces[2])),
                                     $opt,
                                     ["multiple" => "multiple"]
                                 );
@@ -792,7 +812,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 $this->form->addElement(
                                     'select',
                                     $pieces[1],
-                                    $pieces[2],
+                                    dgettext($this->name, trim($pieces[2])),
                                     $opt
                                 );
                             }
@@ -807,14 +827,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($type == 'multiple') {
                         $cardinality = new Cardinality(Cardinality::MANY);
                     } else {
-                        $cardinality = new Cardinality(Cardinality::SINGLE);
+                        $cardinality = new Cardinality(Cardinality::OPTIONAL);
                     }
 
                     $t  = new Enumeration(...$dictopts);
                     $t  = $t->withLabels(...$dictlabels);
                     $it = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         $t,
                         $cardinality,
@@ -825,7 +845,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'header':
                     if ($addElements) {
-                        $this->form->addElement('header', '', "$pieces[2]");
+                        $this->form->addElement(
+                            'header',
+                            '',
+                            dgettext($this->name, $pieces[2]),
+                        );
                     }
                     break;
                 case 'static':
@@ -837,13 +861,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     'static',
                                     $pieces[1],
                                     '',
-                                    $pieces[2]
+                                    dgettext($this->name, trim($pieces[2]))
                                 );
                         } else {
                             $this->form->addElement(
                                 'static',
                                 $pieces[1],
-                                $pieces[2]
+                                dgettext($this->name, trim($pieces[2]))
                             );
                         }
                     }
@@ -853,7 +877,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                         $this->dictionary[] = new DictionaryItem(
                             $this->testName."_".$pieces[1],
-                            $pieces[2],
+                            dgettext($this->name, trim($pieces[2])),
                             $scope,
                             new StringType(255),
                             new Cardinality(Cardinality::SINGLE),
@@ -905,6 +929,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 break;
             case 'norules':
                 $this->skipRules = trim($pieces[1]) === 'true';
+                break;
+            case 'redcap':
+                $this->isRedcap = trim($pieces[1]) === 'true';
                 break;
             default:
                 break;
@@ -1018,7 +1045,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $pageTitle  = 'Top';
 
         foreach ($this->LinstLines as $value) {
-            if (strpos($value[1], "_status") !== false) {
+            if ($value[0] === 'redcap') {
+                continue;
+            }
+            if ($this->isStatusField($value[1])) {
                 $lastIndex = count($elements) - 1;
                 $elements[$lastIndex]['Options']['RequireResponse'] = true;
             } else {

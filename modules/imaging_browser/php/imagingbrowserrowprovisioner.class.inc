@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all possible rows
  * for the imaging browser menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\imaging_browser;
  * This class implements a data provisioner to get all possible rows
  * for the imaging browser menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -244,6 +244,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         $pid = (int )$row['ProjectID'];
         unset($row['CenterID']);
         unset($row['ProjectID']);
+        $row['project'] = dgettext("Project", $row['project']);
         return new ImagingBrowserRow($row, $cid, $pid);
     }
 }

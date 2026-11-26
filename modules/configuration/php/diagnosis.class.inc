@@ -39,7 +39,8 @@ class Diagnosis extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('config');
     }
@@ -114,6 +115,11 @@ class Diagnosis extends \NDB_Page
         foreach ($diagnosisTracks as $key => $data) {
             $diagnosisTracks[$key]['sourceField']
                 = explode(",", $diagnosisTracks[$key]['sourceField']);
+
+            $diagnosisTracks[$key]['Name'] = dgettext(
+                'diagnosis_evolution',
+                $diagnosisTracks[$key]['Name']
+            );
         }
 
         $values['projects']        = $projects;
@@ -138,7 +144,19 @@ class Diagnosis extends \NDB_Page
         $DB     = \NDB_Factory::singleton()->database();
         $values = $request->getParsedBody();
 
-        $dxEvolutionID  = $values['DxEvolutionID'] ?? null;
+        $dxEvolutionID = $values['DxEvolutionID'] ?? null;
+        if ($dxEvolutionID === 'new') {
+            // updateDiagnosisTX treats null as new, since the ID
+            // is an int
+            $dxEvolutionID = null;
+        }
+        if ($dxEvolutionID != null && !is_numeric($dxEvolutionID)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext('configuration', 'Invalid DxEvolutionID')
+            );
+        }
+        $dxEvolutionID = intval($dxEvolutionID);
+
         $name           = $values['Name'] ?? null;
         $projectID      = $values['ProjectID'] ?? null;
         $visit          = $values['visitLabel'] ?? null;
@@ -152,11 +170,11 @@ class Diagnosis extends \NDB_Page
         * VALIDATE THE FORM
         */
         // Validation: Form is complete
-        if (!($dxEvolutionID && $name && $visit
+        if (!($name && $visit
             && $instrumentName && $sourceFields && $orderNumber)
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Please fill out all fields!'
+                dgettext('configuration', 'Please fill out all fields!')
             );
         }
 
@@ -171,7 +189,10 @@ class Diagnosis extends \NDB_Page
 
         if (!in_array($visit, $projectVisits)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Visit is not defined for selected Project.'
+                dgettext(
+                    'configuration',
+                    'Visit is not defined for selected Project.'
+                )
             );
         }
 
@@ -185,7 +206,10 @@ class Diagnosis extends \NDB_Page
 
         if (!in_array($instrumentName, $visitInstruments)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Instrument does not exist in selected visit.'
+                dgettext(
+                    'configuration',
+                    'Instrument does not exist in selected visit.'
+                )
             );
         }
 
@@ -197,7 +221,10 @@ class Diagnosis extends \NDB_Page
         $matches          = array_intersect($sourceFields, $instrumentFields);
         if (count($matches) !== count($sourceFields)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Source Field does not exist in instrument.'
+                dgettext(
+                    'configuration',
+                    'Source Field does not exist in instrument.'
+                )
             );
         }
 
@@ -216,8 +243,14 @@ class Diagnosis extends \NDB_Page
         );
         if (!is_null($match)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                "Order Number not unique for this Project! 
-                Already used in Trajectory: $match."
+                sprintf(
+                    dgettext(
+                        'configuration',
+                        'Order Number not unique for this Project! Already'
+                        . ' used in Trajectory: %s'
+                    ),
+                    $match
+                )
             );
         }
 
@@ -261,19 +294,19 @@ class Diagnosis extends \NDB_Page
     /**
      * Processes trajectory data submitted via diagnosis evolution form.
      *
-     * @param string $dxEvolutionID The Diagnosis Track ID
-     * @param array  $set           The data to insert oir update in the DB
+     * @param ?int  $dxEvolutionID The Diagnosis Track ID
+     * @param array $set           The data to insert oir update in the DB
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
     function updateDiagnosisTrajectory(
-        string $dxEvolutionID,
+        ?int $dxEvolutionID,
         array $set
     ) : ResponseInterface {
         $DB = \NDB_Factory::singleton()->database();
 
         // Create or update a Diagnosis Trajectory
-        if ($dxEvolutionID == 'new') {
+        if ($dxEvolutionID == null) {
             // Validation: Name does not already exist
             $dxNames = $DB->pselectCol(
                 "SELECT LOWER(Name) FROM diagnosis_evolution",
@@ -281,7 +314,7 @@ class Diagnosis extends \NDB_Page
             );
             if (in_array(strtolower($set['Name']), $dxNames)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Trajectory Name already exists.'
+                    dgettext('configuration', 'Trajectory Name already exists.')
                 );
             }
 
@@ -299,7 +332,7 @@ class Diagnosis extends \NDB_Page
             );
             if (in_array(strtolower($set['Name']), $dxNames)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Trajectory Name already exists.'
+                    dgettext('configuration', 'Trajectory Name already exists.')
                 );
             }
 

@@ -131,7 +131,6 @@
 		<field name="BVLQCType" xsi:nil="true" />
 		<field name="BVLQCExclusion" xsi:nil="true" />
 		<field name="QCd" xsi:nil="true" />
-		<field name="Scan_done">Y</field>
 		<field name="MRIQCStatus"></field>
 		<field name="MRIQCPending">N</field>
 		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
@@ -164,7 +163,6 @@
 		<field name="BVLQCType" xsi:nil="true" />
 		<field name="BVLQCExclusion" xsi:nil="true" />
 		<field name="QCd" xsi:nil="true" />
-		<field name="Scan_done">N</field>
 		<field name="MRIQCStatus"></field>
 		<field name="MRIQCPending">N</field>
 		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
@@ -197,7 +195,6 @@
 		<field name="BVLQCType" xsi:nil="true"></field>
 		<field name="BVLQCExclusion" xsi:nil="true" />
 		<field name="QCd" xsi:nil="true" />
-		<field name="Scan_done">Y</field>
 		<field name="MRIQCStatus"></field>
 		<field name="MRIQCPending">N</field>
 		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
@@ -230,7 +227,6 @@
 		<field name="BVLQCType" xsi:nil="true" />
 		<field name="BVLQCExclusion" xsi:nil="true" />
 		<field name="QCd" xsi:nil="true" />
-		<field name="Scan_done">N</field>
 		<field name="MRIQCStatus"></field>
 		<field name="MRIQCPending">N</field>
 		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
@@ -263,7 +259,6 @@
 		<field name="BVLQCType" xsi:nil="true" />
 		<field name="BVLQCExclusion" xsi:nil="true" />
 		<field name="QCd" xsi:nil="true" />
-		<field name="Scan_done">N</field>
 		<field name="MRIQCStatus"></field>
 		<field name="MRIQCPending">N</field>
 		<field name="MRIQCFirstChangeTime" xsi:nil="true" />

@@ -3,7 +3,7 @@
 /**
  * This implements the Visit specific instrument class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -95,7 +95,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $flags     = array_search('flags', $pathparts) !== false;
         $user      = $request->getAttribute('user');
 
-        if (!$this->_instrument->_hasAccess($user)) {
+        if (!$this->_instrument->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'This user can not update this instrument'
             );

@@ -3,7 +3,7 @@
 /**
  * Issue Tracker automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Issue Tracker automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -29,7 +29,6 @@ require_once __DIR__ .
 
 class Issue_TrackerTest extends LorisIntegrationTest
 {
-
     /**
      * Insert testing data into the database
      *
@@ -48,12 +47,22 @@ class Issue_TrackerTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
+            "psc",
+            [
+                'CenterID'  => '56',
+                'Name'      => 'SecondTESTinPSC',
+                'Alias'     => 'tst2',
+                'MRI_alias' => 'test2',
+            ]
+        );
+        $this->DB->insert(
             "users",
             [
                 'ID'         => '999998',
                 'UserID'     => 'TestUser',
                 'First_name' => 'Test',
                 'Last_name'  => 'User',
+                'Real_name'  => 'Test User'
             ]
         );
         $this->DB->insert(
@@ -77,10 +86,11 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function tearDown(): void
     {
-        parent::tearDown();
         $this->DB->delete("issues", ['issueID' => '999999']);
         $this->DB->delete("users", ['ID' => '999998']);
         $this->DB->delete("psc", ['CenterID' => '55']);
+        $this->DB->delete("psc", ['CenterID' => '56']);
+        parent::tearDown();
     }
 
     /**
@@ -101,7 +111,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
     }
@@ -123,6 +133,176 @@ class Issue_TrackerTest extends LorisIntegrationTest
     }
 
     /**
+     * Tests that the Batch Edit endpoint returns the issues used by batch mode.
+     *
+     * @return void
+     */
+    function testBatchEditEndpointReturnsIssues()
+    {
+        $this->setupPermissions(["issue_tracker_all_issue"]);
+        $this->webDriver->get($this->url . "/issue_tracker/BatchEdit/");
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertStringContainsString('"issues"', $bodyText);
+        $this->assertStringContainsString('Test Issue', $bodyText);
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that Batch Edit rejects users without all-issue access.
+     *
+     * @return void
+     */
+    function testBatchEditEndpointRejectsSitePermission()
+    {
+        $this->setupPermissions(["issue_tracker_site_issue"]);
+        $this->webDriver->get($this->url . "/issue_tracker/BatchEdit/");
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertStringContainsString(
+            'You do not have access to this page.',
+            $bodyText
+        );
+        $this->assertStringNotContainsString('"issues"', $bodyText);
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that Batch Edit updates an issue site and records its history.
+     *
+     * @return void
+     */
+    function testBatchEditUpdatesSite()
+    {
+        $this->setupPermissions(["issue_tracker_all_issue"]);
+        $result = $this->_postBatchEdit(
+            [
+                'issueIDs' => [999999],
+                'updates'  => ['centerID' => '56'],
+            ]
+        );
+
+        $this->assertSame(200, $result['status']);
+        $this->assertSame(1, $result['body']['selected']);
+        $this->assertSame(1, $result['body']['updated']);
+        $this->assertSame(
+            '56',
+            $this->DB->pselectOne(
+                'SELECT centerID FROM issues WHERE issueID=:issueID',
+                ['issueID' => 999999]
+            )
+        );
+        $this->assertSame(
+            '56',
+            $this->DB->pselectOne(
+                "SELECT newValue FROM issues_history
+                 WHERE issueID=:issueID AND fieldChanged='centerID'",
+                ['issueID' => 999999]
+            )
+        );
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that Batch Edit rejects assigning an issue to all sites.
+     *
+     * @return void
+     */
+    function testBatchEditRejectsAllSites()
+    {
+        $this->setupPermissions(["issue_tracker_all_issue"]);
+        $result = $this->_postBatchEdit(
+            [
+                'issueIDs' => [999999],
+                'updates'  => ['centerID' => null],
+            ]
+        );
+
+        $this->assertSame(400, $result['status']);
+        $this->assertSame('Invalid issue site.', $result['body']['error']);
+        $this->assertSame(
+            '55',
+            $this->DB->pselectOne(
+                'SELECT centerID FROM issues WHERE issueID=:issueID',
+                ['issueID' => 999999]
+            )
+        );
+        $this->assertNull(
+            $this->DB->pselectOne(
+                "SELECT newValue FROM issues_history
+                 WHERE issueID=:issueID AND fieldChanged='centerID'",
+                ['issueID' => 999999]
+            )
+        );
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that an unchanged site is not counted as an update.
+     *
+     * @return void
+     */
+    function testBatchEditDoesNotCountUnchangedSite()
+    {
+        $this->setupPermissions(["issue_tracker_all_issue"]);
+        $result = $this->_postBatchEdit(
+            [
+                'issueIDs' => [999999],
+                'updates'  => ['centerID' => '55'],
+            ]
+        );
+
+        $this->assertSame(200, $result['status']);
+        $this->assertSame(0, $result['body']['updated']);
+        $this->assertNull(
+            $this->DB->pselectOne(
+                "SELECT newValue FROM issues_history
+                 WHERE issueID=:issueID AND fieldChanged='centerID'",
+                ['issueID' => 999999]
+            )
+        );
+        $this->assertNull(
+            $this->DB->pselectOne(
+                'SELECT lastUpdatedBy FROM issues WHERE issueID=:issueID',
+                ['issueID' => 999999]
+            )
+        );
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that Batch Edit rejects an invalid site.
+     *
+     * @return void
+     */
+    function testBatchEditRejectsInvalidSite()
+    {
+        $this->setupPermissions(["issue_tracker_all_issue"]);
+        $result = $this->_postBatchEdit(
+            [
+                'issueIDs' => [999999],
+                'updates'  => ['centerID' => '999999'],
+            ]
+        );
+
+        $this->assertSame(400, $result['status']);
+        $this->assertSame('Invalid issue site.', $result['body']['error']);
+        $this->assertSame(
+            '55',
+            $this->DB->pselectOne(
+                'SELECT centerID FROM issues WHERE issueID=:issueID',
+                ['issueID' => 999999]
+            )
+        );
+        $this->assertNull(
+            $this->DB->pselectOne(
+                "SELECT newValue FROM issues_history
+                 WHERE issueID=:issueID AND fieldChanged='centerID'",
+                ['issueID' => 999999]
+            )
+        );
+        $this->resetPermissions();
+    }
+
+    /**
      * Tests that Issue Tracker's filters
      *
      * @return void
@@ -134,6 +314,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->_testFilter('low');
         $this->_testFilter('Test User');
     }
+
     /**
      * Tests that Issue Tracker filter
      *
@@ -151,6 +332,40 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->assertStringContainsString($value, $bodyText);
 
     }
+
+    /**
+     * Submit an authenticated JSON request to the Batch Edit endpoint.
+     *
+     * @param array $payload Batch edit request payload.
+     *
+     * @return array{status: int, body: array<string, mixed>} Endpoint result.
+     */
+    private function _postBatchEdit(array $payload): array
+    {
+        $this->safeGet($this->url . '/issue_tracker/');
+        $result = $this->webDriver->executeAsyncScript(
+            "const done = arguments[arguments.length - 1];
+             fetch(arguments[0], {
+               method: 'POST',
+               credentials: 'include',
+               headers: {'Content-Type': 'application/json'},
+               body: arguments[1],
+             }).then(function(response) {
+               response.json().then(function(body) {
+                 done({status: response.status, body: body});
+               });
+             }).catch(function(error) {
+               done({status: 0, body: {error: error.message}});
+             });",
+            [
+                $this->url . '/issue_tracker/BatchEdit/',
+                json_encode($payload, JSON_THROW_ON_ERROR),
+            ]
+        );
+
+        return $result;
+    }
+
     /**
      * Tests Clear Form function in Issue Tracker
      *
@@ -158,7 +373,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testClearFormIssueTracker()
     {
-         $this->safeGet($this->url . "/issue_tracker/");
+        $this->safeGet($this->url . "/issue_tracker/");
         $titleElement = $this->safeFindElement(
             WebDriverBy::Name("title")
         );
@@ -171,4 +386,3 @@ class Issue_TrackerTest extends LorisIntegrationTest
          $this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
 }
-

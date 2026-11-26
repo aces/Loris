@@ -11,31 +11,34 @@ import {FullDictionary, DictionaryCategory} from './types';
 import {calcPayload} from './calcpayload';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import React from 'react';
+import {Trans, useTranslation} from 'react-i18next';
+import swal from 'sweetalert2';
 
 /**
  * The define filters tab of the DQT
  *
- * @param {object} props - React props
- * @param {APIQueryField[]} props.fields - The fields selected
- * @param {QueryGroup} props.query - The criteria currently selected
- * @param {function} props.setQuery - Sets the current criteria
- * @param {CategoriesAPIReturn} props.categories - The list of categories displayed
- * @param {DictionaryCategory} props.displayedFields - All fields from the currently selected category
- * @param {string} props.module - The module of the currently selected module
- * @param {string} props.category - The currently selected category
- * @param {function} props.onCategoryChange - Callback to call when the category changes
- * @param {FullDictionary} props.fulldictionary - The fully loaded dictionary
- * @param {function} props.mapModuleName - Mapper from backend name to frontend name
- * @param {function} props.mapCategoryName - Mapper from backend name to frontend name
- * @param {function} props.getModuleFields - Function that will ensure a module's fields
+ * @param props - React props
+ * @param props.fields - The fields selected
+ * @param props.query - The criteria currently selected
+ * @param props.setQuery - Sets the current criteria
+ * @param props.categories - The list of categories displayed
+ * @param props.displayedFields - All fields from the currently selected category
+ * @param props.module - The module of the currently selected module
+ * @param props.category - The currently selected category
+ * @param props.onCategoryChange - Callback to call when the category changes
+ * @param props.fulldictionary - The fully loaded dictionary
+ * @param props.mapModuleName - Mapper from backend name to frontend name
+ * @param props.mapCategoryName - Mapper from backend name to frontend name
+ * @param props.getModuleFields - Function that will ensure a module's fields
  *                                           are fully populated in fulldictionary
- * @param {function} props.addQueryGroupItem - Function that will add a new term to the
+ * @param props.addQueryGroupItem - Function that will add a new term to the
  *                                             existing QueryGroup
- * @param {function} props.addNewQueryGroup - Function that will add a new QueryGroup subgroup
+ * @param props.addNewQueryGroup - Function that will add a new QueryGroup subgroup
  *                                           to the existing QueryGroup
- * @param {function} props.removeQueryGroupItem - Function that will remove an item from a
+ * @param props.removeQueryGroupItem - Function that will remove an item from a
  *                                                QueryGroup by index.
- * @returns {React.ReactElement} - The Define Filters page
+ * @param props.visitLabels - Array of allowed visit label values
+ * @returns - The Define Filters page
  */
 function DefineFilters(props: {
     fields: APIQueryField[],
@@ -59,7 +62,9 @@ function DefineFilters(props: {
     ) => QueryGroup,
     addNewQueryGroup: (group: QueryGroup) => void,
     removeQueryGroupItem: (group: QueryGroup, i: number) => QueryGroup,
+    visitLabels: string[],
 }) : React.ReactElement {
+  const {t} = useTranslation('dataquery');
   let displayquery: React.ReactNode = null;
   const [addModal, setAddModal] = useState(false);
   const [csvModal, setCSVModal] = useState(false);
@@ -71,42 +76,107 @@ function DefineFilters(props: {
   const [modalQueryGroup, setModalGroup] = useState(props.query);
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
   const [queryMatches, setQueryMatches] = useState(null);
+
+  /**
+   * Clear all the filters currently added
+   *
+   * @param e - React Mouse Event
+   */
+  const clearAllFilters = (e: React.MouseEvent) => {
+    e.preventDefault();
+    swal.fire({
+      title: t('Are you sure?', {ns: 'loris'}),
+      text: t(
+        'This will remove all currently selected filters',
+        {ns: 'dataquery'},
+      ),
+      type: 'warning',
+      focusCancel: true,
+      showCancelButton: true,
+      confirmButtonText: t('Yes', {ns: 'loris'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
+    }).then((result) => {
+      if (result.value) {
+        const emptyQuery = new QueryGroup('and');
+        props.setQuery(emptyQuery);
+        setModalGroup(emptyQuery);
+      }
+    });
+  };
+
+  const removeFiltersButton = (
+    <ButtonElement
+      label={t('Remove all filters', {ns: 'dataquery'})}
+      columnSize="col-sm-12"
+      buttonClass='btn btn-danger btn-remove'
+      onUserInput={clearAllFilters}
+    />
+  );
+
   useEffect(() => {
     setQueryMatches(null);
-    const payload = calcPayload(props.fields, props.query);
-    fetch(
-      '/dataquery/queries',
-      {
-        method: 'POST',
-        credentials: 'same-origin',
-        body: JSON.stringify(payload),
-      },
-    ).then(
-      (resp) => {
-        if (!resp.ok) {
+    if (!props.fields || props.fields.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+    const controller = new AbortController();
+
+    /**
+     * Fetches the current candidate count preview for the
+     * provided field/filter selection.
+     */
+    const updateQueryCount = async () => {
+      try {
+        const payload = calcPayload(props.fields, props.query);
+        const createResp = await fetch(
+          '/dataquery/queries',
+          {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: JSON.stringify(payload),
+            signal: controller.signal,
+          },
+        );
+
+        if (!createResp.ok) {
           throw new Error('Error creating query.');
         }
-        return resp.json();
-      }
-    ).then(
-      (data) => {
-        fetch(
-          '/dataquery/queries/'
-                            + data.QueryID + '/count',
+
+        const data = await createResp.json();
+        const countResp = await fetch(
+          `/dataquery/queries/${data.QueryID}/count`,
           {
             method: 'GET',
             credentials: 'same-origin',
-          }
-        ).then((resp) => {
-          if (!resp.ok) {
-            throw new Error('Could not get count.');
-          }
-          return resp.json();
-        }).then((result) => {
+            signal: controller.signal,
+          },
+        );
+
+        if (!countResp.ok) {
+          throw new Error('Could not get count.');
+        }
+
+        const result = await countResp.json();
+        if (!cancelled) {
           setQueryMatches(result.count);
-        });
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error(error);
+          if (!cancelled) {
+            setQueryMatches(null);
+          }
+        }
       }
-    );
+    };
+
+    updateQueryCount();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
   }, [props.fields, props.query]);
 
   const bGroupStyle = {
@@ -118,7 +188,8 @@ function DefineFilters(props: {
   const mapModuleName = props.mapModuleName;
   const mapCategoryName = props.mapCategoryName;
 
-  const advancedLabel = showAdvanced ? 'Hide Advanced' : 'Show Advanced';
+  const advancedLabel = showAdvanced ? t('Hide Advanced',
+    {ns: 'dataquery'}) : t('Show Advanced', {ns: 'dataquery'});
   let advancedButtons;
   const toggleAdvancedButton = (
     <div>
@@ -138,16 +209,14 @@ function DefineFilters(props: {
     if (showAdvanced) {
       advancedButtons = (
         <div>
-          <p>The "nested groups" options are advanced options for queries
-                   that do not have any specific condition at the
-                   base of the query.
-                   Use <code>Add nested "or" condition groups</code> if
-                   you need to build a query of the form.
-          <i> (a or b) and (c or d) [or (e and f)..]</i>.
-          </p>
+          <p>{t('The "nested groups" options are advanced options for '
+            +'queries that do not have any specific condition at the base'
+            +' of the query. Use Add nested "or" condition groups if you'
+            +' need to build a query of the form. (a or b) and (c or d)'
+            +' [or (e and f)..]', {ns: 'dataquery'})}</p>
           <div style={bGroupStyle}>
             <ButtonElement
-              label='Add nested "or" condition groups'
+              label={t('Add nested "or" condition groups', {ns: 'dataquery'})}
               onUserInput={(e: React.MouseEvent) => {
                 e.preventDefault();
                 props.query.operator = 'and';
@@ -155,14 +224,12 @@ function DefineFilters(props: {
               }}
             />
           </div>
-          <p>
-                   Use <code>Add nested "and" condition groups</code> if you
-                   need to build a query of the form
-            <i> (a and b) or (c and d) [or (e and f)..]</i>.
-          </p>
+          <p>{t('Use Add nested "and" condition groups if you need to '
+            +'build a query of the form (a and b) or (c and d) '
+            +'[or (e and f)..]', {ns: 'dataquery'})}</p>
           <div style={bGroupStyle}>
             <ButtonElement
-              label='Add nested "and" condition groups'
+              label={t('Add nested "and" condition groups', {ns: 'dataquery'})}
               onUserInput={(e: React.MouseEvent) => {
                 e.preventDefault();
                 props.query.operator = 'or';
@@ -178,23 +245,23 @@ function DefineFilters(props: {
     displayquery = <div>
       <div style={{paddingLeft: '2em',
         paddingRight: '2em'}}>
-        <p>Currently querying for ALL candidates.</p>
-        <p>You can add conditions by clicking one of the buttons below.</p>
-        <p>Click <code>Add Condition</code> to add one or more conditions
-               to your filters (ie. "Date Of Birth &lt; 2015-02-15"). <b>This is
-               most likely where you want to start your filters.</b>
-        </p>
-        <p>You can also import a population from a CSV by clicking
-                the <code>Import from CSV</code> button.</p>
-        <p>The advanced options are for queries that do not have
-               a condition to add at the base of the query.</p>
+        <p>{t('Currently querying for ALL candidates.', {ns: 'dataquery'})}</p>
+        <p>{t('You can add conditions by clicking one of the buttons below.',
+          {ns: 'dataquery'})}</p>
+        <p>{t('Click Add Condition to add one or more conditions to your'
+          +' filters (ie. "Date Of Birth < 2015-02-15"). This is most likely'
+          +' where you want to start your filters.', {ns: 'dataquery'})}</p>
+        <p>{t('You can also import a population from a CSV by clicking the'
+          +' Import from CSV button.', {ns: 'dataquery'})}</p>
+        <p>{t('The advanced options are for queries that do not have a '
+          +'condition to add at the base of the query.', {ns: 'dataquery'})}</p>
       </div>
       <form>
         <fieldset>
           <div style={{display: 'flex'}}>
             <div style={bGroupStyle}>
               <ButtonElement
-                label='Add Condition'
+                label={t('Add Condition', {ns: 'dataquery'})}
                 columnSize="col-sm-12"
                 onUserInput={(e: React.MouseEvent) => {
                   e.preventDefault();
@@ -204,7 +271,7 @@ function DefineFilters(props: {
             </div>
             <div style={bGroupStyle}>
               <ButtonElement
-                label='Import from CSV'
+                label={t('Import from CSV', {ns: 'dataquery'})}
                 columnSize="col-sm-12"
                 onUserInput={(e: React.MouseEvent) => {
                   e.preventDefault();
@@ -231,29 +298,25 @@ function DefineFilters(props: {
       advancedButtons = (
         <div>
           <div style={bGroupStyle}>
-            <p>Use <code>New "and" subgroup</code> if the rest of the
-                    query you need to write is a subgroup consisting
-                    of "and" conditions. ie your query is of the form:
-            <div>
-              <i>(your condition above) or (c and d [and e and f..])</i>
-            </div>
-            </p>
+            <p>{t('Use New "and" subgroup if the rest of the query you'
+              +' need to write is a subgroup consisting of "and" '
+              +'conditions. ie your query is of the form: (your condition'
+              +' above) or (c and d [and e and f..])',
+            {ns: 'dataquery'})}</p>
             <ButtonElement
-              label='New "and" subgroup'
+              label={t('New "and" subgroup', {ns: 'dataquery'})}
               onUserInput={(e: React.MouseEvent) => {
                 e.preventDefault();
                 props.query.operator = 'or';
                 props.addNewQueryGroup(props.query);
               }} />
-            <p>Use <code>New "or" subgroup</code> if the rest of the
-                    query you need to write is a subgroup consisting
-                    of "or" conditions. ie your query is of the form:
-            <div>
-              <i>(your condition above) and (c or d [or e or f..])</i>
-            </div>
-            </p>
+            <p>{t('Use New "or" subgroup if the rest of the query you '
+              +'need to write is a subgroup consisting of "or" '
+              +'conditions. ie your query is of the form: (your '
+              +'condition above) and (c or d [or e or f..])',
+            {ns: 'dataquery'})}</p>
             <ButtonElement
-              label='New "or" subgroup'
+              label={t('New "or" subgroup', {ns: 'dataquery'})}
               onUserInput={(e: React.MouseEvent) => {
                 e.preventDefault();
                 props.query.operator = 'and';
@@ -265,7 +328,8 @@ function DefineFilters(props: {
     }
     // buttons for 1. Add "and" condition 2. Add "or" condition
     displayquery = (<div>
-      <p>Currently querying for any candidates with:</p>
+      <p>{t('Currently querying for any candidates with:',
+        {ns: 'dataquery'})}</p>
 
       <form>
         <fieldset>
@@ -282,7 +346,7 @@ function DefineFilters(props: {
             />
             <div style={{alignSelf: 'center'}}><i
               className="fas fa-trash-alt"
-              title='Delete Item'
+              title={t('Delete Item', {ns: 'dataquery'})}
               onClick={() => {
                 const newquery = props.removeQueryGroupItem(
                   props.query,
@@ -296,10 +360,14 @@ function DefineFilters(props: {
               style={{cursor: 'pointer'}} />
             </div>
           </div>
-          <div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
             <div style={bGroupStyle}>
               <ButtonElement
-                label='Add "and" condition'
+                label={t('Add "and" condition', {ns: 'dataquery'})}
                 columnSize="col-sm-12"
                 onUserInput={(e: React.MouseEvent) => {
                   e.preventDefault();
@@ -307,13 +375,16 @@ function DefineFilters(props: {
                   setAddModal(true);
                 }} />
               <ButtonElement
-                label='Add "or" condition'
+                label={t('Add "or" condition', {ns: 'dataquery'})}
                 columnSize="col-sm-12"
                 onUserInput={(e: React.MouseEvent) => {
                   e.preventDefault();
                   setAddModal(true);
                   props.query.operator = 'or';
                 }} />
+            </div>
+            <div style={{marginTop: '1ex'}}>
+              {removeFiltersButton}
             </div>
           </div>
           {toggleAdvancedButton}
@@ -325,7 +396,8 @@ function DefineFilters(props: {
     // Add buttons are delegated to the QueryTree rendering so they
     // can be placed at the right level
     displayquery = <div>
-      <p>Currently querying for any candidates with:</p>
+      <p>{t('Currently querying for any candidates with:',
+        {ns: 'dataquery'})}</p>
       <form>
         <fieldset>
           <QueryTree
@@ -343,6 +415,8 @@ function DefineFilters(props: {
             backgroundColour='rgb(240, 240, 240)'
             newGroup={props.addNewQueryGroup}
             fulldictionary={props.fulldictionary}
+            setDeleteItemIndex={setDeleteItemIndex}
+            extraButton={removeFiltersButton}
           />
         </fieldset>
       </form>
@@ -350,6 +424,7 @@ function DefineFilters(props: {
   }
   const modal = addModal ? (
     <AddFilterModal
+      t={t}
       query={modalQueryGroup}
       closeModal={() => setAddModal(false)}
       addQueryGroupItem={(querygroup, condition) => {
@@ -371,12 +446,20 @@ function DefineFilters(props: {
     <ImportCSVModal
       setQuery={props.setQuery}
       closeModal={() => setCSVModal(false)}
+      visitLabels={props.visitLabels}
     />
   ) : '';
 
   const matchCount = queryMatches === null
     ? <div>&nbsp;</div> // So the header doesn't jump around
-    : <div>Query matches <b>{queryMatches}</b> candidates</div>;
+    : <div>
+      <Trans
+        i18nKey="Query matches <bold>{{count}}</bold> candidates"
+        ns="dataquery"
+        values={{count: queryMatches}}
+        components={{bold: <b/>}}
+      />
+    </div>;
   return (<div>
     {modal}
     {csvModalHTML}
@@ -385,13 +468,14 @@ function DefineFilters(props: {
       justifyContent: 'space-between',
       alignItems: 'baseline',
     }}>
-      <h1>Current Query</h1>
+      <h1>{t('Current Query', {ns: 'dataquery'})}</h1>
       {matchCount}
     </div>
     <InfoPanel>
-                Note that only candidates which you have permission to
-                access in LORIS are included in results. Number of
-                results may vary from other users running the same query.
+      {t('Note that only candidates which you have permission to '
+        +'access in LORIS are included in results. Number of results'
+        +' may vary from other users running the same query.',
+      {ns: 'dataquery'})}
     </InfoPanel>
     {displayquery}
   </div>

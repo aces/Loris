@@ -8,7 +8,7 @@
  * "Usage: php delete_physiological_file.php PhysiologicalFileID";
  * "Example: php delete_physiological_file.php 25";
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -214,26 +214,6 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
     );
     print_r($event_archives);
 
-    echo "\nAnnotations Files\n";
-    echo "----------------------------\n";
-    $annotations_files = $DB->pselectCol(
-        'SELECT DISTINCT FilePath
-        FROM physiological_annotation_file
-        WHERE PhysiologicalFileID=:pfid',
-        ['pfid' => $physioFileID]
-    );
-    print_r($annotations_files);
-
-    echo "\nAnnotations Archives\n";
-    echo "----------------------------\n";
-    $annotations_archives = $DB->pselectCol(
-        'SELECT DISTINCT FilePath
-        FROM physiological_annotation_archive
-        WHERE PhysiologicalFileID=:pfid',
-        ['pfid' => $physioFileID]
-    );
-    print_r($annotations_archives);
-
     echo "\nChunks\n";
     echo "----------------------------\n";
     $chunks = $DB->pselectCol(
@@ -289,14 +269,6 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $files[] = $data_path . $event_archive;
         }
 
-        foreach ($annotations_files as $annotation_file) {
-            $files[] = $data_path . $annotation_file;
-        }
-
-        foreach ($annotations_archives as $annotations_archive) {
-            $files[] = $data_path . $annotations_archive;
-        }
-
         foreach ($files as $file) {
             echo "Deleting $file\n";
             try {
@@ -349,50 +321,6 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
                 );
             }
         }
-
-        print("Delete physiological_annotation_*\n");
-        // delete from the physiological_annotation_* tables
-        $AnnotationFileIDs = $DB->pselectCol(
-            'SELECT AnnotationFileID
-            FROM physiological_annotation_file
-            WHERE PhysiologicalFileID=:pfid',
-            ['pfid' => $physioFileID]
-        );
-
-        if (!empty($AnnotationFileIDs)) {
-            foreach ($AnnotationFileIDs as $AnnotationFileID) {
-                $DB->delete(
-                    "physiological_annotation_instance",
-                    ["AnnotationFileID" => $AnnotationFileID]
-                );
-                $DB->delete(
-                    "physiological_annotation_rel",
-                    ["AnnotationTSV" => $AnnotationFileID]
-                );
-                $DB->delete(
-                    "physiological_annotation_rel",
-                    ["AnnotationJSON" => $AnnotationFileID]
-                );
-                $DB->delete(
-                    "physiological_annotation_parameter",
-                    ["AnnotationFileID" => $AnnotationFileID]
-                );
-            }
-        }
-
-        print("Delete physiological_annotation_file\n");
-        // delete from the physiological_annotation_file table
-        $DB->delete(
-            "physiological_annotation_file",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
-        print("Delete physiological_annotation_archive\n");
-        // delete from the physiological_annotation_archive table
-        $DB->delete(
-            "physiological_annotation_archive",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
 
         print("Delete physiological_channel\n");
         // delete from the physiological_channel table
@@ -523,7 +451,8 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             ["PhysiologicalFileID" => $physioFileID]
         );
 
-        print("Delete physiological_task_event_opt\n");
+        print("Delete physiological_task_event_opt");
+        print(" and physiological_task_event_hed_rel\n");
         // delete from the physiological_task_event_opt table
         $PhysiologicalTaskEventIDs = $DB->pselectCol(
             'SELECT PhysiologicalTaskEventID
@@ -536,6 +465,10 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             foreach ($PhysiologicalTaskEventIDs as $PhysiologicalTaskEventID) {
                 $DB->delete(
                     "physiological_task_event_opt",
+                    ["PhysiologicalTaskEventID" => $PhysiologicalTaskEventID]
+                );
+                $DB->delete(
+                    "physiological_task_event_hed_rel",
                     ["PhysiologicalTaskEventID" => $PhysiologicalTaskEventID]
                 );
             }
@@ -597,39 +530,18 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
                     $output,
                     $DB
                 );
-            }
-        }
-
-        //delete from the physiological_task_event table
-        _printResultsSQL(
-            "physiological_task_event",
-            ["PhysiologicalFileID" => $physioFileID],
-            $output,
-            $DB
-        );
-
-        // delete from the physiological_annotation_instance table
-        $AnnotationFileIDs = $DB->pselect(
-            'SELECT AnnotationFileID
-            FROM physiological_annotation_file
-            WHERE PhysiologicalFileID=:pfid',
-            ['pfid' => $physioFileID]
-        );
-
-        if (!empty($AnnotationFileIDs)) {
-            foreach ($AnnotationFileIDs as $AnnotationFileID) {
                 _printResultsSQL(
-                    "physiological_annotation_instance",
-                    ["AnnotationFileID" => $AnnotationFileID],
+                    "physiological_task_event_hed_rel",
+                    ["PhysiologicalTaskEventID" => $PhysiologicalTaskEventID],
                     $output,
                     $DB
                 );
             }
         }
 
-        // delete from the physiological_annotation_file table
+        //delete from the physiological_task_event table
         _printResultsSQL(
-            "physiological_annotation_file",
+            "physiological_task_event",
             ["PhysiologicalFileID" => $physioFileID],
             $output,
             $DB

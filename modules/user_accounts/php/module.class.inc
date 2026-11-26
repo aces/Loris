@@ -38,6 +38,7 @@ class Module extends \Module
         if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
             $loris = $request->getAttribute("loris");
             $page  = $this->loadPage($loris, "edit_user");
+            $page->loadResources($request->getAttribute("user"), $request);
             return $page->process($request, $page);
         }
         return parent::handle($request);
@@ -46,11 +47,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Admin";
+        return \LORIS\GUI\MenuCategory::singleton("Admin");
     }
 
     /**
@@ -60,7 +61,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "User Accounts";
+        return dgettext("user_accounts", "User Accounts");
     }
 
     /**
@@ -83,7 +84,11 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "Pending account approval",
+                    new \LORIS\GUI\LocalizableString(
+                        "user_accounts",
+                        "Pending account approval",
+                        "Pending account approvals",
+                    ),
                     $DB,
                     "SELECT COUNT(DISTINCT users.UserID) FROM users
                         LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)

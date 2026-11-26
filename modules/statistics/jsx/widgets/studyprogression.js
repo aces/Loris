@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {setupCharts} from './helpers/chartBuilder';
+import {useTranslation} from 'react-i18next';
+import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
+import frStrings from '../../locale/fr/LC_MESSAGES/statistics.json';
+import hiStrings from '../../locale/hi/LC_MESSAGES/statistics.json';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
@@ -12,7 +17,33 @@ import {setupCharts} from './helpers/chartBuilder';
  * @return {JSX.Element}
  */
 const StudyProgression = (props) => {
+  const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
+  const [showFiltersScans, setShowFiltersScans] = useState(false);
+  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
+  useEffect( () => {
+    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+    i18n.addResourceBundle('fr', 'statistics', frStrings);
+    i18n.addResourceBundle('hi', 'statistics', hiStrings);
+
+    // Re-set default state that depended on the translation
+    let newdetails = {...chartDetails};
+    newdetails['total_scans']['scans_bymonth']['title']
+      = t('Scan sessions per site', {ns: 'statistics'});
+    newdetails['total_recruitment']['siterecruitment_bymonth']['title']
+      = t('Recruitment per site', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['title']
+      = t('Dataset size breakdown by project', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['label']
+      = t('Size (GB)', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['units']
+      = t('GB', {ns: 'loris'});
+    newdetails['project_sizes']['size_byproject']['yLabel']
+      = t('Size (GB)', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['titlePrefix']
+      = t('Project', {ns: 'loris', count: 1});
+    setChartDetails(newdetails);
+  }, []);
 
   let json = props.data;
 
@@ -20,24 +51,47 @@ const StudyProgression = (props) => {
     'total_scans': {
       'scans_bymonth': {
         sizing: 11,
-        title: 'Scan sessions per site',
+        title: t('Scan sessions per site', {ns: 'statistics'}),
         filters: '',
         chartType: 'line',
         dataType: 'line',
-        label: 'Scans',
+        label: t('Scans', {ns: 'loris'}),
         legend: 'under',
         options: {line: 'line'},
+        chartObject: null,
+        yLabel: t('Candidates registered', {ns: 'statistics'}),
+        titlePrefix: t('Month', {ns: 'loris'}),
       },
     },
     'total_recruitment': {
-      'siterecruitment_line': {
+      'siterecruitment_bymonth': {
         sizing: 11,
-        title: 'Recruitment per site',
+        title: t('Recruitment per site', {ns: 'statistics'}),
         filters: '',
         chartType: 'line',
         dataType: 'line',
         legend: '',
         options: {line: 'line'},
+        chartObject: null,
+        yLabel: t('Candidates registered', {ns: 'statistics'}),
+        titlePrefix: t('Month', {ns: 'loris'}),
+      },
+    },
+    'project_sizes': {
+      'size_byproject': {
+        sizing: 11,
+        title: t('Dataset size breakdown by project', {ns: 'statistics'}),
+        filters: '',
+        chartType: 'pie',
+        dataType: 'pie',
+        label: t('Size (GB)', {ns: 'statistics'}),
+        units: t('GB', {ns: 'loris'}),
+        showPieLabelRatio: false,
+        legend: '',
+        options: {pie: 'pie', bar: 'bar'},
+        chartObject: null,
+        yLabel: t('Size (GB)', {ns: 'statistics'}),
+        titlePrefix: t('Project', {ns: 'loris', count: 1}),
       },
     },
   });
@@ -52,65 +106,189 @@ const StudyProgression = (props) => {
    */
   useEffect(() => {
     if (json && Object.keys(json).length !== 0) {
-      setupCharts(false, chartDetails).then((data) => {
+      setupCharts(
+        t,
+        false,
+        chartDetails,
+        t('Total', {ns: 'loris'})
+      ).then((data) => {
         setChartDetails(data);
       });
       json = props.data;
       setLoading(false);
     }
-  }, [props.data]);
+  }, [props.data, t]);
 
   const updateFilters = (formDataObj, section) => {
     props.updateFilters(formDataObj, section,
       chartDetails, setChartDetails);
   };
 
-  return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
+  const title = (subtitle) => t('Study Progression', {ns: 'statistics'})
+    + ' — ' + t(subtitle, {ns: 'statistics'});
+  const filterLabel = (hide) => hide ?
+    t('Hide Filters', {ns: 'loris'})
+    : t('Show Filters', {ns: 'loris'});
+  return loading ? <Panel title={t('Study Progression', {ns: 'statistics'})}>
+    <Loader /></Panel> : (
     <>
       <Panel
-        title='Study Progression'
+        title={t('Study Progression', {ns: 'statistics'})}
         id='statistics_studyprogression'
-        onChangeView={() => {
-          setupCharts(false, chartDetails);
+        onChangeView={(index) => {
+          setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'}));
+          // reset filters when switching views
+          setShowFiltersBreakdown(false);
         }}
         views={[
           {
-            content: json['studyprogression']['total_scans'] > 0 ?
-              <>
-                <QueryChartForm
-                  Module={'statistics'}
-                  name={'studyprogression'}
-                  id={'studyprogressionSiteScansForm'}
-                  data={props.data}
-                  callback={(formDataObj) => {
-                    updateFilters(formDataObj, 'total_scans');
-                  }}
-                />
-                {showChart('total_scans', 'scans_bymonth')}
-              </> :
-              <p>There have been no scans yet.</p>,
-            title: 'Study Progression - site scans',
+            content:
+              <div className='study-progression-container'>
+                {Object.entries(json['studyprogression']
+                  ['progressionData']).map(
+                  ([projectName, projectData]) => {
+                    if (projectData.length > 0) {
+                      return <div key={`progress_${projectName}`}>
+                        <h3 style={{marginTop: 0}}>{projectName}</h3>
+                        <div className='study-progression-project'>
+                          {projectData.map((data) => {
+                            const commonProps = {
+                              className: 'study-progression-button',
+                              style: {
+                                backgroundColor: data['colour'],
+                              },
+                              key: `progress_${projectName}_${data['title']}`,
+                            };
+
+                            return (
+                              <a {...commonProps} href={data['url']}>
+                                <h4>{data['count']}</h4>
+                                <div>{data['title']}</div>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>;
+                    }
+                  }
+                )}
+              </div>,
+            title: title('Summary'),
           },
           {
-            content:
-            json['studyprogression']['recruitment']
-              ['overall']['total_recruitment']
-            > 0 ?
-              <>
-                <QueryChartForm
-                  Module={'statistics'}
-                  name={'studyprogression'}
-                  id={'studyprogressionSiteRecruitmentForm'}
-                  data={props.data}
-                  callback={(formDataObj) => {
-                    updateFilters(formDataObj, 'total_recruitment');
-                  }}
-                />
-                {showChart('total_recruitment', 'siterecruitment_line')}
-              </> :
-              <p>There have been no candidates registered yet.</p>,
-            title: 'Study Progression - site recruitment',
+            content: json['studyprogression']['total_scans'] > 0 ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                <div className="btn-group" style={{marginBottom: '10px'}}>
+                  <button
+                    type="button"
+                    className="btn btn-default btn-xs"
+                    onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+                  >
+                    {filterLabel(showFiltersScans)}
+                  </button>
+                </div>
+                {showFiltersBreakdown && (
+                  <QueryChartForm
+                    Module={'statistics'}
+                    name={'studyprogression'}
+                    id={'studyprogressionSiteScansForm'}
+                    data={props.data}
+                    callback={(formDataObj) => {
+                      updateFilters(formDataObj, 'total_scans');
+                    }}
+                  />
+                )}
+                {showChart('total_scans', 'scans_bymonth')}
+              </div>
+            ) : (
+              <p>{t('There have been no scans yet.', {ns: 'statistics'})}</p>
+            ),
+            title: title('Site Scans'),
+            subtitle: t(
+              'Total Scans: {{count}}',
+              {
+                ns: 'statistics',
+                count: json['studyprogression']['total_scans'],
+              }
+            ),
+            onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
+          {
+            content: json['studyprogression']['recruitment']['overall'][
+              'total_recruitment'
+            ] > 0 ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
+                    <button
+                      type="button"
+                      className="btn btn-default btn-xs"
+                      onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+                    >
+                      {filterLabel(showFiltersBreakdown)}
+                    </button>
+                  </div>
+                  {showFiltersBreakdown && (
+                    <QueryChartForm
+                      Module={'statistics'}
+                      name={'studyprogression'}
+                      id={'studyprogressionSiteRecruitmentForm'}
+                      data={props.data}
+                      callback={(formDataObj) => {
+                        updateFilters(formDataObj, 'total_recruitment');
+                      }}
+                    />
+                  )}
+                  {showChart('total_recruitment', 'siterecruitment_bymonth')}
+                </div>
+              ) : (
+                <p>
+                  {t(
+                    'There have been no candidates registered yet.',
+                    {ns: 'statistics'}
+                  )}
+                </p>
+              ),
+            title: title('Site Recruitment'),
+            onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
+          },
+          (json['studyprogression']['total_size'] ?? -1) > 0 && (
+            {
+              content:
+                Object.keys(json['options']['projects']).length > 0 ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                    }}
+                  >
+                    {showChart('project_sizes', 'size_byproject')}
+                  </div>
+                ) : (
+                  <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
+                ),
+              title: title('Project Dataset Sizes'),
+              subtitle: t(
+                'Total Size: {{count}} GB',
+                {
+                  ns: 'statistics',
+                  count: json['studyprogression']['total_size'] ?? -1,
+                }
+              ),
+            }
+          ),
         ]}
       />
     </>
@@ -119,8 +297,8 @@ const StudyProgression = (props) => {
 StudyProgression.propTypes = {
   data: PropTypes.object,
   baseURL: PropTypes.string,
-  updateFilters: PropTypes.function,
-  showChart: PropTypes.function,
+  updateFilters: PropTypes.func,
+  showChart: PropTypes.func,
 };
 StudyProgression.defaultProps = {
   data: {},

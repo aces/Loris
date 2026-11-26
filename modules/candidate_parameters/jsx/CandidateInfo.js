@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
+
 import {
   FormElement,
   StaticElement,
@@ -7,7 +10,10 @@ import {
   DateElement,
   ButtonElement,
   TextareaElement,
+  NumericElement,
 } from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Candiate info component
@@ -19,10 +25,11 @@ class CandidateInfo extends Component {
    */
   constructor(props) {
     super(props);
+    const {t} = this.props;
     this.state = {
       caveatOptions: {
-        true: 'True',
-        false: 'False',
+        true: t('True', {ns: 'loris'}),
+        false: t('False', {ns: 'loris'}),
       },
       Data: [],
       formData: {},
@@ -31,6 +38,7 @@ class CandidateInfo extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
     this.setFormData = this.setFormData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -41,34 +49,29 @@ class CandidateInfo extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    let that = this;
-    $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        success: function(data) {
-          let formData = {
-            flaggedCaveatemptor: data.flagged_caveatemptor,
-            flaggedOther: data.flagged_other,
-            flaggedReason: data.flagged_reason,
-          };
+    const {t} = this.props;
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
+        let formData = {
+          flaggedCaveatemptor: data.flagged_caveatemptor,
+          flaggedOther: data.flagged_other,
+          flaggedReason: data.flagged_reason,
+        };
 
-          // Add parameter values to formData
-          Object.assign(formData, data.parameter_values);
+        // Add parameter values to formData
+        Object.assign(formData, data.parameter_values);
 
-          that.setState({
-            Data: data,
-            isLoaded: true,
-            formData: formData,
-          });
-        },
-        error: function(data, errorCode, errorMsg) {
-          that.setState({
-            error: 'An error occurred when loading the form!',
-          });
-        },
-      }
-    );
+        this.setState({
+          Data: data,
+          isLoaded: true,
+          formData: formData,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: t('An error occurred while loading the page.', {ns: 'loris'}),
+        });
+      });
   }
 
   /**
@@ -113,6 +116,7 @@ class CandidateInfo extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return (
@@ -129,7 +133,7 @@ class CandidateInfo extends Component {
     let updateButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
-      updateButton = <ButtonElement label="Update"/>;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
     let reasonDisabled = true;
     let reasonRequired = false;
@@ -169,7 +173,7 @@ class CandidateInfo extends Component {
 
     if (reasonKey !== null) {
       specifyOther = <TextareaElement
-        label="If Other, please specify"
+        label={t('If Other, please specify', {ns: 'candidate_parameters'})}
         name="flaggedOther"
         value={this.state.formData.flaggedOther}
         onUserInput={this.setFormData}
@@ -185,6 +189,7 @@ class CandidateInfo extends Component {
         let paramTypeID = extraParameters[key2].ParameterTypeID;
         let name = paramTypeID;
         let value = this.state.formData[paramTypeID];
+        const required = Number(extraParameters[key2].Required) === 1;
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
         case 'enu':
@@ -208,6 +213,7 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -221,6 +227,21 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
+              key={key2}
+            />
+          );
+          break;
+        case 'num':
+          extraParameterFields.push(
+            <NumericElement
+              label={extraParameters[key2].Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -234,6 +255,7 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -246,11 +268,12 @@ class CandidateInfo extends Component {
     if (this.state.updateResult) {
       if (this.state.updateResult === 'success') {
         alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
+        alertMessage = t('Update Successful!', {ns: 'loris'});
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : 'Failed to update!';
+        alertMessage =
+          errorMessage ? errorMessage : t('Failed to update!', {ns: 'loris'});
       }
     }
 
@@ -265,15 +288,26 @@ class CandidateInfo extends Component {
           ref="form"
           class="col-md-6">
           <StaticElement
-            label="PSCID"
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.Data.pscid}
           />
           <StaticElement
-            label="DCCID"
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.Data.candID}
           />
+          <StaticElement
+            label={t('Registration Project', {ns: 'candidate_parameters'})}
+            text={this.state.Data.registrationProject}
+          />
+          <StaticElement
+            label={t('Registration Cohort', {ns: 'loris'})}
+            text={this.state.Data.registrationCohort}
+          />
           <SelectElement
-            label="Caveat Emptor Flag for Candidate"
+            label={
+              t('Caveat Emptor Flag for Candidate',
+                {ns: 'candidate_parameters'})
+            }
             name="flaggedCaveatemptor"
             options={this.state.caveatOptions}
             value={this.state.formData.flaggedCaveatemptor}
@@ -283,7 +317,10 @@ class CandidateInfo extends Component {
             required={true}
           />
           <SelectElement
-            label="Reason for Caveat Emptor Flag"
+            label={
+              t('Reason for Caveat Emptor Flag',
+                {ns: 'candidate_parameters'})
+            }
             name="flaggedReason"
             options={this.state.Data.caveatReasonOptions}
             value={this.state.formData.flaggedReason}
@@ -321,37 +358,43 @@ class CandidateInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
+    lorisFetch(self.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        self.setState(
+          {
+            updateResult: 'success',
+          }
+        );
+        self.showAlertMessage();
+      })
+      .catch((err) => {
+        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
           self.setState(
             {
-              updateResult: 'success',
+              updateResult: 'error',
+              errorMessage: err.lorisMessage,
             }
           );
           self.showAlertMessage();
-        },
-        error: function(err) {
-          if (err.responseText !== '') {
-            let errorMessage = JSON.parse(err.responseText).message;
-            self.setState(
-              {
-                updateResult: 'error',
-                errorMessage: errorMessage,
-              }
-            );
-            self.showAlertMessage();
-          }
-        },
-
-      }
-    );
+        }
+      });
   }
 
   /**
@@ -377,10 +420,11 @@ class CandidateInfo extends Component {
   }
 }
 CandidateInfo.propTypes = {
-  dataURL: PropTypes.string,
-  tabName: PropTypes.string,
+  candID: PropTypes.string.isRequired,
+  tabName: PropTypes.string.isRequired,
   action: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
-
-
-export default CandidateInfo;
+export default withTranslation(
+  ['candidate_parameters', 'loris']
+)(CandidateInfo);

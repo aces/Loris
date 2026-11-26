@@ -1,3 +1,9 @@
+# This page is deprecated.
+
+For information on running integration tests for LORIS locally, please read the [testing README](https://github.com/aces/Loris/tree/master/test).
+
+---
+
 >**IMPORTANT**:
 >
 1. The following instructions are in beta. Please report any inconsistencies or unclear information.

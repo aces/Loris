@@ -3,7 +3,7 @@
 /**
  * This file contains a database wrapper around the CouchDB API for Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -27,6 +27,7 @@ class SocketWrapper
     public $host;
     public $port;
     public $socket;
+
     /**
      * Constructor for SocketWrapper
      */
@@ -368,7 +369,6 @@ class CouchDB
         $response_split = explode("\r\n\r\n", $response, 2);
         return trim($response_split[1]);
     }
-
 
     /**
      * Low level function to get a document from CouchDB, relative to the

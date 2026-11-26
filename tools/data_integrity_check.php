@@ -99,11 +99,10 @@ $duplicate_flag_arr = $DB->pselect(
                 JOIN
                     test_names
                 ON
-                    (test_names.ID = flag.TestID)
+                    (test_names.ID = test.TestID)
                 WHERE
                     test.CommentID NOT LIKE 'DDE_%' AND
-                    flag.SessionID = test.SessionID AND
-                    test_names.Test_name = test.Test_name
+                    flag.SessionID = test.SessionID
             ) > 1
         ) OR
         (
@@ -116,11 +115,10 @@ $duplicate_flag_arr = $DB->pselect(
                 JOIN
                     test_names
                 ON
-                    (test_names.ID = flag.TestID)
+                    (test_names.ID = test.TestID)
                 WHERE
                     test.CommentID LIKE 'DDE_%' AND
-                    flag.SessionID = test.SessionID AND
-                    test_names.Test_name = test.Test_name
+                    flag.SessionID = test.SessionID
             ) > 1
         )
 ",

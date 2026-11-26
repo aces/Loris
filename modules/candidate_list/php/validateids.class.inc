@@ -7,7 +7,7 @@
  * It takes two parameters (PSCID and CandID) and returns either
  * "1" or "0".
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Candidate_List
@@ -40,7 +40,8 @@ class ValidateIDs extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return (
             $user->hasPermission('access_all_profiles')

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
-
+import {withTranslation} from 'react-i18next';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';
-import StaticDataTable from 'jsx/StaticDataTable';
+import DataTable from 'jsx/DataTable';
 
 /**
  * Imaging uploader component
@@ -19,7 +19,6 @@ class ImagingUploader extends Component {
    */
   constructor(props) {
     super(props);
-    loris.hiddenHeaders = ['PatientName', 'SessionID'];
 
     this.state = {
       isLoaded: false,
@@ -102,26 +101,27 @@ class ImagingUploader extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    // If a column if set as hidden, don't display it
-    if (loris.hiddenHeaders.indexOf(column) > -1) {
-      return null;
-    }
-
-    // Create the mapping between rowHeaders and rowData in a row object.
-    let row = {};
-    rowHeaders.forEach((header, index) => {
-      row[header] = rowData[index];
-    }, this);
-
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
+    const {t} = this.props;
+    const progressKey = t('Progress', {ns: 'loris'});
+    const filesCreatedKey = t('Number Of Files Created',
+      {ns: 'imaging_uploader'});
+    const filesInsertedKey = t('Number Of Files Inserted',
+      {ns: 'imaging_uploader'});
+    const tarchiveInfoKey = t('Tarchive Info', {ns: 'imaging_uploader'});
 
-    if (column === 'Progress') {
+    const failureText = t('Failure', {ns: 'loris'});
+    const inProgressText = t('In Progress', {ns: 'loris'}) + '...';
+    const successText = t('Success', {ns: 'loris'});
+    const notStartedText = t('Not Started', {ns: 'loris'});
+
+    if (column === progressKey) {
       if (cell === 'Failure') {
         cellStyle.color = '#fff';
         return (
           <td className="label-danger" style={cellStyle}>
-            {cell}
+            {failureText}
           </td>
         );
       }
@@ -130,28 +130,35 @@ class ImagingUploader extends Component {
         cellStyle.color = '#fff';
         return (
           <td className="label-warning" style={cellStyle}>
-            {cell}
+            {inProgressText}
           </td>
         );
       }
 
       if (cell === 'Success') {
-        const created = row['Number Of Files Created'];
-        const inserted = row['Number Of Files Inserted'];
+        const created = rowData[filesCreatedKey];
+        const inserted = rowData[filesInsertedKey];
         return (
           <td style={cellStyle}>
-            {cell} ({inserted} out of {created})
+            {t('{{successText}} ({{inserted}} out of {{created}})',
+              {
+                ns: 'imaging_uploader',
+                successText: successText,
+                inserted: inserted,
+                created: created,
+              }
+            )}
           </td>
         );
       }
 
       // cell == 'Not started'
       return (
-        <td style={cellStyle}>{cell}</td>
+        <td style={cellStyle}>{notStartedText}</td>
       );
     }
 
-    if (column === 'Tarchive Info') {
+    if (column === tarchiveInfoKey) {
       if (!cell || cell === '0') {
         return (<td></td>);
       }
@@ -160,16 +167,16 @@ class ImagingUploader extends Component {
                   + cell;
       return (
         <td style={cellStyle}>
-          <a href={url}>View details</a>
+          <a href={url}>{t('View details', {ns: 'loris'})}</a>
         </td>
       );
     }
 
-    if (column === 'Number Of Files Inserted') {
+    if (column === filesInsertedKey) {
       if (cell > 0) {
         const url = loris.BaseURL
                     + '/imaging_browser/viewSession/?sessionID='
-                    + row.SessionID;
+                    + rowData['SessionID'];
         return (
           <td style={cellStyle}>
             <a href={url}>{cell}</a>
@@ -178,18 +185,20 @@ class ImagingUploader extends Component {
       }
     }
 
-    if (column === 'Number Of Files Created') {
+    if (column === filesCreatedKey) {
       let violatedScans;
       if (
-        row['Number Of Files Created'] - row['Number Of Files Inserted'] > 0
+        rowData[filesCreatedKey] - rowData[filesInsertedKey] > 0
       ) {
         let numViolatedScans =
-             row['Number Of Files Created'] - row['Number Of Files Inserted'];
+            rowData[filesCreatedKey] - rowData[filesInsertedKey];
 
         const violUrl = loris.BaseURL +
-                         '/mri_violations/?patientName=' + row.PatientName;
+            '/mri_violations/?patientName=' + rowData['PatientName'];
         violatedScans = <a href={violUrl}>
-           ({numViolatedScans} violated scans)
+          {this.props.t('({{numViolatedScans}} violated scans)',
+            {ns: 'imaging_uploader', numViolatedScans: numViolatedScans}
+          )}
         </a>;
       }
 
@@ -211,13 +220,14 @@ class ImagingUploader extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
     const tabList = [
-      {id: 'browse', label: 'Browse'},
-      {id: 'upload', label: 'Upload'},
+      {id: 'browse', label: t('Browse', {ns: 'loris'})},
+      {id: 'upload', label: t('Upload', {ns: 'loris'})},
     ];
 
     return (
@@ -233,26 +243,52 @@ class ImagingUploader extends Component {
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >
-                <TextboxElement {... this.state.data.form.candID} />
-                <TextboxElement {... this.state.data.form.pSCID} />
-                <SelectElement {... this.state.data.form.visitLabel} />
+                <TextboxElement
+                  {... this.state.data.form.candID}
+                  label={t(this.state.data.form.candID.label, {ns: 'loris'})}
+                />
+                <TextboxElement
+                  {... this.state.data.form.pSCID}
+                  label={t(this.state.data.form.pSCID.label, {ns: 'loris'})}
+                />
+                <SelectElement
+                  {... this.state.data.form.visitLabel}
+                  label={t(this.state.data.form.visitLabel.label,
+                    {ns: 'loris'})}
+                />
                 <ButtonElement
                   type='reset'
-                  label='Clear Filters'
+                  label={t('Clear Filters', {ns: 'loris'})}
                   onUserInput={this.resetFilters}
                 />
               </FilterForm>
             </div>
             <div className='col-md-7'>
-              <LogPanel />
+              <LogPanel t={t}/>
             </div>
           </div>
           <div id='mri_upload_table'>
-            <StaticDataTable
-              Data={this.state.data.Data}
-              Headers={this.state.data.Headers}
+            <DataTable
+              data={this.state.data.Data}
+              fields={this.state.data.Headers.map(
+                (header, index) => {
+                  let filter = {};
+                  if (header === 'DCCID') {
+                    filter = {name: 'candID'};
+                  } else if (header === 'PSCID') {
+                    filter = {name: 'pSCID'};
+                  } else if (header === 'Visit Label') {
+                    filter = {name: 'visitLabel'};
+                  }
+                  return {
+                    label: t(header, {ns: ['imaging_uploader', 'loris']}),
+                    show: (header !== 'SessionID' && header !== 'PatientName'),
+                    filter: filter,
+                  };
+                }
+              )}
               getFormattedCell={this.formatColumn}
-              Filter={this.state.filter}
+              filters={this.state.filter}
               hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>
@@ -265,6 +301,7 @@ class ImagingUploader extends Component {
             imagingUploaderAutoLaunch={
               this.state.data.imagingUploaderAutoLaunch
             }
+            t={t}
           />
         </TabPane>
       </Tabs>
@@ -274,6 +311,7 @@ class ImagingUploader extends Component {
 
 ImagingUploader.propTypes = {
   DataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
-export default ImagingUploader;
+export default withTranslation(['imaging_uploader', 'loris'])(ImagingUploader);

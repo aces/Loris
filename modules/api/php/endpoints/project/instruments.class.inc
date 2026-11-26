@@ -3,7 +3,7 @@
 /**
  * This implements the Instruments page class under Project
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -117,7 +117,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
 
             $user = $request->getAttribute("user");
-            if ($instrument->_hasAccess($user) == false) {
+            if ($instrument->isAccessibleBy($user) == false) {
                 return new \LORIS\Http\Response\JSON\Forbidden();
             }
         } catch (\Exception $e) {

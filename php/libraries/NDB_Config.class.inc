@@ -3,7 +3,7 @@
 /**
  * Provides an interface to the NeuroDB configuration
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -48,6 +48,7 @@ class NDB_Config
     var $configFilePath;
 
     static $configInstance = null;
+
     /**
      * The singleton design pattern - autoloads config file
      *
@@ -145,7 +146,6 @@ class NDB_Config
 
         return $file;
     }
-
 
     /**
      * Converts a SimpleXMLElement to an array.
@@ -292,12 +292,26 @@ class NDB_Config
         if ($id === null) {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
-                        cs.AllowMultiple, child.Name
+                        cs.AllowMultiple, child.Name, 1 AS HasConfigValue
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.Name=:nm",
                 ["nm" => $name]
             );
+
+            if (count($configSetting) === 0) {
+                $configSetting = $db->pselect(
+                    "SELECT cc.ID as ParentID, child.ID as ChildID,
+                            0 AS AllowMultiple, child.Name, 0 AS HasConfigValue
+                    FROM ConfigCategories cc
+                        LEFT JOIN ConfigSettings child ON (
+                            child.CategoryID=cc.ID
+                            AND child.Parent IS NULL
+                        )
+                    WHERE cc.Name=:nm",
+                    ["nm" => $name]
+                );
+            }
 
             if (count($configSetting) === 0) {
                 throw new ConfigurationException(
@@ -307,7 +321,7 @@ class NDB_Config
         } else {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
-                        cs.AllowMultiple, child.Name
+                        cs.AllowMultiple, child.Name, 1 AS HasConfigValue
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.ID=:nm",
@@ -320,13 +334,19 @@ class NDB_Config
         // If multiple rows are returned, it means that there are children
         // for this element, so we need to build the tree to be consistent
         // with what would have come from the config.xml.
+        $firstConfigSetting = null;
         if (count($configSetting) === 1) {
+            $firstConfigSetting = $configSetting->getFirstRow();
+        }
+        if ($firstConfigSetting !== null
+            && $firstConfigSetting['ChildID'] === null
+            && intval($firstConfigSetting['HasConfigValue'] ?? 1) === 1
+        ) {
             // Trying to get a single value from the database.
-            $configSetting = $configSetting->getFirstRow();
-            if ($configSetting['AllowMultiple'] == '0') {
+            if ($firstConfigSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
-                    ['CID' => $configSetting['ParentID']]
+                    ['CID' => $firstConfigSetting['ParentID']]
                 );
                 if (empty($val)) {
                     return null;
@@ -337,7 +357,7 @@ class NDB_Config
                 // as ie. $config->getSetting("DoubleDataEntryInstruments")
                 $val = $db->pselect(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
-                    ['CID' => $configSetting['ParentID']]
+                    ['CID' => $firstConfigSetting['ParentID']]
                 );
                 $ret = [];
                 foreach ($val as $item) {
@@ -345,10 +365,13 @@ class NDB_Config
                 }
                 return $ret;
             }
-        } else if (count($configSetting) > 1) {
+        } else if (count($configSetting) >= 1) {
             // This was a parent element, so construct the children.
             $tree = [];
             foreach ($configSetting as $childSetting) {
+                if ($childSetting['ChildID'] === null) {
+                    continue;
+                }
                 $childName        = $childSetting['Name'];
                 $childID          = $childSetting['ChildID'];
                 $childValue       = $this->getSettingFromDB(
@@ -435,6 +458,69 @@ class NDB_Config
     }
 
     /**
+     * Gets a config setting which may have variations in different languages.
+     *
+     * Translated strings have some restrictions that do not apply to
+     * getConfig()
+     *
+     * 1. The config name must be a direct setting and not a hierarchical one
+     * 2. The return type must be a string (otherwise what are you translating?)
+     * 3. The value must come from the database, and not config.xml
+     *
+     * If a config setting value does not exist in a localized format for
+     * $langcode, this function will fall back on the "default" (generally
+     * English) getSetting() value for $name.
+     *
+     * @param string $langcode The language of the setting to retrieve
+     * @param string $name     The config setting name
+     *
+     * @return string
+     */
+    function getMultilingualSetting(string $langcode, string $name): string
+    {
+        if (isset($this->settingCache[$name][$langcode])) {
+            return $this->settingCache[$name][$langcode];
+        }
+
+        $factory = NDB_Factory::singleton();
+
+        $db = $factory->database();
+        // Verify that it's really a multilingual setting.
+        $configSetting = $db->pselect(
+            "SELECT ID, AllowMultiple
+	     FROM ConfigSettings cs
+             WHERE cs.Name=:nm AND Multilingual=true",
+            ["nm" => $name]
+        );
+
+        if (count($configSetting) !== 1) {
+            throw new ConfigurationException(
+                "Config setting $name does not exist in database "
+                . "as a multilingual setting"
+            );
+        }
+
+        $localizedVal = $db->pselectOne(
+            "SELECT Value FROM ConfigI18n i18n
+                   JOIN language l ON (l.language_id=i18n.LanguageID)
+            WHERE l.language_code=:lc AND i18n.ConfigID=:cid",
+            [
+                'lc'  => $langcode,
+                'cid' => $configSetting->getFirstRow()['ID'],
+            ]
+        );
+
+        if ($localizedVal !== null) {
+            $this->settingCache[$name] = [$langcode => $localizedVal];
+            return $localizedVal;
+        }
+
+        // Fallback on the unlocalized setting value.
+        $this->settingCache[$name] = [$langcode => $this->getSetting($name)];
+        return $this->settingCache[$name][$langcode];
+    }
+
+    /**
      * Helper function to determine whether a setting with a boolean value is
      * enabled, i.e. equal to "true".
      * Since settings are returned as strings, this must be done as a string
@@ -474,7 +560,7 @@ class NDB_Config
             null
             : [
                 'id'                => $info['ProjectID'],
-                'Name'              => $info['Name'],
+                'Name'              => dgettext("Project", $info['Name']),
                 'Alias'             => $info['Alias'],
                 'recruitmentTarget' => $info['recruitmentTarget'],
             ];
@@ -507,7 +593,7 @@ class NDB_Config
             $x = $info['WindowDifference'];
             return [
                 'id'                => $info['CohortID'],
-                'title'             => $info['title'],
+                'title'             => dgettext("cohort", $info['title']),
                 'options'           => [
                     'useEDC'           => $info['useEDC'],
                     'WindowDifference' => $x,
@@ -517,7 +603,6 @@ class NDB_Config
         }
         return [];
     }
-
 
     /**
      * Retrieve a set of links to display to the user
@@ -559,4 +644,3 @@ class NDB_Config
 
     }
 }
-

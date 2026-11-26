@@ -23,7 +23,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $candIDStr = ltrim($request->getURI()->getPath(), '/');
+        $candIDStr = ltrim($request->getAttribute("unhandledURI")->getPath(), '/');
         try {
             $candID    = new CandID($candIDStr);
             $candidate = \Candidate::singleton($candID);
@@ -44,7 +44,6 @@ class Module extends \Module
         }
     }
 
-
     /**
      * {@inheritDoc}
      *
@@ -52,7 +51,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Candidate Profile";
+        return dgettext("candidate_profile", "Candidate Profile");
     }
 
     /**
@@ -91,9 +90,9 @@ class Module extends \Module
 
             return [
                 new CandidateWidget(
-                    "Candidate Info",
+                    dgettext("candidate_profile", "Candidate Info"),
                     $baseurl . "/candidate_profile/js/CandidateInfo.js",
-                    "lorisjs.candidate_profile.CandidateInfo.CandidateInfo",
+                    "lorisjs.candidate_profile.CandidateInfo.default.CandidateInfo",
                     ['ExtraCandidateInfo' => $params],
                     1,
                     2,

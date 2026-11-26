@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {ModuleDictionary, FullDictionary} from '../types';
 
@@ -19,10 +20,11 @@ export type CategoriesAPIReturn = {
 /**
  * React hook to load categories from the server.
  *
- * @returns {CategoriesAPIReturn} - Categories returned by dictionary API
+ * @returns - Categories returned by dictionary API
  */
 function useCategories(): CategoriesAPIReturn|null {
   const [categories, setCategories] = useState(null);
+  const {t} = useTranslation('dataquery');
   useEffect(() => {
     if (categories !== null) {
       return;
@@ -30,7 +32,7 @@ function useCategories(): CategoriesAPIReturn|null {
     fetch('/dictionary/categories', {credentials: 'same-origin'})
       .then((resp) => {
         if (!resp.ok) {
-          throw new Error('Invalid response');
+          throw new Error(t('Invalid response', {ns: 'dataquery'}));
         }
         return resp.json();
       }).then((result) => {
@@ -51,7 +53,7 @@ type DataDictionaryReturnType = [
 /**
  * React hook to use a data dictionary loaded from a LORIS server.
  *
- * @returns {array} - The retrieved dictionary and a callback to populate a new module into it
+ * @returns - The retrieved dictionary and a callback to populate a new module into it
  */
 function useDataDictionary(): DataDictionaryReturnType {
   const [fulldictionary, setDictionary] = useState<FullDictionary>({});
@@ -59,12 +61,12 @@ function useDataDictionary(): DataDictionaryReturnType {
   // typescript says the key is always defined when we try and check if
   // it's set, need to figure out the correct way to do that, for now just use any
   const [pendingModules, setPendingModules] = useState<any>({});
-
+  const {t} = useTranslation('dataquery');
   /**
    * Fetch a module's dictionary and cache it into fulldictionary.
    *
-   * @param {string} module - The module name to fetch the dictionary for
-   * @returns {Promise} - A promise that resolves to module's dictionary
+   * @param module - The module name to fetch the dictionary for
+   * @returns - A promise that resolves to module's dictionary
    */
   const fetchModuleDictionary = (module: string): Promise<any> => {
     if (fulldictionary[module]) {
@@ -80,13 +82,14 @@ function useDataDictionary(): DataDictionaryReturnType {
           {credentials: 'same-origin'}
         ).then((resp) => {
           if (!resp.ok) {
-            throw new Error('Invalid response');
+            throw new Error(t('Invalid response', {ns: 'dataquery'}));
           }
           return resp.json();
         }).then((result) => {
-          fulldictionary[module] = result;
-          setDictionary({...fulldictionary});
-
+          setDictionary((prev) => ({
+            ...prev,
+            [module]: result,
+          }));
           resolve(result);
         }).catch( (error) => {
           console.error(error);

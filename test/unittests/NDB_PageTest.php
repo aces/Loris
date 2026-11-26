@@ -3,7 +3,7 @@
 /**
  * Unit tests for NDB_Page class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -696,6 +696,7 @@ class NDB_PageTest extends TestCase
     public function testDisplayWithFormFrozen()
     {
         $this->markTestIncomplete("This test is incomplete!");
+        /*
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
         '@phan-var \NDB_Config $configMock';
         $factory = NDB_Factory::singleton();
@@ -703,10 +704,11 @@ class NDB_PageTest extends TestCase
         $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $smarty->expects($this->any())->method('fetch')
+        $smarty->method('fetch')
             ->willReturn("fetch was called!");
         $this->_page->form->freeze();
         $this->assertEquals("fetch was called!", $this->_page->display());
+        */
     }
 
     /**
@@ -736,16 +738,16 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that _hasAccess returns true
+     * Test that isAccessibleByreturns true
      *
-     * @covers NDB_Page::_hasAccess
+     * @covers NDB_Page::isAccessibleBy
      * @return void
      */
-    public function testHasAccess()
+    public function testIsAccessibleBy()
     {
         $user = $this->getMockBuilder('\User')->getMock();
         '@phan-var \User $user';
-        $this->assertTrue($this->_page->_hasAccess($user));
+        $this->assertTrue($this->_page->isAccessibleBy($user));
     }
 
     /**
@@ -816,6 +818,7 @@ class NDB_PageTest extends TestCase
                 '/js/jquery.fileupload.js',
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
+                '/js/components/PolicyButton.js',
                 '/js/util/queryString.js',
                 '/js/components/Help.js',
             ],

@@ -51,7 +51,7 @@ CREATE TABLE `psc` (
   `Phone2` varchar(12) DEFAULT NULL,
   `Contact1` varchar(150) DEFAULT NULL,
   `Contact2` varchar(150) DEFAULT NULL,
-  `Alias` char(3) NOT NULL DEFAULT '',
+  `Alias` char(4) NOT NULL DEFAULT '',
   `MRI_alias` varchar(4) NOT NULL DEFAULT '',
   `Account` varchar(8) DEFAULT NULL,
   `Study_site` enum('N','Y') DEFAULT 'Y',
@@ -75,6 +75,7 @@ INSERT INTO language (language_code, language_label) VALUES
 
 CREATE TABLE `sex` (
   `Name` varchar(255) NOT NULL,
+  `Colour` varchar(50) NULL,
   PRIMARY KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores sex options available for candidates in LORIS';
 
@@ -105,6 +106,7 @@ CREATE TABLE `users` (
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
   `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
+  `TOTPSecret` binary(64) DEFAULT NULL,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
@@ -115,7 +117,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
   CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -158,10 +160,12 @@ CREATE TABLE `candidate` (
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
   `DoD` date DEFAULT NULL,
+  `DoD_precision` enum('known_full','known_year_month','known_year','unknown') DEFAULT NULL,
   `EDC` date DEFAULT NULL,
   `Sex` varchar(255) DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL,
   `RegistrationProjectID` int(10) unsigned NOT NULL,
+  `RegistrationCohortID` int(10) unsigned DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,
@@ -178,15 +182,18 @@ CREATE TABLE `candidate` (
   `ProbandDoB` date DEFAULT NULL,
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
+  UNIQUE KEY `CandID` (`CandID`),
   KEY `FK_candidate_1` (`RegistrationCenterID`),
   KEY `CandidateActive` (`Active`),
   KEY `FK_candidate_2_idx` (`flagged_reason`),
   KEY `PSCID` (`PSCID`),
   KEY `FK_candidate_sex_1` (`Sex`),
   KEY `FK_candidate_sex_2` (`ProbandSex`),
+  KEY `FK_candidate_RegistrationCohortID` (`RegistrationCohortID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_RegistrationCohortID` FOREIGN KEY (`RegistrationCohortID`) REFERENCES `cohort` (`CohortID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_sex_1` FOREIGN KEY (`Sex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_sex_2` FOREIGN KEY (`ProbandSex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -220,7 +227,6 @@ CREATE TABLE `session` (
   `BVLQCType` enum('Visual','Hardcopy') DEFAULT NULL,
   `BVLQCExclusion` enum('Excluded','Not Excluded') DEFAULT NULL,
   `QCd` enum('Visual','Hardcopy') DEFAULT NULL,
-  `Scan_done` enum('N','Y') DEFAULT NULL,
   `MRIQCStatus` enum('','Pass','Fail') NOT NULL DEFAULT '',
   `MRIQCPending` enum('Y','N') NOT NULL DEFAULT 'N',
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
@@ -293,13 +299,12 @@ CREATE TABLE `flag` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
   `TestID` int(10) unsigned NOT NULL,
-  `CommentID` varchar(255) NOT NULL default '',
+  `CommentID` varchar(255) NOT NULL,
   `Data_entry` enum('In Progress','Complete') default NULL,
   `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `DataID` int(10) unsigned default NULL,
   PRIMARY KEY  (`CommentID`),
@@ -309,10 +314,27 @@ CREATE TABLE `flag` (
   KEY `flag_Data_entry` (`Data_entry`),
   KEY `flag_Validity` (`Validity`),
   KEY `flag_Administration` (`Administration`),
-  KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
   CONSTRAINT `FK_ibfk_1` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `flag_editors` (
+  `userID` int(10) unsigned NOT NULL,
+  `CommentID` VARCHAR(255) NOT NULL,
+  `editDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`userID`,`CommentID`),
+  KEY `FK_flag_editors_2` (`CommentID`),
+  CONSTRAINT `FK_flag_editors_2`
+  FOREIGN KEY (`CommentID`)
+    REFERENCES `flag` (`CommentID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_flag_editors_1`
+  FOREIGN KEY (`userID`)
+    REFERENCES `users` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `history` (
@@ -327,7 +349,7 @@ CREATE TABLE `history` (
   `userID` varchar(255) NOT NULL default '',
   `type` char(1),
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table keeps track of ongoing changes in the database. ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='This table keeps track of ongoing changes in the database. ';
 
 CREATE TABLE `test_battery` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -341,7 +363,7 @@ CREATE TABLE `test_battery` (
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
-  `DoubleDataEntryEnabled` enum('Y','N') default 'N',
+  `DoubleDataEntryEnabled` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -366,13 +388,12 @@ CREATE TABLE `Visit_Windows` (
 
 
 CREATE TABLE `tarchive` (
-  `DicomArchiveID` varchar(255) NOT NULL default '',
+  `StudyInstanceUID` varchar(255) NOT NULL,
   `PatientID` varchar(255) NOT NULL default '',
   `PatientName` varchar(255) NOT NULL default '',
   `PatientDoB` date default NULL,
   `PatientSex` varchar(255) default NULL,
-  `neurodbCenterName` varchar(255) default NULL,
-  `CenterName` varchar(255) NOT NULL default '',
+  `InstitutionName` varchar(255) NULL,
   `LastUpdate` datetime default NULL,
   `DateAcquired` date default NULL,
   `DateFirstArchived` datetime default NULL,
@@ -380,24 +401,18 @@ CREATE TABLE `tarchive` (
   `AcquisitionCount` int(11) NOT NULL default 0,
   `NonDicomFileCount` int(11) NOT NULL default 0,
   `DicomFileCount` int(11) NOT NULL default 0,
-  `md5sumDicomOnly` varchar(255) default NULL,
-  `md5sumArchive` varchar(255) default NULL,
-  `CreatingUser` varchar(255) NOT NULL default '',
-  `sumTypeVersion` tinyint(4) NOT NULL default 0,
-  `tarTypeVersion` tinyint(4) default NULL,
-  `SourceLocation` varchar(255) NOT NULL default '',
-  `ArchiveLocation` varchar(255) default NULL,
-  `ScannerManufacturer` varchar(255) NOT NULL default '',
-  `ScannerModel` varchar(255) NOT NULL default '',
-  `ScannerSerialNumber` varchar(255) NOT NULL default '',
-  `ScannerSoftwareVersion` varchar(255) NOT NULL default '',
+  `md5sumDicomOnly` varchar(255) NOT NULL,
+  `md5sumArchive` varchar(255) NOT NULL,
+  `CreatingUser` varchar(255) NOT NULL,
+  `SourceLocation` varchar(255) NOT NULL,
+  `ArchiveLocation` varchar(255) NOT NULL,
+  `ScannerManufacturer` varchar(255) NULL,
+  `ScannerModel` varchar(255) NULL,
+  `ScannerSerialNumber` varchar(255) NULL,
+  `ScannerSoftwareVersion` varchar(255) NULL,
   `SessionID` int(10) unsigned default NULL,
-  `uploadAttempt` tinyint(4) NOT NULL default 0,
   `CreateInfo` text,
-  `AcquisitionMetadata` longtext NOT NULL,
   `TarchiveID` int(11) NOT NULL auto_increment,
-  `DateSent` datetime DEFAULT NULL,
-  `PendingTransfer` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (`TarchiveID`),
   KEY `SessionID` (`SessionID`),
   CONSTRAINT `FK_tarchive_sessionID`
@@ -567,6 +582,30 @@ INSERT INTO `mri_scan_type` VALUES
     (999,'unknown'),
     (1000,'NA');
 
+CREATE TABLE `bids_dataset` (
+  `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Path` VARCHAR(255) NOT NULL,
+  `InsertTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UpdateTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `bids_dataset_path_unique` (`Path`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `bids_file` (
+  `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `DatasetID` INT(10) UNSIGNED NOT NULL,
+  `Path` VARCHAR(255) NOT NULL,
+  `SourcePath` VARCHAR(255) NULL,
+  `InsertTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Blake2bHash` CHAR(128) NOT NULL,
+  `Derivative` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `bids_file_dataset_id_path_unique` (`DatasetID`, `Path`),
+  KEY `bids_file_dataset_id_fk_idx` (`DatasetID`),
+  CONSTRAINT `bids_file_dataset_id_fk`
+    FOREIGN KEY (`DatasetID`) REFERENCES `bids_dataset` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `files` (
   `FileID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
@@ -591,6 +630,7 @@ CREATE TABLE `files` (
   `ScannerID` int(10) unsigned default NULL,
   `AcqOrderPerModality` int(11) default NULL,
   `AcquisitionDate` date default NULL,
+  `BidsInfoID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -600,6 +640,7 @@ CREATE TABLE `files` (
   KEY `scannerid` (`ScannerID`),
   KEY `tarchivesource` (`TarchiveSource`),
   KEY `FK_files_HrrtArchiveID_1` (`HrrtArchiveID`),
+  KEY `files_bids_info_id_fk_idx` (`BidsInfoID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
@@ -607,7 +648,9 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`),
   CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
   CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`),
-  CONSTRAINT `FK_files_HrrtArchiveID` FOREIGN KEY (`HrrtArchiveID`) REFERENCES `hrrt_archive` (`HrrtArchiveID`)
+  CONSTRAINT `FK_files_HrrtArchiveID` FOREIGN KEY (`HrrtArchiveID`) REFERENCES `hrrt_archive` (`HrrtArchiveID`),
+  CONSTRAINT `files_bids_info_id_fk`
+    FOREIGN KEY (`BidsInfoID`) REFERENCES `bids_file` (`ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_intermediary` (
@@ -1074,7 +1117,7 @@ CREATE TABLE `document_repository` (
   `comments` text,
   `multipart` enum('Yes','No') DEFAULT NULL,
   `EARLI` tinyint(1) DEFAULT 0,
-  `hide_video` tinyint(1) DEFAULT 0,
+  `hide_file` tinyint(1) DEFAULT 0,
   `File_category` int(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`record_id`),
   KEY `fk_document_repository_1_idx` (`File_category`),
@@ -1115,7 +1158,7 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL,
-  `ProcessID` int(11) NOT NULL,
+  `ProcessID` int(11) DEFAULT NULL,
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` enum('Y','N') default NULL,
@@ -1204,10 +1247,12 @@ INSERT INTO notification_modules (module_name, operation_type, as_admin, templat
   ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited'),
   ('publication', 'submission', 'N', 'notifier_publication_submission.tpl', 'Publication: Submission Received'),
   ('publication', 'review', 'N', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed'),
-  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
+  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited'),
+  ('issue_tracker', 'create/edit', 'N', 'issue_change.tpl', 'Issue Tracker: All issues created or edited');
 
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='publication' AND ns.service='email_text';
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='issue_tracker' AND ns.service='email_text';
 
 -- Transfer Document repository notifications to new system
 INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
@@ -1263,19 +1308,20 @@ CREATE TABLE `participant_status_options` (
   `Description` varchar(255) DEFAULT NULL,
   `Required` tinyint(1) DEFAULT NULL,
   `parentID` int(10) DEFAULT NULL,
+  `commentRequired` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `participant_status_options` (Description, Required) VALUES
-  ('Active',0),
-  ('Refused/Not Enrolled',0),
-  ('Ineligible',0),
-  ('Excluded',0),
-  ('Inactive',1),
-  ('Incomplete',1),
-  ('Complete',0);
+INSERT INTO `participant_status_options` (Description, Required, commentRequired) VALUES
+  ('Active',0,0),
+  ('Refused/Not Enrolled',0,1),
+  ('Ineligible',0,1),
+  ('Excluded',0,1),
+  ('Inactive',1,1),
+  ('Incomplete',1,1),
+  ('Complete',0,0);
 
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
   ('Unsure',NULL,@tmp_val),
@@ -1377,6 +1423,11 @@ CREATE TABLE `examiners_psc_rel` (
   CONSTRAINT `FK_examiners_psc_rel_2` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- REDCap examiner
+INSERT INTO examiners (full_name) VALUES ('REDCap');
+INSERT IGNORE INTO examiners_psc_rel (examinerID, centerID, active, pending_approval)
+    SELECT e.examinerID, p.CenterID, "Y", "N" from psc p JOIN examiners e WHERE e.Full_name = "REDCap";
+
 CREATE TABLE `certification` (
   `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `examinerID` int(10) unsigned NOT NULL,
@@ -1421,6 +1472,60 @@ CREATE TABLE `user_account_history` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ********************************
+-- tables for policies
+-- ********************************
+
+CREATE TABLE policies (
+    PolicyID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Version INT NOT NULL,
+    ModuleID INT NOT NULL,
+    PolicyRenewalTime INT DEFAULT 7,
+    PolicyRenewalTimeUnit enum('D','Y','M','H') DEFAULT 'D',
+    Content TEXT NULL,
+    SwalTitle VARCHAR(255) DEFAULT 'Terms of Use',
+    HeaderButton enum('Y','N') DEFAULT 'Y',
+    HeaderButtonText VARCHAR(255) DEFAULT 'Terms of Use',
+    Active enum('Y','N') DEFAULT 'Y',
+    AcceptButtonText VARCHAR(255) DEFAULT 'Accept',
+    DeclineButtonText VARCHAR(255) DEFAULT 'Decline',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE policiesI18n (
+  PolicyID INT NOT NULL,
+  LanguageID INT(10) UNSIGNED NOT NULL,
+  Content TEXT NULL,
+  SwalTitle VARCHAR(255) NULL,
+  HeaderButtonText VARCHAR(255) NULL,
+  AcceptButtonText VARCHAR(255) NULL,
+  DeclineButtonText VARCHAR(255) NULL,
+  CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (PolicyID, LanguageID),
+  CONSTRAINT policiesI18n_policy_fk
+    FOREIGN KEY (PolicyID)
+    REFERENCES policies (PolicyID)
+    ON DELETE CASCADE,
+  CONSTRAINT policiesI18n_language_fk
+    FOREIGN KEY (LanguageID)
+    REFERENCES language (language_id)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE user_policy_decision (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    PolicyID INT NOT NULL,
+    Decision enum('Accepted','Declined') NOT NULL,
+    DecisionDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- ********************************
 -- user_login_history tables
 -- ********************************
@@ -1459,6 +1564,35 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
   ('statistics', 'stats_behavioural', 'Behavioural Statistics', 3),
   ('statistics', 'stats_MRI', 'Imaging Statistics', 4);
 
+
+-- ********************************
+-- statistics
+-- ********************************
+
+
+CREATE TABLE `cached_data_type` (
+    `CachedDataTypeID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(255) UNIQUE NOT NULL,
+    PRIMARY KEY  (`CachedDataTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `cached_data_type` (`Name`) SELECT 'projects_disk_space';
+
+
+CREATE TABLE `cached_data` (
+   `CachedDataID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+   `CachedDataTypeID` INT(10) UNSIGNED NOT NULL,
+   `Value` TEXT NOT NULL,
+   `LastUpdate` TIMESTAMP NOT NULL
+       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   PRIMARY KEY  (`CachedDataID`),
+   CONSTRAINT `FK_cached_data_type` FOREIGN KEY (`CachedDataTypeID`)
+       REFERENCES `cached_data_type` (`CachedDataTypeID`)
+       ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ********************************
 -- server_processes tables
 -- ********************************
@@ -1479,6 +1613,18 @@ CREATE TABLE `server_processes` (
   PRIMARY KEY (`id`),
   KEY `FK_task_1` (`userid`),
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `mri_upload_server_processes_rel` (
+  `UploadID` int(10) unsigned NOT NULL,
+  `ProcessID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`UploadID`,`ProcessID`),
+  CONSTRAINT `UK_mri_upload_server_processes_rel_ProcessID`
+    UNIQUE KEY `ProcessID` (`ProcessID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_UploadID`
+    FOREIGN KEY (`UploadID`) REFERENCES `mri_upload` (`UploadID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_ProcessID`
+    FOREIGN KEY (`ProcessID`) REFERENCES `server_processes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `media` (
@@ -1511,7 +1657,7 @@ CREATE TABLE `issues_categories` (
   `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 INSERT INTO issues_categories (categoryName) VALUES
@@ -1529,7 +1675,7 @@ CREATE TABLE `issues` (
   `title` varchar(255) NOT NULL DEFAULT '',
   `reporter` varchar(255) NOT NULL DEFAULT '',
   `assignee` varchar(255) DEFAULT NULL,
-  `status` enum('new','acknowledged','feedback','assigned','resolved','closed') NOT NULL DEFAULT 'new',
+  `status` enum('new','acknowledged','feedback','assigned','resolved','closed','rejected') NOT NULL DEFAULT 'new',
   `priority` enum('low','normal','high','urgent','immediate') NOT NULL DEFAULT 'low',
   `module` int(10) unsigned DEFAULT NULL,
   `dateCreated` datetime DEFAULT NULL,
@@ -1558,13 +1704,13 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_instrument` FOREIGN KEY (`instrument`) REFERENCES `test_names` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candidateID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -1600,7 +1746,7 @@ CREATE TABLE `issues_watching` (
   PRIMARY KEY (`userID`,`issueID`),
   KEY `fk_issues_watching_2` (`issueID`),
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `issues_attachments` (
     `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -1803,6 +1949,17 @@ CREATE TABLE `parameter_candidate` (
   CONSTRAINT `FK_parameter_candidate_2` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`ID`),
   CONSTRAINT `FK_parameter_candidate_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='per-candidate equivalent of parameter_session';
+
+CREATE TABLE `parameter_candidate_rules` (
+  `ParameterTypeID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `Required` tinyint(1) NOT NULL DEFAULT 0,
+  `ShowOnRegistration` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`ParameterTypeID`, `ProjectID`),
+  KEY `FK_parameter_candidate_rules_2` (`ProjectID`),
+  CONSTRAINT `FK_parameter_candidate_rules_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_parameter_candidate_rules_2` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='project-specific candidate parameter rules';
 
 CREATE TABLE `parameter_file` (
   `ParameterFileID` int(10) unsigned NOT NULL auto_increment,
@@ -2111,8 +2268,10 @@ CREATE TABLE `data_release` (
  `version` varchar(255),
  `upload_date` date,
  `ProjectID` INT(10) UNSIGNED NULL,
+ `hidden_by_userid` INT(10) UNSIGNED NULL,
  PRIMARY KEY (`id`),
- FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID)
+ FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID),
+ FOREIGN KEY (hidden_by_userid) REFERENCES users (ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_release_permissions` (
@@ -2404,7 +2563,6 @@ CREATE TABLE `publication_collaborator` (
 CREATE TABLE `publication` (
     `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationStatusID` int(2) unsigned NOT NULL default 1,
-    `LeadInvestigatorID` int(10) unsigned NOT NULL,
     `UserID` int(10) unsigned NOT NULL,
     `RatedBy` int(10) unsigned,
     `DateProposed` date NOT NULL,
@@ -2416,14 +2574,15 @@ CREATE TABLE `publication` (
     `doi` text DEFAULT NULL,
     `datePublication` date DEFAULT NULL,
     `link` varchar(255) DEFAULT NULL,
-    `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
+    `publishingStatus` enum('In Progress','Submitted','Published') DEFAULT NULL,
     `project` int(10) unsigned DEFAULT NULL,
+    `LeadInvestigator` VARCHAR(255) DEFAULT NULL,
+    `LeadInvestigatorEmail` VARCHAR(255) DEFAULT NULL,
     CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_PublicationStatusID` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
-    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`),
     CONSTRAINT `UK_publication_Title` UNIQUE (`Title`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
@@ -2503,12 +2662,12 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-CREATE TABLE Login_Summary_Statistics (
+CREATE TABLE login_summary_statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
     Value INT,
     QueryOrder INT,
-     PRIMARY KEY (Title, Project)
+    PRIMARY KEY (Title, Project)
 );
 
 CREATE TABLE dataquery_queries (
@@ -2601,3 +2760,42 @@ CREATE TABLE `appointment` (
   CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `openid_connect_providers` (
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Name` varchar(255) NOT NULL,
+    `BaseURI` text NOT NULL, -- the provider's base uri that hosts .well-known/openid-configuration
+    `ClientID` text NOT NULL,
+    `ClientSecret` text NOT NULL,
+    `RedirectURI` text NOT NULL, -- our local redirectURI that the provider is configured to authorize
+                                 -- should be something like "https://something.loris.ca/oidc/callback"
+    PRIMARY KEY (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `openid_connect_csrf` (
+    `State` varchar(64) NOT NULL UNIQUE,
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Nonce` varchar(64) NOT NULL,
+    `Created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`State`),
+    CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- REDCap tables
+-- ********************************
+
+CREATE TABLE `redcap_notification` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `complete` char(1) NOT NULL,
+  `project_id` varchar(50) NOT NULL,
+  `record` varchar(20) NOT NULL COMMENT 'PSCID',
+  `redcap_event_name` varchar(50) NOT NULL COMMENT 'Visit_label',
+  `instrument` varchar(150) NOT NULL COMMENT 'Test_name',
+  `username` varchar(100) NOT NULL,
+  `redcap_url` varchar(255) NOT NULL,
+  `project_url` varchar(255) NOT NULL,
+  `received_dt` datetime NOT NULL,
+  `handled_dt` datetime NULL,
+  PRIMARY KEY (`id`),
+  KEY `i_redcap_notif_received_dt` (`received_dt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

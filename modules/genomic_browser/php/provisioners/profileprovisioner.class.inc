@@ -25,11 +25,10 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             "
             SELECT
                 psc.Name AS _PSC,
-                LPAD(candidate.CandID, 10, '0') AS _DCCID,
+                candidate.CandID AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
                 subproj.title AS _Cohort,
-                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 candidate.ExternalID AS _externalID,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,

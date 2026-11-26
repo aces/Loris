@@ -3,8 +3,8 @@ import {ReactElement, ReactNode} from 'react';
 /**
  * Display a message in an information panel.
  *
- * @param {object} props - React props
- * @returns {ReactNode} - the InfoPanel
+ * @param props - React props
+ * @returns - the InfoPanel
  */
 function InfoPanel(props: {children: ReactNode}): ReactElement {
   return (

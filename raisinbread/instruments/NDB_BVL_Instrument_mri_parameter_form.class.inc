@@ -3,7 +3,7 @@
  * This file contains the NDB_BVL_Instrument_mri_parameter_form
  * class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Instrument
  * @package  Initial_MRI
@@ -132,7 +132,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         );
 
         $typesOfData = array(
-            null                => '',
+            ''                  => '',
             'participant'       => 'Participant',
             'human_phantom'     => 'Human Phantom',
             'geometric_phantom' => 'Geometric Phantom',
@@ -148,7 +148,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         $query    = "SELECT Name, CenterID FROM psc";
         $db       = \NDB_Factory::singleton()->database();
         $sitesRaw = $db->pselect($query, array());
-        $sites    = array(null => '');
+        $sites    = array('' => '');
         foreach ($sitesRaw as $i) {
             $sites[$i['CenterID']] = $i['Name'];
         }
@@ -161,12 +161,12 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         $this->addLabel("Total Duration of Session");
         $this->addNumericElement(
             'total_duration_hours',
-            $this->indent . $this->indent . 'Hours:'
+            $this->indent . $this->indent . dgettext($this->name, 'Hours:')
         );
 
         $this->addNumericElement(
             'total_duration_minutes',
-            $this->indent . $this->indent . 'Minutes:'
+            $this->indent . $this->indent . dgettext($this->name, 'Minutes:')
         );
 
         $this->addBasicText(
@@ -184,10 +184,10 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         );
 
         $acquiredOptions = array(
-            null      => '',
-            'yes'     => 'Yes',
-            'partial' => 'Partial',
-            'no'      => 'No',
+            ''        => '',
+            'yes'     => dgettext("loris", 'Yes'),
+            'partial' => dgettext($this->name, 'Partial'),
+            'no'      => dgettext("loris", 'No'),
         );
 
         $scanTypes = array(

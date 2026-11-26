@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -39,10 +39,12 @@ class Stats_Behavioural extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
+
     /**
      * InCenter function
      *
@@ -99,12 +101,12 @@ class Stats_Behavioural extends \NDB_Form
         // PROJECTS
         $allProjectList = \Utility::getProjectList();
         $projects       = [];
-        $projects['']   = 'All Projects';
+        $projects['']   = dgettext('statistics', 'All Projects');
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
             $projects[$ProjectID->__toString()]
-                = $allProjectList[$ProjectID->__toString()];
+                = dgettext('Project', $allProjectList[$ProjectID->__toString()]);
         }
 
         $this->tpl_data['Projects'] = $projects;
@@ -133,7 +135,12 @@ class Stats_Behavioural extends \NDB_Form
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
-                = htmlspecialchars($_REQUEST['BehaviouralProject']);
+                = htmlspecialchars(
+                    $_REQUEST['BehaviouralProject'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                );
         } elseif (!empty($userProjectsIDs)) {
             $currentProject = null;
             $paramProjects  = [];
@@ -161,7 +168,7 @@ class Stats_Behavioural extends \NDB_Form
             }
             $Visits = \Utility::getVisitList($currentProject);
         } else {
-            $Visits = \Utility::getVisitList();
+            $Visits = $user->getVisits();
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';

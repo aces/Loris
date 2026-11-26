@@ -5,7 +5,7 @@
  *
  * Gets data to populate the front-end form fields
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  Media
@@ -66,6 +66,7 @@ default:
     header("HTTP/1.1 404 Not Found");
     exit(0);
 }
+
 /**
  * Handles the fetching of Candidate Info fields
  *
@@ -89,11 +90,16 @@ function getCandInfoFields()
         $caveat_options[$row['ID']] = $row['Description'];
     }
 
-    // get pscid
-    $pscid = $db->pselectOne(
-        'SELECT PSCID FROM candidate WHERE CandID = :candid',
+    $candidateInfo = $db->pselectRow(
+        'SELECT c.PSCID, p.Name AS RegistrationProject,
+            ch.title AS RegistrationCohort
+        FROM candidate c
+        LEFT JOIN Project p ON p.ProjectID=c.RegistrationProjectID
+        LEFT JOIN cohort ch ON ch.CohortID=c.RegistrationCohortID
+        WHERE c.CandID=:candid',
         ['candid' => $candID]
     );
+    assert($candidateInfo !== null);
 
     $flag = $db->pselectOne(
         'SELECT flagged_caveatemptor FROM candidate WHERE CandID = :candid',
@@ -110,15 +116,20 @@ function getCandInfoFields()
         ['candid' => $candID]
     );
 
-    $extra_parameters = $db->pselect(
-        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
-        pt.Type, pt.Description
-        FROM parameter_type pt
-        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
-        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
-        WHERE ptc.Name='Candidate Parameters'
-        ORDER BY pt.ParameterTypeID, pt.name ASC",
-        []
+    $extra_parameters = iterator_to_array(
+        $db->pselect(
+            "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
+            pt.Type, pt.Description, pcr.Required
+            FROM parameter_type pt
+            JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+            JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+            JOIN parameter_candidate_rules pcr USING (ParameterTypeID)
+            JOIN candidate c ON c.RegistrationProjectID = pcr.ProjectID
+            WHERE ptc.Name='Candidate Parameters'
+            AND c.CandID = :candid
+            ORDER BY pt.ParameterTypeID, pt.name ASC",
+            ['candid' => $candID]
+        )
     );
 
     $fields = $db->pselect(
@@ -135,8 +146,16 @@ function getCandInfoFields()
     }
 
     $result = [
-        'pscid'                => $pscid,
+        'pscid'                => $candidateInfo['PSCID'],
         'candID'               => $candID->__toString(),
+        'registrationProject'  => dgettext(
+            'Project',
+            $candidateInfo['RegistrationProject'] ?? ''
+        ),
+        'registrationCohort'   => dgettext(
+            'cohort',
+            $candidateInfo['RegistrationCohort'] ?? ''
+        ),
         'caveatReasonOptions'  => $caveat_options,
         'flagged_caveatemptor' => $flag,
         'flagged_reason'       => $reason,
@@ -252,7 +271,7 @@ function getFamilyInfoFields()
 
     $candidatesList = iterator_to_array(
         $db->pselect(
-            "SELECT ID FROM candidate ORDER BY ID",
+            "SELECT CandID FROM candidate ORDER BY CandID",
             []
         )
     );
@@ -281,7 +300,9 @@ function getFamilyInfoFields()
     // Remove own ID and sibling IDs from list of possible family members
     foreach ($candidatesList as $key => $candidate) {
         foreach ($candidate as $ID) {
-            if ($ID == $candID || in_array($ID, $siblings)) {
+            if (new CandID(strval($ID)) === $candID
+                || in_array($ID, $siblings, true)
+            ) {
                 unset($candidatesList[$key]);
             } else {
                 $candidates[$ID] = $ID;
@@ -289,18 +310,20 @@ function getFamilyInfoFields()
         }
     }
 
-    $familyMembers = $db->pselect(
-        "SELECT c1.CandID as FamilyCandidate, f1.Relationship_type
-        FROM family f1
-        JOIN family f2 ON f1.FamilyID=f2.FamilyID
-        JOIN candidate c1 ON f1.CandidateID=c1.ID
-        JOIN candidate c2 ON f2.CandidateID=c2.ID
-        WHERE c2.CandID=:candid AND c1.CandID <> :candid2
-        ORDER BY c1.CandID",
-        [
-            'candid'  => $candID,
-            'candid2' => $candID,
-        ]
+    $familyMembers = iterator_to_array(
+        $db->pselect(
+            "SELECT c1.CandID as FamilyCandID, f1.Relationship_type
+            FROM family f1
+            JOIN family f2 ON f1.FamilyID=f2.FamilyID
+            JOIN candidate c1 ON f1.CandidateID=c1.ID
+            JOIN candidate c2 ON f2.CandidateID=c2.ID
+            WHERE c2.CandID=:candid AND c1.CandID <> :candid2
+            ORDER BY c1.CandID",
+            [
+                'candid'  => $candID,
+                'candid2' => $candID,
+            ]
+        )
     );
 
     $result = [
@@ -339,12 +362,19 @@ function getParticipantStatusFields()
     $reasonOptions = [];
 
     $req      = $db->pselect(
-        'SELECT ID from participant_status_options where Required=1',
+        'SELECT ID, Required, commentRequired from participant_status_options
+        WHERE Required=1 OR commentRequired=1',
         []
     );
     $required = [];
-    foreach ($req as $k=>$row) {
-        $required[$k] = $row['ID'];
+    $commentRequired = [];
+    foreach ($req as $_=>$row) {
+        if ($row['Required'] == 1) {
+            $required[] = $row['ID'];
+        }
+        if ($row['commentRequired'] == 1) {
+            $commentRequired[] = $row['ID'];
+        }
     }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
@@ -388,6 +418,7 @@ function getParticipantStatusFields()
         'candID'                => $candID->__toString(),
         'statusOptions'         => $statusOptions,
         'required'              => $required,
+        'commentRequired'       => $commentRequired,
         'reasonOptions'         => $reasonOptions,
         'parentIDs'             => $parentIDMap,
         'participantStatus'     => $status,
@@ -426,7 +457,6 @@ function getParticipantStatusHistory(CandID $candID)
 
     return iterator_to_array($unformattedComments);
 }
-
 
 /**
  * Handles the fetching of Consent Status fields
@@ -553,8 +583,7 @@ function getDOBFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
-    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+    $formattedDate      = formatCandidateDate($dob, $dobProcessedFormat);
 
     $result = [
         'pscid'     => $pscid,
@@ -576,7 +605,13 @@ function getDODFields(): array
     $db     = \NDB_Factory::singleton()->database();
 
     $candidateData = $db->pselectRow(
-        'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
+        'SELECT
+            PSCID,
+            DoD,
+            DoD_precision,
+            DoB
+        FROM candidate
+        WHERE CandID =:candid',
         ['candid' => $candID]
     );
     if ($candidateData === null) {
@@ -600,15 +635,17 @@ function getDODFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
-    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
-
+    $dob    = formatCandidateDate(
+        $candidateData['DoB'] ?? null,
+        $dobProcessedFormat
+    );
     $result = [
-        'pscid'     => $candidateData['PSCID'],
-        'candID'    => $candID->__toString(),
-        'dod'       => $dod,
-        'dob'       => $dob,
-        'dodFormat' => $config->getSetting('dodFormat'),
+        'pscid'         => $candidateData['PSCID'],
+        'candID'        => $candID->__toString(),
+        'dod'           => $dod,
+        'dob'           => $dob,
+        'dod_precision' => $candidateData['DoD_precision'],
+        'dodFormat'     => $config->getSetting('dodFormat'),
     ];
     return $result;
 }
@@ -629,23 +666,25 @@ function getDiagnosisEvolutionFields(): array
         ['candID' => $candID]
     );
 
-    $candidateDiagnosisEvolution = $db->pselect(
-        "SELECT
-            de.Name AS TrajectoryName,
-            p.Name AS Project,
-            visitLabel,
-            instrumentName,
-            sourceField,
-            Diagnosis,
-            Confirmed,
-            LastUpdate,
-            OrderNumber
-        FROM candidate_diagnosis_evolution_rel cder
-        JOIN diagnosis_evolution de USING (DxEvolutionID)
-        JOIN Project p USING (ProjectID)
-        JOIN candidate c ON c.ID=cder.CandidateID
-        WHERE c.CandID=:candID",
-        ['candID' => $candID]
+    $candidateDiagnosisEvolution = iterator_to_array(
+        $db->pselect(
+            "SELECT
+                de.Name AS TrajectoryName,
+                p.Name AS Project,
+                visitLabel,
+                instrumentName,
+                sourceField,
+                Diagnosis,
+                Confirmed,
+                LastUpdate,
+                OrderNumber
+            FROM candidate_diagnosis_evolution_rel cder
+            JOIN diagnosis_evolution de USING (DxEvolutionID)
+            JOIN Project p USING (ProjectID)
+            JOIN candidate c ON c.ID=cder.CandidateID
+            WHERE c.CandID=:candID",
+            ['candID' => $candID]
+        )
     );
 
     $projectList = \Utility::getProjectList();
@@ -692,3 +731,27 @@ function getDiagnosisEvolutionFields(): array
     return $result;
 }
 
+/**
+ * Format a candidate date for display.
+ *
+ * Returns null when the date is null or invalid.
+ *
+ * @param string|null $date   Database date in Y-m-d format
+ * @param string      $format Display format
+ *
+ * @return string|null
+ */
+function formatCandidateDate(?string $date, string $format): ?string
+{
+    if (empty($date)) {
+        return null;
+    }
+
+    $dateTime = DateTime::createFromFormat('Y-m-d', $date);
+
+    if ($dateTime === false) {
+        return null;
+    }
+
+    return $dateTime->format($format);
+}

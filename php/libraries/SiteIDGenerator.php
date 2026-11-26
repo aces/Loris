@@ -4,7 +4,7 @@
  * This file contains a class used to generate SiteIDs i.e. both PSCIDs and
  * ExternalIDs.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS
@@ -143,6 +143,7 @@ class SiteIDGenerator extends IdentifierGenerator
         }
         return $ids;
     }
+
     /**
      * Helper function used for extracting the values from the config
      * settings relating to the PSCID structure.
@@ -227,6 +228,7 @@ class SiteIDGenerator extends IdentifierGenerator
         // null if they are not set.
         return is_null($seqValue) ? $seqValue: $seqValue;
     }
+
     /**
      * Iterate over each 'seq' value and return its setting if its value is
      * configured. Do error handling to make sure that there is exactly one
@@ -382,6 +384,7 @@ class SiteIDGenerator extends IdentifierGenerator
         }
         return strval($val);
     }
+
     /**
      * Returns the minimum value for the identifier.
      *

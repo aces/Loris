@@ -15,6 +15,12 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import SummaryStatistics from './summaryStatistics';
+import {PolicyButton} from 'jsx/PolicyButton';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import jaStrings from '../locale/ja/LC_MESSAGES/login.json';
+import frStrings from '../locale/fr/LC_MESSAGES/login.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/login.json';
 
 /**
  * Login form.
@@ -35,6 +41,7 @@ class Login extends Component {
       study: {
         logo: '',
         title: '',
+        partner_logos: [],
         links: [],
         description: '',
       },
@@ -89,6 +96,8 @@ class Login extends Component {
         state.study.title = json.login.title;
         state.study.logo = window.location.origin
           + '/' + json.login.logo;
+        state.study.partner_logos = json?.login?.partner_logos
+          ? [...json?.login?.partner_logos] : [];
         // request account setup.
         state.component.requestAccount = json.requestAccount;
         state.oidc = json.oidc;
@@ -149,9 +158,35 @@ class Login extends Component {
         if (response.ok) {
           response.json().then(() => {
             // Redirect if there is a "redirect" param, refresh the page otherwise
-            window.location.href = this.props.redirect !== null
-              ? this.props.redirect
-              : window.location.origin;
+            const redirectUrl = this.props.redirect;
+            if (redirectUrl) {
+              // test URL as string
+              if (typeof redirectUrl !== 'string') {
+                window.location.href = window.location.origin;
+              }
+
+              // parse URL
+              try {
+                // relative and absolute url parsing
+                const url = new URL(redirectUrl.trim(), window.location.origin);
+
+                if (url.origin === window.location.origin) {
+                  // same origin, load
+                  window.location.href = url.href;
+                } else {
+                  // different origin
+                  // TODO: add a sweet alert here to mention the tentative of
+                  // redirection outside of LORIS.
+                  window.location.href = window.location.origin;
+                }
+              } catch (e) {
+                // Invalid URL, fallback
+                window.location.href = window.location.origin;
+              }
+            } else {
+              // no redirection
+              window.location.href = window.location.origin;
+            }
           });
         } else {
           response.json().then((data) => {
@@ -160,7 +195,10 @@ class Login extends Component {
               if (data.error === 'password expired') {
                 // password expired
                 state.component.expiredPassword = {
-                  message: 'Password expired for user.',
+                  message: this.props.t(
+                    'Password expired for user.',
+                    {ns: 'login'}
+                  ),
                   username: state.form.value.username,
                 };
                 state.mode = 'expired';
@@ -210,7 +248,25 @@ class Login extends Component {
           class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
         />
       ) : null;
+      const policy = this.state.component.requestAccount.policy;
+      const policyButton = policy ?
+        <PolicyButton
+          onClickPolicy={
+            this.state.component.requestAccount.policy
+          }
+          style={{marginTop: '10px'}}
+          anon={true}
+        />
+        : null;
       const oidc = this.state.oidc ? this.getOIDCLinks() : '';
+      const partnerLogos = this.state.study.partner_logos.map((logo) => (
+        <>
+          <img
+            src={logo}
+            alt={`${(logo ?? '').split('/').pop().split('.')[0]} Logo`}
+          />
+        </>
+      ));
       const login = (
         <div>
           <section className={'study-logo'}>
@@ -227,7 +283,7 @@ class Login extends Component {
               name={'username'}
               value={this.state.form.value.username}
               onUserInput={this.setForm}
-              placeholder={'Username'}
+              placeholder={this.props.t('Username', {ns: 'loris'})}
               class={'col-sm-12'}
               autoComplete={'username'}
               required={true}
@@ -236,14 +292,14 @@ class Login extends Component {
               name={'password'}
               value={this.state.form.value.password}
               onUserInput={this.setForm}
-              placeholder={'Password'}
+              placeholder={this.props.t('Password', {ns: 'loris'})}
               class={'col-sm-12'}
               required={true}
               autoComplete={'current-password'}
             />
             {error}
             <ButtonElement
-              label={'Login'}
+              label={this.props.t('Login', {ns: 'login'})}
               type={'submit'}
               name={'login'}
               id={'login'}
@@ -253,16 +309,20 @@ class Login extends Component {
           </FormElement>
           <div className={'help-links'}>
             <a onClick={() => this.setMode('reset')}
-              style={{cursor: 'pointer'}}>Forgot your password?</a>
+              style={{cursor: 'pointer'}}>{this.props.t(
+                'Forgot your password?',
+                {ns: 'login'}
+              )}</a>
             <br/>
             <a onClick={() => this.setMode('request')}
-              style={{cursor: 'pointer'}}>Request Account</a>
+              style={{cursor: 'pointer'}}>{this.props.t(
+                'Request Account',
+                {ns: 'login'}
+              )}</a>
+            <br />
+            {policyButton}
           </div>
           {oidc}
-          <div className={'help-text'}>
-            A WebGL-compatible browser is required for full functionality
-            (Mozilla Firefox, Google Chrome)
-          </div>
         </div>
       );
       return (
@@ -270,13 +330,23 @@ class Login extends Component {
           <div className={'row'}>
             <section className={'col-md-4 col-md-push-8'}>
               <Panel
-                title={'Login to LORIS'}
+                title={this.props.t('Login to LORIS', {ns: 'login'})}
                 class={'panel-default login-panel'}
                 collapsing={false}
                 bold={true}
               >
                 {login}
               </Panel>
+              {partnerLogos.length > 0 ? (
+                <Panel
+                  title={this.props.t('Our Partners', {ns: 'login'})}
+                  class="panel-default partner-container-desktop"
+                  collapsing={false}
+                  bold
+                >
+                  {partnerLogos}
+                </Panel>
+              ) : <></>}
             </section>
             <section className={'col-md-8 col-md-pull-4'}>
               <Panel
@@ -295,6 +365,16 @@ class Login extends Component {
                   {study}
                 </div>
               </Panel>
+              {partnerLogos.length > 0 ? (
+                <Panel
+                  title={this.props.t('Our Partners', {ns: 'login'})}
+                  class="panel-default partner-container-mobile"
+                  collapsing={false}
+                  bold
+                >
+                  {partnerLogos}
+                </Panel>
+              ) : <></>}
             </section>
             <section>
             </section>
@@ -346,7 +426,9 @@ class Login extends Component {
       {this.state.oidc.map((val) => {
         return <div>
           <a href={'/oidc/login?loginWith=' + val}>
-                    Login with {val}
+            {this.props.t('Login with {{provider}}', {
+              ns: 'login', provider: val,
+            })}
           </a>
         </div>;
       })}
@@ -361,6 +443,7 @@ Login.propTypes = {
   defaultRequestLastName: PropTypes.string,
   defaultRequestEmail: PropTypes.string,
   redirect: PropTypes.string,
+  t: PropTypes.func, /* from withTranslation HoC */
 };
 
 window.addEventListener('load', () => {
@@ -368,11 +451,15 @@ window.addEventListener('load', () => {
   const getParam = (name, deflt) => {
     return params.has(name) ? params.get(name) : deflt;
   };
+  i18n.addResourceBundle('ja', 'login', jaStrings);
+  i18n.addResourceBundle('fr', 'login', frStrings);
+  i18n.addResourceBundle('zh', 'login', zhStrings);
+  const TLogin = withTranslation(['login', 'loris'])(Login);
 
   createRoot(
     document.getElementsByClassName('main-content')[0]
   ).render(
-    <Login
+    <TLogin
       defaultmode={getParam('page', null)}
       defaultRequestFirstName={getParam('firstname', '')}
       defaultRequestLastName={getParam('lastname', '')}

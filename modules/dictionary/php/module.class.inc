@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -42,11 +42,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Tools";
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
 
     /**
@@ -56,7 +56,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Dictionary";
+        return dgettext("dictionary", "Data Dictionary");
     }
 
     /**
@@ -88,6 +88,30 @@ class Module extends \Module
         $categories  = [];
 
         $categoryitems = [];
+
+        // Get the instruments that the user has access to based on their visits.
+        $params       = [];
+        $placeholders = [];
+        foreach (array_keys($user->getVisits()) as $i => $visitLabel) {
+            $params["vl$i"] = $visitLabel;
+            $placeholders[] = ":vl$i";
+        }
+        $instruments = [];
+        if (count($placeholders) > 0) {
+            $instruments = array_flip(
+                $loris->getDatabaseConnection()->pselectCol(
+                    "SELECT DISTINCT t.Test_name
+                    FROM session s
+                    JOIN candidate c ON (c.ID=s.CandidateID)
+                    JOIN flag f ON (f.sessionID=s.id)
+                    JOIN test_names t ON (f.TestID=t.ID)
+                    WHERE c.Active='Y' AND s.Active='Y'
+                    AND s.Visit_label IN (" . join(',', $placeholders) . ")
+                    AND s.CenterID != '1' AND c.Entity_type != 'Scanner'",
+                    $params
+                )
+            );
+        }
         foreach ($modules as $module) {
             if ($formodule !== null && $module->getName() !== $formodule) {
                 continue;
@@ -96,19 +120,28 @@ class Module extends \Module
                 continue;
             }
 
-            $mdict = $module->getQueryEngine()->getDataDictionary();
-            $mname = $module->getName();
+            foreach ($module->getQueryEngines() as $qe) {
+                $mdict = $qe->getDataDictionary();
+                $mname = $module->getName();
 
-            if (count($mdict) > 0) {
-                $usermodules[]      = $module;
-                $categories[$mname] = [];
+                if (count($mdict) > 0) {
+                    $usermodules[]      = $module;
+                    $categories[$mname] = [];
 
-                foreach ($mdict as $cat) {
-                    $categories[$mname][$cat->getName()] = $cat->getDescription();
-                    $categoryitems[] = [
-                        'Module'   => $module,
-                        'Category' => $cat,
-                    ];
+                    foreach ($mdict as $cat) {
+                        if ($mname === 'instruments'
+                            && !isset($instruments[$cat->getName()])
+                        ) {
+                            continue;
+                        }
+                        $categories[$mname][$cat->getName()]
+                            = $cat->getDescription();
+
+                        $categoryitems[] = [
+                            'Module'   => $module,
+                            'Category' => $cat,
+                        ];
+                    }
                 }
             }
         }

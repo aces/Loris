@@ -729,3 +729,19 @@ tr.directentry {
    background: rgb(4, 45, 84);
    color: white;
 }
+
+
+.nav-affiliations {
+  width: 135px;
+  text-align: center;
+}
+
+
+.affiliations-dropdown {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.affiliations-dropdown a {
+  pointer-events: none;
+}

@@ -3,7 +3,7 @@
 /**
  * The timepoint list menu
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List
@@ -21,7 +21,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * The timepoint list menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List
@@ -31,6 +31,8 @@ use \LORIS\StudyEntities\Candidate\CandID;
  */
 class Timepoint_List extends \NDB_Menu
 {
+    public $skipTemplate = true;
+
     protected $candID;
 
     /**
@@ -40,13 +42,15 @@ class Timepoint_List extends \NDB_Menu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
 
         // check user permissions
         return $user->hasPermission('access_all_profiles')
-            || $candidate->isAccessibleBy($user);
+            || ($user->hasPermission('data_entry')
+                && $candidate->isAccessibleBy($user));
     }
 
     /**
@@ -78,31 +82,49 @@ class Timepoint_List extends \NDB_Menu
         // create candidate object
         $candidate = \Candidate::singleton($this->candID);
 
+        $candidateData = $candidate->getData();
+        $candidateData['SexLabel']          = dgettext(
+            "sex",
+            strval($candidateData['Sex'] ?? '')
+        );
+        $candidateData['ProjectTitleLabel'] = dgettext(
+            "Project",
+            strval($candidateData['ProjectTitle'] ?? '')
+        );
+
         $this->tpl_data['candID']    = $this->candID;
         $this->tpl_data['PSCID']     = $candidate->getPSCID();
-        $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['candidate'] = $candidateData;
         // convert DoB date to age and months and rename it to Derived Age
-        $dob = $candidate->getData();
+        $dob = $candidateData;
         if (isset($dob['DoB']) && is_string($dob['DoB'])) {
             $dob_date = date_create_from_format('Y-m-d', $dob['DoB']);
             if ($dob_date !== false) {
                 $current_date = new \DateTime();
                 $dob_year     = abs($current_date->diff($dob_date)->y);
                 $dob_month    = abs($current_date->diff($dob_date)->m);
-                $dob_age      = $dob_year . " y / " . $dob_month . " m";
+                $dob_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $dob_year,
+                    $dob_month,
+                );
                 $this->tpl_data['dob_age'] = $dob_age;
             }
 
         }
         // convert EDC date to age and months and rename it to EDC Age
-        $edc = $candidate->getData();
+        $edc = $candidateData;
         if (isset($edc['EDC']) && is_string($edc['EDC'])) {
             $edc_date = date_create_from_format('Y-m-d', $edc['EDC']);
             if ($edc_date !== false) {
                 $current_date = new \DateTime();
                 $edc_year     = abs($current_date->diff($edc_date)->y);
                 $edc_month    = abs($current_date->diff($edc_date)->m);
-                $edc_age      = $edc_year . " y / " . $edc_month . " m";
+                $edc_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $edc_year,
+                    $edc_month,
+                );
                 $this->tpl_data['edc_age'] = $edc_age;
             }
         }
@@ -127,14 +149,22 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints = array_filter(
             $listOfTimePoints,
             function ($timePoint) use ($user) {
-                return $timePoint->isAccessibleBy($user);
+                return $timePoint->isAccessibleBy($user)
+                    || $user->hasPermission('access_all_profiles');
             }
+        );
+
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE
         );
 
         /*
          * List of visits
          */
         $x = 0;
+
         foreach ($listOfTimePoints as $timePoint) {
             $sessionID = $timePoint->getSessionID();
 
@@ -150,13 +180,46 @@ class Timepoint_List extends \NDB_Menu
             // get timepoint data
             $this->tpl_data['timePoints'][$x]
                 = $timePoint->getData();
+            $timePointData =& $this->tpl_data['timePoints'][$x];
+
+            $timePointData['VisitLabel']        = dgettext(
+                "visit",
+                strval($timePointData['Visit_label'] ?? '')
+            );
+            $timePointData['CohortTitleLabel']  = dgettext(
+                "cohort",
+                strval($timePointData['CohortTitle'] ?? '')
+            );
+            $timePointData['SiteNameLabel']     = dgettext(
+                "psc",
+                strval($timePointData['SiteName'] ?? '')
+            );
+            $timePointData['ProjectNameLabel']  = dgettext(
+                "Project",
+                strval($timePointData['ProjectName'] ?? '')
+            );
+            $timePointData['CurrentStageLabel'] = dgettext(
+                "loris",
+                strval($timePointData['Current_stage'] ?? '')
+            );
+            $timePointData['currentStage']      = strval(
+                $timePointData['Current_stage'] ?? ''
+            );
+            $timePointData['realName']          = $timePointData['Real_name'] ?? '';
 
             // get current status
-            $this->tpl_data['timePoints'][$x]['currentStatus']
-                = $timePoint->getCurrentStatus();
+            $timePointData['currentStatus']      = $timePoint->getCurrentStatus();
+            $timePointData['currentStatusLabel'] = dgettext(
+                "loris",
+                strval($timePointData['currentStatus'] ?? '')
+            );
             // get current date
-            $this->tpl_data['timePoints'][$x]['currentDate']
-                =   $timePoint->getCurrentDate();
+            $curDate = $timePoint->getCurrentDate();
+            if ($curDate != null) {
+                $curDate = new \DateTimeImmutable($curDate);
+            }
+            $timePointData['currentDate']
+                = $curDate != null ? $dateFormatter->format($curDate) : null;
 
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
@@ -171,15 +234,17 @@ class Timepoint_List extends \NDB_Menu
 
             $feedback_count = $feedback->getThreadCount();
 
-            $this->tpl_data['timePoints'][$x]['feedbackCount']
-                = (empty($feedback_count))
+            $timePointData['feedbackCount'] = (empty($feedback_count))
                 ? $feedback_status
                 : $feedback_count;
 
-            $this->tpl_data['timePoints'][$x]['feedbackStatus']
-                = $feedback_status;
+            $timePointData['feedbackStatus']      = $feedback_status;
+            $timePointData['feedbackStatusLabel'] = dgettext(
+                "timepoint_list",
+                strval($feedback_status)
+            );
 
-            $this->tpl_data['timePoints'][$x]['feedbackColor']
+            $timePointData['feedbackColor']
                 = $feedback->getThreadColor($feedback_status);
 
             if (!in_array(
@@ -193,7 +258,7 @@ class Timepoint_List extends \NDB_Menu
             )
             ) {
                 // for static stages, don't bother showing current status
-                $this->tpl_data['timePoints'][$x]['staticStage'] = true;
+                $timePointData['staticStage'] = true;
 
                 // get the outcome data
                 $outcomeStage
@@ -204,18 +269,26 @@ class Timepoint_List extends \NDB_Menu
                 $getDateMethod = 'getDateOf'.$outcomeStage;
 
                 // set the template data
-                $this->tpl_data['timePoints'][$x]['outcomeStage']
-                    = $outcomeStage;
+                $timePointData['outcomeStage'] = $outcomeStage;
 
                 if (method_exists($timePoint, $getStatusMethod)) {
-                    $this->tpl_data['timePoints'][$x]['outcomeStatus']
+                    $timePointData['outcomeStatus']
                         = $timePoint->$getStatusMethod();
                 }
                 if (method_exists($timePoint, $getDateMethod)) {
-                    $this->tpl_data['timePoints'][$x]['outcomeDate']
+                    $timePointData['outcomeDate']
                         = $timePoint->$getDateMethod();
                 }
             }
+
+            $timePointData['language'] = $timePoint->getLanguage();
+
+            $timePointData['scanDone']       = $timePoint->isScanDone();
+            $timePointData['BVLQCTypeLabel'] = dgettext(
+                "timepoint_list",
+                strval($timePointData['BVLQCType'] ?? '')
+            );
+
             $x++;
         } // end list
 
@@ -231,8 +304,124 @@ class Timepoint_List extends \NDB_Menu
 
         } // end list
 
-        $this->tpl_data['actions'] = $this->getActionButtons();
+        $this->tpl_data['actions'] = [
+            'hasCandidateParameterAccess' => $user->hasAnyPermission(
+                [
+                    'candidate_parameter_view',
+                    'candidate_parameter_edit',
+                ]
+            ),
+            'isDataEntryPerson'           => $user->hasCenterPermission(
+                "data_entry",
+                $candidate->getCenterID()
+            ),
+            'isImagingPerson'             => $user->hasAnyPermission(
+                [
+                    'imaging_browser_view_site',
+                    'imaging_browser_view_allsites',
+                    'imaging_browser_phantom_allsites',
+                    'imaging_browser_phantom_ownsite',
+                ]
+            ),
+        ];
     }
+
+    /**
+     * Display the React page or its JSON data source.
+     *
+     * @return string
+     */
+    #[\Override]
+    function display(): string
+    {
+        if ($this->format === 'json') {
+            return $this->toJSON();
+        }
+        return '';
+    }
+
+    /**
+     * Return the data required to render the timepoint list.
+     *
+     * @return array
+     */
+    function toArray(): array
+    {
+        $candidate  = $this->tpl_data['candidate'];
+        $timePoints = array_map(
+            function (array $timePoint): array {
+                $language = $timePoint['language'];
+                return [
+                    'BVLQCExclusion'      => $timePoint['BVLQCExclusion'] ?? null,
+                    'BVLQCStatus'         => $timePoint['BVLQCStatus'] ?? null,
+                    'BVLQCType'           => $timePoint['BVLQCType'] ?? null,
+                    'BVLQCTypeLabel'      => $timePoint['BVLQCTypeLabel'],
+                    'CohortTitleLabel'    => $timePoint['CohortTitleLabel'],
+                    'CurrentStageLabel'   => $timePoint['CurrentStageLabel'],
+                    'ProjectNameLabel'    => $timePoint['ProjectNameLabel'],
+                    'SessionID'           => $timePoint['SessionID'],
+                    'SiteNameLabel'       => $timePoint['SiteNameLabel'],
+                    'Submitted'           => $timePoint['Submitted'] ?? null,
+                    'VisitLabel'          => $timePoint['VisitLabel'],
+                    'currentDate'         => $timePoint['currentDate'],
+                    'currentStage'        => $timePoint['currentStage'],
+                    'currentStatusLabel'  => $timePoint['currentStatusLabel'],
+                    'feedbackColor'       => $timePoint['feedbackColor'],
+                    'feedbackCount'       => $timePoint['feedbackCount'],
+                    'feedbackStatusLabel' => $timePoint['feedbackStatusLabel'],
+                    'language'            => [
+                        'label' => $language->label,
+                    ],
+                    'realName'            => $timePoint['realName'],
+                    'scanDone'            => $timePoint['scanDone'],
+                    'staticStage'         => $timePoint['staticStage'] ?? false,
+                ];
+            },
+            $this->tpl_data['timePoints'] ?? []
+        );
+
+        return [
+            'candID'     => strval($this->tpl_data['candID']),
+            'candidate'  => [
+                'DisplayParameters' => $candidate['DisplayParameters'] ?? [],
+                'ProjectTitleLabel' => $candidate['ProjectTitleLabel'] ?? '',
+                'SexLabel'          => $candidate['SexLabel'] ?? '',
+            ],
+            'dobAge'     => $this->tpl_data['dob_age'] ?? '',
+            'edcAge'     => $this->tpl_data['edc_age'] ?? '',
+            'timePoints' => $timePoints,
+            'actions'    => $this->tpl_data['actions'],
+        ];
+    }
+
+    /**
+     * Return the data required to render the timepoint list as JSON.
+     *
+     * @return string
+     */
+    #[\Override]
+    function toJSON(): string
+    {
+        return json_encode($this->toArray());
+    }
+
+    /**
+     * Return the JavaScript dependencies for the React page.
+     *
+     * @return array
+     */
+    #[\Override]
+    function getJSDependencies(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+
+        return array_merge(
+            parent::getJSDependencies(),
+            [$baseURL . '/timepoint_list/js/timepointList.js']
+        );
+    }
+
     /**
      * Determining Previous Stage
      *
@@ -257,6 +446,7 @@ class Timepoint_List extends \NDB_Menu
         }
         return  'Not Started';
     }
+
     /**
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
@@ -268,15 +458,6 @@ class Timepoint_List extends \NDB_Menu
     function getFeedbackPanel(CandID $candID): string
     {
         return (new \BVL_Feedback_Panel($candID))->display();
-    }
-    /**
-     * Get Action Buttons
-     *
-     * @return string
-     */
-    function getActionButtons(): string
-    {
-        return (new TimePoint_List_ControlPanel($this->candID))->display();
     }
 
     /**
@@ -291,14 +472,14 @@ class Timepoint_List extends \NDB_Menu
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             )
         );
     }
 }
-

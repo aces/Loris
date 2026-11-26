@@ -67,38 +67,37 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
             if (!empty($items)) {
                 foreach ($items as $menuitem) {
-                    $menu[$menuitem->getCategory() ?? 'Other'][] = $menuitem;
+                    if (isset($menu[$menuitem->category->name])) {
+                        $menu[$menuitem->category->name]['Items'][] = $menuitem;
+                    } else {
+                        $menu[$menuitem->category->name] = [
+                                                            'Category' => $menuitem->category,
+                                                            'Items'    => [ $menuitem ],
+                                                           ];
+                    }
                 }
             }
         }
 
-        // The order of the menu categories is currently unsorted. We sort them
-        // alphabetically by key to impose an order. As a hack to avoid reordering
-        // menu for users of existing LORIS instances, we move the 'Admin' category
-        // to the end even though it's alphabetically first (we do this by removing
-        // the key before sorting and then adding it back afterwards.)
-        //
-        // Coincidentally, this almost-alphabetic sorting results in the exact same
-        // order that LORIS previously had.
-        $adminmenu = $menu['Admin'] ?? [];
-        unset($menu['Admin']);
-        ksort($menu);
-        if (!empty($adminmenu)) {
-            $menu['Admin'] = $adminmenu;
-        }
+    // Sort the menu categories by the database defined ordering
+        usort(
+            $menu,
+            function ($a, $b) {
+                return $a['Category']->order <=> $b['Category']->order;
+            }
+        );
 
-        // We unconditionally sort within each section because the within-menu
-        // order has never been stable in LORIS, and sorting adds some consistency.
-        foreach ($menu as $cat => $val) {
-            $val = $val ?? [];
+    // Sort within categories alphabetically because we don't have
+    // a better way of determining order
+        foreach ($menu as &$val) {
             usort(
-                $val,
+                $val['Items'],
                 function ($a, $b) {
-                    return strcmp($a->getLabel(), $b->getLabel());
+                    return strcmp($a->label, $b->label);
                 }
             );
-            $menu[$cat] = $val;
         }
+
         // Basic page outline variables
         $tpl_data += array(
                       'study_title' => $this->Config->getSetting('title'),
@@ -175,6 +174,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                                     'useConsent'  => $this->Config->getSetting(
                                         'useConsent'
                                     ),
+                                    'studyTitle'  => $this->Config->getSetting(
+                                        'Title'
+                                    ),
                                    );
         $tpl_data['jsonParams']  = json_encode(
             array(
@@ -188,28 +190,32 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // User related template variables that used to be in main.php.
-        $site_arr    = $this->user->getCenterIDs();
-        $site        = array();
-        $isStudySite = array();
-        foreach ($site_arr as $key => $val) {
-            $site[$key]        = & \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-        }
+        $site_arr = $this->user->getCenterIDs();
+        // add projects to nav bar
+        $project_arr = $this->user->getProjectIDs();
 
-        $oneIsStudySite   = in_array("1", $isStudySite);
         $tpl_data['user'] = [];
         $tpl_data['user']['Real_name']            = $this->user->getFullName();
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
-        $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
-        $tpl_data['userNumSites']         = count($site_arr);
-        $tpl_data['user']['SitesTooltip'] = implode(
+        $tpl_data['user']['user_from_study_site'] = $this->user->hasStudySite();
+        $tpl_data['userNumSites']    = count($site_arr);
+        $tpl_data['userNumProjects'] = count($project_arr);
+
+        // Retrieve site and project names for tooltips
+        $tpl_data['user']['SitesTooltip']    = implode(
             "<br/>",
-            $this->user->getSiteNames()
+            array_map(
+                fn($site) => $site->getCenterName(),
+                $this->user->getSites(),
+            )
+        );
+        $tpl_data['user']['ProjectsTooltip'] = implode(
+            "<br/>",
+            $this->user->getProjectNames()
         );
 
-        $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission(
-            'context_help'
-        );
+
+        $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission('context_help');
 
         // FIXME: This should be array_filter
         $realPerms = array();
@@ -222,10 +228,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Do not show menu item if module not active
         $tpl_data['my_preferences'] = $loris->hasModule('my_preferences');
-        $tpl_data['userjson']       = json_encode(
+        $lang = \LORIS\Middleware\Language::detectLocale($request->getAttribute("loris"), $request);
+        $tpl_data['language']  = $lang;
+        $tpl_data['languages'] = \Utility::getLanguageListByCode();
+        $tpl_data['userjson']  = json_encode(
             [
              'username' => $user->getUsername(),
              'id'       => $user->getId(),
+             'langpref' => $user->getLanguageCode(),
             ]
         );
         // Display the footer links, as specified in the config file
@@ -270,11 +280,17 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['FormAction'] = $page->FormAction ?? '';
 
         if ($page instanceof \NDB_Page) {
-            $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+            $tpl_data['breadcrumbs']   = $page->getBreadcrumbs();
+            $tpl_data['header_policy'] = $page->getHeaderPolicy($loris);
+            $tpl_data['pop_up_policy'] = $page->getLatestPolicyDecision($loris, '', $user->getId());
         }
-
         // Assign the console template variable as the very, very last thing.
-        $tpl_data['console'] = htmlspecialchars(ob_get_contents());
+        $tpl_data['console'] = htmlspecialchars(
+            ob_get_contents(),
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
         ob_end_clean();
 
         // Finally, the actual content and render it..

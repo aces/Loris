@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all possible rows
  * for the survey accounts menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\survey_accounts;
  * This class implements a data provisioner to get all possible rows
  * for the survey accounts menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -74,6 +74,9 @@ class SurveyAccountsProvisioner
     {
         $cid = \CenterID::singleton(intval($row['CenterID']));
         $pid = \ProjectID::singleton((intval($row['ProjectID'])));
+
+        // All status options already exist in the loris namespace.
+        $row['Status'] = dgettext('loris', $row['Status']);
         return new SurveyAccountsRow($row, $cid, $pid);
     }
 }

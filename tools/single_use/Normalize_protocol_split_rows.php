@@ -4,7 +4,7 @@
  * comma-separated values. This script splits up cells containing commas by creating new rows for
  * each value and maintaining unique combinations of values.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

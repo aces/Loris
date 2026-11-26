@@ -3,7 +3,7 @@
 /**
  * File that describe the Image class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Imaging
  *  @package  Main
@@ -334,6 +334,7 @@ class Image
 
         return new \SplFileInfo($fullpath);
     }
+
     /**
      * Creates an immutable object representation of this Image
      *

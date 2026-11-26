@@ -12,6 +12,7 @@ import React, {useState, FunctionComponent, useRef} from 'react';
 import {RootState} from '../store';
 import {DEFAULT_TIME_INTERVAL} from '../../vector';
 import {roundTime} from '../store/logic/timeSelection';
+import {useTranslation} from "react-i18next";
 
 type CProps = {
   viewerHeight?: number,
@@ -43,6 +44,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
   dragContinue,
   dragEnd,
 }) => {
+  const {t} = useTranslation();
   const [isDragging, setIsDragging] = useState(false);
 
   const sliderStyle = {
@@ -161,7 +163,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
             marginBottom: '15px',
           }}
         >
-          Timeline Range View
+          {t('Timeline Range View', {
+            ns: 'electrophysiology_browser'
+          })}
         </h5>
         <div
           className='col-xs-offset-1 col-xs-11'
@@ -237,7 +241,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               onClick={() => {
                 setInterval(DEFAULT_TIME_INTERVAL);
               }}
-              value='Reset'
+              value={t('Reset', {ns: 'loris'})}
             />
             <input
               type='button'
@@ -245,7 +249,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               onClick={() => {
                 setInterval([domain[0], domain[1]]);
               }}
-              value='Show All'
+              value={t('Show All', {ns: 'electrophysiology_browser'})}
             />
           </div>
         </div>
@@ -323,7 +327,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
             position: 'absolute',
           }}
         >
-          Time (s)
+          {t('Time (s)', {ns: 'electrophysiology_browser'})}
         </div>
       </div>
     </div>

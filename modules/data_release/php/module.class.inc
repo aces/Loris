@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -40,6 +40,7 @@ class Module extends \Module
             $user->hasAnyPermission(
                 [
                     'data_release_view',
+                    'data_release_download_all',
                     'data_release_upload',
                     'data_release_edit_file_access'
                 ]
@@ -49,11 +50,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Tools";
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
 
     /**
@@ -63,6 +64,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Release";
+        return dgettext("data_release", "Data Release");
     }
 }

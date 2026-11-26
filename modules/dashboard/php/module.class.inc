@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -34,7 +34,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Dashboard";
+        return dgettext("dashboard", "Dashboard");
     }
 
     /**
@@ -54,10 +54,12 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();
             $config  = $factory->config();
-            return [
-                $this->_getWelcomeWidget($DB, $config, $user),
-                $this->_getTasksWidget()
-            ];
+            $widgets = [$this->_getWelcomeWidget($DB, $config, $user)];
+            $tasks   = $this->_getTasksWidget();
+            if ($tasks !== null) {
+                $widgets[] = $tasks;
+            }
+            return $widgets;
         }
         return [];
 
@@ -102,12 +104,9 @@ class Module extends \Module
         }
 
         if ($last_login === null) {
-            $logindatestring = "...never. Welcome!";
+            $logindatestring = dgettext("dashboard", "...never. Welcome!");
         } else {
-            // Note: This is the format from MySQL for historical reasons.
-            // We might want to make it a more human-friendly since we have
-            // a \DateTime object.
-            $logindatestring = $last_login->format('Y-m-d H:i:s');
+            $logindatestring = $last_login->format(\DateTimeInterface::ATOM);
         }
 
         return new Widget(
@@ -132,9 +131,9 @@ class Module extends \Module
      * in the sidebar. It further uses "usertask" type widgets to display a list
      * of tasks for the user.
      *
-     * @return \LORIS\GUI\Widget
+     * @return ?\LORIS\GUI\Widget
      */
-    private function _getTasksWidget()
+    private function _getTasksWidget() : ?\LORIS\GUI\Widget
     {
         $factory = \NDB_Factory::singleton();
         $modules = $this->loris->getActiveModules();
@@ -149,9 +148,19 @@ class Module extends \Module
                 );
             }
         }
+        $widgets = array_filter(
+            $widgets,
+            function ($widget) {
+                return $widget instanceof TaskWidget
+                    && $widget->number() !== 0;
+            }
+        );
+        if (empty($widgets)) {
+            return null;
+        }
         return new Widget(
             new WidgetContent(
-                "My Tasks",
+                dgettext("dashboard", "My Tasks"),
                 $this->renderTemplate(
                     "mytasks.tpl",
                     [

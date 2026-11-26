@@ -1,0 +1,435 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Issue Tracker"
+msgstr ""
+
+msgid "Issue"
+msgstr ""
+
+msgid "Your assigned issue"
+msgid_plural "Your assigned issues"
+msgstr[0] ""
+
+msgid "Open Issues"
+msgstr ""
+
+msgid "Issue ID"
+msgstr ""
+
+msgid "Reporter"
+msgstr ""
+
+msgid "Assignee"
+msgstr ""
+
+msgid "Priority"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Date Created"
+msgstr ""
+
+msgid "Last Update"
+msgstr ""
+
+msgid "Watching"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "Urgent"
+msgstr ""
+
+msgid "Immediate"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "All Sites"
+msgstr ""
+
+msgid "All Issues"
+msgstr ""
+
+msgid "Active Issues"
+msgstr ""
+
+msgid "Closed Issues"
+msgstr ""
+
+msgid "My Issues"
+msgstr ""
+
+msgid "New Issue"
+msgstr ""
+
+msgid "Browse Issues"
+msgstr ""
+
+msgid "Batch Edit"
+msgstr ""
+
+msgid "Batch changes"
+msgstr ""
+
+msgid "Batch actions"
+msgstr ""
+
+msgid "Select changes to apply"
+msgstr ""
+
+msgid "Selection"
+msgstr ""
+
+msgid "Changes to apply"
+msgstr ""
+
+msgid "Select all filtered issues"
+msgstr ""
+
+msgid "{{count}} issue selected"
+msgid_plural "{{count}} issues selected"
+msgstr[0] ""
+
+msgid "Clear selection"
+msgstr ""
+
+msgid "No change"
+msgstr ""
+
+msgid "Apply changes"
+msgstr ""
+
+msgid "Updating..."
+msgstr ""
+
+msgid "Select issue {{issueID}}"
+msgstr ""
+
+msgid "Select at least one issue."
+msgstr ""
+
+msgid "Choose at least one field to update."
+msgstr ""
+
+msgid "{{count}} issue updated successfully"
+msgid_plural "{{count}} issues updated successfully"
+msgstr[0] ""
+
+msgid "Failed to update issues. Please try again later."
+msgstr ""
+
+msgid "Add Comment"
+msgstr ""
+
+msgid "Add New Comment"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Failed to add comment"
+msgstr ""
+
+msgid "Create New Issue"
+msgstr ""
+
+msgid "Never!"
+msgstr ""
+
+msgid "No-one!"
+msgstr ""
+
+msgid "Sometime Soon!"
+msgstr ""
+
+msgid "Submit Issue"
+msgstr ""
+
+msgid "Edit Issue"
+msgstr ""
+
+msgid "Update Issue"
+msgstr ""
+
+msgid "Add Attachment"
+msgstr ""
+
+msgid "Attachment for issue"
+msgstr ""
+
+msgid "Attachment for Issue"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Watching?"
+msgstr ""
+
+msgid "Watchers"
+msgstr ""
+
+msgid "Submitting..."
+msgstr ""
+
+msgid "Add others to watching?"
+msgstr ""
+
+msgid "New Comment"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr ""
+
+msgid "Failed to submit issue :("
+msgstr ""
+
+msgid "Issue updated!"
+msgstr ""
+
+msgid "Issue created!"
+msgstr ""
+
+msgid "Comments and History"
+msgstr ""
+
+msgid "Last Updated By"
+msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Last Updated"
+msgstr ""
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] ""
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr ""
+
+msgid "Maximum issues per page: {{total}}"
+msgstr ""
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr ""
+
+msgid "No issues match the selected filters."
+msgstr ""
+
+msgid "({{count}} comment)"
+msgid_plural "({{count}} comments)"
+msgstr[0] ""
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr ""
+
+msgid "Upload error!"
+msgstr ""
+
+msgid "Title cannot be empty"
+msgstr ""
+
+msgid "No changes were made"
+msgstr ""
+
+msgid "Issue updated successfully"
+msgstr ""
+
+msgid "Failed to update issue"
+msgstr ""
+
+msgid "Information"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> on {{date}}"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "Acknowledged"
+msgstr ""
+
+msgid "Feedback"
+msgstr ""
+
+msgid "Assigned"
+msgstr ""
+
+msgid "Resolved"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Rejected"
+msgstr ""
+
+msgid "Behavioural Battery"
+msgstr ""
+
+msgid "Behavioural Instruments"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Examiners"
+msgstr ""
+
+msgid "Imaging"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Technical Issue"
+msgstr ""
+
+msgid "User Accounts"
+msgstr ""
+
+msgid "Last 3 Comments"
+msgstr ""
+
+msgid "Confirmation"
+msgstr ""
+
+msgid "Delete attachment"
+msgstr ""
+
+msgid "Attachment options: "
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Date of attachment: "
+msgstr ""
+
+msgid "File: "
+msgstr ""
+
+msgid "User: "
+msgstr ""
+
+msgid "Description: "
+msgstr ""
+
+msgid "Attachment History"
+msgstr ""
+
+msgid "The server is not configured to receive a file this large."
+msgstr ""
+
+msgid "The server is not configured for attachments."
+msgstr ""
+
+msgid "Submit Attachment"
+msgstr ""
+
+msgid "An error occurred when loading the form!"
+msgstr ""
+
+msgid "Please add a comment or make changes"
+msgstr ""
+
+msgid " to "
+msgstr ""
+
+msgid "Submit Comment"
+msgstr ""
+
+msgid "Invalid request"
+msgstr ""
+
+msgid "PSCID and Center ID do not match a valid session!"
+msgstr ""
+
+msgid "PSCID and Visit Label do not match a valid candidate session!"
+msgstr ""
+
+msgid "PSCID does not match a valid candidate!"
+msgstr ""
+
+msgid "Visit Label must be accompanied by a PSCID"
+msgstr ""
+
+msgid "Invalid Permissions"
+msgstr ""
+
+msgid "User does not have permission to edit issues."
+msgstr ""
+
+msgid "No comments available."
+msgstr ""
+
+msgid "acknowledged"
+msgstr ""
+
+msgid "assigned"
+msgstr ""
+
+msgid "feedback"
+msgstr ""
+
+msgid "new"
+msgstr ""
+
+msgid "resolved"
+msgstr ""
+
+msgid "closed"
+msgstr ""
+
+msgid "Uncategorized"
+msgstr ""

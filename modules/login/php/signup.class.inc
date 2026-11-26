@@ -58,7 +58,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             return $this->requestAccount($request);
         }
         return new \LORIS\Http\Response\JSON\BadRequest(
-            'Error'
+            dgettext('login', 'Error')
         );
     }
 
@@ -86,19 +86,56 @@ class Signup extends \NDB_Page implements ETagCalculator
             );
             if (!$resp->isSuccess()) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Please complete the reCaptcha!'
+                    dgettext('login', 'Please complete the reCaptcha!')
                 );
             }
         }
 
         $factory  = \NDB_Factory::singleton();
         $DB       = \NDB_Factory::singleton()->database();
-        $name     = htmlspecialchars($values['firstname'], ENT_QUOTES);
-        $lastname = htmlspecialchars($values['lastname'], ENT_QUOTES);
-        $from     = htmlspecialchars($values['email'], ENT_QUOTES);
+        $name     = htmlspecialchars(
+            $values['firstname'],
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
+        $lastname = htmlspecialchars(
+            $values['lastname'],
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
+        $from     = htmlspecialchars(
+            $values['email'],
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
         $site     = $values['site'];
-        $project  = $values['project'];
-        $fullname = $name . ' ' . $lastname;
+        $projects = $values['project'] ?? [];
+        if (!is_array($projects)) {
+            $projects = [$projects];
+        }
+        $projectList         = \Utility::getProjectList();
+        $projects            = array_values(
+            array_unique(
+                array_filter(
+                    $projects,
+                    fn($project) => (is_string($project) || is_int($project))
+                        && array_key_exists($project, $projectList)
+                )
+            )
+        );
+        $examiner            = filter_var(
+            $values['examiner'] ?? false,
+            FILTER_VALIDATE_BOOL
+        );
+        $radiologist         = filter_var(
+            $values['radiologist'] ?? false,
+            FILTER_VALIDATE_BOOL
+        );
+        $language_preference = $values['language_preference'] ?? null;
+        $fullname            = $name . ' ' . $lastname;
 
         $vals = [
             'UserID'               => $from,
@@ -110,29 +147,41 @@ class Signup extends \NDB_Page implements ETagCalculator
             'account_request_date' => date('Y-m-d'),
         ];
 
+        // Add language_preference if provided and valid
+        if (!is_null($language_preference) && !empty($language_preference)) {
+            $languageList = \Utility::getLanguageList();
+            if (array_key_exists($language_preference, $languageList)) {
+                $vals['language_preference'] = $language_preference;
+            }
+        }
+
         // Check if email address is valid.
         if (preg_match('/(<|>|"|&)/', $from)) {
             // Although some of these characters are legal in emails, due to the
             // current HTML escaping method, it is better to reject email
             // addresses containing them
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Email address can not contain the following' .
-                ' characters: <,>,& and "'
+                dgettext(
+                    'login',
+                    'Email address can not contain the following'
+                    . 'characters: <,>,& and ".'
+                )
             );
         }
         if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
             // Invalid email address.
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Please provide a valid email address!'
+                dgettext('login', 'Please provide a valid email address!')
             );
         }
 
         // Check email address' uniqueness
-        $result = $DB->pselectOne(
+        $result      = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",
             ['VEmail' => $from]
         );
-
+        $siteList    = \Utility::getSiteList();
+        $projectList = \Utility::getProjectList();
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
             $DB->insert('users', $vals);
@@ -140,7 +189,6 @@ class Signup extends \NDB_Page implements ETagCalculator
             $user_id = $DB->getLastInsertId();
 
             // verify site exists
-            $siteList = \Utility::getSiteList();
             if (!is_null($site) && array_key_exists($site, $siteList)) {
                 $DB->insert(
                     'user_psc_rel',
@@ -152,8 +200,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             }
 
             // verify project exists
-            $projectList = \Utility::getProjectList();
-            if (!is_null($project) && array_key_exists($project, $projectList)) {
+            foreach ($projects as $project) {
                 $DB->insert(
                     'user_project_rel',
                     [
@@ -163,11 +210,8 @@ class Signup extends \NDB_Page implements ETagCalculator
                 );
             }
 
-            if ($values['examiner'] == 'true') {
-                $rad = 0;
-                if ($values['radiologist'] == 'true') {
-                    $rad = 1;
-                }
+            if ($examiner) {
+                $rad = $radiologist ? 1 : 0;
                 //insert in DB as inactive until account approved
                 $examinerID = $DB->pselect(
                     "SELECT e.examinerID
@@ -201,10 +245,20 @@ class Signup extends \NDB_Page implements ETagCalculator
         }
 
         // Don't send out emails if this is a sandbox VM.
-        if (!$factory->config()->settingEnabled('sandbox')) {
+        if (!$factory->config()->settingEnabled('sandbox')
+            && !empty($projects)
+        ) {
+            $params = ['center' => $site];
+            $projectPlaceholders = [];
+            foreach ($projects as $index => $project) {
+                $key = 'project' . $index;
+                $projectPlaceholders[] = ':' . $key;
+                $params[$key]          = $project;
+            }
+
             // Send an email to all users meeting the following criteria:
             //     - Associated with the Site
-            //     - Associated with the Project
+            //     - Associated with at least one requested Project
             //     - Have the User Management permission
             $query  = "
                 SELECT DISTINCT
@@ -216,11 +270,10 @@ class Signup extends \NDB_Page implements ETagCalculator
                     JOIN user_project_rel uprojr ON u.ID = uprojr.UserID
                 WHERE
                     upr.CenterID = :center
-                    AND uprojr.ProjectID = :project";
-            $result = $DB->pselect(
-                $query,
-                ['center' => $site, 'project' => $project]
-            );
+                    AND uprojr.ProjectID IN ("
+                    . implode(',', $projectPlaceholders)
+                    . ")";
+            $result = $DB->pselect($query, $params);
             foreach ($result as $row) {
                 $hasPermission = \User::factory($row['userID'])
                     ->hasAnyPermission(
@@ -233,15 +286,29 @@ class Signup extends \NDB_Page implements ETagCalculator
                 // Send email to users with User Management permissions.
                 $config    = \NDB_Factory::singleton()->config();
                 $studyName = $config->getSetting('title');
-
+                if (is_array($studyName)) {
+                    $studyName = implode('', $studyName);
+                }
+                $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
                 \Email::send(
                     $row['Email'],
                     'request_account.tpl',
                     [
-                        'Study'     => $studyName,
-                        'UserID'    => $from,
-                        'Real_name' => $fullname,
-                        'Email'     => $from,
+                        'Study'       => $studyName,
+                        'Site'        => $siteList[$site],
+                        'Project'     => implode(
+                            ', ',
+                            array_map(
+                                fn($project) => $projectList[$project],
+                                $projects
+                            )
+                        ),
+                        'Real_name'   => $fullname,
+                        'Email'       => $from,
+                        'Examiner'    => $examiner ? 'Yes' : 'No',
+                        'Radiologist' => $radiologist ? 'Yes' : 'No',
+                        'URL'         => $baseURL
+                                       . "/user_accounts/?pendingApproval=Y",
                     ]
                 );
             }
@@ -287,9 +354,9 @@ class Signup extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }
-
 }

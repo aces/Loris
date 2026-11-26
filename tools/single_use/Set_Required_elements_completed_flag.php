@@ -6,7 +6,7 @@
  * Data column of the flag table to it's own column in the flag table
  * called "Required_elements_completed".
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

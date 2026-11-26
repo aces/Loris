@@ -22,8 +22,8 @@ interface FlattenedQueryMap {
  * React hook for triggering toggling of starred queries
  * on a LORIS server.
  *
- * @param {function} onCompleteCallback - an action to perform after pinning
- * @returns {array} - QueryAction functions
+ * @param onCompleteCallback - an action to perform after pinning
+ * @returns - QueryAction functions
  */
 function useStarredQueries(onCompleteCallback: () => void): QueryActionType {
   const [starQueryID, setStarQueryID] = useState<number|null>(null);
@@ -54,8 +54,8 @@ function useStarredQueries(onCompleteCallback: () => void): QueryActionType {
  * React hook for triggering toggling of shared queries
  * on a LORIS server.
  *
- * @param {function} onCompleteCallback - an action to perform after pinning
- * @returns {array} - QueryAction functions
+ * @param onCompleteCallback - an action to perform after pinning
+ * @returns - QueryAction functions
  */
 function useShareQueries(onCompleteCallback: () => void): QueryActionType {
   const [shareQueryID, setShareQueryID] = useState<number|null>(null);
@@ -99,10 +99,9 @@ type SharedQueriesType = [
 /**
  * React hook to load recent and shared queries from the server
  *
- * @param {string} username - The username accessing the module
- * @returns {array} - [{queries}, reload function(), {queryActions}]
+ * @returns - [{queries}, reload function(), {queryActions}]
  */
-function useSharedQueries(username: string): SharedQueriesType {
+function useSharedQueries(): SharedQueriesType {
   const [recentQueries, setRecentQueries] = useState<FlattenedQuery[]>([]);
   const [sharedQueries, setSharedQueries] = useState<FlattenedQuery[]>([]);
   const [topQueries, setTopQueries] = useState<FlattenedQuery[]>([]);
@@ -111,8 +110,6 @@ function useSharedQueries(username: string): SharedQueriesType {
   const [loadQueriesForce, setLoadQueriesForce] = useState<number>(0);
   /**
    * Force the client to reload queries
-   *
-   * @returns {void}
    */
   const reloadQueries = () => setLoadQueriesForce(loadQueriesForce+1);
   const [setStarQueryID, setStarAction] = useStarredQueries(reloadQueries);
@@ -138,27 +135,10 @@ function useSharedQueries(username: string): SharedQueriesType {
               convertedtop.push(flattened);
             }
             if (query.Public == true) {
-              // If we're the only person who shared it, don't show it in our
-              // shared queries.
-              // If other people shared it too, then remove ourselves from the
-              // "shared by" list in the Shared Queries panel.
-              if (query.SharedBy.length == 1
-                            && query.SharedBy[0] == username
-              ) {
-                // don't include
-              } else {
-                // filter
-                query.SharedBy = query.SharedBy.filter(
-                  (item: string) => {
-                    return item != username;
-                  }
-                );
-                // Make a new copy to avoid mutating the version used by other
-                // tabs
-                const flattened2: FlattenedQuery
-                            = query2flattened(query);
-                convertedshared.push(flattened2);
-              }
+              // Include all public queries, including ones shared by the
+              // current user, so shared queries are consistent with the
+              // Recent Queries "Shared Only" filter.
+              convertedshared.push(flattened);
             }
           });
         }
@@ -179,11 +159,8 @@ function useSharedQueries(username: string): SharedQueriesType {
                 const queryObj: FlattenedQuery
                         = allQueries[queryRun.QueryID];
                 if (!queryObj) {
-                  console.error(
-                    'Could not get ',
-                    queryRun.QueryID,
-                    ' from ',
-                    allQueries);
+                  // The queries endpoint filters out queries the user cannot
+                  // access, so a run can reference one that is not in the list.
                   return;
                 }
                 convertedrecent.push({
@@ -210,8 +187,7 @@ function useSharedQueries(username: string): SharedQueriesType {
       /**
        * Stars a query on the server
        *
-       * @param {number} queryID - The queryID to star
-       * @returns {void}
+       * @param queryID - The queryID to star
        */
       star: (queryID: number) => {
         setShareQueryID(null);
@@ -221,8 +197,7 @@ function useSharedQueries(username: string): SharedQueriesType {
       /**
        * Unstars a query on the server
        *
-       * @param {number} queryID - The queryID to unstar
-       * @returns {void}
+       * @param queryID - The queryID to unstar
        */
       unstar: (queryID: number) => {
         setShareQueryID(null);
@@ -232,8 +207,7 @@ function useSharedQueries(username: string): SharedQueriesType {
       /**
        * Shares a query on the server
        *
-       * @param {number} queryID - The queryID to share
-       * @returns {void}
+       * @param queryID - The queryID to share
        */
       share: (queryID: number) => {
         setStarQueryID(null);
@@ -243,8 +217,7 @@ function useSharedQueries(username: string): SharedQueriesType {
       /**
        * Unshares a query on the server
        *
-       * @param {number} queryID - The queryID to unshare
-       * @returns {void}
+       * @param queryID - The queryID to unshare
        */
       unshare: (queryID: number) => {
         setStarQueryID(null);
@@ -259,8 +232,8 @@ function useSharedQueries(username: string): SharedQueriesType {
  * Check if a term from a sub-term from query group is an APIQueryGroupField
  * or an APIQueryCriteriaGroup
  *
- * @param {APIQueryGroupField|APIQueryCriteriaGroup} term - The term to check
- * @returns {boolean} - true if the term is an APIQueryCriteriaGroup
+ * @param term - The term to check
+ * @returns - true if the term is an APIQueryCriteriaGroup
  */
 function isAPIQueryCriteriaGroup(
   term: APIQueryGroupField|APIQueryCriteriaGroup
@@ -271,8 +244,8 @@ function isAPIQueryCriteriaGroup(
  * Takes a saved query from a JSON object and marshal
  * it into a QueryGroup object
  *
- * @param {object} query - the json object
- * @returns {QueryGroup} - The object converted into a QueryGroup
+ * @param query - the json object
+ * @returns - The object converted into a QueryGroup
  */
 function unserializeSavedQuery(query: APIQueryCriteriaGroup): QueryGroup {
   if (!query.operator) {
@@ -313,7 +286,7 @@ function unserializeSavedQuery(query: APIQueryCriteriaGroup): QueryGroup {
 /**
  * React hook to load a query if one was passed in the URL.
  *
- * @param {function} loadQuery - function to load the query into React state
+ * @param loadQuery - function to load the query into React state
  */
 function useLoadQueryFromURL(
   loadQuery: (fields: APIQueryField[], filters: QueryGroup|null) => void
@@ -362,8 +335,8 @@ function useLoadQueryFromURL(
  * Convert a query from the format returned by the API to the format
  * used by the displayed query list on the main page.
  *
- * @param {APIQuery} query - The query to convert
- * @returns {FlattenedQuery} - The query converted to the new type
+ * @param query - The query to convert
+ * @returns - The query converted to the new type
  */
 function query2flattened(query: APIQuery): FlattenedQuery {
   const rv: FlattenedQuery = {

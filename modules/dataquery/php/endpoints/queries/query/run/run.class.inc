@@ -62,7 +62,7 @@ class Run extends \LORIS\Http\Endpoint
         $candIDs = $db->pselectCol(
             "SELECT c.CandID
                 FROM dataquery_run_results drr
-                JOIN candiate c on c.ID=drr.CandidateID
+                JOIN candidate c on c.ID=drr.CandidateID
                 WHERE drr.RunID=:rid",
             [
                 'rid' => $this->runID
@@ -89,7 +89,7 @@ class Run extends \LORIS\Http\Endpoint
         $results = $db->pselect(
             "SELECT c.CandID, drr.RowData
                 FROM dataquery_run_results drr
-                JOIN candiate c on c.ID=drr.CandidateID
+                JOIN candidate c on c.ID=drr.CandidateID
                 WHERE drr.RunID=:rid",
             [
                 'rid' => $this->runID
@@ -114,8 +114,12 @@ class Run extends \LORIS\Http\Endpoint
      */
     private function _jsondecoded(iterable $results, array $CandIDs)
     {
+        $accessible = [];
+        foreach ($CandIDs as $candID) {
+            $accessible[strval($candID)] = true;
+        }
         foreach ($results as $row ) {
-            if (in_array(new CandID(strval($row['CandID'])), $CandIDs)) {
+            if (isset($accessible[strval($row['CandID'])])) {
                 yield json_decode($row['RowData']);
             }
         }

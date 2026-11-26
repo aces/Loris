@@ -31,7 +31,7 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
         case 'GET':
             $DB       = $this->loris->getDatabaseConnection();
             $response = $DB->pselect(
-                "SELECT * FROM Login_Summary_Statistics
+                "SELECT * FROM login_summary_statistics
                 WHERE Value > 0
                 ORDER BY QueryOrder ASC",
                 [],
@@ -40,22 +40,44 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
                 return new \LORIS\Http\Response\JsonResponse(null);
             }
             $projects = $DB->pselectCol(
-                "SELECT DISTINCT Project FROM Login_Summary_Statistics",
+                "SELECT DISTINCT Project FROM login_summary_statistics",
                 []
             );
 
+            $translatedProjects = [];
+            foreach ($projects as $project) {
+                $translatedProjects[] = dgettext(
+                    "Project",
+                    $project,
+                );
+            }
+
             // csv version for exporting to clipboard
             $reusable_response = iterator_to_array($response);
-            $csv = "Project,Statistic,Value\n";
-            foreach ($reusable_response as $row) {
-                $csv .= $row['Project'].",".$row['Title'].",".$row['Value'] . "\n";
+            $csv
+                = dngettext('loris', 'Project', 'Projects', 1) . ',' .
+                dgettext('login', 'Statistic') . ',' .
+                dgettext('login', 'Value') . "\n";
+            foreach ($reusable_response as &$row) {
+                $csv .= dgettext("Project", $row['Project']).","
+                .dgettext("login_summary_statistics", $row['Title']).","
+                .$row['Value'] . "\n";
+                // we just add an "s" for the plural form since the final
+                // string will come from dngettext anyways
+                $row['Title'] = dngettext(
+                    "login_summary_statistics",
+                    $row['Title'],
+                    $row['Title'] . 's',
+                    $row['Value']
+                );
             }
 
             return new \LORIS\Http\Response\JsonResponse(
                 [
-                    'statistics' => $reusable_response,
-                    'projects'   => $projects,
-                    'csv'        => $csv,
+                    'statistics'         => $reusable_response,
+                    'projects'           => $projects,
+                    'translatedProjects' => $translatedProjects,
+                    'csv'                => $csv,
                 ]
             );
         default:
@@ -98,9 +120,9 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }
-
 }

@@ -30,7 +30,7 @@ class VisitSummary extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -87,7 +87,7 @@ class VisitSummary extends \NDB_Page
                     ON (cu.CommentId1=f.CommentID OR cu.CommentID2=f.CommentID)
                 LEFT JOIN candidate c ON (c.ID=s.CandidateID)
             WHERE c.Active='Y' AND s.Active='Y' AND
-                c.CandID=:candid AND s.Visit_Label=:vl
+                c.CandID=:candid AND s.Visit_label=:vl
                 AND f.CommentID NOT LIKE 'DDE%'
             GROUP BY
                 s.Visit_label,
@@ -115,13 +115,19 @@ class VisitSummary extends \NDB_Page
                 '',
                 false
             );
-            if ($instrument->_hasAccess($user) == false) {
+            if ($instrument->isAccessibleBy($user) == false) {
                 $this->logger->debug(
                     "Skipping $testName"
                     . " because user does not have permission"
                 );
                 continue;
             }
+
+            $rslt[$key] = [
+                'Test_name'     => $row['Test_name'],
+                'CommentID'     => $row['CommentID'],
+                'NumOfConflict' => $row['NumOfConflict'],
+            ];
             if ($instrument === null) {
                 $rslt[$key]['Completion'] = 0;
             } else {

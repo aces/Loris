@@ -2,6 +2,17 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from
+  '../locale/hi/LC_MESSAGES/examiner.json';
+import jaStrings from
+  '../locale/ja/LC_MESSAGES/examiner.json';
+import frStrings from
+  '../locale/fr/LC_MESSAGES/examiner.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/examiner.json';
+
 import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Loader from 'Loader';
@@ -48,7 +59,9 @@ class ExaminerIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.filterVisibleRows = this.filterVisibleRows.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.mapCSVCell = this.mapCSVCell.bind(this);
     this.renderAddExaminerForm = this.renderAddExaminerForm.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -94,11 +107,57 @@ class ExaminerIndex extends Component {
   }
 
   /**
+   * Get the subset of site IDs visible to the current user.
+   *
+   * @return {object}
+   */
+  getVisibleSites() {
+    return this.state.data.fieldOptions?.sites || {};
+  }
+
+  /**
+   * Keep only site IDs visible to the current user.
+   *
+   * @param {string[]|number[]} siteIds - examiner site IDs
+   * @return {string[]|number[]}
+   */
+  filterVisibleSiteIds(siteIds) {
+    const visibleSites = this.getVisibleSites();
+    if (!Array.isArray(siteIds)) {
+      return [];
+    }
+    return siteIds.filter((centerId) => visibleSites[centerId] != null);
+  }
+
+  /**
+   * Convert visible site IDs into site labels.
+   *
+   * @param {string[]|number[]} siteIds - examiner site IDs
+   * @return {string[]}
+   */
+  mapVisibleSiteNames(siteIds) {
+    const visibleSites = this.getVisibleSites();
+    return this.filterVisibleSiteIds(siteIds)
+      .map((centerId) => visibleSites[centerId]);
+  }
+
+  /**
+   * Limit rows to examiners that share at least one visible site.
+   *
+   * @param {Array[]} rows - examiner data rows
+   * @return {Array[]}
+   */
+  filterVisibleRows(rows) {
+    return rows.filter((row) => this.filterVisibleSiteIds(row[2]).length > 0);
+  }
+
+  /**
    * Handles the submission of the Add Examiner form
    *
    * @param {event} e - event of the form
    */
   handleSubmit(e) {
+    const {t} = this.props;
     let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
@@ -116,7 +175,11 @@ class ExaminerIndex extends Component {
     })
       .then((resp) => {
         if (resp.ok && resp.status === 200) {
-          swal.fire('Success!', 'Examiner added.', 'success').then((result) => {
+          swal.fire(
+            t('Success!', {ns: 'loris'}),
+            t('Examiner added.', {ns: 'examiner'}),
+            'success'
+          ).then((result) => {
             if (result.value) {
               this.closeModal();
               this.fetchData();
@@ -124,7 +187,11 @@ class ExaminerIndex extends Component {
           });
         } else {
           resp.json().then((message) => {
-            swal.fire('Error!', message.error, 'error');
+            swal.fire(
+              t('Error!', {ns: 'loris'}),
+              message.error,
+              'error'
+            );
           });
         }
       })
@@ -142,46 +209,65 @@ class ExaminerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
+    const labelExaminer = t('Examiner', {ns: 'examiner'});
+    const labelCertification = t('Certification', {ns: 'examiner'});
+    const labelSite = t('Site', {ns: 'loris', count: 1});
+    const labelID = t('ID', {ns: 'examiner'});
+
     let result = <td>{cell}</td>;
 
-    switch (column) {
-    case 'Examiner':
-      if (this.state.data.useCertification) {
+    if (column === 'Examiner' || column === labelExaminer) {
+      if (this.state.data.fieldOptions.useCertification) {
         const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
-                    row.ID;
+                    (row.ID || row[labelID]);
         result = <td><a href={url}>{cell}</a></td>;
       } else {
         result = <td>{cell}</td>;
       }
-      break;
-    case 'Radiologist':
-      if (row.Radiologist === '1') {
-        result = <td>Yes</td>;
-      } else if (row.Radiologist === '0') {
-        result = <td>No</td>;
+    } else if (column === 'Certification' || column === labelCertification) {
+      const certValue = row.Certification || row[labelCertification];
+      if (certValue === null) {
+        result = <td>{t('None', {ns: 'loris'})}</td>;
       }
-      break;
-    case 'Certification':
-      if (row.Certification === null) {
-        result = <td>None</td>;
-      }
-      break;
-    case 'Site':
-      // If user has multiple sites, join array of sites into string
+    } else if (column === 'Site' || column === labelSite) {
+      const siteNames = this.mapVisibleSiteNames(cell);
       result = (
-        <td>{cell
-          .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-          .join(', ')}
-        </td>
+        <td>{siteNames.join(', ')}</td>
       );
-      if (cell.length === 0) {
+      if (siteNames.length === 0) {
         result = (
-          <td>This user has no site affiliations</td>
+          <td>{t(
+            'This user has no site affiliations',
+            {ns: 'examiner'}
+          )}</td>
         );
       }
-      break;
     }
     return result;
+  }
+
+  /**
+   * Map raw row values to CSV-safe display values.
+   *
+   * @param {string} column - column label
+   * @param {*} cell - raw cell value
+   * @return {*} mapped cell value
+   */
+  mapCSVCell(column, cell) {
+    const {t} = this.props;
+    const labelCertification = t('Certification', {ns: 'examiner'});
+    const labelSite = t('Site', {ns: 'loris', count: 1});
+
+    if (column === labelSite) {
+      return this.mapVisibleSiteNames(cell).join(', ');
+    }
+
+    if (column === labelCertification && cell === null) {
+      return t('None', {ns: 'loris'});
+    }
+
+    return cell;
   }
 
   /**
@@ -207,9 +293,10 @@ class ExaminerIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   renderAddExaminerForm() {
+    const {t} = this.props;
     return (
       <Modal
-        title='Add Examiner'
+        title={t('Add Examiner', {ns: 'examiner'})}
         onClose={this.closeModal}
         show={this.state.showModal}
       >
@@ -222,7 +309,7 @@ class ExaminerIndex extends Component {
         >
           <TextboxElement
             name="addName"
-            label="Name"
+            label={t('Name', {ns: 'examiner'})}
             value={this.state.formData.addName}
             required={true}
             onUserInput={this.setFormData}
@@ -230,14 +317,14 @@ class ExaminerIndex extends Component {
           <SelectElement
             name="addSite"
             options={this.state.data.fieldOptions.sites}
-            label="Site"
+            label={t('Site', {ns: 'loris', count: 1})}
             value={this.state.formData.addSite}
             required={true}
             onUserInput={this.setFormData}
           />
           <CheckboxElement
             name="addRadiologist"
-            label="Radiologist"
+            label={t('Radiologist', {ns: 'examiner'})}
             id="checkRadiologist"
             value={this.state.formData.addRadiologist}
             onUserInput={this.setFormData}
@@ -246,7 +333,9 @@ class ExaminerIndex extends Component {
             name="fire_away"
             label={
               <div>
-                <span className="glyphicon glyphicon-plus"/> Add
+                <span className="glyphicon glyphicon-plus"/>
+                {' '}
+                {t('Add', {ns: 'examiner'})}
               </div>
             }
             type="submit"
@@ -263,10 +352,15 @@ class ExaminerIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return (
+        <h3>
+          {t('An error occurred while loading the page.', {ns: 'loris'})}
+        </h3>
+      );
     }
 
     // Waiting for async data to load
@@ -279,28 +373,36 @@ class ExaminerIndex extends Component {
      * queried columns in _setupVariables() in examiner.class.inc
      */
     const options = this.state.data.fieldOptions;
+    const data = this.filterVisibleRows(this.state.data.Data);
     const fields = [
-      {label: 'Examiner', show: true, filter: {
+      {label: t('Examiner', {ns: 'examiner'}), show: true, filter: {
         name: 'examiner',
         type: 'text',
       }},
-      {label: 'Email', show: true},
-      {label: 'Site', show: true, filter: {
+      {label: t('Email', {ns: 'loris'}), show: true},
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: 'ID', show: false},
-      {label: 'Radiologist', show: true, filter: {
+      {label: t('ID', {ns: 'examiner'}), show: false},
+      {label: t('Radiologist', {ns: 'examiner'}), show: true, filter: {
         name: 'radiologist',
         type: 'select',
-        options: options.radiologists,
+        options: {
+          [t('Yes', {ns: 'loris'})]: t('Yes', {ns: 'loris'}),
+          [t('No', {ns: 'loris'})]: t('No', {ns: 'loris'}),
+        },
       }},
-      {label: 'Certification',
+      {label: t('Certification', {ns: 'examiner'}),
         show: this.state.data.fieldOptions.useCertification},
     ];
     const actions = [
-      {name: 'addExaminer', label: 'Add Examiner', action: this.openModal},
+      {
+        name: 'addExaminer',
+        label: t('Add Examiner', {ns: 'examiner'}),
+        action: this.openModal,
+      },
     ];
 
     return (
@@ -308,10 +410,11 @@ class ExaminerIndex extends Component {
         {this.renderAddExaminerForm()}
         <FilterableDataTable
           name='examiner'
-          title='Examiner'
-          data={this.state.data.Data}
+          title={t('Examiner', {ns: 'examiner'})}
+          data={data}
           fields={fields}
           getFormattedCell={this.formatColumn}
+          getMappedCell={this.mapCSVCell}
           actions={actions}
         />
       </div>
@@ -322,14 +425,22 @@ class ExaminerIndex extends Component {
 ExaminerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   submitURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'examiner', hiStrings);
+  i18n.addResourceBundle('ja', 'examiner', jaStrings);
+  i18n.addResourceBundle('fr', 'examiner', frStrings);
+  i18n.addResourceBundle('zh', 'examiner', zhStrings);
+  const Index = withTranslation(
+    ['examiner', 'loris']
+  )(ExaminerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ExaminerIndex
+    <Index
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
       submitURL={`${loris.BaseURL}/examiner/addExaminer`}
       hasPermission={loris.userHasPermission}

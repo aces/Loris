@@ -1,6 +1,8 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
 import CandidateInfo from './CandidateInfo';
 import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';
@@ -10,6 +12,10 @@ import CandidateDOB from './CandidateDOB';
 import CandidateDOD from './CandidateDOD';
 import DiagnosisEvolution from './DiagnosisEvolution';
 import {Tabs, TabPane} from 'Tabs';
+
+import esStrings from '../locale/es/LC_MESSAGES/candidate_parameters.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/candidate_parameters.json';
+import frStrings from '../locale/fr/LC_MESSAGES/candidate_parameters.json';
 
 /**
  * Candidate parameters component
@@ -44,6 +50,7 @@ class CandidateParameters extends Component {
           <TabContent
             action={actionURL}
             dataURL={`${dataURL}&data=${tabList[key].id}`}
+            candID={this.props.candID}
             tabName={tabList[key].id}
           />
         </TabPane>
@@ -58,30 +65,31 @@ class CandidateParameters extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let tabList = [
       {
         id: 'candidateInfo',
-        label: 'Candidate Information',
+        label: t('Candidate Information', {ns: 'candidate_parameters'}),
         component: CandidateInfo,
       },
       {
         id: 'participantStatus',
-        label: 'Participant Status',
+        label: t('Participant Status', {ns: 'candidate_parameters'}),
         component: ParticipantStatus,
       },
       {
         id: 'candidateDOB',
-        label: 'Date of Birth',
+        label: t('DoB', {ns: 'loris'}),
         component: CandidateDOB,
       },
       {
         id: 'candidateDOD',
-        label: 'Date of Death',
+        label: t('DoD', {ns: 'loris'}),
         component: CandidateDOD,
       },
       {
         id: 'diagnosisEvolution',
-        label: 'Diagnosis Evolution',
+        label: t('Diagnosis Evolution', {ns: 'candidate_parameters'}),
         component: DiagnosisEvolution,
       },
     ];
@@ -90,6 +98,7 @@ class CandidateParameters extends Component {
       tabList.push({
         id: 'probandInfo',
         label: 'Proband Information',
+        label: t('Proband Information', {ns: 'candidate_parameters'}),
         component: ProbandInfo,
       });
     }
@@ -97,7 +106,7 @@ class CandidateParameters extends Component {
     if (loris.config('useFamilyID') === 'true') {
       tabList.push({
         id: 'familyInfo',
-        label: 'Family Information',
+        label: t('Family Information', {ns: 'candidate_parameters'}),
         component: FamilyInfo,
       });
     }
@@ -105,20 +114,13 @@ class CandidateParameters extends Component {
     if (loris.config('useConsent') === 'true') {
       tabList.push({
         id: 'consentStatus',
-        label: 'Consent Status',
+        label: t('Consent Status', {ns: 'candidate_parameters'}),
         component: ConsentStatus,
       });
     }
 
     return (
       <div>
-        <a className='btn btn-sm btn-primary'
-          href={loris.BaseURL + '/' + this.props.candID}
-          style={{marginBottom: '20px'}}
-        >
-          Return to timepoint list
-        </a>
-        <br />
         <Tabs tabs={tabList} defaultTab='candidateInfo' updateURL={true}>
           {this.getTabPanes(tabList)}
         </Tabs>
@@ -129,6 +131,7 @@ class CandidateParameters extends Component {
 
 CandidateParameters.propTypes = {
   candID: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 /**
@@ -137,15 +140,22 @@ CandidateParameters.propTypes = {
 const args = QueryString.get(document.currentScript.src);
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('es', 'candidate_parameters', esStrings);
+  i18n.addResourceBundle('zh', 'candidate_parameters', zhStrings);
+  i18n.addResourceBundle('fr', 'candidate_parameters', frStrings);
+
+  const TranslatedCandidateParameters = withTranslation(
+    ['candidate_parameters', 'loris']
+  )(CandidateParameters);
+
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
     <div className="page-candidate-parameters">
-      <CandidateParameters
+      <TranslatedCandidateParameters
         Module="candidate_parameters"
         candID={args.candID}
       />
     </div>
   );
 });
-

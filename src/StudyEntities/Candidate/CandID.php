@@ -4,7 +4,7 @@
  * This defines what a CandID should be so it can be passed as a typed
  * parameter in functions.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category StudyEntities
  * @package  LORIS

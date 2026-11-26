@@ -13,9 +13,17 @@ import useBreadcrumbs from './hooks/usebreadcrumbs';
 import useVisits from './hooks/usevisits';
 import useQuery from './hooks/usequery';
 import {useSharedQueries, useLoadQueryFromURL} from './hooks/usesharedqueries';
-
 import {useDataDictionary, useCategories} from './hooks/usedatadictionary';
 import {ModuleDictionary, DictionaryCategory} from './types';
+// @ts-ignore
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/dataquery.json';
+import frStrings from '../locale/fr/LC_MESSAGES/dataquery.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/dataquery.json';
+import {TFunction} from 'i18next';
 
 type ActiveCategoryType = {
     module: string,
@@ -27,9 +35,9 @@ type ActiveCategoryType = {
 /**
  * React hook to manage the selection of an active module and category
  *
- * @param {function} retrieveModuleDictionary - a function that will return a
+ * @param retrieveModuleDictionary - a function that will return a
                          promise to retrieve the module's dictionary
- * @returns {ActiveCategoryType} - an object of the current dictionary and action to change it
+ * @returns - an object of the current dictionary and action to change it
  */
 function useActiveCategory(
   retrieveModuleDictionary: (module: string) => Promise<ModuleDictionary>
@@ -41,9 +49,8 @@ function useActiveCategory(
    * Change the current category, retrieving the module dictionary from
    * the server if necessary.
    *
-   * @param {string} module - the module to become active
-   * @param {string} category - the category to become active
-   * @returns {void}
+   * @param module - the module to become active
+   * @param category - the category to become active
    */
   const changeCategory = (module: string, category: string) => {
     retrieveModuleDictionary(module).then( (dict) => {
@@ -63,20 +70,21 @@ function useActiveCategory(
 /**
  * Return the main page for the DQT
  *
- * @param {object} props - React props
- * @param {boolean} props.queryAdmin - true if the current user has permission to administer study queries
- * @param {string} props.username - The user accessing the app
- * @returns {React.ReactElement} - The main page of the app
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.queryAdmin - true if the current user has permission to administer study queries
+ *
+ * @returns - The main page of the app
  */
 function DataQueryApp(props: {
+    t: TFunction,
     queryAdmin: boolean,
-    username: string
 }) {
   const [activeTab, setActiveTab] = useState('Info');
   useBreadcrumbs(activeTab, setActiveTab);
 
   const [queries, reloadQueries, queryActions]
-        = useSharedQueries(props.username);
+        = useSharedQueries();
 
   const visits = useVisits();
 
@@ -99,16 +107,17 @@ function DataQueryApp(props: {
 
   useLoadQueryFromURL(loadQuery);
 
+  const {t} = props;
   if (!categories) {
-    return <div>Loading...</div>;
+    return <div>{t('Loading...', {ns: 'loris'})}</div>;
   }
   let content;
 
   /**
    * Maps a module name from the backend name to a human friendly name.
    *
-   * @param {string} name - The module name
-   * @returns {string} - the human friendly name
+   * @param name - The module name
+   * @returns - the human friendly name
    */
   const mapModuleName = (name: string): string => {
     if (categories && categories.modules) {
@@ -119,9 +128,9 @@ function DataQueryApp(props: {
     /**
      * Maps a category name from the backend name to a human friendly name.
      *
-     * @param {string} module - The module name
-     * @param {string} category - The category name within the module
-     * @returns {string} - the human friendly name
+     * @param module - The module name
+     * @param category - The category name within the module
+     * @returns - the human friendly name
      */
   const mapCategoryName = (module: string, category: string): string => {
     if (categories && categories.categories
@@ -134,8 +143,7 @@ function DataQueryApp(props: {
   /**
    * Function to retrieve a module's data dictionary from the server.
    *
-   * @param {string} module - the module whole fields should be retrieved
-   * @returns {void}
+   * @param module - the module whole fields should be retrieved
    */
   const getModuleFields = (module: string): void => {
     fetchModuleDictionary(module);
@@ -217,20 +225,20 @@ function DataQueryApp(props: {
 
       mapModuleName={mapModuleName}
       mapCategoryName={mapCategoryName}
+      visitLabels={visits.all}
     />;
     break;
   case 'ViewData':
     content = <ViewData
+      t={props.t}
       fields={selectedFields}
       filters={query}
-
       fulldictionary={fulldictionary}
-
       onRun={reloadQueries}
     />;
     break;
   default:
-    content = <div>Invalid tab</div>;
+    content = <div>{t('Invalid tab', {ns: 'dataquery'})}</div>;
   }
   return <div>
     <div>{content}</div>
@@ -244,16 +252,21 @@ function DataQueryApp(props: {
 
 declare const loris: any;
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'dataquery', jaStrings);
+  i18n.addResourceBundle('hi', 'dataquery', hiStrings);
+  i18n.addResourceBundle('fr', 'dataquery', frStrings);
+  i18n.addResourceBundle('zh', 'dataquery', zhStrings);
+  const Index = withTranslation(
+    ['dataquery', 'loris']
+  )(DataQueryApp);
   const element = document.getElementById('lorisworkspace');
   if (!element) {
     throw new Error('Missing lorisworkspace');
   }
   const root = createRoot(element);
-
   root.render(
-    <DataQueryApp
+    <Index
       queryAdmin={loris.userHasPermission('dataquery_admin')}
-      username={loris.user.username}
     />,
   );
 });
