@@ -16,19 +16,12 @@
        itself, at least 3:1 against white, so it also draws edges, fields
        and chart marks; 5 text in that hue, at least 6:1 against white and
        4.5:1 against step 2. The brand is the colour of actions and
-       navigation, and the accent is the brand turned half way round the
-       colour wheel. */
+       navigation. */
     --brand-1: #fafcfe;
     --brand-2: #e7f1fe;
     --brand-3: #9dbee8;
     --brand-4: #064785;
     --brand-5: #01376b;
-
-    --accent-1: #fffcf1;
-    --accent-2: #fdf4d2;
-    --accent-3: #e1b876;
-    --accent-4: #cb7602;
-    --accent-5: #974c00;
 
     --red-1: #fefbfa;
     --red-2: #ffebe8;
@@ -106,12 +99,6 @@
     --primary-strong: var(--brand-5);
     --primary-border: var(--brand-4);
     --primary-fill: var(--brand-1);
-
-    /* The brand's partner colour */
-    --secondary: var(--accent-4);
-    --secondary-strong: var(--accent-5);
-    --secondary-border: var(--accent-4);
-    --secondary-fill: var(--accent-1);
 
     /* Help, notices, and rules that govern what the next action does */
     --info: var(--sky-4);

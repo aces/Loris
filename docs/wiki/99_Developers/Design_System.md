@@ -34,8 +34,8 @@ uses it.
 
 ## Colours
 
-Colour comes in two layers. The scales are the palette: the brand, its accent, ten
-hues and grey, each with five numbered steps. The roles say what a colour means
+Colour comes in two layers. The scales are the palette: the brand, ten hues and
+grey, each with five numbered steps. The roles say what a colour means
 (`--primary`, `--danger`, `--state-selected`) and each one points at a step.
 Components use the roles. A colour that means a state, such as an error or a
 selected row, uses a role; a colour that only tells categories apart, such as one
@@ -67,7 +67,6 @@ state tokens use step 2.
 | Role | Scale |
 |---|---|
 | `--primary` | Brand |
-| `--secondary` | Accent |
 | `--info` | Sky |
 | `--warning` | Orange |
 | `--success` | Green |
@@ -76,9 +75,7 @@ state tokens use step 2.
 | `--text`, `--border`, `--border-strong`, `--border-subtle`, `--surface-sunken` | Grey |
 
 LORIS's brand navy comes from the "Loris color palette v.0.1" in the header of
-`htdocs/bootstrap/css/custom-css.css`. The accent is the brand turned half way round
-the colour wheel, which for navy is LORIS's orange.
-The greys are LORIS's existing grey scale.
+`htdocs/bootstrap/css/custom-css.css`, and the greys are LORIS's existing grey scale.
 
 Each hue is a chosen colour and, for its darker steps, an angle and a limit on how
 vivid they get, all worked out in OKLCH. Step 4 is the chosen colour when it reaches
@@ -107,18 +104,6 @@ Actions, navigation and panel headings. LORIS's brand is navy.
 | ![](../../images/palette/brand-3.svg) | `--brand-3` | `#9dbee8` | 1.92:1 |  |
 | ![](../../images/palette/brand-4.svg) | `--brand-4` | `#064785` | 9.34:1 | `--primary`, `--primary-border` |
 | ![](../../images/palette/brand-5.svg) | `--brand-5` | `#01376b` | 11.93:1 | `--primary-strong` |
-
-### Accent
-
-The brand's partner colour, the brand turned half way round the colour wheel. LORIS's is orange.
-
-| | Token | Hex | Contrast on white | Role |
-|---|---|---|---|---|
-| ![](../../images/palette/accent-1.svg) | `--accent-1` | `#fffcf1` | 1.03:1 | `--secondary-fill` |
-| ![](../../images/palette/accent-2.svg) | `--accent-2` | `#fdf4d2` | 1.10:1 |  |
-| ![](../../images/palette/accent-3.svg) | `--accent-3` | `#e1b876` | 1.86:1 |  |
-| ![](../../images/palette/accent-4.svg) | `--accent-4` | `#cb7602` | 3.42:1 | `--secondary`, `--secondary-border` |
-| ![](../../images/palette/accent-5.svg) | `--accent-5` | `#974c00` | 6.27:1 | `--secondary-strong` |
 
 ### Red
 
