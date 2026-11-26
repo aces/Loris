@@ -66,7 +66,7 @@
     /* States: hover is the pointer, selected is a settled choice, active is a
        state being passed through. Stronger than the -fill tints so a row or
        option in that state shows against white. */
-    --state-hover: #f0f6fe;
+    --state-hover: color-mix(in oklch, var(--text) 4%, var(--surface));
     --state-selected: #e0edfd;
     --state-selected-solid: var(--primary);
     --state-active: #fcf3d1;
