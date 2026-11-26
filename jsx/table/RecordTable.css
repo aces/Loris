@@ -670,11 +670,6 @@
     margin-right: 0;
 }
 
-.rt-footer .loris-button {
-    height: 26px;
-    font-size: var(--font-size-sm);
-}
-
 .rt-range {
     margin: 0 var(--space-sm);
     color: var(--text);
