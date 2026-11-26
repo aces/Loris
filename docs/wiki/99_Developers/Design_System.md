@@ -52,13 +52,13 @@ Every scale runs from light to dark, and every step has the same job in every sc
 
 | Step | Used for | Contrast |
 |---|---|---|
-| 1 | A whisper of tint for backgrounds, such as a notice | `--text` on it is at least 4.5:1 |
-| 2 | The tint for states and tags | `--text` and the scale's step 5 on it are at least 4.5:1 |
+| 1 | A whisper of tint for backgrounds, such as a notice or a tag | `--text` on it is at least 4.5:1 |
+| 2 | The tint for states: a selected, active or open row | `--text` and the scale's step 5 on it are at least 4.5:1 |
 | 3 | A soft edge: tag outlines and decorative borders | None; it never marks a boundary someone has to find |
 | 4 | The colour itself: icons, filled buttons, navigation, field borders, chart marks | At least 3:1 against white and against step 1 |
 | 5 | Text in that colour, pressed states | At least 6:1 against white, and 4.5:1 against steps 1 and 2 |
 
-A tag uses step 2 for its background, step 3 for its outline and step 5 for its text.
+A tag uses step 1 for its background, step 3 for its outline and step 5 for its text.
 
 The roles keep the same suffixes in every colour: none and `-border` for step 4,
 `-strong` for step 5 and `-fill` for step 1. Hover uses grey step 1 and the other

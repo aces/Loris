@@ -11,7 +11,7 @@
     /* ---- Colour -------------------------------------------------- */
 
     /* Scales. Every hue has five steps, light to dark, each with one job:
-       1 a whisper of tint for backgrounds; 2 the tint for states and tags;
+       1 a whisper of tint for backgrounds and tags; 2 the tint for states;
        3 a soft edge for tag outlines and decorative borders; 4 the colour
        itself, at least 3:1 against white, so it also draws edges, fields
        and chart marks; 5 text in that hue, at least 6:1 against white and
