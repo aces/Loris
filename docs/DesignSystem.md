@@ -338,6 +338,13 @@ Lists that follow one another, as in sections, share their label column through
 `--field-list-label-width` (the record panel uses `min(40%, 12em)`), so values
 start on the same line all the way down.
 
+### Table names
+
+A page with several tables names each one on its title line, above the views. The table
+shown is in full colour and underlined in the text colour, the others are paler, and a
+thin rule runs under the line, so the names read as tabs one level above the views. A
+page with one table shows its name alone, with no rule.
+
 ### Record panel
 
 Clicking a row in a RecordTable opens its record in a panel on the right. The

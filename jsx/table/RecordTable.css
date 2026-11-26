@@ -1370,6 +1370,24 @@ body:has(.rt-fill) .navbar {
     opacity: 1;
 }
 
+/* With several tables, a thin rule runs under their names and the table
+   shown is underlined on it, so the names read as tabs above the views. */
+.rt-titlebar:has(.rt-sections) {
+    align-items: flex-end;
+    padding-bottom: 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.rt-sections .rt-section {
+    margin-bottom: -1px;
+    padding-bottom: var(--space-md);
+    border-bottom: 2px solid transparent;
+}
+
+.rt-sections .rt-section-on {
+    border-bottom-color: var(--text);
+}
+
 .rt-toolbar {
     min-height: 40px;
 }
