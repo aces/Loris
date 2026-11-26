@@ -199,8 +199,10 @@ Everything moves on the one curve, and the duration follows the distance: the fu
 something travels, the longer it takes. A change in size or position animates, so the
 eye can follow what moved: a column eases to its new width, the filters grow from the
 edge and push the rows aside, and a side panel slides in and back out from its edge.
-Opening and closing move the same way. Colour and text changes do not animate, apart
-from a field's label as it rises. Under `prefers-reduced-motion: reduce` every
+Opening and closing move the same way. Text changes do not animate, apart from a
+field's label as it rises. A colour change on hover may fade in over the fast duration,
+so the hovered element doesn't flicker; a change of state (selected, open, active)
+appears at once. Under `prefers-reduced-motion: reduce` every
 transition and animation is turned off, and changes happen at once.
 
 ## Accessibility
