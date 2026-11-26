@@ -1,6 +1,7 @@
 /**
- * Tag styles: each tone is its colour's fill, border and strong text, from
- * htdocs/css/tokens.css.
+ * Tag styles: each tone is its scale's step 1 background, step 3 outline and
+ * step 5 text, from htdocs/css/tokens.css. A role tone draws from its role's
+ * scale; a hue tone names the scale itself.
  */
 
 .loris-tag {
@@ -14,37 +15,103 @@
 }
 
 .loris-tag-neutral {
-    border-color: var(--border-subtle);
-    background: var(--surface-sunken);
+    border-color: var(--grey-3);
+    background: var(--grey-1);
     color: var(--text);
 }
 
 .loris-tag-primary {
-    border-color: var(--primary-border);
-    background: var(--primary-fill);
-    color: var(--primary-strong);
+    border-color: var(--brand-3);
+    background: var(--brand-1);
+    color: var(--brand-5);
 }
 
 .loris-tag-info {
-    border-color: var(--info-border);
-    background: var(--info-fill);
-    color: var(--info-strong);
+    border-color: var(--sky-3);
+    background: var(--sky-1);
+    color: var(--sky-5);
 }
 
 .loris-tag-success {
-    border-color: var(--success-border);
-    background: var(--success-fill);
-    color: var(--success-strong);
+    border-color: var(--green-3);
+    background: var(--green-1);
+    color: var(--green-5);
 }
 
 .loris-tag-warning {
-    border-color: var(--warning-border);
-    background: var(--warning-fill);
-    color: var(--warning-strong);
+    border-color: var(--orange-3);
+    background: var(--orange-1);
+    color: var(--orange-5);
 }
 
 .loris-tag-danger {
-    border-color: var(--danger-border);
-    background: var(--danger-fill);
-    color: var(--danger-strong);
+    border-color: var(--red-3);
+    background: var(--red-1);
+    color: var(--red-5);
+}
+
+.loris-tag-red {
+    border-color: var(--red-3);
+    background: var(--red-1);
+    color: var(--red-5);
+}
+
+.loris-tag-orange {
+    border-color: var(--orange-3);
+    background: var(--orange-1);
+    color: var(--orange-5);
+}
+
+.loris-tag-brown {
+    border-color: var(--brown-3);
+    background: var(--brown-1);
+    color: var(--brown-5);
+}
+
+.loris-tag-yellow {
+    border-color: var(--yellow-3);
+    background: var(--yellow-1);
+    color: var(--yellow-5);
+}
+
+.loris-tag-green {
+    border-color: var(--green-3);
+    background: var(--green-1);
+    color: var(--green-5);
+}
+
+.loris-tag-teal {
+    border-color: var(--teal-3);
+    background: var(--teal-1);
+    color: var(--teal-5);
+}
+
+.loris-tag-sky {
+    border-color: var(--sky-3);
+    background: var(--sky-1);
+    color: var(--sky-5);
+}
+
+.loris-tag-blue {
+    border-color: var(--blue-3);
+    background: var(--blue-1);
+    color: var(--blue-5);
+}
+
+.loris-tag-purple {
+    border-color: var(--purple-3);
+    background: var(--purple-1);
+    color: var(--purple-5);
+}
+
+.loris-tag-pink {
+    border-color: var(--pink-3);
+    background: var(--pink-1);
+    color: var(--pink-5);
+}
+
+.loris-tag-grey {
+    border-color: var(--grey-3);
+    background: var(--grey-1);
+    color: var(--grey-5);
 }
