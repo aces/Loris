@@ -1,8 +1,9 @@
 /**
  * Design tokens: the values components style themselves with.
  *
- * Each token is named for the job it does. The colours they draw from are
- * shown in docs/wiki/99_Developers/Design_System.md.
+ * Components use the roles, each named for the job it does. The roles
+ * point at the numbered scales above them, shown in
+ * docs/wiki/99_Developers/Design_System.md.
  *
  * Loaded on every page from main.tpl, public_layout.tpl, directentry.tpl
  * and imaging_browser's form_feedback_mri_popup.tpl.
@@ -16,9 +17,10 @@
        background, with no contrast duty, so a light hue shows at its
        brightest; 4 anything seen on white, such as field borders, icons
        and chart marks, at least 3:1 against white; 5 text, at least 6:1
-       against white and 4.5:1 against steps 1 and 2. The brand is the colour of actions and
-       navigation. Amber (LORIS's orange) and sky are the notice colours,
-       kept for warnings and information, so no category uses them. */
+       against white and 4.5:1 against steps 1 and 2. The brand is the
+       colour of actions and navigation. Amber (LORIS's orange) and sky are
+       the notice colours, kept for warnings and information, so no category
+       uses them. */
     --brand-1: #fafcfe;
     --brand-2: #e7f1fe;
     --brand-3: #9dbee8;
@@ -30,6 +32,12 @@
     --amber-3: #e89a0c;
     --amber-4: #cb7602;
     --amber-5: #974c00;
+
+    --sky-1: #f6fdff;
+    --sky-2: #daf6fc;
+    --sky-3: #75dcf0;
+    --sky-4: #0396c6;
+    --sky-5: #02688b;
 
     --red-1: #fefbfa;
     --red-2: #ffebe8;
@@ -66,12 +74,6 @@
     --teal-3: #3bcddc;
     --teal-4: #059aa6;
     --teal-5: #036c75;
-
-    --sky-1: #f6fdff;
-    --sky-2: #daf6fc;
-    --sky-3: #75dcf0;
-    --sky-4: #0396c6;
-    --sky-5: #02688b;
 
     --blue-1: #fafcff;
     --blue-2: #e8f1ff;
@@ -128,13 +130,6 @@
     --danger-strong: var(--red-5);
     --danger-border: var(--red-4);
     --danger-fill: var(--red-1);
-
-    /* Telling categories apart, where the other colours already carry a
-       meaning */
-    --category: var(--purple-4);
-    --category-strong: var(--purple-5);
-    --category-border: var(--purple-4);
-    --category-fill: var(--purple-1);
 
     /* States. Hover is the pointer, selected is a settled choice, active is
        a row waiting for an action, open is the row whose panel is showing.

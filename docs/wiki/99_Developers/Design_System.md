@@ -11,10 +11,6 @@ which is loaded on every page. For language conventions, see
 
 Colours, spacing and border radii should come from `tokens.css` rather than being
 hardcoded. If no existing token fits, a new one should be added to `tokens.css`.
-Visualizations take their colours from the same hues, such as the electrode and
-sensor colours in the electrophysiology browser, so a chart reads the same in every
-module. A visualization that needs a colour the hues do not have, even a slight
-variation, gets it added to the palette so other modules can use it too.
 
 ```css
 /* Avoid */
@@ -28,9 +24,10 @@ variation, gets it added to the palette so other modules can use it too.
 }
 ```
 
-Tokens are named for what they are used for (`--primary`, `--border`, `--text-muted`)
-rather than for their value, so changing a token's value restyles everything that
-uses it.
+Components use roles, which are named for what they are used for (`--primary`,
+`--border`, `--text-muted`) rather than for their value, so changing a role restyles
+everything that uses it. Each role points at a step of a numbered scale, described
+under Colours.
 
 ## Colours
 
@@ -87,7 +84,6 @@ state tokens use step 2.
 | `--warning` | Amber |
 | `--success` | Green |
 | `--danger` | Red |
-| `--category` | Purple |
 | `--text`, `--border`, `--border-strong`, `--border-subtle`, `--surface-sunken` | Grey |
 
 LORIS's brand navy comes from the "Loris color palette v.0.1" in the header of
@@ -226,15 +222,13 @@ Success.
 
 ### Purple
 
-Telling categories apart where the other colours already carry a meaning.
-
 | | Token | Hex | Contrast on white | Role |
 |---|---|---|---|---|
-| ![](../../images/palette/purple-1.svg) | `--purple-1` | `#fdfbff` | 1.03:1 | `--category-fill` |
+| ![](../../images/palette/purple-1.svg) | `--purple-1` | `#fdfbff` | 1.03:1 |  |
 | ![](../../images/palette/purple-2.svg) | `--purple-2` | `#f6ebfd` | 1.15:1 |  |
 | ![](../../images/palette/purple-3.svg) | `--purple-3` | `#d7abf1` | 1.91:1 |  |
-| ![](../../images/palette/purple-4.svg) | `--purple-4` | `#9137bb` | 6.06:1 | `--category`, `--category-border` |
-| ![](../../images/palette/purple-5.svg) | `--purple-5` | `#79329b` | 7.66:1 | `--category-strong` |
+| ![](../../images/palette/purple-4.svg) | `--purple-4` | `#9137bb` | 6.06:1 |  |
+| ![](../../images/palette/purple-5.svg) | `--purple-5` | `#79329b` | 7.66:1 |  |
 
 ### Pink
 
@@ -256,7 +250,7 @@ Telling categories apart where the other colours already carry a meaning.
 | ![](../../images/palette/grey-4.svg) | `--grey-4` | `#8f8f8f` | 3.23:1 | `--border-strong`, `--field-border`, `--control-off` |
 | ![](../../images/palette/grey-5.svg) | `--grey-5` | `#333333` | 12.63:1 | `--text` |
 
-Three grey roles sit between the steps:
+Three grey roles sit outside the steps:
 
 | | Token | Hex | Used for |
 |---|---|---|---|
