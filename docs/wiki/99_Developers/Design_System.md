@@ -34,9 +34,10 @@ uses it.
 
 ## Colours
 
-Colour comes in two layers. The scales are the palette: the brand, amber for
-warnings, ten hues and grey, each with five numbered steps. The roles say what a colour means
-(`--primary`, `--danger`, `--state-selected`) and each one points at a step.
+Colour comes in two layers. The scales are the palette: the brand, two notice
+colours (amber for warnings, sky for information), nine hues and grey, each with
+five numbered steps. The roles say what a colour means (`--primary`, `--danger`,
+`--state-selected`) and each one points at a step.
 Components use the roles. A colour that means a state, such as an error or a
 selected row, uses a role; a colour that only tells categories apart, such as one
 tag per project, uses a hue directly.
@@ -48,17 +49,32 @@ variation, gets it added to the palette so other modules can use it too.
 
 ### Steps
 
-Every scale runs from light to dark, and every step has the same job in every scale:
+Every scale runs from light to dark. Each step has one job in every scale, and the
+contrast that job needs:
 
 | Step | Used for | Contrast |
 |---|---|---|
-| 1 | A whisper of tint for backgrounds, such as a notice or a tag | `--text` on it is at least 4.5:1 |
-| 2 | The tint for states: a selected, active or open row | `--text` and the scale's step 5 on it are at least 4.5:1 |
-| 3 | A soft edge: tag outlines and decorative borders | None; it never marks a boundary someone has to find |
-| 4 | The colour itself: icons, filled buttons, navigation, field borders, chart marks | At least 3:1 against white and against step 1 |
+| 1 | Backgrounds: a notice, a tag | `--text` on it is at least 4.5:1 |
+| 2 | Row states: a selected, active or open row | `--text` and the scale's step 5 on it are at least 4.5:1, and it shows against white |
+| 3 | Decoration: tag outlines, decorative borders, chart marks on a dark background | None, so a light hue shows here at its brightest |
+| 4 | Anything that must be seen on white: icons, filled buttons, navigation, field borders, chart marks on a light background | At least 3:1 against white and against step 1 |
 | 5 | Text in that colour, pressed states | At least 6:1 against white, and 4.5:1 against steps 1 and 2 |
 
-A tag uses step 1 for its background, step 3 for its outline and step 5 for its text.
+To pick a step, find what is being drawn and where:
+
+| Drawing | On | Step |
+|---|---|---|
+| A tag | Any surface | 1 background, 3 outline, 5 text |
+| A notice | Any surface | 1 background, 4 border, 5 heading |
+| A row in a state | The table | 2 background, 4 bar on its left edge |
+| A chart mark, line or bar | White or a light surface | 4, or 5 for a second series in the same hue |
+| A chart mark, line or bar | A dark surface | 3 |
+| An icon or a field border | White or a light surface | 4 |
+| Text | White or steps 1 and 2 | 5 |
+
+WCAG asks for 3:1 only where colour is needed to understand something, such as a
+chart series told apart by colour or the edge of a field. A tag's outline is
+decoration, since its label carries the meaning, so step 3 has no contrast duty.
 
 The roles keep the same suffixes in every colour: none and `-border` for step 4,
 `-strong` for step 5 and `-fill` for step 1. Hover uses grey step 1 and the other
@@ -75,19 +91,21 @@ state tokens use step 2.
 | `--text`, `--border`, `--border-strong`, `--border-subtle`, `--surface-sunken` | Grey |
 
 LORIS's brand navy comes from the "Loris color palette v.0.1" in the header of
-`htdocs/bootstrap/css/custom-css.css`, and so does amber, its orange. Amber is kept
-for warnings, so a warning never looks like a category; the hues include a separate,
-redder orange. The greys are LORIS's existing grey scale.
+`htdocs/bootstrap/css/custom-css.css`, and so does amber, its orange. Amber and sky
+are kept for warnings and information, so a notice never looks like a category; the
+hues include a separate, redder orange and a teal set apart from sky. The greys are
+LORIS's existing grey scale.
 
 Each hue is a chosen colour and, for its darker steps, an angle and a limit on how
 vivid they get, all worked out in OKLCH. Step 4 is the chosen colour when it reaches
-3:1 against white; a lighter colour (amber, orange, yellow, teal, sky) takes the lightest
-shade of itself that does. Step 5 is the lightest shade that reaches 6:1. Step 1 is
-a faint tint at one lightness for every hue, step 2 a stronger tint, and step 3 sits
-halfway between step 2 and step 4's edge. Warm hues lean towards red in their darker
+3:1 against white. A lighter colour (amber, orange, yellow, teal, sky) takes the
+lightest shade of itself that does, and keeps its own bright colour as step 3; in
+every other hue, step 3 sits halfway between step 2 and step 4. Step 5 is the
+lightest shade that reaches 6:1. Step 1 is a faint tint at one lightness for every
+hue and step 2 a stronger tint. Warm hues lean towards red in their darker
 steps and towards yellow in their tints, since they turn muddy at their own angle.
 The hues are chosen so that no two are close at steps 4 and 5, checked with normal
-vision and with the three common kinds of colour blindness. Ten hues is near the
+vision and with the three common kinds of colour blindness. Nine hues is near the
 limit that stays apart, so a chart should not need all of them, and a tag always
 carries its label.
 
@@ -115,9 +133,22 @@ Warnings, and only warnings. Amber is LORIS's orange, so no category uses it.
 |---|---|---|---|---|
 | ![](../../images/palette/amber-1.svg) | `--amber-1` | `#fffcf1` | 1.03:1 | `--warning-fill` |
 | ![](../../images/palette/amber-2.svg) | `--amber-2` | `#fdf4d2` | 1.10:1 | `--state-active` |
-| ![](../../images/palette/amber-3.svg) | `--amber-3` | `#e1b876` | 1.86:1 |  |
+| ![](../../images/palette/amber-3.svg) | `--amber-3` | `#e89a0c` | 2.32:1 |  |
 | ![](../../images/palette/amber-4.svg) | `--amber-4` | `#cb7602` | 3.42:1 | `--warning`, `--warning-border` |
 | ![](../../images/palette/amber-5.svg) | `--amber-5` | `#974c00` | 6.27:1 | `--warning-strong` |
+
+### Sky
+
+Information, and only information: help, notices, an open row and a toggle that is
+on. No category uses it.
+
+| | Token | Hex | Contrast on white | Role |
+|---|---|---|---|---|
+| ![](../../images/palette/sky-1.svg) | `--sky-1` | `#f6fdff` | 1.03:1 | `--info-fill` |
+| ![](../../images/palette/sky-2.svg) | `--sky-2` | `#daf6fc` | 1.13:1 | `--state-open` |
+| ![](../../images/palette/sky-3.svg) | `--sky-3` | `#75dcf0` | 1.58:1 |  |
+| ![](../../images/palette/sky-4.svg) | `--sky-4` | `#0396c6` | 3.40:1 | `--info`, `--info-border` |
+| ![](../../images/palette/sky-5.svg) | `--sky-5` | `#02688b` | 6.26:1 | `--info-strong` |
 
 ### Red
 
@@ -137,7 +168,7 @@ Errors and danger buttons.
 |---|---|---|---|---|
 | ![](../../images/palette/orange-1.svg) | `--orange-1` | `#fefbf8` | 1.03:1 |  |
 | ![](../../images/palette/orange-2.svg) | `--orange-2` | `#fff0e6` | 1.11:1 |  |
-| ![](../../images/palette/orange-3.svg) | `--orange-3` | `#f2af86` | 1.87:1 |  |
+| ![](../../images/palette/orange-3.svg) | `--orange-3` | `#f1840b` | 2.61:1 |  |
 | ![](../../images/palette/orange-4.svg) | `--orange-4` | `#de6907` | 3.43:1 |  |
 | ![](../../images/palette/orange-5.svg) | `--orange-5` | `#9e4801` | 6.21:1 |  |
 
@@ -157,7 +188,7 @@ Errors and danger buttons.
 |---|---|---|---|---|
 | ![](../../images/palette/yellow-1.svg) | `--yellow-1` | `#fffbf4` | 1.03:1 |  |
 | ![](../../images/palette/yellow-2.svg) | `--yellow-2` | `#ffe5ae` | 1.23:1 |  |
-| ![](../../images/palette/yellow-3.svg) | `--yellow-3` | `#d6b468` | 1.98:1 |  |
+| ![](../../images/palette/yellow-3.svg) | `--yellow-3` | `#eab526` | 1.89:1 |  |
 | ![](../../images/palette/yellow-4.svg) | `--yellow-4` | `#ad8405` | 3.45:1 |  |
 | ![](../../images/palette/yellow-5.svg) | `--yellow-5` | `#7a5b01` | 6.32:1 |  |
 
@@ -177,23 +208,11 @@ Success.
 
 | | Token | Hex | Contrast on white | Role |
 |---|---|---|---|---|
-| ![](../../images/palette/teal-1.svg) | `--teal-1` | `#f3fffd` | 1.02:1 |  |
-| ![](../../images/palette/teal-2.svg) | `--teal-2` | `#d0fbf4` | 1.12:1 |  |
-| ![](../../images/palette/teal-3.svg) | `--teal-3` | `#7fcbc4` | 1.87:1 |  |
-| ![](../../images/palette/teal-4.svg) | `--teal-4` | `#009c99` | 3.38:1 |  |
-| ![](../../images/palette/teal-5.svg) | `--teal-5` | `#006d6c` | 6.17:1 |  |
-
-### Sky
-
-Help, notices and a toggle that is on.
-
-| | Token | Hex | Contrast on white | Role |
-|---|---|---|---|---|
-| ![](../../images/palette/sky-1.svg) | `--sky-1` | `#f6fdff` | 1.03:1 | `--info-fill` |
-| ![](../../images/palette/sky-2.svg) | `--sky-2` | `#daf6fc` | 1.13:1 | `--state-open` |
-| ![](../../images/palette/sky-3.svg) | `--sky-3` | `#81c7df` | 1.88:1 |  |
-| ![](../../images/palette/sky-4.svg) | `--sky-4` | `#0396c6` | 3.40:1 | `--info`, `--info-border` |
-| ![](../../images/palette/sky-5.svg) | `--sky-5` | `#02688b` | 6.26:1 | `--info-strong` |
+| ![](../../images/palette/teal-1.svg) | `--teal-1` | `#f5feff` | 1.02:1 |  |
+| ![](../../images/palette/teal-2.svg) | `--teal-2` | `#cefaff` | 1.12:1 |  |
+| ![](../../images/palette/teal-3.svg) | `--teal-3` | `#3bcddc` | 1.92:1 |  |
+| ![](../../images/palette/teal-4.svg) | `--teal-4` | `#059aa6` | 3.40:1 |  |
+| ![](../../images/palette/teal-5.svg) | `--teal-5` | `#036c75` | 6.17:1 |  |
 
 ### Blue
 
@@ -307,7 +326,8 @@ inactive controls. A disabled control should say why it is disabled on hover, us
 - Text in a colour should use its step 5 (`-strong`). White text reaches 4.5:1 on
   step 4 of the brand, red, brown, blue, purple and pink; a filled button in any
   other colour uses step 5 as its background.
-- Chart marks and the borders of fields use step 4 or step 5.
+- Chart marks on a light background and the borders of fields use step 4 or step 5;
+  chart marks on a dark background use step 3.
 - `--text-faint` meets 4.5:1 on `--surface` and `--surface-sunken` only. On a
   coloured tint, use `--text` or `--text-muted`.
 - A field or control should have a border that meets 3:1 against white
