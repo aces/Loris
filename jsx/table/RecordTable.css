@@ -850,7 +850,7 @@ body:has(.rt-fill) #footer {
 
 .rt-page.rt-fill {
     box-sizing: border-box;
-    padding: 0 var(--space-xl);
+    padding: 0 var(--space-md);
 }
 
 .rt-fill .rt {
@@ -876,7 +876,7 @@ body:has(.rt-fill) #footer {
     top: 0;
     bottom: 0;
     z-index: 3;
-    width: 12px;
+    width: var(--space-sm);
     pointer-events: none;
 }
 
