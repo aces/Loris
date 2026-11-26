@@ -196,6 +196,12 @@ msgstr ""
 msgid "Remove all filters"
 msgstr ""
 
+msgid "Remove all filters?"
+msgstr ""
+
+msgid "Could not load query"
+msgstr ""
+
 msgid "Delete Item"
 msgstr ""
 

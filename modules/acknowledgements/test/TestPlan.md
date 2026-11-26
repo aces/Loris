@@ -11,7 +11,7 @@ Covered by integration tests with 100% coverage.
 6. Verify that the "Save" button on the modal window form inserts a new record in the 
    data table and that the data table is refreshed automatically.[Automation Testing]
 7. Start entering information in the modal window form and close the modal window 
-   without saving. A message asking 'Are You Sure?' should appear to confirm that the
+   without saving. A message asking 'Discard this form?' should appear to confirm that the
    form should indeed be closed without saving the information previously entered [Automation Testing]
 8. Modify the "citation_policy" setting in the LORIS configuration module and ensure that the citation policy
    at the top of the page is modified.[Automation Testing]

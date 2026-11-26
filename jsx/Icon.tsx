@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-  ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Search, X,
+  ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleHelp,
+  Search, X,
 } from 'lucide-react';
 import './Icon.css';
 
@@ -9,8 +10,10 @@ const glyphs = {
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   close: X,
+  error: CircleAlert,
   help: CircleHelp,
   search: Search,
+  success: CircleCheck,
 };
 
 export type IconName = keyof typeof glyphs;

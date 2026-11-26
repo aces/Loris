@@ -217,6 +217,15 @@ msgstr "चयनित"
 msgid "Cancel"
 msgstr "रद्द करें"
 
+msgid "Discard this form?"
+msgstr "क्या यह फ़ॉर्म छोड़ दें?"
+
+msgid "Discard"
+msgstr "छोड़ दें"
+
+msgid "Keep editing"
+msgstr "संपादन जारी रखें"
+
 msgid "Clear"
 msgstr "हटाना"
 

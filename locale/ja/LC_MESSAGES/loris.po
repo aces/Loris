@@ -194,6 +194,15 @@ msgstr "わかりました"
 msgid "Cancel"
 msgstr "取り消す"
 
+msgid "Discard this form?"
+msgstr "このフォームを破棄しますか?"
+
+msgid "Discard"
+msgstr "破棄"
+
+msgid "Keep editing"
+msgstr "編集を続ける"
+
 msgid "Success!"
 msgstr "成功！"
 

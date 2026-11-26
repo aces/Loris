@@ -1,5 +1,4 @@
 import {FormModal} from 'jsx/Modal';
-import swal from 'sweetalert2';
 import {useState} from 'react';
 import {TextboxElement, FieldsetElement} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
@@ -30,11 +29,7 @@ function NameQueryModal(props: {
   const submitPromise = (): Promise<string|void> => {
     const sbmt = new Promise<string>((resolve, reject) => {
       if (queryName == '') {
-        swal.fire({
-          type: 'error',
-          text: t('Must provide a query name.', {ns: 'dataquery'}),
-        });
-        reject();
+        reject(new Error(t('Must provide a query name.', {ns: 'dataquery'})));
         return;
       }
       resolve(queryName);

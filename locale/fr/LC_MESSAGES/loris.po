@@ -204,6 +204,15 @@ msgstr "Réussi!"
 msgid "Close"
 msgstr "Fermer"
 
+msgid "Discard this form?"
+msgstr "Abandonner ce formulaire?"
+
+msgid "Discard"
+msgstr "Abandonner"
+
+msgid "Keep editing"
+msgstr "Continuer la saisie"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "PSCID"

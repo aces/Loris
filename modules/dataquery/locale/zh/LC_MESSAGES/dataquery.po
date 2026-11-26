@@ -205,6 +205,12 @@ msgstr "这将删除当前选中的所有筛选条件。"
 msgid "Remove all filters"
 msgstr "删除所有筛选条件"
 
+msgid "Remove all filters?"
+msgstr "删除所有筛选条件?"
+
+msgid "Could not load query"
+msgstr "无法加载查询"
+
 msgid "Delete Item"
 msgstr "删除项目"
 

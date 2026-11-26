@@ -1,6 +1,17 @@
-import {useState, PropsWithChildren, CSSProperties, ReactNode} from 'react';
-import Swal from 'sweetalert2';
+import {
+  useState,
+  useEffect,
+  useRef,
+  useId,
+  PropsWithChildren,
+  CSSProperties,
+  KeyboardEvent,
+  ReactNode,
+} from 'react';
+import {createRoot} from 'react-dom/client';
 import Loader from './Loader';
+import Button from './Button';
+import Icon from './Icon';
 import {useTranslation} from 'react-i18next';
 
 export type ModalProps = PropsWithChildren<{
@@ -10,6 +21,7 @@ export type ModalProps = PropsWithChildren<{
   title?: ReactNode;
   width?: string;
   footer?: ReactNode;
+  dismissable?: boolean;
 }>;
 
 /**
@@ -28,6 +40,7 @@ function Modal({
   children,
   width,
   footer,
+  dismissable = true,
 }: ModalProps) {
   return (
     <ModalFrame
@@ -36,6 +49,7 @@ function Modal({
       onClose={onClose}
       throwWarning={throwWarning}
       width={width}
+      dismissable={dismissable}
     >
       <div style={bodyStyle}>{show && children}</div>
       {footer && <div style={footerStyle}>{footer}</div>}
@@ -54,6 +68,8 @@ export type FormModalProps<T> = Omit<ModalProps, 'footer'> & {
  *
  * A form-specific modal that keeps submit controls inside the form DOM while
  * preserving the async submit, loading, and success behavior used by LORIS.
+ * When `onSubmit` rejects with an Error, its message is shown above the
+ * Save button.
  */
 export function FormModal<T>({
   throwWarning = false,
@@ -68,6 +84,7 @@ export function FormModal<T>({
 }: FormModalProps<T>) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string|null>(null);
   const {t} = useTranslation('loris');
 
   /**
@@ -77,6 +94,7 @@ export function FormModal<T>({
   const handleSubmit = async () => {
     if (submitDisabled) return;
 
+    setError(null);
     setLoading(true); // Show loader
 
     try {
@@ -89,8 +107,11 @@ export function FormModal<T>({
       setSuccess(false); // Reset success state
       onClose(); // Close modal
       onSuccess?.(data); // call onSuccess if defined
-    } catch {
+    } catch (e) {
       setLoading(false);
+      if (e instanceof Error && e.message) {
+        setError(e.message);
+      }
     }
   };
 
@@ -124,7 +145,7 @@ export function FormModal<T>({
   const successFooter = success && (
     <div style={footerStatusStyle}>
       <span
-        style={{color: 'green', marginBottom: '2px'}}
+        style={{color: 'var(--success-strong)', marginBottom: '2px'}}
         className='glyphicon glyphicon-ok-circle'
       />
       <span>{t('Success!', {ns: 'loris'})}</span>
@@ -157,8 +178,9 @@ export function FormModal<T>({
         </div>
         <div style={{
           ...formFooterStyle,
-          backgroundColor: success ? '#e0ffec' : undefined,
+          backgroundColor: success ? 'var(--success-fill)' : undefined,
         }}>
+          {error && <div role='alert' style={formErrorStyle}>{error}</div>}
           {loadingFooter}
           {successFooter}
           {submitFooter}
@@ -168,10 +190,156 @@ export function FormModal<T>({
   );
 }
 
-type ModalFrameProps = Omit<ModalProps, 'footer'>;
+export type ConfirmDialogProps = {
+  show: boolean;
+  title: ReactNode;
+  children?: ReactNode;
+  confirmLabel: string;
+  cancelLabel?: string;
+  danger?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+};
 
 /**
- * Shared modal frame that owns the chrome and close behavior.
+ * ConfirmDialog Component
+ *
+ * Asks the user to confirm an action before it happens. The title asks the
+ * question, the children explain what follows, and the buttons name the
+ * action. A dangerous action is drawn as one and the focus starts on Cancel;
+ * otherwise it starts on the action.
+ *
+ * @param props - React props
+ * @param props.show - Whether the dialog is open
+ * @param props.title - The question
+ * @param props.children - What happens if the user confirms
+ * @param props.confirmLabel - The action, as the confirm button's label
+ * @param props.cancelLabel - The cancel button's label, Cancel by default
+ * @param props.danger - Whether the action destroys something
+ * @param props.onConfirm - Called when the user confirms
+ * @param props.onCancel - Called when the user cancels
+ * @returns - The confirmation dialog
+ */
+export function ConfirmDialog({
+  show,
+  title,
+  children,
+  confirmLabel,
+  cancelLabel,
+  danger = false,
+  onConfirm,
+  onCancel,
+}: ConfirmDialogProps) {
+  const {t} = useTranslation('loris');
+  const descriptionId = useId();
+  return (
+    <ModalFrame
+      show={show}
+      title={title}
+      onClose={onCancel}
+      width='480px'
+      role='alertdialog'
+      describedBy={children ? descriptionId : undefined}
+    >
+      {children && (
+        <div id={descriptionId} style={bodyStyle}>{children}</div>
+      )}
+      <div style={confirmFooterStyle}>
+        <Button
+          display='secondary'
+          onClick={onCancel}
+          data-autofocus={danger || undefined}
+        >
+          {cancelLabel ?? t('Cancel', {ns: 'loris'})}
+        </Button>
+        <Button
+          display={danger ? 'danger' : 'primary'}
+          onClick={onConfirm}
+          data-autofocus={!danger || undefined}
+        >
+          {confirmLabel}
+        </Button>
+      </div>
+    </ModalFrame>
+  );
+}
+
+/**
+ * Renders a dialog outside the page's React tree, for code that asks a
+ * question from an event handler. The dialog calls `finish` with its answer,
+ * which removes it and resolves the promise.
+ *
+ * @param render - Renders the dialog, given the callback that closes it
+ * @returns - A promise of the dialog's answer
+ */
+export function openDialog<T>(
+  render: (finish: (answer: T) => void) => ReactNode
+): Promise<T> {
+  return new Promise((resolve) => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    /**
+     * Resolves with the dialog's answer and removes the dialog.
+     *
+     * @param answer - The dialog's answer
+     */
+    const finish = (answer: T) => {
+      resolve(answer);
+      setTimeout(() => {
+        root.unmount();
+        container.remove();
+      });
+    };
+    root.render(render(finish));
+  });
+}
+
+/**
+ * Opens a ConfirmDialog from an event handler.
+ *
+ * @param props - The dialog's title, text and labels
+ * @returns - A promise that resolves to true when the user confirms
+ */
+export function openConfirm(
+  props: Omit<ConfirmDialogProps, 'show' | 'onConfirm' | 'onCancel'>
+): Promise<boolean> {
+  return openDialog<boolean>((finish) => (
+    <ConfirmDialog
+      {...props}
+      show={true}
+      onConfirm={() => finish(true)}
+      onCancel={() => finish(false)}
+    />
+  ));
+}
+
+type ModalFrameProps = Omit<ModalProps, 'footer'> & {
+  role?: 'dialog' | 'alertdialog';
+  describedBy?: string;
+};
+
+const focusableSelector = 'a[href], button:not([disabled]), '
+  + 'input:not([disabled]), select:not([disabled]), '
+  + 'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Shared modal frame that owns the chrome and close behavior. While open,
+ * the focus stays inside it, and it returns to where it was on close.
+ * Escape and a click outside close it unless it is not dismissable.
+ *
+ * @param props - React props
+ * @param props.throwWarning - Whether closing asks first
+ * @param props.show - Whether the modal is open
+ * @param props.onClose - Called when the modal closes
+ * @param props.title - The modal's title
+ * @param props.children - The modal's content
+ * @param props.width - The modal's width, 700px by default
+ * @param props.dismissable - Whether Escape, a click outside and the close
+ *                            button close it
+ * @param props.role - dialog, or alertdialog for a question
+ * @param props.describedBy - The id of the element that describes it
+ * @returns - The modal frame
  */
 function ModalFrame({
   throwWarning = false,
@@ -180,26 +348,70 @@ function ModalFrame({
   title,
   children,
   width,
+  dismissable = true,
+  role = 'dialog',
+  describedBy,
 }: ModalFrameProps) {
   const {t} = useTranslation('loris');
+  const [confirmingClose, setConfirmingClose] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+
+  useEffect(() => {
+    if (!show) {
+      return;
+    }
+    const opener = document.activeElement as HTMLElement | null;
+    const dialog = dialogRef.current;
+    const initial = dialog?.querySelector<HTMLElement>('[data-autofocus]');
+    (initial ?? dialog)?.focus();
+    return () => opener?.focus();
+  }, [show]);
 
   /**
-   * Handles modal close event. Shows a confirmation if `throwWarning` is true.
+   * Handles modal close event. Asks first if `throwWarning` is true.
    */
   const handleClose = () => {
-    if (throwWarning) { // Display warning if enabled
-      Swal.fire({
-        title: t('Are You Sure?', {ns: 'loris'}),
-        text: t('Leaving the form will result in the loss '
-          +'of any information entered.',
-        {ns: 'loris'}),
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: t('Proceed', {ns: 'loris'}),
-        cancelButtonText: t('Cancel', {ns: 'loris'}),
-      }).then((result) => result.value && onClose());
+    if (!dismissable) {
+      return;
+    }
+    if (throwWarning) {
+      setConfirmingClose(true);
     } else {
-      onClose(); // Close immediately if no warning
+      onClose();
+    }
+  };
+
+  /**
+   * Closes on Escape and keeps Tab cycling through the dialog's controls.
+   *
+   * @param e - The key event
+   */
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      handleClose();
+      return;
+    }
+    if (e.key !== 'Tab' || !dialogRef.current) {
+      return;
+    }
+    e.stopPropagation();
+    const focusable = Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(focusableSelector)
+    );
+    if (focusable.length === 0) {
+      e.preventDefault();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
     }
   };
 
@@ -209,25 +421,58 @@ function ModalFrame({
         ...modalContainer,
         visibility: show ? 'visible' : 'hidden',
       }}
-      onClick={handleClose}
+      onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <div
+        ref={dialogRef}
+        role={role}
+        aria-modal={true}
+        aria-labelledby={title ? titleId : undefined}
+        aria-describedby={describedBy}
+        tabIndex={-1}
+        onKeyDown={handleKeyDown}
+        onClick={(e) => e.stopPropagation()}
         style={{
           ...modalContent,
           opacity: show ? 1 : 0,
           top: show ? 0 : '-300px',
           width: width ?? '700px',
         }}
-        onClick={(e) => e.stopPropagation()}
       >
         <div style={headerStyle}>
-          {title}
-          <span style={closeButtonStyle} onClick={handleClose}>×</span>
+          <span id={titleId}>{title}</span>
+          {dismissable && (
+            <Button
+              display='quiet'
+              onClick={handleClose}
+              aria-label={t('Close', {ns: 'loris'})}
+              style={closeButtonStyle}
+            >
+              <Icon name='close'/>
+            </Button>
+          )}
         </div>
         <div style={contentStyle}>
           {children}
         </div>
       </div>
+      {confirmingClose && (
+        <ConfirmDialog
+          show={true}
+          title={t('Discard this form?', {ns: 'loris'})}
+          confirmLabel={t('Discard', {ns: 'loris'})}
+          cancelLabel={t('Keep editing', {ns: 'loris'})}
+          danger={true}
+          onConfirm={() => {
+            setConfirmingClose(false);
+            onClose();
+          }}
+          onCancel={() => setConfirmingClose(false)}
+        >
+          {t('Leaving the form will result in the loss '
+            + 'of any information entered.', {ns: 'loris'})}
+        </ConfirmDialog>
+      )}
     </div>
   );
 }
@@ -241,12 +486,12 @@ const headerStyle: CSSProperties = {
   fontWeight: 400,
   lineHeight: 1.25,
   padding: '16px 20px',
-  borderBottom: '1px solid #DDDDDD',
+  borderBottom: '1px solid var(--border)',
 };
 
 const closeButtonStyle: CSSProperties = {
   marginLeft: 'auto',
-  cursor: 'pointer',
+  fontSize: 'var(--font-size-lg)',
 };
 
 const bodyStyle: CSSProperties = {
@@ -292,18 +537,20 @@ const modalContent: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
-  backgroundColor: '#fefefe',
-  borderRadius: '8px',
-  border: '1px solid #888',
+  backgroundColor: 'var(--surface)',
+  color: 'var(--text)',
+  borderRadius: 'var(--radius)',
+  border: '1px solid var(--border)',
   maxHeight: '100%',
   maxWidth: '100%',
   overflow: 'hidden',
-  boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
+  boxShadow: 'var(--shadow-overlay)',
+  outline: 'none',
   transition: 'opacity 0.4s ease, top 0.4s ease',
 };
 
 const footerStyle: CSSProperties = {
-  borderTop: '1px solid #DDDDDD',
+  borderTop: '1px solid var(--border)',
   display: 'flex',
   alignItems: 'center',
   flex: '0 0 auto',
@@ -311,11 +558,26 @@ const footerStyle: CSSProperties = {
   padding: '16px 20px',
 };
 
+const confirmFooterStyle: CSSProperties = {
+  ...footerStyle,
+  justifyContent: 'flex-end',
+  gap: 'var(--space-md)',
+};
+
 const formFooterStyle: CSSProperties = {
   ...footerStyle,
   flexDirection: 'column',
   gap: '12px',
   justifyContent: 'center',
+};
+
+const formErrorStyle: CSSProperties = {
+  alignSelf: 'stretch',
+  padding: 'var(--space-md) var(--space-lg)',
+  background: 'var(--danger-fill)',
+  border: '1px solid var(--danger-border)',
+  borderRadius: 'var(--radius)',
+  color: 'var(--danger-strong)',
 };
 
 const footerSubmitStyle: CSSProperties = {

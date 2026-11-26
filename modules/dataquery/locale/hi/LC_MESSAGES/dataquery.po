@@ -197,6 +197,12 @@ msgstr "यह वर्तमान में चयनित सभी फ़�
 msgid "Remove all filters"
 msgstr "सभी फ़िल्टर हटाएँ"
 
+msgid "Remove all filters?"
+msgstr "क्या सभी फ़िल्टर हटाएँ?"
+
+msgid "Could not load query"
+msgstr "क्वेरी लोड नहीं हो सकी"
+
 msgid "Delete Item"
 msgstr "आइटम हटाएँ"
 

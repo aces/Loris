@@ -5,9 +5,10 @@
  * @version 2.0.0
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import Swal from 'sweetalert2';
+import Modal, {openDialog} from 'jsx/Modal';
+import Button from 'jsx/Button';
 
 /**
  * PolicyButton Component
@@ -30,16 +31,18 @@ const PolicyButton = ({
   anon=false,
   callback=() => {},
 }) => {
-  if (popUpPolicy && popUpPolicy.needsRenewal) {
-    fireSwal(popUpPolicy);
-  }
+  useEffect(() => {
+    if (popUpPolicy && popUpPolicy.needsRenewal) {
+      showPolicy(popUpPolicy);
+    }
+  }, []);
   if (onClickPolicy) {
     return <a
       id="on-click-policy-button"
       style={{...buttonStyle}}
       href="#"
       onClick={() => {
-        fireSwal(onClickPolicy, anon, callback);
+        showPolicy(onClickPolicy, anon, callback);
       }}
     >
       {buttonText || onClickPolicy.HeaderButtonText}
@@ -47,17 +50,43 @@ const PolicyButton = ({
   }
 };
 
-const fireSwal = (policy, anon, callback) => {
-  Swal.fire({
-    title: policy.SwalTitle,
-    html: policy.Content,
-    confirmButtonText: policy.AcceptButtonText,
-    cancelButtonText: policy.DeclineButtonText,
-    showCancelButton: policy.DeclineButtonText,
-    allowOutsideClick: false,
-  }).then((decision) => {
+/**
+ * Shows a policy in a dialog that only its buttons close, and records the
+ * user's decision.
+ *
+ * @param {object} policy - The policy to show
+ * @param {boolean} [anon] - True if the user is not logged in
+ * @param {function} [callback] - Called with true when the policy is accepted
+ */
+const showPolicy = (policy, anon, callback) => {
+  openDialog((finish) => (
+    <Modal
+      show={true}
+      title={policy.SwalTitle}
+      onClose={() => finish(false)}
+      dismissable={false}
+      footer={
+        <div style={{
+          display: 'flex',
+          gap: 'var(--space-md)',
+          marginLeft: 'auto',
+        }}>
+          {policy.DeclineButtonText && (
+            <Button display='secondary' onClick={() => finish(false)}>
+              {policy.DeclineButtonText}
+            </Button>
+          )}
+          <Button onClick={() => finish(true)} data-autofocus={true}>
+            {policy.AcceptButtonText}
+          </Button>
+        </div>
+      }
+    >
+      <div dangerouslySetInnerHTML={{__html: policy.Content}}/>
+    </Modal>
+  )).then((accepted) => {
     if (callback) {
-      callback(decision);
+      callback(accepted);
     }
     if (!anon) {
       fetch(
@@ -68,13 +97,13 @@ const fireSwal = (policy, anon, callback) => {
           credentials: 'same-origin',
           body: JSON.stringify({
             ...policy,
-            decision: decision.value == true ? 'Accepted' : 'Declined',
+            decision: accepted ? 'Accepted' : 'Declined',
           }),
           headers: {
             'Content-Type': 'application/json',
           },
         });
-      if (decision.value != true) {
+      if (!accepted) {
         window.location.href = loris.BaseURL;
       }
     }
@@ -104,4 +133,4 @@ PolicyButton.propTypes = {
 
 window.PolicyButton = PolicyButton;
 
-export {PolicyButton, fireSwal};
+export {PolicyButton, showPolicy};

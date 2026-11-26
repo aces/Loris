@@ -211,6 +211,26 @@ inactive controls. A disabled control should say why it is disabled on hover, us
 If a token's value does not meet these rules, the value should be changed in
 `tokens.css` so the fix applies everywhere.
 
+## Dialogs and notices
+
+What a message needs from the user decides where it goes:
+
+| Message | Where | Component |
+|---|---|---|
+| A question that must be answered before an action happens | A confirmation dialog | `ConfirmDialog`, or `openConfirm()` from an event handler (`jsx/Modal.tsx`) |
+| An error in a form | Inline, in the form | `errorMessage` on the field, or an `Error` rejected from a `FormModal`'s `onSubmit`, shown above Save |
+| A success, or an error that isn't about one field | A toast at the bottom of the page | `toast.success()`, `toast.error()` (`jsx/Toast.tsx`) |
+
+A confirmation dialog's title asks the question ("Remove all filters?") and its
+buttons name what each one does ("Remove all filters", "Cancel"). A dangerous action uses the danger button and the focus starts on Cancel; otherwise
+the focus starts on the action. Every dialog keeps the focus inside it while it is
+open, closes on Escape and returns the focus to where it was.
+
+A success toast closes itself after five seconds, or stays while the pointer or
+the focus is on it. An error toast stays until it is closed, so it can be read in
+full. A success that the page already shows, such as a row appearing in the table,
+needs no toast.
+
 ## Fonts
 
 | Token | Font | Used for |
