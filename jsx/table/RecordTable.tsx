@@ -24,6 +24,8 @@ import './RecordTable.css';
 
 const CARD_BATCH = 60;
 const CHECK_WIDTH = 40;
+// How long scrolling rests before the columns fit the rows in view, in ms
+const SETTLE_PAUSE = 400;
 
 // An id is an identifier: set in the monospace and never cut short.
 export type ColumnType = 'text' | 'number' | 'date' | 'id';
@@ -271,9 +273,29 @@ function RecordTable<R>(props: Props<R>) {
     return map;
   }, [rows, recordKey]);
 
-  // Columns take their width from the rows in view. Scrolling only widens
-  // a column, when a longer value comes into view, so columns never narrow
-  // under the reader; new filters, a search or a sort start them afresh.
+  // Columns take their width from the rows in view. While the rows scroll a
+  // column only widens, when a longer value comes into view, so nothing
+  // narrows under the reader; once scrolling pauses, or the filters, search
+  // or sort change, columns fit the rows in view again.
+  const [settled, setSettled] = useState(0);
+  useEffect(() => {
+    if (!scrollEl) {
+      return;
+    }
+    let timer = 0;
+    /**
+     * Fits the columns again once scrolling pauses
+     */
+    const onScroll = () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(() => setSettled((n) => n + 1), SETTLE_PAUSE);
+    };
+    scrollEl.addEventListener('scroll', onScroll, {passive: true});
+    return () => {
+      clearTimeout(timer);
+      scrollEl.removeEventListener('scroll', onScroll);
+    };
+  }, [scrollEl]);
   const drawnRecords = useMemo(
     () => rows.slice(view.start, view.end).flatMap(
       (row) => row.kind === 'record' ? [row.record] : []
@@ -284,11 +306,11 @@ function RecordTable<R>(props: Props<R>) {
     drawnRecords, state.visibleColumns, scrollEl,
     (props.recordActions || []).length > 0 ? state.lead : undefined
   );
-  const grown = useRef<{shown: R[], widths: {[name: string]: number}}>(
-    {shown, widths: {}}
-  );
-  if (grown.current.shown !== shown) {
-    grown.current = {shown, widths: {}};
+  const grown = useRef<{
+    shown: R[], settled: number, widths: {[name: string]: number},
+  }>({shown, settled, widths: {}});
+  if (grown.current.shown !== shown || grown.current.settled !== settled) {
+    grown.current = {shown, settled, widths: {}};
   }
   const widths = grown.current.widths;
   Object.entries(fitted.widths).forEach(([name, width]) => {
