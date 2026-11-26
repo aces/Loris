@@ -49,8 +49,8 @@
 /* The open card is the active one, in the active colour, marked by a bar
    on its left edge as the open row is. */
 .rt-card.rt-open {
-    background: var(--state-active);
-    box-shadow: inset 3px 0 0 var(--state-active-solid);
+    background: var(--primary-fill);
+    box-shadow: inset 3px 0 0 var(--primary);
 }
 
 .rt-card-head {

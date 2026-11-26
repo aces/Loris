@@ -150,9 +150,10 @@ The greys are one scale, from text down to surfaces.
 The state tokens are their own tints, stronger than the `-fill` shades, so a hovered,
 selected or active row shows against white.
 
-In a table, a row whose checkbox is ticked is selected, in blue, and the row open in
-the record panel is active, in orange, with the active bar on its left edge. A row can
-be both: the active colour shows.
+In a table, a row whose checkbox is ticked is selected, in blue. The row open in the
+record panel takes the palest navy (`--primary-fill`) with a navy bar on its left edge.
+A row that is both keeps the selected blue, and the bar shows it is open. Orange stays
+for warnings and for temporary states such as the rows a drag passes over.
 
 Buttons do not have a selected state. On hover, a primary or secondary button's border
 and label change colour. A quiet button, drawn as text, takes `--state-hover` behind

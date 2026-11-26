@@ -940,17 +940,22 @@ body:has(.rt-fill) #footer {
         inset 0 -2px 0 var(--field-border-focus);
 }
 
-/* The open row is the active one, in the active colour; a selected row
-   stays blue. */
+/* The open row takes the palest navy and a navy bar; a selected row is a
+   stronger blue. */
 .rt-table tbody tr.rt-open,
 .rt-table tbody tr.rt-open .rt-sticky {
-    background: var(--state-active);
+    background: var(--primary-fill);
+}
+
+.rt-table tbody tr.rt-open.rt-selected,
+.rt-table tbody tr.rt-open.rt-selected .rt-sticky {
+    background: var(--state-selected);
 }
 
 /* One bar marks the open row, on its first cell only. */
 
 .rt-table tbody tr.rt-open > td:first-child {
-    box-shadow: inset 3px 0 0 var(--state-active-solid);
+    box-shadow: inset 3px 0 0 var(--primary);
 }
 
 .rt-record {
