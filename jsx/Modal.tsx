@@ -421,6 +421,7 @@ function ModalFrame({
         ...modalContainer,
         visibility: show ? 'visible' : 'hidden',
       }}
+      onMouseDown={(e) => e.target === e.currentTarget && e.preventDefault()}
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <div
