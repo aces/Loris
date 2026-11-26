@@ -16,12 +16,18 @@
        itself, at least 3:1 against white, so it also draws edges, fields
        and chart marks; 5 text in that hue, at least 6:1 against white and
        4.5:1 against step 2. The brand is the colour of actions and
-       navigation. */
+       navigation, and amber, LORIS's orange, is kept for warnings. */
     --brand-1: #fafcfe;
     --brand-2: #e7f1fe;
     --brand-3: #9dbee8;
     --brand-4: #064785;
     --brand-5: #01376b;
+
+    --amber-1: #fffcf1;
+    --amber-2: #fdf4d2;
+    --amber-3: #e1b876;
+    --amber-4: #cb7602;
+    --amber-5: #974c00;
 
     --red-1: #fefbfa;
     --red-2: #ffebe8;
@@ -29,11 +35,11 @@
     --red-4: #cc1e1e;
     --red-5: #a92420;
 
-    --orange-1: #fffcf1;
-    --orange-2: #fdf4d2;
-    --orange-3: #e1b876;
-    --orange-4: #cb7602;
-    --orange-5: #974c00;
+    --orange-1: #fefbf8;
+    --orange-2: #fff0e6;
+    --orange-3: #f2af86;
+    --orange-4: #de6907;
+    --orange-5: #9e4801;
 
     --brown-1: #fffbf6;
     --brown-2: #fff1e0;
@@ -106,10 +112,10 @@
     --info-border: var(--sky-4);
     --info-fill: var(--sky-1);
 
-    --warning: var(--orange-4);
-    --warning-strong: var(--orange-5);
-    --warning-border: var(--orange-4);
-    --warning-fill: var(--orange-1);
+    --warning: var(--amber-4);
+    --warning-strong: var(--amber-5);
+    --warning-border: var(--amber-4);
+    --warning-fill: var(--amber-1);
 
     --success: var(--green-4);
     --success-strong: var(--green-5);
@@ -135,7 +141,7 @@
     --state-hover: var(--grey-1);
     --state-selected: var(--brand-2);
     --state-selected-solid: var(--primary);
-    --state-active: var(--orange-2);
+    --state-active: var(--amber-2);
     --state-active-solid: var(--warning);
     --state-open: var(--sky-2);
     --state-open-solid: var(--info-strong);
