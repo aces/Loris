@@ -56,10 +56,12 @@ export function useRowWindow(
     if (!scroll || !body) {
       return;
     }
-    const bodyTop = body.getBoundingClientRect().top
-      - scroll.getBoundingClientRect().top + scroll.scrollTop;
+    // Whole pixels, so a fraction that differs from one reading to the next
+    // can't keep the view changing
+    const bodyTop = Math.round(body.getBoundingClientRect().top
+      - scroll.getBoundingClientRect().top + scroll.scrollTop);
     const next = {
-      top: scroll.scrollTop, height: scroll.clientHeight, bodyTop,
+      top: Math.round(scroll.scrollTop), height: scroll.clientHeight, bodyTop,
     };
     setView((prev) => prev.top === next.top && prev.height === next.height
       && prev.bodyTop === next.bodyTop ? prev : next);
