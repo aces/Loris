@@ -34,9 +34,10 @@ uses it.
 
 ## Colours
 
-Colour comes in two layers. The scales are the palette: the brand, amber for
-warnings, ten hues and grey, each with five numbered steps. The roles say what a colour means
-(`--primary`, `--danger`, `--state-selected`) and each one points at a step.
+Colour comes in two layers. The scales are the palette: the brand, two notice
+colours (amber for warnings, sky for information), nine hues and grey, each with
+five numbered steps. The roles say what a colour means (`--primary`, `--danger`,
+`--state-selected`) and each one points at a step.
 Components use the roles. A colour that means a state, such as an error or a
 selected row, uses a role; a colour that only tells categories apart, such as one
 tag per project, uses a hue directly.
@@ -75,9 +76,10 @@ state tokens use step 2.
 | `--text`, `--border`, `--border-strong`, `--border-subtle`, `--surface-sunken` | Grey |
 
 LORIS's brand navy comes from the "Loris color palette v.0.1" in the header of
-`htdocs/bootstrap/css/custom-css.css`, and so does amber, its orange. Amber is kept
-for warnings, so a warning never looks like a category; the hues include a separate,
-redder orange. The greys are LORIS's existing grey scale.
+`htdocs/bootstrap/css/custom-css.css`, and so does amber, its orange. Amber and sky
+are kept for warnings and information, so a notice never looks like a category; the
+hues include a separate, redder orange and a teal set apart from sky. The greys are
+LORIS's existing grey scale.
 
 Each hue is a chosen colour and, for its darker steps, an angle and a limit on how
 vivid they get, all worked out in OKLCH. Step 4 is the chosen colour when it reaches
@@ -87,7 +89,7 @@ a faint tint at one lightness for every hue, step 2 a stronger tint, and step 3 
 halfway between step 2 and step 4's edge. Warm hues lean towards red in their darker
 steps and towards yellow in their tints, since they turn muddy at their own angle.
 The hues are chosen so that no two are close at steps 4 and 5, checked with normal
-vision and with the three common kinds of colour blindness. Ten hues is near the
+vision and with the three common kinds of colour blindness. Nine hues is near the
 limit that stays apart, so a chart should not need all of them, and a tag always
 carries its label.
 
@@ -118,6 +120,19 @@ Warnings, and only warnings. Amber is LORIS's orange, so no category uses it.
 | ![](../../images/palette/amber-3.svg) | `--amber-3` | `#e1b876` | 1.86:1 |  |
 | ![](../../images/palette/amber-4.svg) | `--amber-4` | `#cb7602` | 3.42:1 | `--warning`, `--warning-border` |
 | ![](../../images/palette/amber-5.svg) | `--amber-5` | `#974c00` | 6.27:1 | `--warning-strong` |
+
+### Sky
+
+Information, and only information: help, notices, an open row and a toggle that is
+on. No category uses it.
+
+| | Token | Hex | Contrast on white | Role |
+|---|---|---|---|---|
+| ![](../../images/palette/sky-1.svg) | `--sky-1` | `#f6fdff` | 1.03:1 | `--info-fill` |
+| ![](../../images/palette/sky-2.svg) | `--sky-2` | `#daf6fc` | 1.13:1 | `--state-open` |
+| ![](../../images/palette/sky-3.svg) | `--sky-3` | `#81c7df` | 1.88:1 |  |
+| ![](../../images/palette/sky-4.svg) | `--sky-4` | `#0396c6` | 3.40:1 | `--info`, `--info-border` |
+| ![](../../images/palette/sky-5.svg) | `--sky-5` | `#02688b` | 6.26:1 | `--info-strong` |
 
 ### Red
 
@@ -177,23 +192,11 @@ Success.
 
 | | Token | Hex | Contrast on white | Role |
 |---|---|---|---|---|
-| ![](../../images/palette/teal-1.svg) | `--teal-1` | `#f3fffd` | 1.02:1 |  |
-| ![](../../images/palette/teal-2.svg) | `--teal-2` | `#d0fbf4` | 1.12:1 |  |
-| ![](../../images/palette/teal-3.svg) | `--teal-3` | `#7fcbc4` | 1.87:1 |  |
-| ![](../../images/palette/teal-4.svg) | `--teal-4` | `#009c99` | 3.38:1 |  |
-| ![](../../images/palette/teal-5.svg) | `--teal-5` | `#006d6c` | 6.17:1 |  |
-
-### Sky
-
-Help, notices and a toggle that is on.
-
-| | Token | Hex | Contrast on white | Role |
-|---|---|---|---|---|
-| ![](../../images/palette/sky-1.svg) | `--sky-1` | `#f6fdff` | 1.03:1 | `--info-fill` |
-| ![](../../images/palette/sky-2.svg) | `--sky-2` | `#daf6fc` | 1.13:1 | `--state-open` |
-| ![](../../images/palette/sky-3.svg) | `--sky-3` | `#81c7df` | 1.88:1 |  |
-| ![](../../images/palette/sky-4.svg) | `--sky-4` | `#0396c6` | 3.40:1 | `--info`, `--info-border` |
-| ![](../../images/palette/sky-5.svg) | `--sky-5` | `#02688b` | 6.26:1 | `--info-strong` |
+| ![](../../images/palette/teal-1.svg) | `--teal-1` | `#f5feff` | 1.02:1 |  |
+| ![](../../images/palette/teal-2.svg) | `--teal-2` | `#cefaff` | 1.12:1 |  |
+| ![](../../images/palette/teal-3.svg) | `--teal-3` | `#7ec9d2` | 1.88:1 |  |
+| ![](../../images/palette/teal-4.svg) | `--teal-4` | `#059aa6` | 3.40:1 |  |
+| ![](../../images/palette/teal-5.svg) | `--teal-5` | `#036c75` | 6.17:1 |  |
 
 ### Blue
 

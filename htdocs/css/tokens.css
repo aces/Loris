@@ -16,7 +16,8 @@
        itself, at least 3:1 against white, so it also draws edges, fields
        and chart marks; 5 text in that hue, at least 6:1 against white and
        4.5:1 against step 2. The brand is the colour of actions and
-       navigation, and amber, LORIS's orange, is kept for warnings. */
+       navigation. Amber (LORIS's orange) and sky are the notice colours,
+       kept for warnings and information, so no category uses them. */
     --brand-1: #fafcfe;
     --brand-2: #e7f1fe;
     --brand-3: #9dbee8;
@@ -59,11 +60,11 @@
     --green-4: #059669;
     --green-5: #006e4c;
 
-    --teal-1: #f3fffd;
-    --teal-2: #d0fbf4;
-    --teal-3: #7fcbc4;
-    --teal-4: #009c99;
-    --teal-5: #006d6c;
+    --teal-1: #f5feff;
+    --teal-2: #cefaff;
+    --teal-3: #7ec9d2;
+    --teal-4: #059aa6;
+    --teal-5: #036c75;
 
     --sky-1: #f6fdff;
     --sky-2: #daf6fc;
