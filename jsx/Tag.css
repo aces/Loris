@@ -39,9 +39,9 @@
 }
 
 .loris-tag-warning {
-    border-color: var(--orange-3);
-    background: var(--orange-1);
-    color: var(--orange-5);
+    border-color: var(--amber-3);
+    background: var(--amber-1);
+    color: var(--amber-5);
 }
 
 .loris-tag-danger {
