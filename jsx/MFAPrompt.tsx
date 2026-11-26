@@ -1,5 +1,5 @@
 import {useState, useEffect, useCallback} from 'react';
-import swal from 'sweetalert2';
+import toast from './Toast';
 
 /**
  * Render a single digit of an MFA prompt
@@ -81,7 +81,7 @@ function MFAPrompt(props: {validate:
     []
   );
   const errorCallback = useCallback( (msg: string) => {
-    swal.fire('Error', msg, 'error');
+    toast.error(msg);
     setCode([null, null, null, null, null, null]);
   }, []);
   useEffect( () => {

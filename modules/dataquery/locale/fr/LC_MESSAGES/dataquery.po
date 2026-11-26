@@ -239,6 +239,12 @@ msgstr "Ceci supprimera tous les filtres actuellement sélectionnés."
 msgid "Remove all filters"
 msgstr "Supprimer tous les filtres"
 
+msgid "Remove all filters?"
+msgstr "Supprimer tous les filtres?"
+
+msgid "Could not load query"
+msgstr "Impossible de charger la requête"
+
 msgid "Delete Item"
 msgstr "Supprimer l'élément"
 

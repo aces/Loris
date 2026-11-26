@@ -1,5 +1,4 @@
 import {FormModal} from 'jsx/Modal';
-import swal from 'sweetalert2';
 import {useState} from 'react';
 import {CheckboxElement, TextboxElement, FieldsetElement} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
@@ -40,21 +39,13 @@ function AdminQueryModal(props: {
   const submitPromise = () => {
     let sbmt: Promise<any> = new Promise((resolve, reject) => {
       if (queryName.trim() == '') {
-        swal.fire({
-          type: 'error',
-          text: t('Must provide a query name to pin query as.',
-            {ns: 'dataquery'}),
-        });
-        reject();
+        reject(new Error(t('Must provide a query name to pin query as.',
+          {ns: 'dataquery'})));
         return;
       }
       if (!topQuery && !dashboardQuery && !loginQuery) {
-        swal.fire({
-          type: 'error',
-          text: t('Must pin as study query, to dashboard, or to the '
-            +'login page.', {ns: 'dataquery'}),
-        });
-        reject();
+        reject(new Error(t('Must pin as study query, to dashboard, or to the '
+          +'login page.', {ns: 'dataquery'})));
         return;
       }
       resolve([queryName.trim(), topQuery, dashboardQuery, loginQuery]);

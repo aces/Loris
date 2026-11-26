@@ -2,7 +2,6 @@ import {useState} from 'react';
 import FilterableSelectGroup from './components/filterableselectgroup';
 import {FormModal} from 'jsx/Modal';
 import Select from 'react-select';
-import swal from 'sweetalert2';
 import {
   NumericElement,
   DateElement,
@@ -217,48 +216,31 @@ function AddFilterModal(props: {
     new Promise((resolve, reject) => {
       // Validate and reject if invalid
       if (!fieldname) {
-        swal.fire({
-          type: 'error',
-          title: t('Invalid field', {ns: 'dataquery'}),
-          text: t('You must select a field for the criteria.',
-            {ns: 'dataquery'}),
-        });
-        reject();
+        reject(new Error(t('You must select a field for the criteria.',
+          {ns: 'dataquery'})));
         return;
       }
       if (!op) {
-        swal.fire({
-          type: 'error',
-          title: t('Invalid operator', {ns: 'dataquery'}),
-          text: t('You must select an operator for the criteria.',
-            {ns: 'dataquery'}),
-        });
-        reject();
+        reject(new Error(t('You must select an operator for the criteria.',
+          {ns: 'dataquery'})));
         return;
       }
 
       if (!value) {
         if (op != 'isnotnull' && op != 'isnull'
                    && op != 'exists' && op != 'notexists') {
-          swal.fire({
-            type: 'error',
-            title: t('Invalid value', {ns: 'dataquery'}),
-            text: t('You must enter a value to compare the field against.',
-              {ns: 'dataquery'}),
-          });
-          reject();
+          reject(new Error(t(
+            'You must enter a value to compare the field against.',
+            {ns: 'dataquery'}
+          )));
           return;
         }
       }
 
       if (fieldDictionary && fieldDictionary.scope == 'session') {
         if (!selectedVisits || selectedVisits.length == 0) {
-          swal.fire({
-            type: 'error',
-            title: t('Invalid visits', {ns: 'dataquery'}),
-            text: t('No visits selected for criteria.', {ns: 'dataquery'}),
-          });
-          reject();
+          reject(new Error(t('No visits selected for criteria.',
+            {ns: 'dataquery'})));
           return;
         }
       }

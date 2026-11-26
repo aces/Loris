@@ -60,4 +60,4 @@ Two tables manage the policy tracking:
 
 ### Frontend
 
--   **`PolicyButton` Component**: A React component (`jsx/PolicyButton.js`) renders the policy modal (using SweetAlert2) and communicates with the backend API. It handles the user flow for accepting or declining policies.
+-   **`PolicyButton` Component**: A React component (`jsx/PolicyButton.js`) renders the policy in a modal and communicates with the backend API. It handles the user flow for accepting or declining policies.

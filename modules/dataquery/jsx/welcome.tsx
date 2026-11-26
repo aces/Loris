@@ -1,5 +1,5 @@
 import ExpansionPanels from './components/expansionpanels';
-import swal from 'sweetalert2';
+import toast from 'jsx/Toast';
 import FieldDisplay from './fielddisplay';
 import {useEffect, useState} from 'react';
 import QueryTree from './querytree';
@@ -861,11 +861,7 @@ function SingleQueryDisplay(props: {
       newfields,
       query.criteria || null,
     );
-    swal.fire({
-      type: 'success',
-      title: t('Query Loaded', {ns: 'dataquery'}),
-      text: t('Successfully loaded query.', {ns: 'dataquery'}),
-    });
+    toast.success(t('Successfully loaded query.', {ns: 'dataquery'}));
   };
 
   const loadIcon = <LoadIcon onClick={loadQuery} />;

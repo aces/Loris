@@ -194,6 +194,15 @@ msgstr "好的"
 msgid "Cancel"
 msgstr "取消"
 
+msgid "Discard this form?"
+msgstr "放弃此表单?"
+
+msgid "Discard"
+msgstr "放弃"
+
+msgid "Keep editing"
+msgstr "继续编辑"
+
 msgid "Success!"
 msgstr "成功！"
 

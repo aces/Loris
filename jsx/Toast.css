@@ -1,0 +1,85 @@
+/**
+ * Toast styles. Values come from htdocs/css/tokens.css.
+ */
+
+.loris-toasts {
+    position: fixed;
+    left: var(--space-xl);
+    bottom: var(--space-xl);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    width: min(420px, calc(100vw - 2 * var(--space-xl)));
+}
+
+.loris-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-xs) var(--space-md) var(--space-lg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-overlay);
+    color: var(--text);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    animation: loris-toast-in var(--duration-base) var(--ease);
+}
+
+.loris-toast.leaving {
+    animation: loris-toast-out var(--duration-base) var(--ease) forwards;
+}
+
+.loris-toast.success {
+    background: var(--success-fill);
+    border: 1px solid var(--success-border);
+}
+
+.loris-toast.error {
+    background: var(--danger-fill);
+    border: 1px solid var(--danger-border);
+}
+
+.loris-toast-icon {
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-xs);
+}
+
+.loris-toast.success .loris-toast-icon {
+    color: var(--success-strong);
+}
+
+.loris-toast.error .loris-toast-icon {
+    color: var(--danger-strong);
+}
+
+.loris-toast-text {
+    flex: 1;
+    padding-top: var(--space-xs);
+    overflow-wrap: anywhere;
+}
+
+.loris-toast-title {
+    font-weight: 600;
+}
+
+@keyframes loris-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--space-xl));
+    }
+}
+
+@keyframes loris-toast-out {
+    to {
+        opacity: 0;
+        transform: translateY(var(--space-xl));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loris-toast,
+    .loris-toast.leaving {
+        animation: none;
+    }
+}

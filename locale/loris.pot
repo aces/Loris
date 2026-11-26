@@ -187,7 +187,7 @@ msgstr ""
 msgid "selected"
 msgstr ""
 
-# Common swal labels
+# Common dialog labels
 msgid "OK"
 msgstr ""
 
@@ -198,6 +198,15 @@ msgid "Success!"
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "Discard this form?"
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+msgid "Keep editing"
 msgstr ""
 
 # Common candidate terms
@@ -648,4 +657,44 @@ msgid "Could not upload file"
 msgstr ""
 
 msgid "Registration Cohort"
+msgstr ""
+
+# Date range strings
+msgid "Any date"
+msgstr ""
+
+msgid "Next month"
+msgstr ""
+
+msgid "Previous month"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "All ({{total}})"
+msgstr ""
+
+msgid "{{selected}} of {{total}}"
+msgstr ""
+
+msgid "+{{hidden}} more"
+msgstr ""
+
+msgid "Select {{marked}}"
+msgstr ""
+
+msgid "Deselect {{marked}}"
+msgstr ""
+
+msgid "Select all"
+msgstr ""
+
+msgid "Deselect all"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "{{selected}} of {{total}} selected"
 msgstr ""

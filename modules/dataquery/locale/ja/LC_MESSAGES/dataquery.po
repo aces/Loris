@@ -205,6 +205,12 @@ msgstr "これにより、現在選択されているすべてのフィルター
 msgid "Remove all filters"
 msgstr "すべてのフィルターを削除"
 
+msgid "Remove all filters?"
+msgstr "すべてのフィルターを削除しますか?"
+
+msgid "Could not load query"
+msgstr "クエリを読み込めませんでした"
+
 msgid "Delete Item"
 msgstr "アイテムを削除"
 

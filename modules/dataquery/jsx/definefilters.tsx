@@ -12,7 +12,7 @@ import {calcPayload} from './calcpayload';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import React from 'react';
 import {Trans, useTranslation} from 'react-i18next';
-import swal from 'sweetalert2';
+import {openConfirm} from 'jsx/Modal';
 
 /**
  * The define filters tab of the DQT
@@ -84,19 +84,16 @@ function DefineFilters(props: {
    */
   const clearAllFilters = (e: React.MouseEvent) => {
     e.preventDefault();
-    swal.fire({
-      title: t('Are you sure?', {ns: 'loris'}),
-      text: t(
+    openConfirm({
+      title: t('Remove all filters?', {ns: 'dataquery'}),
+      children: t(
         'This will remove all currently selected filters',
         {ns: 'dataquery'},
       ),
-      type: 'warning',
-      focusCancel: true,
-      showCancelButton: true,
-      confirmButtonText: t('Yes', {ns: 'loris'}),
-      cancelButtonText: t('Cancel', {ns: 'loris'}),
-    }).then((result) => {
-      if (result.value) {
+      confirmLabel: t('Remove all filters', {ns: 'dataquery'}),
+      danger: true,
+    }).then((confirmed) => {
+      if (confirmed) {
         const emptyQuery = new QueryGroup('and');
         props.setQuery(emptyQuery);
         setModalGroup(emptyQuery);

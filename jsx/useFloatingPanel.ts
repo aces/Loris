@@ -1,0 +1,87 @@
+import {useState, useLayoutEffect, RefObject, CSSProperties} from 'react';
+
+const GAP = 4;
+
+/**
+ * Places an open dropdown panel over the page, against the control that
+ * opened it, so a scrolling or narrow container never clips it. The panel
+ * opens below the control, or above it when only that side has room, and
+ * stays inside the window. It follows the control as the page scrolls. The
+ * control's width is passed as --loris-field-width, for the panel's own
+ * minimum width to use.
+ *
+ * @param anchor - the control the panel belongs to
+ * @param panel - the open panel
+ * @param open - whether the panel is shown
+ * @param align - "start" lines the panel up with the control's left
+ *                edge, "end" with its right edge
+ * @return the panel's position
+ */
+export default function useFloatingPanel(
+  anchor: RefObject<HTMLElement | null>,
+  panel: RefObject<HTMLElement | null>,
+  open: boolean,
+  align: 'start' | 'end' = 'start',
+): CSSProperties {
+  const [place, setPlace] = useState<CSSProperties>({visibility: 'hidden'});
+
+  useLayoutEffect(() => {
+    if (!open || !anchor.current || !panel.current) {
+      setPlace({visibility: 'hidden'});
+      return;
+    }
+    const target = panel.current;
+    /**
+     * Moves the panel against the control
+     */
+    const position = () => {
+      if (!anchor.current) {
+        return;
+      }
+      const field = anchor.current.getBoundingClientRect();
+      const box = target.getBoundingClientRect();
+      const below = window.innerHeight - field.bottom;
+      const top = below < box.height + GAP && field.top > below
+        ? Math.max(GAP, field.top - box.height - GAP)
+        : field.bottom + GAP;
+      const wanted = align === 'end' ? field.right - box.width : field.left;
+      const left = Math.max(
+        GAP,
+        Math.min(wanted, window.innerWidth - box.width - GAP)
+      );
+      setPlace({
+        top, left, '--loris-field-width': field.width + 'px',
+      } as CSSProperties);
+    };
+    position();
+    const resized = new ResizeObserver(position);
+    resized.observe(target);
+    window.addEventListener('scroll', position, true);
+    window.addEventListener('resize', position);
+    // The control can also move without a scroll or resize, as when the
+    // layout around it changes, so its place is checked every frame.
+    let frame = 0;
+    let last = '';
+    /**
+     * Repositions the panel when its control has moved
+     */
+    const follow = () => {
+      const box = anchor.current?.getBoundingClientRect();
+      const now = box ? `${box.left},${box.top},${box.width}` : '';
+      if (now !== last) {
+        last = now;
+        position();
+      }
+      frame = requestAnimationFrame(follow);
+    };
+    frame = requestAnimationFrame(follow);
+    return () => {
+      cancelAnimationFrame(frame);
+      resized.disconnect();
+      window.removeEventListener('scroll', position, true);
+      window.removeEventListener('resize', position);
+    };
+  }, [open, align]);
+
+  return place;
+}

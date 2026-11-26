@@ -45,7 +45,7 @@ h1, h2, h3, h4 {
 
 .header {
     height: 100px;
-    background-color: #064785;
+    background-color: var(--chrome-bg);
     padding: 0;
     position: relative;
 }
@@ -161,7 +161,7 @@ h1, h2, h3, h4 {
 .footer {
     font-size: 12px;
     text-align: center;
-    background-color: #064785;
+    background-color: var(--chrome-bg);
     color: #f8f8f8;
     height: 60px;
     padding: 15px;

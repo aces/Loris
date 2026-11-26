@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
-import swal from 'sweetalert2';
+import {useTranslation} from 'react-i18next';
+import toast from 'jsx/Toast';
 import {QueryTerm, QueryGroup} from '../querydef';
 import {FlattenedField, FlattenedQuery, VisitOption} from '../types';
 import {
@@ -291,6 +292,7 @@ function unserializeSavedQuery(query: APIQueryCriteriaGroup): QueryGroup {
 function useLoadQueryFromURL(
   loadQuery: (fields: APIQueryField[], filters: QueryGroup|null) => void
 ) {
+  const {t} = useTranslation('dataquery');
   // Load query if queryID was passed
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -316,15 +318,9 @@ function useLoadQueryFromURL(
         );
       }
       loadQuery(result.Query.fields, result.Query.criteria);
-      swal.fire({
-        type: 'success',
-        text: 'Loaded query',
-      });
+      toast.success(t('Successfully loaded query.', {ns: 'dataquery'}));
     }).catch( (error) => {
-      swal.fire({
-        type: 'error',
-        text: 'Could not load query',
-      });
+      toast.error(t('Could not load query', {ns: 'dataquery'}));
       console.error(error);
     });
   }, []);

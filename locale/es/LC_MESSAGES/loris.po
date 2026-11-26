@@ -161,6 +161,15 @@ msgstr "Aceptar"
 msgid "Cancel"
 msgstr "Cancelar"
 
+msgid "Discard this form?"
+msgstr "¿Descartar este formulario?"
+
+msgid "Discard"
+msgstr "Descartar"
+
+msgid "Keep editing"
+msgstr "Seguir editando"
+
 msgid "Success!"
 msgstr "Exitoso!"
 

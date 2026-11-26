@@ -1,4 +1,4 @@
-import swal from 'sweetalert2';
+import toast from 'jsx/Toast';
 import {useState, useEffect, ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
 
@@ -240,10 +240,7 @@ function useRunQuery(
       }
     ).catch(
       (msg) => {
-        swal.fire({
-          type: 'error',
-          text: msg,
-        });
+        toast.error(String(msg));
       }
     );
   }, [fields, filters]);

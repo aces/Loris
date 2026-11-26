@@ -2,7 +2,6 @@ import {FormModal} from 'jsx/Modal';
 import {QueryGroup, QueryTerm} from './querydef';
 import {useState} from 'react';
 import Papa from 'papaparse';
-import swal from 'sweetalert2';
 import {FileElement} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
 
@@ -25,6 +24,7 @@ function ImportCSVModal(props: {
   const [csvHeader, setCSVHeader] = useState<boolean>(false);
   const [csvType, setCSVType] = useState<string>('candidate');
   const [idType, setIdType] = useState<string>('PSCID');
+  const [csvError, setCSVError] = useState<string|undefined>(undefined);
   /**
    * Promise for handling modal closing. Always accepts.
    *
@@ -33,15 +33,10 @@ function ImportCSVModal(props: {
   const submitPromise = () =>
     new Promise((resolve, reject) => {
       if (!csvFile) {
-        swal.fire({
-          type: 'error',
-          title: t('No CSV Uploaded', {ns: 'dataquery'}),
-          text: t(
-            'Please upload a CSV file before submitting.',
-            {ns: 'dataquery'}
-          ),
-        });
-        reject();
+        reject(new Error(t(
+          'Please upload a CSV file before submitting.',
+          {ns: 'dataquery'}
+        )));
         return;
       }
       resolve(null);
@@ -58,11 +53,7 @@ function ImportCSVModal(props: {
   const csvParsed = (value: Papa.ParseResult<any>) => {
     if (value.errors && value.errors.length > 0) {
       console.error(value.errors);
-      swal.fire({
-        type: 'error',
-        title: t('Invalid CSV', {ns: 'dataquery'}),
-        text: t('Could not parse CSV file', {ns: 'dataquery'}),
-      });
+      setCSVError(t('Could not parse CSV file', {ns: 'dataquery'}));
       setCSVFile(null);
       return;
     }
@@ -70,11 +61,7 @@ function ImportCSVModal(props: {
     // Check for empty CSV file
     const startLine = csvHeader ? 1 : 0;
     if (!value.data || value.data.length <= startLine) {
-      swal.fire({
-        type: 'error',
-        title: t('Empty CSV', {ns: 'dataquery'}),
-        text: t('The uploaded CSV file is empty.', {ns: 'dataquery'}),
-      });
+      setCSVError(t('The uploaded CSV file is empty.', {ns: 'dataquery'}));
       setCSVFile(null);
       return;
     }
@@ -85,13 +72,9 @@ function ImportCSVModal(props: {
 
     for (let i = startLine; i < value.data.length; i++) {
       if (value.data[i].length != expectedLength) {
-        swal.fire({
-          type: 'error',
-          title: t('Invalid CSV', {ns: 'dataquery'}),
-          text: t('Expected {{expectedLength}} columns in CSV. '
-            +'Got {{gotLength}} on line {{line}}.', {ns: 'dataquery',
-            expectedLength, gotLength: value.data[i].length, line: i+1}),
-        });
+        setCSVError(t('Expected {{expectedLength}} columns in CSV. '
+          +'Got {{gotLength}} on line {{line}}.', {ns: 'dataquery',
+          expectedLength, gotLength: value.data[i].length, line: i+1}));
         setCSVFile(null);
         return;
       }
@@ -100,35 +83,25 @@ function ImportCSVModal(props: {
       if (csvType === 'session') {
         const visitLabelVal = value.data[i][1]?.trim();
         if (!props.visitLabels.includes(visitLabelVal)) {
-          swal.fire({
-            type: 'error',
-            title: t('Invalid value', {ns: 'dataquery'}),
-            text: t('Invalid visit label {{visitLabelVal}} on line {{line}}.',
-              {ns: 'dataquery', visitLabelVal, line: i+1}),
-          });
+          setCSVError(t(
+            'Invalid visit label {{visitLabelVal}} on line {{line}}.',
+            {ns: 'dataquery', visitLabelVal, line: i+1}
+          ));
           return;
         }
       }
 
       if (idType === 'CandID') {
         if (candIDRegex.test(value.data[i][0]) !== true) {
-          swal.fire({
-            type: 'error',
-            title: t('Invalid DCCID', {ns: 'dataquery'}),
-            text: t('Invalid DCCID ({{id}}) on line {{line}}.',
-              {ns: 'dataquery', id: value.data[i][0], line: i+1}),
-          });
+          setCSVError(t('Invalid DCCID ({{id}}) on line {{line}}.',
+            {ns: 'dataquery', id: value.data[i][0], line: i+1}));
           setCSVFile(null);
           return;
         }
       } else if (idType === 'PSCID') {
         if (pscidRegex.test(value.data[i][0]) !== true) {
-          swal.fire({
-            type: 'error',
-            title: t('Invalid PSCID', {ns: 'dataquery'}),
-            text: t('Invalid PSCID ({{id}}) on line {{line}}.',
-              {ns: 'dataquery', id: value.data[i][0], line: i+1}),
-          });
+          setCSVError(t('Invalid PSCID ({{id}}) on line {{line}}.',
+            {ns: 'dataquery', id: value.data[i][0], line: i+1}));
           setCSVFile(null);
           return;
         }
@@ -230,8 +203,10 @@ function ImportCSVModal(props: {
           <dt style={dtstyle}>{t('CSV File', {ns: 'dataquery'})}</dt>
           <dd><FileElement label='' name="csvfile"
             value={csvFile}
+            errorMessage={csvError}
             onUserInput={
               (filename: string, file: string) => {
+                setCSVError(undefined);
                 setCSVFile(file);
                 const papaparseConfig:
                                         Papa.ParseConfig<any> = {
