@@ -1140,12 +1140,6 @@ body:has(.rt-fill) #footer {
     margin-left: auto;
 }
 
-/* The toolbar's controls take the small control height, a step below a
-   form's, so they sit lightly on their row. */
-.rt-toolbar .loris-button {
-    height: var(--control-height-sm);
-}
-
 .rt-toolbar .rt-toolbar-group {
     gap: var(--space-xs);
 }

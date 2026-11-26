@@ -150,7 +150,7 @@
     --line-height: 1.42857143;
 
     /* Height of a control sitting in a row with a form-control */
-    --control-height: 34px;
+    --control-height: 32px;
     --control-height-sm: 30px;
 }
 
