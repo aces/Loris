@@ -271,12 +271,30 @@ function RecordTable<R>(props: Props<R>) {
     return map;
   }, [rows, recordKey]);
 
-  // Columns take their width from the rows the filters, search and sort
-  // leave, and keep it while those rows scroll.
-  const {widths, clipped} = useColumnWidths(
-    shown, state.visibleColumns, scrollEl,
+  // Columns take their width from the rows in view. Scrolling only widens
+  // a column, when a longer value comes into view, so columns never narrow
+  // under the reader; new filters, a search or a sort start them afresh.
+  const drawnRecords = useMemo(
+    () => rows.slice(view.start, view.end).flatMap(
+      (row) => row.kind === 'record' ? [row.record] : []
+    ),
+    [rows, view.start, view.end]
+  );
+  const fitted = useColumnWidths(
+    drawnRecords, state.visibleColumns, scrollEl,
     (props.recordActions || []).length > 0 ? state.lead : undefined
   );
+  const grown = useRef<{shown: R[], widths: {[name: string]: number}}>(
+    {shown, widths: {}}
+  );
+  if (grown.current.shown !== shown) {
+    grown.current = {shown, widths: {}};
+  }
+  const widths = grown.current.widths;
+  Object.entries(fitted.widths).forEach(([name, width]) => {
+    widths[name] = Math.max(widths[name] || 0, width);
+  });
+  const clipped = fitted.clipped;
 
   // A shadow and an arrow at the right edge show there are more columns to
   // scroll to.
