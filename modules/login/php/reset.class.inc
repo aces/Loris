@@ -131,7 +131,7 @@ class Reset extends \NDB_Page implements ETagCalculator
                 } else {
                     error_log(
                         $_SERVER['REMOTE_ADDR']
-                        . '(' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ')'
+                        . '(' . ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '') . ')'
                         . ' attempted to reset password for ' . $username
                     );
                     return new \LORIS\Http\Response\JSON\Conflict(
