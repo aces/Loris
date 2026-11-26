@@ -10,12 +10,13 @@
 :root {
     /* ---- Colour -------------------------------------------------- */
 
-    /* Scales. Every hue has five steps, light to dark, each with one job:
-       1 a whisper of tint for backgrounds and tags; 2 the tint for states;
-       3 a soft edge for tag outlines and decorative borders; 4 the colour
-       itself, at least 3:1 against white, so it also draws edges, fields
-       and chart marks; 5 text in that hue, at least 6:1 against white and
-       4.5:1 against step 2. The brand is the colour of actions and
+    /* Scales. Every hue has five steps, light to dark, each with one job
+       and the contrast that job needs: 1 backgrounds and tags; 2 row
+       states; 3 decoration, such as tag outlines and chart marks on a dark
+       background, with no contrast duty, so a light hue shows at its
+       brightest; 4 anything seen on white, such as field borders, icons
+       and chart marks, at least 3:1 against white; 5 text, at least 6:1
+       against white and 4.5:1 against steps 1 and 2. The brand is the colour of actions and
        navigation. Amber (LORIS's orange) and sky are the notice colours,
        kept for warnings and information, so no category uses them. */
     --brand-1: #fafcfe;
@@ -26,7 +27,7 @@
 
     --amber-1: #fffcf1;
     --amber-2: #fdf4d2;
-    --amber-3: #e1b876;
+    --amber-3: #e89a0c;
     --amber-4: #cb7602;
     --amber-5: #974c00;
 
@@ -38,7 +39,7 @@
 
     --orange-1: #fefbf8;
     --orange-2: #fff0e6;
-    --orange-3: #f2af86;
+    --orange-3: #f1840b;
     --orange-4: #de6907;
     --orange-5: #9e4801;
 
@@ -50,7 +51,7 @@
 
     --yellow-1: #fffbf4;
     --yellow-2: #ffe5ae;
-    --yellow-3: #d6b468;
+    --yellow-3: #eab526;
     --yellow-4: #ad8405;
     --yellow-5: #7a5b01;
 
@@ -62,13 +63,13 @@
 
     --teal-1: #f5feff;
     --teal-2: #cefaff;
-    --teal-3: #7ec9d2;
+    --teal-3: #3bcddc;
     --teal-4: #059aa6;
     --teal-5: #036c75;
 
     --sky-1: #f6fdff;
     --sky-2: #daf6fc;
-    --sky-3: #81c7df;
+    --sky-3: #75dcf0;
     --sky-4: #0396c6;
     --sky-5: #02688b;
 
