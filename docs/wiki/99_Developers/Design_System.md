@@ -34,8 +34,8 @@ uses it.
 
 ## Colours
 
-Colour comes in two layers. The scales are the palette: the brand, ten hues and
-grey, each with five numbered steps. The roles say what a colour means
+Colour comes in two layers. The scales are the palette: the brand, amber for
+warnings, ten hues and grey, each with five numbered steps. The roles say what a colour means
 (`--primary`, `--danger`, `--state-selected`) and each one points at a step.
 Components use the roles. A colour that means a state, such as an error or a
 selected row, uses a role; a colour that only tells categories apart, such as one
@@ -68,18 +68,20 @@ state tokens use step 2.
 |---|---|
 | `--primary` | Brand |
 | `--info` | Sky |
-| `--warning` | Orange |
+| `--warning` | Amber |
 | `--success` | Green |
 | `--danger` | Red |
 | `--category` | Purple |
 | `--text`, `--border`, `--border-strong`, `--border-subtle`, `--surface-sunken` | Grey |
 
 LORIS's brand navy comes from the "Loris color palette v.0.1" in the header of
-`htdocs/bootstrap/css/custom-css.css`, and the greys are LORIS's existing grey scale.
+`htdocs/bootstrap/css/custom-css.css`, and so does amber, its orange. Amber is kept
+for warnings, so a warning never looks like a category; the hues include a separate,
+redder orange. The greys are LORIS's existing grey scale.
 
 Each hue is a chosen colour and, for its darker steps, an angle and a limit on how
 vivid they get, all worked out in OKLCH. Step 4 is the chosen colour when it reaches
-3:1 against white; a lighter colour (orange, yellow, teal, sky) takes the lightest
+3:1 against white; a lighter colour (amber, orange, yellow, teal, sky) takes the lightest
 shade of itself that does. Step 5 is the lightest shade that reaches 6:1. Step 1 is
 a faint tint at one lightness for every hue, step 2 a stronger tint, and step 3 sits
 halfway between step 2 and step 4's edge. Warm hues lean towards red in their darker
@@ -105,6 +107,18 @@ Actions, navigation and panel headings. LORIS's brand is navy.
 | ![](../../images/palette/brand-4.svg) | `--brand-4` | `#064785` | 9.34:1 | `--primary`, `--primary-border` |
 | ![](../../images/palette/brand-5.svg) | `--brand-5` | `#01376b` | 11.93:1 | `--primary-strong` |
 
+### Amber
+
+Warnings, and only warnings. Amber is LORIS's orange, so no category uses it.
+
+| | Token | Hex | Contrast on white | Role |
+|---|---|---|---|---|
+| ![](../../images/palette/amber-1.svg) | `--amber-1` | `#fffcf1` | 1.03:1 | `--warning-fill` |
+| ![](../../images/palette/amber-2.svg) | `--amber-2` | `#fdf4d2` | 1.10:1 | `--state-active` |
+| ![](../../images/palette/amber-3.svg) | `--amber-3` | `#e1b876` | 1.86:1 |  |
+| ![](../../images/palette/amber-4.svg) | `--amber-4` | `#cb7602` | 3.42:1 | `--warning`, `--warning-border` |
+| ![](../../images/palette/amber-5.svg) | `--amber-5` | `#974c00` | 6.27:1 | `--warning-strong` |
+
 ### Red
 
 Errors and danger buttons.
@@ -119,15 +133,13 @@ Errors and danger buttons.
 
 ### Orange
 
-Warnings.
-
 | | Token | Hex | Contrast on white | Role |
 |---|---|---|---|---|
-| ![](../../images/palette/orange-1.svg) | `--orange-1` | `#fffcf1` | 1.03:1 | `--warning-fill` |
-| ![](../../images/palette/orange-2.svg) | `--orange-2` | `#fdf4d2` | 1.10:1 | `--state-active` |
-| ![](../../images/palette/orange-3.svg) | `--orange-3` | `#e1b876` | 1.86:1 |  |
-| ![](../../images/palette/orange-4.svg) | `--orange-4` | `#cb7602` | 3.42:1 | `--warning`, `--warning-border` |
-| ![](../../images/palette/orange-5.svg) | `--orange-5` | `#974c00` | 6.27:1 | `--warning-strong` |
+| ![](../../images/palette/orange-1.svg) | `--orange-1` | `#fefbf8` | 1.03:1 |  |
+| ![](../../images/palette/orange-2.svg) | `--orange-2` | `#fff0e6` | 1.11:1 |  |
+| ![](../../images/palette/orange-3.svg) | `--orange-3` | `#f2af86` | 1.87:1 |  |
+| ![](../../images/palette/orange-4.svg) | `--orange-4` | `#de6907` | 3.43:1 |  |
+| ![](../../images/palette/orange-5.svg) | `--orange-5` | `#9e4801` | 6.21:1 |  |
 
 ### Brown
 
