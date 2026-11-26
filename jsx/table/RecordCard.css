@@ -46,11 +46,11 @@
     background: var(--state-active);
 }
 
-/* The open card is the one chosen, in blue, marked by a bar on its left
-   edge as the open row is. */
+/* The open card takes the open state, marked by a bar on its left edge as
+   the open row is. */
 .rt-card.rt-open {
-    background: var(--state-selected);
-    box-shadow: inset 3px 0 0 var(--primary);
+    background: var(--state-open);
+    box-shadow: inset 3px 0 0 var(--state-open-solid);
 }
 
 .rt-card-head {

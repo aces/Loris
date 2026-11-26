@@ -71,6 +71,8 @@
     --state-selected-solid: var(--primary);
     --state-active: #fcf3d1;
     --state-active-solid: var(--secondary-border);
+    --state-open: color-mix(in oklch, var(--info) 35%, var(--surface));
+    --state-open-solid: var(--info-strong);
 
     /* Grey, one scale from text down to surfaces */
     --text: #333;

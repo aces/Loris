@@ -144,16 +144,17 @@ The greys are one scale, from text down to surfaces.
 | State | Tokens | Meaning |
 |---|---|---|
 | Hover | `--state-hover` | The pointer is over the element |
-| Selected | `--state-selected`, `--state-selected-solid` | The element has been chosen, e.g. a checked option in a dropdown, the record open in a panel |
+| Selected | `--state-selected`, `--state-selected-solid` | The element has been chosen, e.g. a checked option in a dropdown |
+| Open | `--state-open`, `--state-open-solid` | The record shown in a side panel, in the info family |
 | Active | `--state-active`, `--state-active-solid` | The element is waiting for an action, or in a temporary state that ends when the action finishes, e.g. rows ticked for a batch action, rows a drag is passing over |
 
 The state tokens are their own tints, stronger than the `-fill` shades, so a hovered,
 selected or active row shows against white.
 
-In a table, the row open in the record panel is selected, in blue, with a navy bar on
-its left edge. A row whose checkbox is ticked is active, in orange: it waits for the
-action the selection will take. A row that is both stays orange, and the bar shows it
-is open.
+In a table, the row shown in the record panel is open, in the info colour, with a teal
+bar on its left edge. A row whose checkbox is ticked is active, in orange: it waits for
+the action the selection will take. A row that is both stays orange, and the bar shows
+it is open.
 
 Buttons do not have a selected state. On hover, a primary or secondary button's border
 and label change colour. A quiet button, drawn as text, takes `--state-hover` behind

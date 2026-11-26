@@ -940,11 +940,11 @@ body:has(.rt-fill) #footer {
         inset 0 -2px 0 var(--field-border-focus);
 }
 
-/* The open row is the one chosen, in blue with a navy bar. A ticked row
-   waits for an action, in the active orange, and keeps it while open. */
+/* The open row takes the open state, with its bar. A ticked row waits for
+   an action, in the active orange, and keeps it while open. */
 .rt-table tbody tr.rt-open,
 .rt-table tbody tr.rt-open .rt-sticky {
-    background: var(--state-selected);
+    background: var(--state-open);
 }
 
 .rt-table tbody tr.rt-open.rt-selected,
@@ -955,7 +955,7 @@ body:has(.rt-fill) #footer {
 /* One bar marks the open row, on its first cell only. */
 
 .rt-table tbody tr.rt-open > td:first-child {
-    box-shadow: inset 3px 0 0 var(--primary);
+    box-shadow: inset 3px 0 0 var(--state-open-solid);
 }
 
 .rt-record {
