@@ -4,8 +4,8 @@ import './Tag.css';
 export type TagRole =
   | 'neutral' | 'primary' | 'info' | 'success' | 'warning' | 'danger';
 export type TagHue =
-  | 'red' | 'orange' | 'brown' | 'yellow' | 'green' | 'teal' | 'sky'
-  | 'blue' | 'purple' | 'pink' | 'grey';
+  | 'red' | 'orange' | 'brown' | 'yellow' | 'green' | 'teal' | 'blue'
+  | 'purple' | 'pink' | 'grey';
 export type TagTone = TagRole | TagHue;
 
 /**

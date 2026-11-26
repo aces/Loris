@@ -86,12 +86,6 @@
     color: var(--teal-5);
 }
 
-.loris-tag-sky {
-    border-color: var(--sky-3);
-    background: var(--sky-1);
-    color: var(--sky-5);
-}
-
 .loris-tag-blue {
     border-color: var(--blue-3);
     background: var(--blue-1);

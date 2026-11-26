@@ -393,7 +393,7 @@ A tag takes a colour when its value is a state someone acts on: `success` for a 
 finished state, `warning` for one that needs attention, `danger` for a problem, `info`
 for a state worth noticing. A category with no state is a neutral tag. When a category
 has two or three values worth telling apart at a glance, such as entity type, each takes
-a hue, such as `blue` or `sky`, never a role. Sex stays neutral, since a colour per sex
+a hue, such as `blue` or `teal`, never a role. Sex stays neutral, since a colour per sex
 reads as a stereotype.
 
 A yes-or-no value shows as a check for yes and stays empty for no in a table, where the
