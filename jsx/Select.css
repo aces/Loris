@@ -236,7 +236,11 @@
 
 /* Outranks bootstrap's 4px top margin on radios and checkboxes, qualified by
    type to beat it on specificity. */
+/* The box centres on the label's capitals, which sit above the middle of
+   its line. */
 .loris-select-option input[type="checkbox"] {
+    position: relative;
+    top: -1px;
     margin: 0;
     accent-color: var(--primary);
 }
