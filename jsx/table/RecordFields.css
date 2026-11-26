@@ -1,0 +1,38 @@
+/**
+ * A record's fields in the record panel. Values come from
+ * htdocs/css/tokens.css.
+ */
+
+.rt-record-fields {
+    /* The key fields and every section share one label column, so values
+       start on the same line all the way down. */
+    --field-list-label-width: min(40%, 12em);
+    padding: 0 var(--space-xl) var(--space-xl);
+}
+
+/* Tags wrap onto a second line rather than run out of the panel. */
+.rt-record-fields .rt-tags {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 2px;
+}
+
+/* The key fields: a band of label-above-value pairs under the head, set on
+   the sunken surface so they read as the record's summary. */
+.rt-record-key {
+    margin: 0 calc(-1 * var(--space-xl));
+    padding: var(--space-lg) var(--space-xl);
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-sunken);
+}
+
+.rt-record-key .loris-field-list-grid {
+    row-gap: var(--space-lg);
+}
+
+/* The first section follows the band's own rule. */
+.rt-record-key + .loris-field-sections > .loris-field-section:first-child {
+    margin-top: 0;
+    border-top: 0;
+}

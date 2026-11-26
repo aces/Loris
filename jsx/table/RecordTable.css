@@ -1,0 +1,1628 @@
+/**
+ * Record table styles. Values come from htdocs/css/tokens.css. Three text
+ * sizes: the title, the body and the small print.
+ */
+
+.rt-page {
+    margin: var(--space-xl) 0;
+    color: var(--text);
+    font-size: var(--font-size);
+}
+
+/* The box holds the table's name, views and controls across its width, and
+   under them the filters beside the rows. The filters grow with their
+   fields and the page scrolls, so nothing scrolls inside them. */
+
+.rt {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--font-size);
+}
+
+.rt-body {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: stretch;
+    min-height: 0;
+}
+
+.rt button:focus-visible {
+    outline: 2px solid var(--field-border-focus);
+    outline-offset: 2px;
+}
+
+.rt .loris-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    white-space: nowrap;
+}
+
+/* A count beside a control: small and in the control's own tint, so it
+   informs without shouting. */
+.rt-badge {
+    box-sizing: border-box;
+    min-width: 15px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--primary-fill);
+    box-shadow: inset 0 0 0 1px var(--primary-border);
+    color: var(--primary-strong);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 15px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The table's name. */
+
+.rt-title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.rt-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-xl);
+}
+
+.rt-tab {
+    display: inline-flex;
+    align-items: center;
+    height: 47px;
+    padding: 0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.rt-tab:hover {
+    color: var(--text);
+}
+
+.rt-tab-on,
+.rt-tab-on:hover {
+    border-bottom-color: var(--primary);
+    color: var(--primary);
+}
+
+/* The views menu: plain rows, a note under an item that cannot be used yet,
+   and a destructive item in the danger colour. */
+.rt-view-menu {
+    gap: 0;
+    min-width: 220px;
+    padding: var(--space-xs) 0;
+}
+
+.rt-view-menu .rt-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 0;
+}
+
+.rt-menu-note {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    white-space: normal;
+}
+
+.rt-menu-danger {
+    color: var(--danger-strong);
+}
+
+.rt-menu-text {
+    max-width: 260px;
+    margin: 0;
+}
+
+.rt-actions {
+    display: flex;
+    gap: var(--space-md);
+    margin-left: auto;
+}
+
+.rt-menu-anchor {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+/* A row's menu hangs from the row's bottom line, and each item is a row
+   high, so its edges fall on the lines of the rows beneath it. A cell rises
+   above the others while a menu it holds is open, frozen columns included. */
+/* The menu sets its own text, apart from the identifier's monospace. */
+.rt-table .rt-lead-cell .rt-menu-anchor {
+    margin-left: auto;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-table tbody tr:hover .rt-lead-cell .rt-menu-anchor,
+.rt-table tbody tr:focus-within .rt-lead-cell .rt-menu-anchor,
+.rt-table .rt-lead-cell:has(.rt-menu) .rt-menu-anchor {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.rt-table td:has(.rt-menu),
+.rt-table :is(th, td):has(.loris-select.open) {
+    z-index: 4;
+}
+
+.rt-table .rt-lead-cell .rt-menu {
+    top: 100%;
+    right: auto;
+    left: 0;
+    min-width: 140px;
+    gap: 0;
+    padding: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    box-shadow: var(--shadow-raised);
+}
+
+.rt-table .rt-lead-cell .rt-menu-item {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 0 var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+    border-radius: 0;
+}
+
+.rt-table .rt-lead-cell .rt-menu-item:last-child {
+    height: 35px;
+    border-bottom: none;
+}
+
+.rt-menu {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    right: 0;
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 240px;
+    padding: var(--space-md) var(--space-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-overlay);
+}
+
+.rt-menu-start {
+    right: auto;
+    left: 0;
+}
+
+.rt-menu-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-xs);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* The filters grow from no width and push the rows aside, and shrink back
+   the same way. Their content keeps its width while the drawer changes, so
+   nothing inside reflows. */
+.rt-drawer {
+    flex: 0 0 0;
+    overflow: hidden;
+    border-right: 0 solid var(--border);
+    border-radius: 0 0 0 var(--radius);
+    background: var(--surface);
+    transition: flex-basis var(--duration-slow) var(--ease),
+        border-right-width var(--duration-slow) var(--ease);
+}
+
+.rt-drawer.rt-drawer-open {
+    flex-basis: 240px;
+    border-right-width: 1px;
+}
+
+.rt-drawer-inner {
+    box-sizing: border-box;
+    width: 240px;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.rt-toolbar {
+    box-sizing: border-box;
+    min-height: 56px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* The filters panel opens with its name and its own controls, set apart
+   from the table beside it. */
+.rt-drawer-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-md) 0 var(--space-xl);
+}
+
+.rt-drawer-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0 auto 0 0;
+    font-size: var(--font-size);
+    font-weight: 500;
+}
+
+.rt-drawer-title .loris-icon {
+    color: var(--text-muted);
+}
+
+.rt-drawer-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: var(--space-lg) var(--space-xl) var(--space-xl);
+}
+
+.rt-drawer-field {
+    display: flex;
+}
+
+.rt-drawer-field > * {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.rt-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* One toolbar: the table's name and views on the left, search and display in
+   the middle, output and creation at the end. */
+
+.rt-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md) var(--space-xl);
+    padding: var(--space-sm) var(--space-xl);
+}
+
+.rt-search {
+    flex: 0 1 300px;
+    min-width: 200px;
+}
+
+/* Each group of controls is set apart by a rule: what is shown, then what
+   is taken away. */
+
+.rt-toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.rt-search + .rt-toolbar-group {
+    margin-left: auto;
+}
+
+.rt-hint {
+    max-width: 240px;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.rt-table thead th.rt-drop {
+    box-shadow: inset 2px 0 0 var(--primary);
+}
+
+.rt-table thead th[draggable] {
+    cursor: grab;
+}
+
+/* Selection, at the footer's start: what is selected and what can be done to
+   it. */
+
+.rt-selection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-left: auto;
+}
+
+.rt-selected-count {
+    margin-right: var(--space-sm);
+    color: var(--primary-strong);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Table */
+
+.rt-scroll {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.rt-table {
+    min-width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-table th,
+.rt-table td {
+    height: 36px;
+    font-family: inherit;
+    font-variant-numeric: tabular-nums;
+    padding: 0 var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* A row is one line: a value too long for its column ends in an ellipsis,
+   and shows in full in its tooltip and the record panel. */
+.rt-table tbody td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* The empty message stays in view however wide the table runs. */
+.rt-table tbody td.rt-empty {
+    height: auto;
+    padding: 48px 0;
+    overflow: visible;
+    text-align: left;
+}
+
+.rt-table td.rt-empty span {
+    position: sticky;
+    left: 0;
+    padding: 0 var(--space-xl);
+}
+
+/* A cell that opens a page is one link across the cell. On hover it shows
+   as a rounded box inside the cell, outlined, with an arrow. */
+.rt-table td:has(> .rt-cell-link) {
+    position: relative;
+}
+
+.rt-table td.rt-sticky:has(> .rt-cell-link) {
+    position: sticky;
+}
+
+.rt-cell-link {
+    position: absolute;
+    inset: var(--space-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0 var(--space-xs) 0 calc(var(--space-lg) - var(--space-xs) - 1px);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    color: var(--primary);
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease),
+        background var(--duration-fast) var(--ease);
+}
+
+.rt-cell-link:hover,
+.rt-cell-link:focus {
+    border-color: var(--primary-border);
+    background: var(--surface);
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.rt-cell-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rt-cell-link > .loris-icon {
+    margin-left: auto;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-cell-link:hover > .loris-icon,
+.rt-cell-link:focus-visible > .loris-icon {
+    color: var(--primary);
+    opacity: 1;
+}
+
+/* The record's identifier, with its row menu beside it on hover. The cell
+   holds a menu that opens past its edges. */
+.rt-table tbody td.rt-lead-cell {
+    overflow: visible;
+}
+
+.rt-lead {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.rt-lead-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rt-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 36px;
+    /* With the sort button's own padding, a label starts where the values
+       under it do. */
+    padding: 0 var(--space-xs);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-sunken);
+}
+
+.rt-table tbody tr:hover {
+    background: var(--state-hover);
+}
+
+.rt-table tbody tr.rt-selected {
+    background: var(--state-active);
+}
+
+.rt-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 28px;
+    padding: 0 var(--space-sm);
+    border: none;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.rt-sort:hover,
+.rt-sorted .rt-sort {
+    color: var(--text);
+}
+
+.rt-sort:hover {
+    background: var(--state-hover);
+}
+
+.rt-number .rt-sort {
+    flex-direction: row-reverse;
+}
+
+.rt-sort-icon {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    opacity: 0;
+    transition: transform var(--duration-fast) var(--ease),
+        opacity var(--duration-fast) var(--ease);
+}
+
+.rt-sort:hover .rt-sort-icon,
+.rt-sort:focus-visible .rt-sort-icon,
+.rt-sorted .rt-sort-icon {
+    opacity: 1;
+}
+
+.rt-sorted .rt-sort-icon {
+    color: var(--primary);
+}
+
+.rt-sort-down {
+    transform: rotate(180deg);
+}
+
+.rt-sort-order {
+    min-width: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--primary-fill);
+    color: var(--primary);
+    font-size: var(--font-size-sm);
+    line-height: 16px;
+}
+
+.rt-number {
+    text-align: right;
+}
+
+/* Identifiers are set in the monospace, so their characters line up down a
+   column. */
+.rt-mono,
+.rt-table td.rt-mono {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+}
+
+.rt-table .rt-check-cell {
+    width: 40px;
+    padding: 0;
+}
+
+.rt-check-cell input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+/* A block box sits on the cell's middle, where an inline one would sit on
+   the text's baseline, a little low. */
+.rt-table .rt-check-cell input[type='checkbox'] {
+    display: block;
+    margin: 0;
+}
+
+.rt-table tbody tr.rt-spacer td {
+    padding: 0;
+    border: none;
+}
+
+.rt-table tbody tr.rt-spacer:hover {
+    background: none;
+}
+
+.rt-group-row td {
+    height: 32px;
+    padding: 0 var(--space-md);
+    background: var(--surface-sunken);
+}
+
+.rt-group-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    width: 100%;
+    min-height: 32px;
+    padding: 0 var(--space-sm);
+    border: none;
+    background: none;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.rt-caret {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    transition: transform var(--duration-fast) var(--ease);
+}
+
+.rt-caret-closed {
+    transform: rotate(-90deg);
+}
+
+.rt-group-count {
+    padding: 0 var(--space-sm);
+    border-radius: 9px;
+    background: var(--border-subtle);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: normal;
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-empty {
+    padding: 48px var(--space-xl);
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Footer: one quiet line counting the rows, as high as the column header
+   so the table's top and bottom edges match. */
+
+.rt-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    box-sizing: border-box;
+    min-height: 36px;
+    padding: 0 var(--space-md) 0 var(--space-xl);
+    border-top: 1px solid var(--border);
+    background: var(--surface-sunken);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-footer > .rt-muted,
+.rt-footer > .rt-footer-start {
+    margin-right: auto;
+}
+
+.rt-footer-start ~ .rt-muted {
+    margin-right: 0;
+}
+
+.rt-range {
+    margin: 0 var(--space-sm);
+    color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-sort-icon,
+.rt-caret {
+        transition: none;
+    }
+}
+
+.rt-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Column bands: a header over the columns that share a group. */
+
+.rt-table thead tr.rt-band-row th {
+    box-sizing: border-box;
+    height: 32px;
+    padding: 0 var(--space-xl);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-sunken);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-align: left;
+}
+
+.rt-table thead tr.rt-band-row th.rt-band:not(:empty) {
+    border-left: 1px solid var(--border);
+}
+
+.rt-table thead tr.rt-under-band th {
+    top: 32px;
+}
+
+/* A column held in place while the table scrolls sideways. */
+
+.rt-table .rt-sticky {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--surface);
+    box-shadow: inset -1px 0 0 var(--border-subtle);
+}
+
+.rt-table thead .rt-sticky {
+    z-index: 2;
+}
+
+.rt-table thead .rt-sticky,
+.rt-table thead .rt-edge-cell {
+    background: var(--surface-sunken);
+}
+
+.rt-table tbody tr:hover .rt-sticky {
+    background: var(--state-hover);
+}
+
+.rt-table tbody tr.rt-selected .rt-sticky {
+    background: var(--state-active);
+}
+
+/* The table's right edge: a cell with no width, held at the edge, that
+   casts the shadow when columns run past it. */
+
+.rt-table .rt-edge-cell {
+    position: sticky;
+    right: 0;
+    width: 0;
+    padding: 0;
+}
+
+.rt-row-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.rt-row-menu:hover {
+    background: var(--state-hover);
+    color: var(--text);
+}
+
+.rt-menu-item {
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--text);
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.rt-menu-item:hover {
+    background: var(--state-hover);
+}
+
+/* Loading */
+
+.rt-progress {
+    height: 3px;
+    overflow: hidden;
+    background: var(--primary-fill);
+}
+
+.rt-progress span {
+    display: block;
+    height: 100%;
+    background: var(--primary);
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease);
+}
+
+.rt-skeleton td span {
+    display: block;
+    height: 12px;
+    border-radius: var(--radius-sm);
+    background: var(--border-subtle);
+}
+
+/* Compact: a small table inside a page or a modal. */
+
+.rt-compact {
+    display: block;
+}
+
+/* Full page: the table takes the window below the page's own header, and
+   only its rows scroll. */
+
+.rt-page.rt-fill {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--rt-top, 0px));
+    margin: 0;
+}
+
+/* A full-page table is the page: the page's padding, breadcrumbs and footer
+   give way to it. */
+
+#page:has(.rt-fill) {
+    min-height: 0;
+    padding: 0;
+}
+
+#page:has(.rt-fill) .page-content {
+    padding: 0;
+}
+
+#page:has(.rt-fill) #breadcrumbs,
+body:has(.rt-fill) #footer {
+    display: none;
+}
+
+/* Edge to edge: the filters open from the window's left side and the record
+   from its right, with the data between. The rows fade out softly at the
+   window's sides, so the data does not run hard into its edges. */
+
+.rt-page.rt-fill {
+    box-sizing: border-box;
+    padding: 0 var(--space-md);
+}
+
+.rt-fill .rt {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    border-width: 1px 0 0;
+    border-radius: 0;
+}
+
+.rt-fill .rt-drawer,
+.rt-fill .rt-record {
+    border-radius: 0;
+}
+
+.rt-fill .rt::before,
+.rt-fill .rt::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 3;
+    width: var(--space-sm);
+    pointer-events: none;
+}
+
+.rt-fill .rt::before {
+    left: 0;
+    background: linear-gradient(to right, var(--surface), transparent);
+}
+
+.rt-fill .rt::after {
+    right: 0;
+    background: linear-gradient(to left, var(--surface), transparent);
+}
+
+.rt-fill .rt-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.rt-fill .rt-scroll,
+.rt-fill .rt-cards {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-progress span {
+        transition: none;
+    }
+}
+
+/* Record drawer: one record beside the table, opened by clicking its row. */
+
+.rt-table tbody tr {
+    cursor: pointer;
+}
+
+/* A focused row's ring is drawn on its cells, so frozen columns, which
+   paint over the row, carry their part of it. The open row is marked by the
+   active colour and bar, so it needs no ring. */
+.rt-table tbody tr:focus-visible {
+    outline: none;
+}
+
+.rt-table tbody tr:focus-visible:not(.rt-open) > td {
+    box-shadow: inset 0 2px 0 var(--field-border-focus),
+        inset 0 -2px 0 var(--field-border-focus);
+}
+
+.rt-table tbody tr:focus-visible:not(.rt-open) > td:first-child {
+    box-shadow: inset 2px 0 0 var(--field-border-focus),
+        inset 0 2px 0 var(--field-border-focus),
+        inset 0 -2px 0 var(--field-border-focus);
+}
+
+.rt-table tbody tr:focus-visible:not(.rt-open) > td:last-child {
+    box-shadow: inset -2px 0 0 var(--field-border-focus),
+        inset 0 2px 0 var(--field-border-focus),
+        inset 0 -2px 0 var(--field-border-focus);
+}
+
+/* The open row takes the open state, with its bar. A ticked row waits for
+   an action, in the active orange, and keeps it while open. */
+.rt-table tbody tr.rt-open,
+.rt-table tbody tr.rt-open .rt-sticky {
+    background: var(--state-open);
+}
+
+.rt-table tbody tr.rt-open.rt-selected,
+.rt-table tbody tr.rt-open.rt-selected .rt-sticky {
+    background: var(--state-active);
+}
+
+/* One bar marks the open row, on its first cell only. */
+
+.rt-table tbody tr.rt-open > td:first-child {
+    box-shadow: inset 3px 0 0 var(--state-open-solid);
+}
+
+.rt-record {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--surface);
+}
+
+.rt-record-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    box-sizing: border-box;
+    /* As high as the column header, so its line runs on from the header's. */
+    min-height: 40px;
+    padding: 0 var(--space-md) 0 var(--space-xl);
+    background: var(--surface);
+}
+
+.rt-record-title {
+    min-width: 6ch;
+    margin: 0 auto 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    line-height: 24px;
+}
+
+/* The record's actions sit at the end of its title line, set apart from
+   the controls that move between records and close the panel. */
+.rt-record-head-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-right: var(--space-md);
+}
+
+.rt-record-menu {
+    min-width: 180px;
+}
+
+.rt-record-detail {
+    padding: 0 var(--space-xl) var(--space-xl);
+}
+
+.rt-record-keys {
+    margin-top: auto;
+    max-width: none;
+    padding: var(--space-md) var(--space-xl);
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* Only the rows give way to the window; the bars above and below keep their
+   height, wrapped or not. */
+
+.rt-fill .rt-main > :not(.rt-scroll):not(.rt-cards):not(.rt-content) {
+    flex: none;
+}
+
+.rt-toolbar .rt-title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.rt-toolbar .rt-search {
+    flex: 0 1 240px;
+    margin-left: auto;
+}
+
+.rt-search + .rt-toolbar-group {
+    margin-left: 0;
+}
+
+.rt-toolbar .rt-actions {
+    display: contents;
+}
+
+.rt-toolbar {
+    min-height: 56px;
+}
+
+/* The rows and the record panel share one area, so the panel can slide over
+   the rows' right side without moving anything. */
+
+.rt-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.rt-fill .rt-content {
+    flex: 1 1 auto;
+}
+
+.rt-content > .rt-scroll,
+.rt-content > .rt-cards {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.rt-record {
+    flex: 0 0 360px;
+    overflow: hidden;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    width: 380px;
+    max-width: 90%;
+    /* The panel lies over the rows, so its one shadow falls on them, to its
+       left; the header and footer stay flat. */
+    box-shadow: var(--shadow-side);
+    animation: rt-slide-in var(--duration-slow) var(--ease);
+}
+
+/* A panel slides in from the table's right edge and back out the same way. */
+.rt-record.rt-record-leaving {
+    animation: rt-slide-out var(--duration-slow) var(--ease) forwards;
+}
+
+@keyframes rt-slide-in {
+    from {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes rt-slide-out {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* The title starts on the table's own left inset, over the checkboxes. */
+.rt-toolbar {
+    padding-left: var(--space-xl);
+}
+
+/* A saved view's tab sits in line with the others; its wrapper only
+   catches the right-click. */
+.rt-tab-wrap {
+    display: contents;
+}
+
+/* The new-view control follows the view tabs, on their text's line. */
+.rt-view-save {
+    align-self: center;
+    padding-top: 4px;
+}
+
+.rt-view-save [aria-disabled='true'] {
+    color: var(--text-disabled);
+    cursor: default;
+}
+
+.rt-view-save [aria-disabled='true']:hover {
+    background: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-record,
+    .rt-drawer {
+        transition: none;
+        animation: none;
+    }
+}
+
+.rt-search-closed {
+    margin-left: auto;
+}
+
+.rt-toolbar .rt-toolbar-group {
+    gap: var(--space-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-toolbar .rt-search {
+        transition: none;
+    }
+}
+
+/* The toolbar holds one line and the search field gives way first; only a
+   narrow table lets it wrap. */
+
+.rt-main {
+    container-type: inline-size;
+}
+
+/* The navbar's own bottom margin would leave a gap above a full-page
+   table. */
+body:has(.rt-fill) .navbar {
+    margin-bottom: 0;
+}
+
+/* Columns ease to their new widths when they refit to the rows in view. */
+.rt-table col {
+    transition: width var(--duration-base) var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-table col {
+        transition: none;
+    }
+}
+
+/* In full, as in the record panel, a list's tags wrap onto as many lines as
+   they need. */
+/* The count of values not shown reads as a note, not one more value. */
+.rt-tags-more {
+    align-self: center;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+}
+
+.rt-tags.rt-tags-fit {
+    display: flex;
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* A tag too wide for its cell shortens, so the count after it stays in
+   view. */
+.rt-tags-fit > .loris-tag {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rt-tags-fit > .rt-tags-more {
+    flex-shrink: 0;
+}
+
+/* A list without tags reads as text, its values apart by commas. */
+.rt-tags-fit.rt-list {
+    gap: 0;
+}
+
+.rt-list > .rt-list-item + .rt-list-item::before {
+    content: ', ';
+    white-space: pre;
+}
+
+.rt-list > .rt-tags-more {
+    margin-left: var(--space-xs);
+}
+
+/* Values that name other records: each with its kind's icon, apart by a
+   space. */
+.rt-tags.rt-relations {
+    gap: var(--space-md);
+}
+
+.rt-relation {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.rt-relation .loris-icon {
+    color: var(--text-disabled);
+    font-size: var(--font-size-sm);
+}
+
+.rt-tag-hidden {
+    position: absolute;
+    visibility: hidden;
+}
+
+.rt-tags.rt-tags-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Several values from a fixed set of options, as tags. */
+.rt-tags {
+    display: inline-flex;
+    gap: var(--space-xs);
+    vertical-align: middle;
+}
+
+
+/* On a narrow window the filters open over the rows rather than beside
+   them. */
+@media (max-width: 760px) {
+    .rt-body {
+        position: relative;
+    }
+
+    .rt-body > .rt-drawer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 4;
+        width: min(280px, 85%);
+        box-shadow: var(--shadow-overlay);
+        transform: translateX(-100%);
+        transition: transform var(--duration-slow) var(--ease);
+    }
+
+    .rt-body > .rt-drawer.rt-drawer-open {
+        transform: none;
+    }
+
+    .rt-body > .rt-drawer .rt-drawer-inner {
+        width: 100%;
+    }
+}
+
+/* Search opens in the button's place and grows to its width. */
+.rt-toolbar .rt-search {
+    min-width: 120px;
+    flex: 0 1 180px;
+    transition: flex-basis var(--duration-base) var(--ease),
+        opacity var(--duration-base) var(--ease);
+}
+
+@starting-style {
+    .rt-toolbar .rt-search {
+        flex-basis: 80px;
+        opacity: 0;
+    }
+}
+
+/* It shrinks back the same way when closed. */
+.rt-toolbar .rt-search.rt-search-closing {
+    flex-basis: 80px;
+    opacity: 0;
+}
+
+.rt-toolbar > * {
+    flex-shrink: 0;
+}
+
+.rt-toolbar > .rt-search {
+    flex-shrink: 1;
+}
+
+
+/* In a full-page table the rows' area takes what the bars leave, and only it
+   scrolls, so the header row stays in place above the rows. */
+
+.rt-fill .rt-main > .rt-content {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* The toolbar's own height, beside the filters' head. */
+
+.rt-toolbar {
+    gap: var(--space-md) var(--space-lg);
+    flex-wrap: nowrap;
+    min-height: 48px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* The table's name on a line of its own, with room above it. A page with
+   several tables names each one there, the others paler. The views sit
+   below, on the row with the table's controls, their underline on the
+   table's top edge. */
+.rt-titlebar {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--space-xl) var(--space-xs);
+}
+
+/* Larger type takes a lighter weight. */
+.rt-titlebar .rt-title,
+.rt-section {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.rt-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xl);
+}
+
+.rt-section {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    opacity: .6;
+    cursor: pointer;
+}
+
+.rt-section:hover {
+    opacity: 1;
+}
+
+.rt-section-on {
+    color: var(--text);
+    opacity: 1;
+}
+
+/* With several tables, a thin rule runs under their names and the table
+   shown is underlined on it, so the names read as tabs above the views. */
+.rt-titlebar:has(.rt-sections) {
+    align-items: flex-end;
+    padding-bottom: 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.rt-sections .rt-section {
+    margin-bottom: -1px;
+    padding-bottom: var(--space-md);
+    border-bottom: 2px solid transparent;
+}
+
+.rt-sections .rt-section-on {
+    border-bottom-color: var(--text);
+}
+
+.rt-toolbar {
+    min-height: 40px;
+}
+
+.rt-toolbar .rt-tab {
+    height: 39px;
+}
+
+/* The views scroll sideways rather than wrap when there are many. */
+.rt-heading {
+    display: flex;
+    align-items: stretch;
+    align-self: stretch;
+    gap: var(--space-xl);
+    min-width: 0;
+}
+
+.rt-heading .rt-title {
+    align-self: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rt-toolbar > .rt-heading {
+    flex-shrink: 1;
+}
+
+.rt-toolbar .rt-tabs {
+    flex-wrap: nowrap;
+    align-self: stretch;
+    align-items: stretch;
+    min-width: 0;
+    margin-bottom: -1px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: var(--space-xl);
+}
+
+/* The views sit on the title's baseline: their smaller text, centred
+   alone, would ride a few pixels high. */
+.rt-toolbar .rt-tab {
+    height: auto;
+    align-items: center;
+    padding-top: 4px;
+    white-space: nowrap;
+}
+
+/* The layout menu names its choice, so its label is for assistive
+   technology. */
+.rt-value-menu .loris-select-button-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* A narrower table shows the toolbar's controls as icons, each named by its
+   tooltip; only the table's own actions keep their words. */
+@container (max-width: 980px) {
+    .rt-toolbar .rt-label,
+    .rt-toolbar .loris-select-button-label,
+    .rt-toolbar .loris-select-button-value,
+    .rt-toolbar .loris-select-caret {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}
+
+/* A narrow table puts its name and views on their own line above the
+   controls. */
+@container (max-width: 620px) {
+    .rt-toolbar {
+        flex-wrap: wrap;
+        padding-bottom: var(--space-xs);
+    }
+
+    .rt-toolbar > .rt-heading {
+        flex: 1 0 100%;
+        min-height: 44px;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .rt-toolbar .rt-search-closed,
+    .rt-toolbar .rt-search {
+        margin-left: 0;
+    }
+
+    .rt-toolbar .rt-search {
+        flex: 1 1 auto;
+    }
+}
+
+.rt-title-switch .loris-select-button {
+    padding-left: 0;
+    color: var(--text);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+}
+
+.rt-title-switch .loris-select-button-value {
+    font-weight: 600;
+}
+
+/* A form opened from the table, in the same panel as a record. */
+
+/* The panel holds still while its body scrolls, so the handle on its left
+   edge stays put. */
+.rt-record-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* The panel's left edge is a handle for making it wider or narrower. */
+.rt-record-resize {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    width: 6px;
+    cursor: col-resize;
+    touch-action: none;
+}
+
+/* At rest the handle is only a cursor; after a moment's hover, or on
+   keyboard focus, the panel's edge turns into a thin line. */
+.rt-record-resize::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: transparent;
+    transition: background var(--duration-fast) var(--ease);
+}
+
+.rt-record-resize:hover::after {
+    background: var(--primary-border);
+    transition-delay: 300ms;
+}
+
+.rt-record-resize:focus-visible {
+    outline: 0;
+}
+
+.rt-record-resize:focus-visible::after {
+    background: var(--primary-border);
+}
+
+.rt-record-form {
+    padding: var(--space-xl);
+}
+
+/* A checkbox's whole cell is its click area, so a near miss still ticks it. */
+.rt-check-hit {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    padding-left: var(--space-xl);
+    cursor: pointer;
+}
+
+/* When columns run past the right edge, the edge casts a shadow over them
+   and a small arrow scrolls them into view. */
+.rt-table .rt-edge-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 100%;
+    bottom: -1px;
+    width: 12px;
+    background: linear-gradient(
+        to left, color-mix(in srgb, var(--text) 8%, transparent), transparent
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-scroll-more .rt-table .rt-edge-cell::before {
+    opacity: 1;
+}
+
+.rt-more-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    width: 32px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.rt-more-right.rt-more-right-on {
+    opacity: 1;
+}
+
+.rt-more-right button {
+    position: absolute;
+    top: 50%;
+    right: var(--space-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    box-shadow: var(--shadow-raised);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.rt-more-right.rt-more-right-on button {
+    pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-more-right {
+        transition: none;
+    }
+}

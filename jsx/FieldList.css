@@ -1,0 +1,149 @@
+/**
+ * Field list styles: label and value rows sharing one label column, from
+ * htdocs/css/tokens.css. Each row is a subgrid of the list, so every label
+ * takes the same width and every value starts on the same line. A row's content
+ * is at least a Tag's height (22px), so rows of text and rows of tags are
+ * the same height.
+ */
+
+.loris-field-list {
+    display: grid;
+    grid-template-columns:
+        var(--field-list-label-width, fit-content(40%))
+        minmax(0, 1fr);
+    column-gap: var(--space-xl);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    line-height: 20px;
+}
+
+.loris-field {
+    display: grid;
+    box-sizing: content-box;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-content: center;
+    align-items: baseline;
+    min-height: 22px;
+    padding: var(--space-sm) 0;
+}
+
+.loris-field dt {
+    min-width: 0;
+    color: var(--text-muted);
+    font-weight: normal;
+    overflow-wrap: break-word;
+}
+
+.loris-field dd {
+    min-width: 0;
+    margin: 0;
+    color: var(--text);
+    overflow-wrap: anywhere;
+}
+
+.loris-field-empty {
+    color: var(--text-muted);
+}
+
+.loris-field-list-sm {
+    column-gap: var(--space-md);
+    font-size: var(--font-size-sm);
+    line-height: 18px;
+}
+
+.loris-field-list-sm .loris-field {
+    padding: 2px 0;
+}
+
+/* Labels aligned against their values. */
+.loris-field-list-inline-end .loris-field dt {
+    text-align: right;
+}
+
+/* The label above its value: one pair per row, or as many columns of pairs
+   as fit. */
+.loris-field-list-stacked {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.loris-field-list-stacked .loris-field,
+.loris-field-list-grid .loris-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 0;
+}
+
+.loris-field-list-stacked dt,
+.loris-field-list-grid dt {
+    font-size: var(--font-size-sm);
+    line-height: 16px;
+}
+
+.loris-field-list-stacked dd,
+.loris-field-list-grid dd {
+    min-height: 22px;
+}
+
+.loris-field-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+    gap: var(--space-xl);
+}
+
+.loris-field-list-grid .loris-field {
+    grid-column: auto;
+    padding: 0;
+}
+
+.loris-field-list-grid .loris-field-wide {
+    grid-column: 1 / -1;
+}
+
+/* Sections: each opens with a rule and a heading that folds it away. The
+   heading sits nearer its own fields than the section above. */
+.loris-field-section {
+    margin-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.loris-field-section > summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-lg) 0 var(--space-xs);
+    list-style: none;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.loris-field-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.loris-field-section > summary:focus-visible {
+    outline: 2px solid var(--field-border-focus);
+    outline-offset: 2px;
+}
+
+.loris-field-section > summary .loris-icon {
+    color: var(--text-muted);
+    transition: transform var(--duration-fast) var(--ease);
+}
+
+.loris-field-section[open] > summary .loris-icon {
+    transform: rotate(90deg);
+}
+
+.loris-field-section h4 {
+    margin: 0;
+    font-size: var(--font-size);
+    font-weight: 600;
+    line-height: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loris-field-section > summary .loris-icon {
+        transition: none;
+    }
+}

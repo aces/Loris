@@ -19,6 +19,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # Smarty template main.tpl strings
+msgid "Change the filters, sort, grouping or columns first"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete the view {{name}}? It can't be brought back."
+msgstr ""
+
+msgid "Delete view"
+msgstr ""
+
+msgid "Delete {{name}}…"
+msgstr ""
+
+msgid "Hide filters"
+msgstr ""
+
+msgid "Layout"
+msgstr ""
+
 msgid "LORIS"
 msgstr ""
 
@@ -26,6 +47,18 @@ msgid "DEV"
 msgstr ""
 
 msgid "Affiliations"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Rename {{name}}…"
+msgstr ""
+
+msgid "Resize panel"
+msgstr ""
+
+msgid "Save changes to {{name}}"
 msgstr ""
 
 msgid "Site Affiliation"
@@ -648,4 +681,168 @@ msgid "Could not upload file"
 msgstr ""
 
 msgid "Registration Cohort"
+msgstr ""
+
+# Date range strings
+msgid "Any date"
+msgstr ""
+
+msgid "Next month"
+msgstr ""
+
+msgid "Previous month"
+msgstr ""
+
+# RecordTable strings
+msgid "Actions"
+msgstr ""
+
+msgid "Cards"
+msgstr ""
+
+msgid "Clear all"
+msgstr ""
+
+msgid "Clear search"
+msgstr ""
+
+msgid "Clear selection"
+msgstr ""
+
+msgid "Clear {{label}}"
+msgstr ""
+
+msgid "Click to sort, shift-click to add a sort. Drag, or Alt and an arrow key, to move."
+msgstr ""
+
+msgid "Columns"
+msgstr ""
+
+msgid "Tables"
+msgstr ""
+
+msgid "New view"
+msgstr ""
+
+msgid "Display"
+msgstr ""
+
+msgid "Download CSV"
+msgstr ""
+
+msgid "Download selected"
+msgstr ""
+
+msgid "EDC"
+msgstr ""
+
+msgid "Filtered from {{count}}"
+msgstr ""
+
+msgid "Find a column…"
+msgstr ""
+
+msgid "Group by"
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "Loading…"
+msgstr ""
+
+msgid "Next record"
+msgstr ""
+
+msgid "No date"
+msgstr ""
+
+msgid "No records match."
+msgstr ""
+
+msgid "Previous record"
+msgstr ""
+
+msgid "More actions"
+msgstr ""
+
+msgid "More fields"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Saves the filters, sort, grouping, layout and columns for you, in this browser."
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "All ({{total}})"
+msgstr ""
+
+msgid "{{selected}} of {{total}}"
+msgstr ""
+
+msgid "+{{hidden}} more"
+msgstr ""
+
+msgid "Select {{marked}}"
+msgstr ""
+
+msgid "Deselect {{marked}}"
+msgstr ""
+
+msgid "Select all"
+msgstr ""
+
+msgid "Deselect all"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "Select all rows"
+msgstr ""
+
+msgid "Select row"
+msgstr ""
+
+msgid "Selection"
+msgstr ""
+
+msgid "Show filters"
+msgstr ""
+
+msgid "Table"
+msgstr ""
+
+msgid "View name"
+msgstr ""
+
+msgid "day"
+msgstr ""
+
+msgid "month"
+msgstr ""
+
+msgid "one row at a time"
+msgstr ""
+
+msgid "year"
+msgstr ""
+
+msgid "{{count}} selected"
+msgstr ""
+
+msgid "{{first}}–{{last}} of {{total}}"
+msgstr ""
+
+msgid "↑ ↓ to move between records · Esc to close"
+msgstr ""
+
+msgid "{{selected}} of {{total}} selected"
 msgstr ""

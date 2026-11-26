@@ -149,6 +149,7 @@ const resolve: webpack.ResolveOptions = {
     Panel: path.resolve(__dirname, './jsx/Panel'),
     ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
+    Tooltip: path.resolve(__dirname, './jsx/Tooltip'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
     Help: path.resolve(__dirname, './jsx/Help'),

@@ -1,0 +1,230 @@
+/**
+ * Design tokens: the values components style themselves with.
+ *
+ * Components use the roles, each named for the job it does. The roles
+ * point at the numbered scales above them, shown in
+ * docs/wiki/99_Developers/Design_System.md.
+ *
+ * Loaded on every page from main.tpl, public_layout.tpl, directentry.tpl
+ * and imaging_browser's form_feedback_mri_popup.tpl.
+ */
+:root {
+    /* ---- Colour -------------------------------------------------- */
+
+    /* Scales. Every hue has five steps, light to dark, each with one job
+       and the contrast that job needs: 1 backgrounds and tags; 2 row
+       states; 3 decoration, such as tag outlines and chart marks on a dark
+       background, with no contrast duty, so a light hue shows at its
+       brightest; 4 anything seen on white, such as field borders, icons
+       and chart marks, at least 3:1 against white; 5 text, at least 6:1
+       against white and 4.5:1 against steps 1 and 2. The brand is the
+       colour of actions and navigation. Amber (LORIS's orange) and sky are
+       the notice colours, kept for warnings and information, so no category
+       uses them. */
+    --brand-1: #fafcfe;
+    --brand-2: #e7f1fe;
+    --brand-3: #9dbee8;
+    --brand-4: #064785;
+    --brand-5: #01376b;
+
+    --amber-1: #fffcf1;
+    --amber-2: #fdf4d2;
+    --amber-3: #e89a0c;
+    --amber-4: #cb7602;
+    --amber-5: #974c00;
+
+    --sky-1: #f6fdff;
+    --sky-2: #daf6fc;
+    --sky-3: #75dcf0;
+    --sky-4: #0396c6;
+    --sky-5: #02688b;
+
+    --red-1: #fefbfa;
+    --red-2: #ffebe8;
+    --red-3: #fda59a;
+    --red-4: #cc1e1e;
+    --red-5: #a92420;
+
+    --orange-1: #fefbf8;
+    --orange-2: #fff0e6;
+    --orange-3: #f1840b;
+    --orange-4: #de6907;
+    --orange-5: #9e4801;
+
+    --brown-1: #fffbf6;
+    --brown-2: #fff1e0;
+    --brown-3: #dab79d;
+    --brown-4: #8d5b3a;
+    --brown-5: #7e4637;
+
+    --yellow-1: #fffbf4;
+    --yellow-2: #ffe5ae;
+    --yellow-3: #eab526;
+    --yellow-4: #ad8405;
+    --yellow-5: #7a5b01;
+
+    --green-1: #f4fff9;
+    --green-2: #e1f6eb;
+    --green-3: #8bc9ac;
+    --green-4: #059669;
+    --green-5: #006e4c;
+
+    --teal-1: #f5feff;
+    --teal-2: #cefaff;
+    --teal-3: #3bcddc;
+    --teal-4: #059aa6;
+    --teal-5: #036c75;
+
+    --blue-1: #fafcff;
+    --blue-2: #e8f1ff;
+    --blue-3: #9bbef4;
+    --blue-4: #1f5fc8;
+    --blue-5: #1251a6;
+
+    --purple-1: #fdfbff;
+    --purple-2: #f6ebfd;
+    --purple-3: #d7abf1;
+    --purple-4: #9137bb;
+    --purple-5: #79329b;
+
+    --pink-1: #fffafb;
+    --pink-2: #feeaef;
+    --pink-3: #f9a3bc;
+    --pink-4: #db2777;
+    --pink-5: #ae2d61;
+
+    --grey-1: #f8f8f8;
+    --grey-2: #efefef;
+    --grey-3: #cccccc;
+    --grey-4: #8f8f8f;
+    --grey-5: #333333;
+
+    /* Roles: what a colour means. Each points at a step: none for the
+       colour itself, -strong for text, -border for edges, -fill for
+       backgrounds. Components use roles, and a tag for a category uses a
+       hue directly. */
+
+    /* Actions, navigation and panel headings */
+    --primary: var(--brand-4);
+    --primary-strong: var(--brand-5);
+    --primary-border: var(--brand-4);
+    --primary-fill: var(--brand-1);
+
+    /* Help, notices, and rules that govern what the next action does */
+    --info: var(--sky-4);
+    --info-strong: var(--sky-5);
+    --info-border: var(--sky-4);
+    --info-fill: var(--sky-1);
+
+    --warning: var(--amber-4);
+    --warning-strong: var(--amber-5);
+    --warning-border: var(--amber-4);
+    --warning-fill: var(--amber-1);
+
+    --success: var(--green-4);
+    --success-strong: var(--green-5);
+    --success-border: var(--green-4);
+    --success-fill: var(--green-1);
+
+    --danger: var(--red-4);
+    --danger-strong: var(--red-5);
+    --danger-border: var(--red-4);
+    --danger-fill: var(--red-1);
+
+    /* States. Hover is the pointer, selected is a settled choice, active is
+       a row waiting for an action, open is the row whose panel is showing.
+       Hover is grey step 1 and the others are step 2 tints, so a row in
+       that state shows against white; -solid is the colour for its edge. */
+    --state-hover: var(--grey-1);
+    --state-selected: var(--brand-2);
+    --state-selected-solid: var(--primary);
+    --state-active: var(--amber-2);
+    --state-active-solid: var(--warning);
+    --state-open: var(--sky-2);
+    --state-open-solid: var(--info-strong);
+
+    /* Grey, from text down to surfaces. --text-muted and --text-faint sit
+       between grey steps 4 and 5. */
+    --text: var(--grey-5);
+    --text-muted: #666;
+    --text-faint: #717171;
+    --border-strong: var(--grey-4);
+    --border: var(--grey-3);
+    --text-disabled: var(--grey-3);
+    --border-subtle: var(--grey-2);
+    --surface-sunken: var(--grey-1);
+    --surface: #fff;
+
+    /* Controls. The off track and its edge differ from the on state in
+       lightness, not only in hue. */
+    --control-off: var(--border-strong);
+    --control-off-edge: var(--text-muted);
+
+    /* Page chrome. The navbar is the darker navy, so a filled primary
+       button stands apart from it. A hovered or open menu item turns
+       white and joins the menu below it. */
+    --chrome-bg: var(--primary-strong);
+    --chrome-text: var(--surface);
+    --chrome-hover: var(--surface);
+    --chrome-hover-text: var(--primary-strong);
+
+    /* Elevation */
+    --shadow-overlay: 0 6px 18px rgba(0, 0, 0, .18);
+    --shadow-raised: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow-side: -4px 0 12px -6px rgba(0, 0, 0, .2);
+
+    /* Motion: how long a change takes and how it moves. */
+    --duration-fast: 120ms;
+    --duration-base: 200ms;
+    --duration-slow: 300ms;
+    --ease: cubic-bezier(.4, 0, .2, 1);
+
+    /* Fields, so a control outside a form matches one inside it. The border
+       meets 3:1 against white so the field can be found. */
+    --field-bg: var(--surface);
+    --field-border: var(--border-strong);
+    --field-border-focus: var(--primary-border);
+    --field-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+
+    /* The focus glow on its own, for a field whose border something else
+       draws */
+    --field-glow-focus: 0 0 8px color-mix(in srgb, var(--primary-border) 50%, transparent);
+    --field-shadow-focus: var(--field-shadow), var(--field-glow-focus);
+    --field-padding: 6px 12px;
+
+    /* ---- Shape, spacing and type --------------------------------- */
+
+    /* Corners */
+    --radius: 4px;
+    --radius-sm: 3px;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 6px;
+    --space-md: 8px;
+    --space-lg: 10px;
+    --space-xl: 16px;
+
+    /* Type. The family is the operating system's own interface face; the
+       size and line height record what bootstrap's base already sets. */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+
+    /* Identifiers, where I, l and 1 have to stay apart */
+    --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+                        Consolas, "Liberation Mono", monospace;
+    --font-size-lg: 18px;
+    --font-size: 14px;
+    --font-size-sm: 12px;
+    --font-size-xs: 11px;
+    --line-height: 1.42857143;
+
+    /* Height of a control sitting in a row with a form-control */
+    --control-height: 32px;
+    --control-height-sm: 30px;
+}
+
+/* Qualified with html so it does not depend on load order against bootstrap */
+html body {
+    font-family: var(--font-family);
+}

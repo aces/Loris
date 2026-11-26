@@ -47,7 +47,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const UNITTESTERTWO_EMAIL    = 'tester2@example.com';
 
     private $_name        = 'input[name="username"]';
-    private $_site        = 'select[name="site"]';
+    private $_site        = '.loris-select[data-name="site"]';
     private $_clearFilter = ".nav-tabs a";
     private $_table       = "#dynamictable > tbody > tr";
     private $_addUserBtn  = ".panel-body .btn-primary:nth-child(1)";
@@ -148,7 +148,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/user_accounts/");
         $this-> _testFilter($this->_name, $this->_table, null, "UnitTester");
-        $this-> _testFilter($this->_site, $this->_table, "1 rows", "3");
+        $this-> _testFilter($this->_site, $this->_table, "1 rows", "Rome");
     }
 
     /**
@@ -180,14 +180,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             );
             $this->assertStringContainsString($value, $bodyText);
         } else {
-            $this->safeFindElement(WebDriverBy::cssSelector($element));
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
+            $this->selectOption($element, $value);
             $row      = "#default-panel".
                         " > div > div > div.table-header > div > div >".
                         " div:nth-child(1)";
