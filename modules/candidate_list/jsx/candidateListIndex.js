@@ -213,7 +213,7 @@ class CandidateListIndex extends Component {
         name: 'entityType',
         label: t('Entity Type', {ns: 'loris'}),
         value: (c) => c.entityType,
-        tag: {Human: 'primary', Scanner: 'info'},
+        tag: {Human: 'blue', Scanner: 'sky'},
         groupable: true,
         filter: {type: 'select', options: options.entitytype},
       },
