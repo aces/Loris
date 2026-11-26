@@ -45,6 +45,9 @@ class Barcodes extends Endpoint
     {
         return match ($permission) {
             Permission::GET => 'biobank_specimen_create',
+            default         => throw new \InvalidArgumentException(
+                "Unhandled permission type"
+            ),
         };
     }
 
