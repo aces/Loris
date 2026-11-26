@@ -103,9 +103,10 @@ function TableToolbar<R>(props: {
 
   // Only drawn rows are on the page, so the browser's find can't reach the
   // rest. Find goes to Search first; pressed again there, it reaches the
-  // browser.
+  // browser. While a selection holds the toolbar, Find is the browser's.
+  const selecting = !!props.selection;
   useEffect(() => {
-    if (!props.captureFind) {
+    if (!props.captureFind || selecting) {
       return;
     }
     const apple = /Mac|iPhone|iPad/.test(navigator.platform);
@@ -133,7 +134,7 @@ function TableToolbar<R>(props: {
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [props.captureFind]);
+  }, [props.captureFind, selecting]);
 
   const groupOptions: {[value: string]: string} = {'': t('None')};
   columns.filter((c) => c.groupable).forEach((c) => {
@@ -199,7 +200,7 @@ function TableToolbar<R>(props: {
         <div className="rt-heading">
           <ViewTabs state={state} />
         </div>
-        {props.selection ? props.selection : <>
+        {props.selection || <>
           {searchOpen || keyword ? (
             <div
               className={'rt-search'

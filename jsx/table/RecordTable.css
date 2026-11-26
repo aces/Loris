@@ -849,6 +849,7 @@ body:has(.rt-fill) #footer {
 }
 
 .rt-fill .rt {
+    position: relative;
     flex: 1 1 auto;
     min-height: 0;
     border-width: 1px 0 0;
@@ -858,10 +859,6 @@ body:has(.rt-fill) #footer {
 .rt-fill .rt-drawer,
 .rt-fill .rt-record {
     border-radius: 0;
-}
-
-.rt-fill .rt {
-    position: relative;
 }
 
 .rt-fill .rt::before,

@@ -49,9 +49,6 @@ msgstr ""
 msgid "Affiliations"
 msgstr ""
 
-msgid "Manage views"
-msgstr ""
-
 msgid "Rename"
 msgstr ""
 
@@ -773,9 +770,6 @@ msgid "More fields"
 msgstr ""
 
 msgid "Record"
-msgstr ""
-
-msgid "Save as new view…"
 msgstr ""
 
 msgid "Saves the filters, sort, grouping, layout and columns for you, in this browser."

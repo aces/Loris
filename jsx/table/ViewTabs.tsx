@@ -203,16 +203,21 @@ function ViewTabs<R>(props: {state: TableState<R>}) {
       ))}
     </div>
     <div className="rt-menu-anchor rt-view-save" ref={menuRef}>
-      <Tooltip content={t('New view')} placement="bottom">
+      <Tooltip
+        content={modified ? t('New view')
+          : t('Change the filters, sort, grouping or columns first')}
+        placement="bottom"
+      >
         <Button
           display="quiet"
           aria-label={t('New view')}
           aria-haspopup="dialog"
           aria-expanded={step === 'new'}
+          aria-disabled={!modified || undefined}
           onClick={() => {
             if (step === 'new') {
               close();
-            } else {
+            } else if (modified) {
               setTarget('');
               open('new');
             }

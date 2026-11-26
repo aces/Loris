@@ -534,8 +534,8 @@ function RecordTable<R>(props: Props<R>) {
   });
 
   // A selection takes over the toolbar's controls, as GitHub's and Gmail's
-  // lists show it: the
-  // count, a way to clear it, what can be done to it and its download.
+  // lists show it: the count, a way to clear it, what can be done to it and
+  // its download.
   const selection = selectable && selected.size > 0 ? (
     <div className="rt-selection" role="region" aria-label={t('Selection')}>
       <span className="rt-selected-count">
