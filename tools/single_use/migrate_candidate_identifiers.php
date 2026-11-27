@@ -88,6 +88,8 @@ function convertIdentifierFormat(array $settings): string
                 );
 
             if ($generation !== null) {
+                $segment .= ',PADDING:'
+                    . ($attributes['type'] === 'alpha' ? 'A' : '0');
                 foreach (['min' => 'MIN', 'max' => 'MAX'] as $key => $option) {
                     if (isset($attributes[$key])) {
                         $segment .= ',' . $option . ':' . $attributes[$key];

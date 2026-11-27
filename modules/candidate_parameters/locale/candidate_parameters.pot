@@ -321,6 +321,9 @@ msgstr ""
 msgid "The project for which this candidate was initially registered"
 msgstr ""
 
+msgid "Legacy Candidate Identifiers"
+msgstr ""
+
 # Widgets
 msgid "Consent Summary"
 msgstr ""

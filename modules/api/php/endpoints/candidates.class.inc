@@ -19,6 +19,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
 use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 use \LORIS\StudyEntities\Candidate\CandID;
+use LORIS\StudyEntities\Candidate\CandidateIdentifier;
 
 /**
  * A class for handling the /candidates endpoint.
@@ -206,6 +207,205 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
+     * Get identifier types applicable to a project.
+     *
+     * @param \ProjectID $projectID Registration project
+     *
+     * @return \LORIS\IdentifierType[] Applicable identifier types
+     */
+    private function _getApplicableIdentifierTypes(
+        \ProjectID $projectID
+    ): array {
+        $database = \NDB_Factory::singleton()->database();
+
+        $controller = new \LORIS\IdentifierTypeController(
+            $database
+        );
+
+        $applicableTypes = [];
+
+        foreach ($controller->getAllIdentifierTypes() as $type) {
+
+            if (!empty($type->projects)) {
+                $projectAllowed = false;
+
+                foreach ($type->projects as $project) {
+                    if ($project->getId() == $projectID) {
+                        $projectAllowed = true;
+                        break;
+                    }
+                }
+
+                if (!$projectAllowed) {
+                    continue;
+                }
+            }
+
+            $applicableTypes[] = $type;
+        }
+
+        return $applicableTypes;
+    }
+
+    /**
+     * Validate that all required manual identifiers are provided.
+     *
+     * @param \User                   $user            User creating the candidate
+     * @param \LORIS\IdentifierType[] $identifierTypes Applicable types
+     * @param array                   $identifiers     Submitted identifiers
+     * @param \ProjectID              $projectID       Registration project
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function _validateRequiredIdentifiers(
+        \User $user,
+        array $identifierTypes,
+        array $identifiers,
+        \ProjectID $projectID
+    ): void {
+        foreach ($identifierTypes as $type) {
+            if (!$type->isRequired || $type->autoGenerate) {
+                continue;
+            }
+
+            if (!$this->_canAccessIdentifierType($user, $type, $projectID)) {
+                throw new \InvalidArgumentException(
+                    "You do not have permission to create required identifier "
+                        . "'{$type->name}'"
+                );
+            }
+
+            $found = false;
+
+            foreach ($identifiers as $identifier) {
+                $submittedTypeID = $identifier['CandidateIdentifierTypeID'] ?? null;
+
+                if ($submittedTypeID == $type->candidateIdentifierTypeID
+                    && isset($identifier['Value'])
+                    && is_string($identifier['Value'])
+                    && trim($identifier['Value']) !== ''
+                ) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                throw new \InvalidArgumentException(
+                    "Required identifier '{$type->name}' must be provided"
+                );
+            }
+        }
+    }
+
+    /**
+     * Validate submitted identifier types, values, and permissions.
+     *
+     * @param \User                   $user            User creating the candidate
+     * @param \LORIS\IdentifierType[] $identifierTypes Applicable identifier types
+     * @param array                   $identifiers     Submitted identifiers
+     * @param \ProjectID              $projectID       Registration project
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException If an identifier is invalid or unauthorized
+     */
+    private function _validateSubmittedIdentifiers(
+        \User $user,
+        array $identifierTypes,
+        array $identifiers,
+        \ProjectID $projectID
+    ): void {
+        $allowedTypes = [];
+
+        foreach ($identifierTypes as $type) {
+            $allowedTypes[$type->candidateIdentifierTypeID] = $type;
+        }
+
+        $seen = [];
+
+        foreach ($identifiers as $identifier) {
+            if (!is_array($identifier)
+                || !isset($identifier['CandidateIdentifierTypeID'])
+                || !is_int($identifier['CandidateIdentifierTypeID'])
+            ) {
+                throw new \InvalidArgumentException(
+                    'Each identifier must have a valid integer type ID'
+                );
+            }
+
+            $typeID = $identifier['CandidateIdentifierTypeID'];
+
+            if (!isset($allowedTypes[$typeID])) {
+                throw new \InvalidArgumentException(
+                    'Identifier type is not applicable to this project'
+                );
+            }
+
+            $type = $allowedTypes[$typeID];
+            if (!$this->_canAccessIdentifierType($user, $type, $projectID)) {
+                throw new \InvalidArgumentException(
+                    "You do not have permission to create identifier "
+                        . "'{$type->name}'"
+                );
+            }
+
+            if (isset($seen[$typeID]) && !$type->allowMultiple) {
+                throw new \InvalidArgumentException(
+                    "Multiple values are not allowed for '{$type->name}'"
+                );
+            }
+
+            $seen[$typeID] = true;
+
+            if ($type->autoGenerate) {
+                if (($identifier['Generate'] ?? null) !== true
+                    || array_key_exists('Value', $identifier)
+                ) {
+                    throw new \InvalidArgumentException(
+                        "Identifier '{$type->name}' must be generated"
+                    );
+                }
+            } elseif (!isset($identifier['Value'])
+                || !is_string($identifier['Value'])
+                || trim($identifier['Value']) === ''
+                || array_key_exists('Generate', $identifier)
+            ) {
+                throw new \InvalidArgumentException(
+                    "Identifier '{$type->name}' requires a manual value"
+                );
+            }
+        }
+    }
+
+    /**
+     * Check whether a user can access an identifier type for a project.
+     *
+     * @param \User                 $user      User creating the candidate
+     * @param \LORIS\IdentifierType $type      Identifier type
+     * @param \ProjectID            $projectID Registration project
+     *
+     * @return bool Whether the user has access
+     */
+    private function _canAccessIdentifierType(
+        \User $user,
+        \LORIS\IdentifierType $type,
+        \ProjectID $projectID
+    ): bool {
+        $controller = new \LORIS\IdentifierTypeController(
+            \NDB_Factory::singleton()->database()
+        );
+
+        return $controller->canAccessIdentifierTypeForProject(
+            $user,
+            $type,
+            $projectID
+        );
+    }
+
+    /**
      * Create a candidate with the provided data
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -284,11 +484,115 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $pscid = $data['Candidate']['PSCID'] ?? null;
 
+        $identifiers = $data['Candidate']['Identifiers'] ?? [];
+
+        if (!is_array($identifiers) || !array_is_list($identifiers)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Identifiers must be an array'
+            );
+        }
+
+        $identifierTypes = $this->_getApplicableIdentifierTypes(
+            $project->getId()
+        );
+
+        foreach ($identifierTypes as $type) {
+            if ($type->name === 'PSCID' && !$type->autoGenerate) {
+                if (is_string($pscid) && trim($pscid) !== '') {
+                    $identifiers[] = [
+                        'CandidateIdentifierTypeID' =>
+                            $type->candidateIdentifierTypeID,
+                        'Value'                     => $pscid,
+                    ];
+                }
+                break;
+            }
+        }
+
+        try {
+
+            $this->_validateSubmittedIdentifiers(
+                $user,
+                $identifierTypes,
+                $identifiers,
+                $project->getId()
+            );
+
+            $this->_validateRequiredIdentifiers(
+                $user,
+                $identifierTypes,
+                $identifiers,
+                $project->getId()
+            );
+
+            foreach ($identifierTypes as $type) {
+                if ($type->isRequired
+                    && $type->autoGenerate
+                    && !$this->_canAccessIdentifierType(
+                        $user,
+                        $type,
+                        $project->getId()
+                    )
+                ) {
+                    throw new \InvalidArgumentException(
+                        "You do not have permission to create required identifier "
+                            . "'{$type->name}'"
+                    );
+                }
+            }
+        } catch (\InvalidArgumentException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
+        }
+
         $sex = new Sex($data['Candidate']['Sex']);
 
         $db = \NDB_Factory::singleton()->database();
         try {
             $db->beginTransaction();
+            $pscidType = null;
+
+            foreach ($identifierTypes as $type) {
+                if ($type->name === 'PSCID') {
+                    $pscidType = $type;
+                    break;
+                }
+            }
+
+            if ($pscidType === null) {
+                throw new \InvalidArgumentException(
+                    'PSCID identifier type is not configured'
+                );
+            }
+
+            if ($pscidType->autoGenerate) {
+                $site = \Site::singleton(\CenterID::singleton($centerid));
+
+                $pscid = (new \CandidateIdentifierGenerator(
+                    $db,
+                    $pscidType,
+                    $site->getSiteAlias(),
+                    $project->getAlias()
+                ))->generate();
+            } else {
+                $submittedPSCID = array_values(
+                    array_filter(
+                        $identifiers,
+                        fn($identifier) =>
+                        $identifier['CandidateIdentifierTypeID']
+                            === $pscidType->candidateIdentifierTypeID
+                    )
+                );
+
+                if (count($submittedPSCID) !== 1) {
+                    throw new \InvalidArgumentException(
+                        'Exactly one manual PSCID must be provided'
+                    );
+                }
+
+                $pscid = $submittedPSCID[0]['Value'];
+            }
             $candid = \Candidate::createNew(
                 \CenterID::singleton($centerid),
                 $data['Candidate']['DoB'] ?? null,
@@ -296,11 +600,62 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $sex,
                 $pscid,
                 $project->getId(),
-                $registrationCohortID
+                $registrationCohortID,
+                true
             );
 
+            $candidate   = \NDB_Factory::singleton()->candidate($candid);
+            $candidateID = (int) $candidate->getID();
+
+            $identifierController = new \LORIS\CandidateIdentifierController($db);
+
+            foreach ($identifierTypes as $type) {
+                $submittedIdentifiers = array_filter(
+                    $identifiers,
+                    fn($identifier) =>
+                    $identifier['CandidateIdentifierTypeID']
+                        === $type->candidateIdentifierTypeID
+                );
+
+                if ($type->autoGenerate) {
+                    if ($type->isRequired || !empty($submittedIdentifiers)) {
+                        if ($type->name === 'PSCID') {
+                            $candidateIdentifier
+                                = new CandidateIdentifier(
+                                    candidateIdentifierID: null,
+                                    candidateID: $candidateID,
+                                    type: $type,
+                                    value: $pscid
+                                );
+
+                            $identifierController->createCandidateIdentifier(
+                                $candidateIdentifier
+                            );
+                        } else {
+                            $identifierController->generateCandidateIdentifier(
+                                $candidateID,
+                                $type
+                            );
+                        }
+                    }
+                } else {
+                    foreach ($submittedIdentifiers as $identifier) {
+                        $candidateIdentifier
+                            = new CandidateIdentifier(
+                                candidateIdentifierID: null,
+                                candidateID: $candidateID,
+                                type: $type,
+                                value: $identifier['Value']
+                            );
+
+                        $identifierController->createCandidateIdentifier(
+                            $candidateIdentifier
+                        );
+                    }
+                }
+            }
+
             if (!empty($parameters)) {
-                $candidate = \NDB_Factory::singleton()->candidate($candid);
                 foreach ($parameters as $parameterTypeID => $value) {
                     $db->insert(
                         'parameter_candidate',

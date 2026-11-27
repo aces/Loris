@@ -88,10 +88,44 @@ class New_Profile extends \NDB_Form
             []
         );
 
-        // Get setting through pscid
-        $PSCIDsettings = $config->getSetting('PSCID');
-        if ($PSCIDsettings['generation'] == 'user') {
+        $identifierTypeController = new \LORIS\IdentifierTypeController(
+            $factory->database()
+        );
+        $PSCIDType = $identifierTypeController->getIdentifierTypeFromName('PSCID');
+
+        if (!$PSCIDType->autoGenerate) {
             $pscidSet = "true";
+        }
+
+        $identifierTypes = [];
+
+        foreach ($identifierTypeController->getAllIdentifierTypes() as $type) {
+            if ($type->name === 'PSCID') {
+                continue;
+            }
+
+            if (!$identifierTypeController->hasIdentifierTypePermission(
+                $user,
+                $type
+            )
+            ) {
+                continue;
+            }
+
+            $projects = [];
+
+            foreach ($type->projects as $project) {
+                $projects[] = $project->getName();
+            }
+
+            $identifierTypes[] = [
+                'CandidateIdentifierTypeID' => $type->candidateIdentifierTypeID,
+                'Name'                      => $type->name,
+                'Required'                  => $type->isRequired,
+                'AutoGenerate'              => $type->autoGenerate,
+                'AllowMultiple'             => $type->allowMultiple,
+                'Projects'                  => $projects,
+            ];
         }
 
         $this->fieldOptions = [
@@ -106,6 +140,7 @@ class New_Profile extends \NDB_Form
             'useRegistrationCohort' => $useRegistrationCohort,
             'cohort'                => $cohorts,
             'extraParameters'       => iterator_to_array($extraParameters),
+            'identifierTypes'       => $identifierTypes,
         ];
     }
 
