@@ -304,6 +304,9 @@ msgstr "Site où ce candidat a été initialement enregistré"
 msgid "The project for which this candidate was initially registered"
 msgstr "Projet pour lequel ce candidat a été initialement enregistré"
 
+msgid "Legacy Candidate Identifiers"
+msgstr "Anciens identifiants des candidats"
+
 # Widgets
 msgid "Consent Summary"
 msgstr "Résumé du consentement"

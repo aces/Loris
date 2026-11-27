@@ -500,6 +500,38 @@ function ViewData(props: {
 }
 
 /**
+ * Formats multiple values for a candidate-level field.
+ *
+ * @param cell - JSON-encoded cell value
+ * @param dictionary - Field dictionary item
+ * @param module - Module providing the field
+ * @param separator - Separator between values
+ * @returns - Formatted values, or null if parsing fails
+ */
+function formatCandidateManyValues(
+  cell: string,
+  dictionary: FieldDictionary,
+  module: string,
+  separator = ';'
+): string | null {
+  try {
+    const values = JSON.parse(cell || '{}').values || {};
+
+    return Object.keys(values)
+      .map((key) => {
+        if (dictionary.type === 'URI' ||
+          module === 'candidate_identifiers') {
+          return values[key];
+        }
+        return key + '=' + values[key];
+      })
+      .join(separator);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Organize the session data into tabular data based on
  * the visit organization settings
  *
@@ -627,6 +659,14 @@ function organizeData(
                   default:
                     throw new Error('Too many visit values');
                   }
+                } else if (dictionary?.scope === 'candidate' &&
+                  dictionary.cardinality === 'many' &&
+                  candidaterow[i]) {
+                  dataRow.push(formatCandidateManyValues(
+                    candidaterow[i] as string,
+                    dictionary,
+                    fields[i].module
+                  ));
                 } else {
                   dataRow.push(candidaterow[i]);
                 }
@@ -748,7 +788,17 @@ function expandLongitudinalCells(
   switch (fielddict.scope) {
   case 'candidate':
     if (fielddict.cardinality == 'many') {
-      throw new Error('Candidate cardinality many not implemented');
+      const display = formatCandidateManyValues(
+        value || '{}',
+        fielddict,
+        fieldobj.module
+      );
+
+      if (display === null) {
+        console.error('Internal error parsing: "' + value + '"');
+      }
+
+      return [{value: display, dictionary: fielddict}];
     }
     return [{value: value, dictionary: fielddict}];
   case 'session':
@@ -830,9 +880,9 @@ function expandLongitudinalCells(
  * @param enumDisplay -  The format to display
  *                                          enum values
  * @param t - useTranslation
-
+ *
  * @returns - the appropriate column formatter for
-                         this data organization
+ *                       this data organization
  */
 function organizedFormatter(
   resultData: string[][],
@@ -889,8 +939,20 @@ function organizedFormatter(
           return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
         }
         switch (fielddict.cardinality) {
-        case 'many':
-          return <td><i>{t('(Not implemented)', {ns: 'dataquery'})}</i></td>;
+        case 'many': {
+          const display = formatCandidateManyValues(
+            cell,
+            fielddict,
+            fieldobj.module,
+            '; '
+          );
+
+          if (display === null) {
+            return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
+          }
+
+          return <TableCell data={display} />;
+        }
         case 'single':
         case 'unique':
         case 'optional':
