@@ -27,8 +27,8 @@
  */
 abstract class IdentifierGenerator
 {
-    private const RANGE_FULL = 'Cannot create new identifier because all ' .
-        ' valid identifiers are in use!';
+    private const RANGE_FULL = 'Cannot create new identifier because all'
+        . ' valid identifiers are in use!';
     /**
      * How the ID will be generated. 'sequential' or 'random'.
      *
@@ -42,6 +42,14 @@ abstract class IdentifierGenerator
      *                              range() which is used to generate the alphabet.
      */
     protected $alphabet = [];
+
+    /**
+     * Character used to pad identifiers to their configured length.
+     *
+     * @var string|null
+     */
+    protected ?string $padding = null;
+
     /**
      * The length of the "suffix" portion of the ID.
      * e.g. for an ID `MON1234` with prefix `MON`, the suffix is length 4.
@@ -92,7 +100,25 @@ abstract class IdentifierGenerator
     protected function createNewID(): string
     {
         // Check that it is possible to create a new ID.
+        $this->validateNumericRange();
         $this->checkIDRangeFull();
+        if ($this->padding === null
+            && $this->generationMethod === 'random'
+            && $this->alphabet === range('0', '9')
+        ) {
+            do {
+                $id = strval(
+                    random_int(
+                        intval($this->minValue),
+                        intval($this->maxValue)
+                    )
+                );
+            } while (
+                in_array($id, array_map('strval', $this->getExistingIDs()), true)
+            );
+
+            return $this->prefix . $id;
+        }
 
         $id = '';
         switch ($this->generationMethod) {
@@ -130,6 +156,29 @@ abstract class IdentifierGenerator
      */
     protected function generateSequentialID(string $id = ''): string
     {
+        if ($this->padding === null
+            && $this->alphabet === range('0', '9')
+        ) {
+            $min    = intval($this->minValue);
+            $max    = intval($this->maxValue);
+            $nextID = $min;
+
+            foreach ($this->getExistingIDs() as $existingID) {
+                if (ctype_digit(strval($existingID))
+                    && strval(intval($existingID)) === strval($existingID)
+                    && intval($existingID) >= $min
+                    && intval($existingID) <= $max
+                ) {
+                    if (intval($existingID) === $max) {
+                        throw new \LorisException(self::RANGE_FULL);
+                    }
+
+                    $nextID = max($nextID, intval($existingID) + 1);
+                }
+            }
+
+            return strval($nextID);
+        }
         // If this is the first ID ever created, return the minimum value.
         if (count($this->getExistingIDs()) < 1) {
             if (!is_int($this->length)) {
@@ -137,12 +186,7 @@ abstract class IdentifierGenerator
                     "minimum ID length not configured in project/config.xml"
                 );
             }
-            return str_pad(
-                strval($this->minValue),
-                $this->length,
-                "0",
-                STR_PAD_LEFT
-            );
+            return $this->padID(strval($this->minValue));
         }
         // Create the new ID by incrementing the value of the $id parameter OR
         // by incrementing the highest existing ID.
@@ -207,8 +251,8 @@ abstract class IdentifierGenerator
     abstract protected function getExistingIDs(): array;
 
     /**
-     * Ensure that an ID is the correct length by prepending the first character
-     * of the alphabet to the ID if the ID's length is shorter than it should be.
+     * Ensure that an ID is the correct length by prepending the configured
+     * padding character if the ID's length is shorter than it should be.
      *
      * @param string $id The ID to pad.
      *
@@ -216,12 +260,45 @@ abstract class IdentifierGenerator
      */
     protected function padID(string $id): string
     {
+        if ($this->padding === null) {
+            return $id;
+        }
+
         return str_pad(
             $id,
             $this->length,
-            strval($this->alphabet[0]),
+            $this->padding,
             STR_PAD_LEFT
         );
+    }
+
+    /**
+     * Validates the configured range for unpadded numeric identifiers.
+     *
+     * @return void
+     *
+     * @throws \ConfigurationException
+     */
+    protected function validateNumericRange(): void
+    {
+        if ($this->padding !== null
+            || $this->alphabet !== range('0', '9')
+        ) {
+            return;
+        }
+
+        if (!ctype_digit($this->minValue)
+            || !ctype_digit($this->maxValue)
+            || strlen($this->minValue) > $this->length
+            || strlen($this->maxValue) > $this->length
+            || $this->minValue > PHP_INT_MAX
+            || $this->maxValue > PHP_INT_MAX
+            || intval($this->minValue) > intval($this->maxValue)
+        ) {
+            throw new \ConfigurationException(
+                'Invalid numeric identifier range.'
+            );
+        }
     }
 
     /**
@@ -235,6 +312,28 @@ abstract class IdentifierGenerator
      */
     protected function checkIDRangeFull(): void
     {
+        if ($this->padding === null
+            && $this->alphabet === range('0', '9')
+        ) {
+            $min = intval($this->minValue);
+            $max = intval($this->maxValue);
+
+            $existingIDs = array_filter(
+                $this->getExistingIDs(),
+                static function ($id) use ($min, $max): bool {
+                    return ctype_digit(strval($id))
+                        && strval(intval($id)) === strval($id)
+                        && intval($id) >= $min
+                        && intval($id) <= $max;
+                }
+            );
+
+            if (count(array_unique($existingIDs)) >= $max - $min + 1) {
+                throw new \LorisException(self::RANGE_FULL);
+            }
+
+            return;
+        }
         // Check that the number of existing IDs does not exceed the range of
         // possible values (given by the size of the alphabet to the power of
         // number of characters in the ID).

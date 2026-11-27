@@ -22,7 +22,7 @@ INSERT INTO `candidate_identifier_types`
 VALUES
     (
         'PSCID',
-        '{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric}',
+        '{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric,PADDING:0}',
         1, 1, 1, 0
     );
 

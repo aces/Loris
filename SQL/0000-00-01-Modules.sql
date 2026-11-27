@@ -14,6 +14,7 @@ INSERT INTO modules (Name, Active) VALUES ('biobank', 'N');
 INSERT INTO modules (Name, Active) VALUES ('brainbrowser', 'N');
 INSERT INTO modules (Name, Active) VALUES ('bvl_feedback', 'N');
 INSERT INTO modules (Name, Active) VALUES ('candidate_list', 'N');
+INSERT INTO modules (Name, Active) VALUES ('candidate_identifiers', 'N');
 INSERT INTO modules (Name, Active) VALUES ('candidate_parameters', 'N');
 INSERT INTO modules (Name, Active) VALUES ('candidate_profile', 'N');
 INSERT INTO modules (Name, Active) VALUES ('configuration', 'Y');
